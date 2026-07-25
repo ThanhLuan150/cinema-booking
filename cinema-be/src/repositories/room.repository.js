@@ -1,0 +1,24 @@
+const Room = require('../models/Room');
+
+async function findCinemaIdByRoomId(roomId) {
+  const room = await Room.findOne({ id: Number(roomId) });
+  return room ? room.cinema_id : null;
+}
+
+async function findAll(filter) {
+  return Room.find(filter).sort({ id: -1 });
+}
+
+async function create({ id, cinema_id, name }) {
+  return Room.create({ id, cinema_id, name });
+}
+
+async function updateFields(id, updates) {
+  return Room.findOneAndUpdate({ id: Number(id) }, { $set: updates }, { new: true });
+}
+
+async function remove(id) {
+  return Room.deleteOne({ id: Number(id) });
+}
+
+module.exports = { findCinemaIdByRoomId, findAll, create, updateFields, remove };

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cinema-fe-dev",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d D:\\movie-booking\\cinema-fe && node_modules\\.bin\\vite.cmd"],
+      "port": 3000
+    },
+    {
+      "name": "cinema-be-dev",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d D:\\movie-booking\\cinema-be && npm run dev"],
+      "port": 8000
+    }
+  ]
+}
