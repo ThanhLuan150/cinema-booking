@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "ไม่มีข้อมูล",
+    "addressUpdating": "ยังไม่มีที่อยู่",
+    "favoriteCount": "{{count}} รายการโปรด",
+    "statusPending": "รอการอนุมัติ",
+    "statusActive": "เปิดให้บริการ",
+    "statusPaused": "ปิดให้บริการชั่วคราว",
+    "viewShowtimes": "ดูรอบฉาย"
+  },
+  "moviesSection": {
+    "title": "ภาพยนตร์ที่กำลังฉายในโรงนี้",
+    "emptyState": "โรงภาพยนตร์นี้ยังไม่มีรอบฉาย",
+    "moreDetails": "ดูรายละเอียดเพิ่มเติม"
+  },
+  "reviews": {
+    "title": "รีวิวประสบการณ์การใช้บริการโรงภาพยนตร์",
+    "ratingSummary": "{{average}}/5 · {{count}} รีวิว",
+    "ratingLabel": "คะแนน:",
+    "starOption": "{{count}} ดาว",
+    "commentPlaceholder": "แบ่งปันประสบการณ์การใช้บริการโรงภาพยนตร์นี้ (ที่นั่ง เสียง พนักงาน ความสะอาด...)...",
+    "submit": "ส่งรีวิว",
+    "loginRequired": "คุณยังไม่ได้เข้าสู่ระบบ กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อใช้งานฟีเจอร์นี้",
+    "submitSuccess": "ส่งรีวิวเรียบร้อยแล้ว",
+    "submitError": "ไม่สามารถส่งรีวิวได้",
+    "emptyState": "ยังไม่มีรีวิว"
+  }
+}

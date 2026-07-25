@@ -1,0 +1,185 @@
+{
+  "dashboard": {
+    "breadcrumb": "Admin Dashboard",
+    "loading": "Loading...",
+    "stats": {
+      "totalRevenue": "Total revenue",
+      "totalUsers": "Users",
+      "totalOwners": "Theater owners",
+      "totalCinemas": "Cinemas",
+      "totalTicketsSold": "Tickets sold",
+      "totalTransactions": "Transactions"
+    },
+    "chartTitle": "System-wide revenue by day",
+    "noData": "No data yet"
+  },
+  "movies": {
+    "add": {
+      "title": "Add movie",
+      "fields": {
+        "name": "Name:",
+        "avatar": "Avatar:",
+        "premiereDate": "Premiere date:",
+        "country": "Country:",
+        "description": "Describe:",
+        "trailer": "Trailer:",
+        "producer": "Producer:",
+        "director": "Director:"
+      },
+      "cast": {
+        "label": "Cast:",
+        "name": "Name",
+        "role": "Role",
+        "avatarUrl": "Image URL",
+        "remove": "Remove",
+        "add": "+ Add cast member"
+      },
+      "category": "Category:",
+      "submit": "Add",
+      "toastSuccess": "Added successfully",
+      "toastError": "Failed to add"
+    },
+    "edit": {
+      "title": "Edit movie",
+      "fields": {
+        "name": "Name:",
+        "avatar": "Avatar:",
+        "uploadNewAvatar": "Upload new avatar:",
+        "premiereDate": "Premiere date:",
+        "country": "Country:",
+        "description": "Description:",
+        "trailer": "Trailer:",
+        "uploadNewTrailer": "Upload new trailer:",
+        "producer": "Producer:",
+        "director": "Director:"
+      },
+      "cast": {
+        "label": "Cast:",
+        "name": "Name",
+        "role": "Role",
+        "avatarUrl": "Image URL",
+        "remove": "Remove",
+        "add": "+ Add cast member"
+      },
+      "category": "Category:",
+      "submit": "Update",
+      "toastSuccess": "Movie updated successfully!"
+    },
+    "delete": {
+      "confirm": "Do you want to delete the movie with id {{id}}?",
+      "toastSuccess": "Deleted successfully",
+      "toastError": "Failed to delete"
+    },
+    "list": {
+      "breadcrumb": "Films",
+      "addButton": "Add +",
+      "headers": ["ID", "Avatar", "Name", "Premiere date", "Country", "Describe", "Trailer", "Category", "Action"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "Add showtime",
+      "cinema": {
+        "label": "Branch:",
+        "placeholder": "Select branch"
+      },
+      "room": {
+        "label": "Room:",
+        "placeholder": "Select room",
+        "placeholderSelectCinemaFirst": "Select a branch first"
+      },
+      "date": "Show date:",
+      "slot": {
+        "label": "Showtime:",
+        "placeholder": "Select showtime"
+      },
+      "price": "Ticket price:",
+      "submit": "Add",
+      "validationError": "Please select branch, room, date and showtime.",
+      "toastSuccess": "Showtime added."
+    },
+    "list": {
+      "breadcrumb": "Schedule",
+      "headers": ["ID", "Movie", "Time Begin", "Time End", "Movie Date", "Price"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "Reviews",
+    "headers": ["ID", "Subject", "Rating", "Content", "Status", "Action"],
+    "cinemaSuffix": "{{name}} (cinema)",
+    "hiddenStatus": "Hidden",
+    "visibleStatus": "Visible",
+    "hideButton": "Hide",
+    "deleteButton": "Delete",
+    "hideSuccess": "Review hidden.",
+    "deleteConfirm": "Delete this review?",
+    "deleteSuccess": "Review deleted."
+  },
+  "transactions": {
+    "breadcrumb": "Transactions",
+    "headers": ["ID", "Ticket code", "Customer", "Movie", "Seat", "Total", "Status", "Action"],
+    "status": {
+      "booked": "Booked",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "refundButton": "Refund",
+    "refundConfirm": "Refund this transaction?",
+    "refundSuccess": "Transaction refunded."
+  },
+  "cinemas": {
+    "breadcrumb": "Cinemas",
+    "headers": ["ID", "Cinema name", "Owner (ID)", "Address", "Status", "Action"],
+    "status": {
+      "pending": "Pending approval",
+      "approved": "Approved",
+      "blocked": "Blocked"
+    },
+    "approveButton": "Approve",
+    "blockButton": "Block",
+    "deleteButton": "Delete",
+    "blockConfirm": "Block this cinema?",
+    "deleteConfirm": "Delete this cinema? This action cannot be undone.",
+    "approveSuccess": "Cinema approved.",
+    "blockSuccess": "Cinema blocked.",
+    "deleteSuccess": "Cinema deleted."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "User blocked successfully",
+      "swalText": "Success",
+      "confirmTitle": "Confirm Block",
+      "confirmMessage": "Are you sure you want to block {{name}}?",
+      "confirmLabel": "Block"
+    },
+    "unblock": {
+      "swalTitle": "User unblocked successfully",
+      "swalText": "Success",
+      "confirmTitle": "Confirm Unblock",
+      "confirmMessage": "Are you sure you want to unblock {{name}}?",
+      "confirmLabel": "Unblock"
+    },
+    "delete": {
+      "swalTitle": "User deleted successfully",
+      "swalText": "Success",
+      "confirmTitle": "Confirm Delete",
+      "confirmMessage": "Are you sure you want to delete this user?",
+      "confirmLabel": "Delete"
+    },
+    "list": {
+      "breadcrumb": "Users",
+      "headers": ["ID", "Full name", "Phone", "Email", "Role", "Status", "Action"],
+      "roles": {
+        "admin": "Admin",
+        "user": "User",
+        "theater": "Theater owner"
+      },
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "roleChangeSuccess": "Role updated.",
+      "pendingApproval": "Pending approval",
+      "approveButton": "Approve",
+      "approveSuccess": "Theater owner account approved."
+    }
+  }
+}

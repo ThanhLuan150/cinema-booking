@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "Trang chủ",
+    "movies": "Phim",
+    "playing": "Đang chiếu",
+    "upcoming": "Sắp chiếu",
+    "cinemas": "Rạp"
+  },
+  "header": {
+    "toggleMenu": "Bật/tắt menu",
+    "toggleSearch": "Bật/tắt tìm kiếm",
+    "toggleUserMenu": "Bật/tắt menu người dùng",
+    "viewProfile": "Xem hồ sơ",
+    "myBookings": "Lịch sử đặt vé",
+    "changePassword": "Đổi mật khẩu",
+    "manage": "Quản lý",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "logoutSuccess": "Đăng xuất thành công"
+  },
+  "footer": {
+    "tagline": "Chúng tôi cam kết chất lượng và sự hài lòng khi bạn đặt vé xem phim tại đây.",
+    "quickLink": "Liên kết nhanh",
+    "aboutUs": "Về chúng tôi",
+    "movies": "Phim",
+    "partner": "Đối tác",
+    "help": "Trợ giúp",
+    "important": "Quan trọng",
+    "support": "Hỗ trợ",
+    "faq": "Câu hỏi thường gặp",
+    "check": "Kiểm tra vé",
+    "contactUs": "Liên hệ",
+    "contact": "Liên hệ",
+    "newsletter": "Đăng ký nhận bản tin để cập nhật tin tức mới nhất.",
+    "emailPlaceholder": "Nhập email",
+    "send": "Gửi"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "Người dùng",
+      "dashboard": "Bảng điều khiển",
+      "films": "Phim",
+      "schedule": "Lịch chiếu",
+      "cinemas": "Rạp",
+      "combos": "Combo",
+      "vouchers": "Mã giảm giá",
+      "bookings": "Đặt vé",
+      "transactions": "Giao dịch",
+      "reviews": "Đánh giá"
+    },
+    "toggleMenu": "Bật/tắt menu quản trị",
+    "adminFallback": "Quản trị viên",
+    "breadcrumbPrefix": "Người dùng",
+    "hello": "Xin chào!"
+  },
+  "language": {
+    "label": "Ngôn ngữ"
+  },
+  "actions": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "confirm": "Xác nhận",
+    "close": "Đóng",
+    "submit": "Gửi",
+    "back": "Quay lại",
+    "tryAgain": "Thử lại",
+    "loading": "Đang tải..."
+  },
+  "feedback": {
+    "noData": "Chưa có dữ liệu.",
+    "somethingWrong": "Đã có lỗi xảy ra."
+  },
+  "auth": {
+    "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
+    "accessDenied": "Bạn không có quyền truy cập trang này."
+  }
+}

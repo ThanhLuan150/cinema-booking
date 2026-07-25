@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "控制台",
+    "allMyCinemas": "我的全部影院",
+    "loading": "加载中...",
+    "revenue": "收入",
+    "ticketsSold": "已售票数",
+    "occupancyRate": "座位上座率",
+    "scheduleCount": "场次数量",
+    "revenueByDay": "每日收入",
+    "noData": "暂无数据"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "订单查询",
+    "codePlaceholder": "请输入票号...",
+    "searchButton": "查询",
+    "notFound": "未找到该票券。",
+    "ticketCode": "票号：",
+    "movie": "电影：",
+    "cinema": "影院：",
+    "schedule": "场次：",
+    "seat": "座位：",
+    "status": "状态：",
+    "totalPrice": "总金额：",
+    "statusLabels": {
+      "0": "已取消",
+      "1": "已预订",
+      "2": "已退款"
+    },
+    "seatTypeLabels": {
+      "0": "普通座",
+      "1": "VIP座",
+      "2": "情侣座"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "影院管理",
+    "addButton": "新增影院 +",
+    "addTitle": "新增影院",
+    "nameLabel": "影院名称",
+    "addressLabel": "地址",
+    "cityLabel": "城市",
+    "submit": "新增",
+    "createSuccess": "创建影院申请已提交，等待管理员审核。",
+    "createError": "无法创建影院。",
+    "manageRooms": "管理影厅",
+    "statusLabels": {
+      "0": "待审核",
+      "1": "已通过",
+      "2": "已封禁"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "影院名称",
+      "address": "地址",
+      "city": "城市",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "影厅管理",
+    "addButton": "新增影厅 +",
+    "addTitle": "新增影厅",
+    "nameLabel": "影厅名称",
+    "submit": "新增",
+    "createSuccess": "影厅已添加。",
+    "createError": "无法添加影厅。",
+    "deleteConfirm": "确定要删除该影厅吗？",
+    "deleteSuccess": "影厅已删除。",
+    "deleteError": "无法删除该影厅。",
+    "seatMapAction": "座位图",
+    "delete": "删除",
+    "headers": {
+      "id": "ID",
+      "name": "影厅名称",
+      "actions": "操作"
+    },
+    "seatMapModal": {
+      "title": "座位图 - {{roomName}}",
+      "rowsLabel": "排（例：A,B,C）",
+      "seatsPerRowLabel": "每排座位数",
+      "vipRowsLabel": "VIP排（例：A）",
+      "coupleRowsLabel": "情侣座排",
+      "generateButton": "生成座位图",
+      "regenerateConfirm": "重新生成座位图将清除当前座位图，是否继续？",
+      "generateSuccess": "座位图已生成。",
+      "generateError": "无法生成座位图。",
+      "lockedSuffix": " - 维护锁定中",
+      "clickHint": "点击座位可锁定/解锁维护状态。",
+      "emptyTitle": "该影厅暂无座位图",
+      "emptyDescription": "请填写上方表单以创建座位图。",
+      "seatTypeLabels": {
+        "0": "普通座",
+        "1": "VIP座",
+        "2": "情侣座"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "套餐管理",
+    "addButton": "新增套餐 +",
+    "addTitle": "新增套餐",
+    "cinemaLabel": "影院",
+    "cinemaPlaceholder": "选择影院",
+    "nameLabel": "套餐名称",
+    "descriptionLabel": "描述",
+    "priceLabel": "价格",
+    "submit": "新增",
+    "createSuccess": "套餐已添加。",
+    "createError": "无法添加套餐。",
+    "deleteConfirm": "确定要删除该套餐吗？",
+    "deleteSuccess": "套餐已删除。",
+    "deleteError": "无法删除该套餐。",
+    "statusActive": "销售中",
+    "statusInactive": "已下架",
+    "activate": "上架",
+    "deactivate": "下架",
+    "delete": "删除",
+    "headers": {
+      "id": "ID",
+      "cinema": "影院",
+      "name": "名称",
+      "price": "价格",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "优惠券管理",
+    "addButton": "新增优惠券 +",
+    "addTitle": "新增优惠券",
+    "cinemaLabel": "影院",
+    "cinemaPlaceholder": "选择影院",
+    "codeLabel": "代码",
+    "discountTypeLabel": "折扣类型",
+    "discountTypePercent": "百分比（%）",
+    "discountTypeFixed": "固定金额",
+    "discountValueLabel": "折扣值",
+    "minOrderValueLabel": "最低订单金额",
+    "submit": "新增",
+    "createSuccess": "优惠券已添加。",
+    "deleteConfirm": "确定要删除该优惠券吗？",
+    "deleteSuccess": "优惠券已删除。",
+    "deleteError": "无法删除。",
+    "statusActive": "启用中",
+    "statusInactive": "已停用",
+    "activate": "启用",
+    "deactivate": "停用",
+    "delete": "删除",
+    "headers": {
+      "id": "ID",
+      "cinema": "影院",
+      "code": "代码",
+      "discount": "折扣",
+      "used": "已使用",
+      "status": "状态",
+      "actions": "操作"
+    }
+  }
+}

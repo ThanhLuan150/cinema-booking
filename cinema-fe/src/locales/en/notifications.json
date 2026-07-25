@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "Confirm",
+    "cancelLabel": "Cancel",
+    "confirmLabel": "OK"
+  },
+  "realtimeBridge": {
+    "newMovie": "New movie: {{name}}",
+    "cinemaPending": "New cinema registered, pending approval: {{name}}",
+    "cinemaApproved": "Cinema \"{{name}}\" has been approved.",
+    "cinemaBlocked": "Cinema \"{{name}}\" has been blocked.",
+    "newBooking": "New booking received: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "Dismiss"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "empty": "Chưa có phim được công chiếu",
+  "bannerSlider": {
+    "prevSlide": "Slide trước",
+    "nextSlide": "Slide tiếp theo",
+    "goToSlide": "Đi đến slide",
+    "bookNow": "Đặt vé ngay",
+    "viewDetails": "Xem chi tiết"
+  },
+  "trendingMoviesSlider": {
+    "title": "Đang thịnh hành",
+    "viewDetails": "Xem chi tiết"
+  },
+  "newMoviesSlider": {
+    "title": "Mới",
+    "viewDetails": "Xem chi tiết"
+  },
+  "upcomingMoviesSlider": {
+    "title": "Sắp chiếu",
+    "viewDetails": "Xem chi tiết"
+  },
+  "topCinemasSlider": {
+    "title": "Rạp nổi bật",
+    "addressUpdating": "Đang cập nhật địa chỉ",
+    "newRating": "Mới",
+    "ticketsBooked": "vé đã đặt"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "empty": "No movies are currently showing",
+  "bannerSlider": {
+    "prevSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide",
+    "bookNow": "Book Now",
+    "viewDetails": "View Details"
+  },
+  "trendingMoviesSlider": {
+    "title": "Trending",
+    "viewDetails": "View Details"
+  },
+  "newMoviesSlider": {
+    "title": "New",
+    "viewDetails": "View Details"
+  },
+  "upcomingMoviesSlider": {
+    "title": "Upcoming",
+    "viewDetails": "View Details"
+  },
+  "topCinemasSlider": {
+    "title": "Top Cinemas",
+    "addressUpdating": "Address updating",
+    "newRating": "New",
+    "ticketsBooked": "tickets booked"
+  }
+}

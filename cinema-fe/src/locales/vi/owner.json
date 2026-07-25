@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "Bảng điều khiển",
+    "allMyCinemas": "Tất cả rạp của tôi",
+    "loading": "Đang tải...",
+    "revenue": "Doanh thu",
+    "ticketsSold": "Vé đã bán",
+    "occupancyRate": "Tỷ lệ lấp đầy ghế",
+    "scheduleCount": "Số suất chiếu",
+    "revenueByDay": "Doanh thu theo ngày",
+    "noData": "Chưa có dữ liệu"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "Tra cứu vé",
+    "codePlaceholder": "Nhập mã vé...",
+    "searchButton": "Tra cứu",
+    "notFound": "Không tìm thấy vé.",
+    "ticketCode": "Mã vé:",
+    "movie": "Phim:",
+    "cinema": "Rạp:",
+    "schedule": "Suất chiếu:",
+    "seat": "Ghế:",
+    "status": "Trạng thái:",
+    "totalPrice": "Tổng tiền:",
+    "statusLabels": {
+      "0": "Đã hủy",
+      "1": "Đã đặt vé",
+      "2": "Đã hoàn tiền"
+    },
+    "seatTypeLabels": {
+      "0": "Thường",
+      "1": "VIP",
+      "2": "Đôi"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "Rạp chiếu",
+    "addButton": "Thêm rạp +",
+    "addTitle": "Thêm rạp",
+    "nameLabel": "Tên rạp",
+    "addressLabel": "Địa chỉ",
+    "cityLabel": "Thành phố",
+    "submit": "Thêm",
+    "createSuccess": "Đã gửi yêu cầu tạo rạp, chờ Admin duyệt.",
+    "createError": "Không thể tạo rạp.",
+    "manageRooms": "Quản lý phòng",
+    "statusLabels": {
+      "0": "Chờ duyệt",
+      "1": "Đã duyệt",
+      "2": "Bị khóa"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "Tên rạp",
+      "address": "Địa chỉ",
+      "city": "Thành phố",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "Phòng chiếu",
+    "addButton": "Thêm phòng +",
+    "addTitle": "Thêm phòng",
+    "nameLabel": "Tên phòng",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm phòng.",
+    "createError": "Không thể thêm phòng.",
+    "deleteConfirm": "Xóa phòng này?",
+    "deleteSuccess": "Đã xóa phòng.",
+    "deleteError": "Không thể xóa phòng.",
+    "seatMapAction": "Sơ đồ ghế",
+    "delete": "Xóa",
+    "headers": {
+      "id": "ID",
+      "name": "Tên phòng",
+      "actions": "Hành động"
+    },
+    "seatMapModal": {
+      "title": "Sơ đồ ghế - {{roomName}}",
+      "rowsLabel": "Các dãy (vd A,B,C)",
+      "seatsPerRowLabel": "Số ghế / dãy",
+      "vipRowsLabel": "Dãy VIP (vd A)",
+      "coupleRowsLabel": "Dãy ghế đôi",
+      "generateButton": "Tạo sơ đồ ghế",
+      "regenerateConfirm": "Tạo lại sơ đồ ghế sẽ xóa sơ đồ hiện tại. Tiếp tục?",
+      "generateSuccess": "Đã tạo sơ đồ ghế.",
+      "generateError": "Không thể tạo sơ đồ ghế.",
+      "lockedSuffix": " - Đã khóa bảo trì",
+      "clickHint": "Click vào ghế để khóa/mở khóa bảo trì.",
+      "emptyTitle": "Phòng này chưa có sơ đồ ghế",
+      "emptyDescription": "Điền form ở trên để tạo.",
+      "seatTypeLabels": {
+        "0": "Thường",
+        "1": "VIP",
+        "2": "Đôi"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "Combo",
+    "addButton": "Thêm combo +",
+    "addTitle": "Thêm combo",
+    "cinemaLabel": "Rạp",
+    "cinemaPlaceholder": "Chọn rạp",
+    "nameLabel": "Tên combo",
+    "descriptionLabel": "Mô tả",
+    "priceLabel": "Giá",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm combo.",
+    "createError": "Không thể thêm combo.",
+    "deleteConfirm": "Xóa combo này?",
+    "deleteSuccess": "Đã xóa combo.",
+    "deleteError": "Không thể xóa combo.",
+    "statusActive": "Đang bán",
+    "statusInactive": "Ngừng bán",
+    "activate": "Kích hoạt",
+    "deactivate": "Ngừng bán",
+    "delete": "Xóa",
+    "headers": {
+      "id": "ID",
+      "cinema": "Rạp",
+      "name": "Tên",
+      "price": "Giá",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "Mã giảm giá",
+    "addButton": "Thêm mã giảm giá +",
+    "addTitle": "Thêm mã giảm giá",
+    "cinemaLabel": "Rạp",
+    "cinemaPlaceholder": "Chọn rạp",
+    "codeLabel": "Mã",
+    "discountTypeLabel": "Loại giảm giá",
+    "discountTypePercent": "Phần trăm (%)",
+    "discountTypeFixed": "Số tiền cố định",
+    "discountValueLabel": "Giá trị giảm",
+    "minOrderValueLabel": "Đơn hàng tối thiểu",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm mã giảm giá.",
+    "deleteConfirm": "Xóa mã giảm giá này?",
+    "deleteSuccess": "Đã xóa mã giảm giá.",
+    "deleteError": "Không thể xóa.",
+    "statusActive": "Hoạt động",
+    "statusInactive": "Ngừng",
+    "activate": "Bật",
+    "deactivate": "Tắt",
+    "delete": "Xóa",
+    "headers": {
+      "id": "ID",
+      "cinema": "Rạp",
+      "code": "Mã",
+      "discount": "Giảm giá",
+      "used": "Đã dùng",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    }
+  }
+}

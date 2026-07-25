@@ -1,0 +1,69 @@
+import type { Account } from '@/types/entities';
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  role: string | null;
+  account: Account | null;
+}
+
+export interface LoginPayload {
+  token: string;
+  userId: string;
+  role: string;
+  account: Account;
+}
+
+export interface LoginResponse {
+  token: string;
+  account: Account;
+  user_id: string;
+  role: string;
+}
+
+export interface SaveUserInfoPayload {
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export interface SaveCinemaInfoPayload {
+  email: string;
+  name: string;
+  address: string;
+  city: string;
+}
+
+export interface RegisterVariables {
+  email: string;
+  password: string;
+  c_password: string;
+  role: string;
+}
+
+export interface VerifyCodePayload {
+  email: string;
+  otp: string;
+}
+
+export interface CurrentUser {
+  user_id: string | number;
+  email: string;
+  name: string;
+  phone: string;
+  avatar?: string;
+  role: number;
+}
+
+export interface UpdateProfilePayload {
+  name?: string;
+  phone?: string;
+  avatar?: string;
+}
+
+export interface ProfileMovie {
+  id: number;
+  name: string;
+  avatar: string;
+  categories?: { id: number; name: string }[];
+}

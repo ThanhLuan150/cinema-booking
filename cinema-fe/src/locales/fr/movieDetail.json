@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "bookNow": "Réserver maintenant"
+  },
+  "castSection": {
+    "director": "Réalisateur :",
+    "producer": "Producteur :",
+    "cast": "Distribution"
+  },
+  "reviews": {
+    "title": "Avis",
+    "ratingSummary": "{{average}}/5 · {{count}} avis",
+    "ratingLabel": "Note :",
+    "starOption": "{{count}} étoiles",
+    "commentPlaceholder": "Partagez votre avis sur ce film...",
+    "submit": "Envoyer l'avis",
+    "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
+    "submitSuccess": "Avis envoyé.",
+    "submitError": "Impossible d'envoyer l'avis.",
+    "emptyState": "Aucun avis pour le moment"
+  },
+  "otherMovieSlider": {
+    "trending": "Tendances",
+    "moreDetails": "Plus de détails",
+    "empty": "Aucun film tendance pour le moment"
+  }
+}

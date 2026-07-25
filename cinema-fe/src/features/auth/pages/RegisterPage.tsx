@@ -1,0 +1,120 @@
+import { useMemo } from 'react';
+import { Formik, Field, Form, type FormikHelpers } from 'formik';
+import { toFormikValidate } from '@/lib/formikZod';
+import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Button } from '@/components/ui/Button';
+import { getApiErrorMessage } from '@/lib/apiError';
+import { useCheckEmail } from '../hooks/useCheckEmail';
+import { useRegister } from '../hooks/useRegister';
+import { buildRegisterSchema, type RegisterFormValues } from '../schemas/register.schema';
+import { toast } from '@/features/notifications/toast';
+import { ROUTES } from '@/constants/routes';
+import { ROLES } from '@/constants/roles';
+
+const Register = () => {
+  const { t } = useTranslation('auth');
+  const navigate = useNavigate();
+  const checkEmailMutation = useCheckEmail();
+  const registerMutation = useRegister();
+
+  const registerSchema = useMemo(() => buildRegisterSchema(t), [t]);
+  const emailParam = useMemo(() => new URLSearchParams(window.location.search).get('email') ?? '', []);
+
+  const handleSubmit = async (values: RegisterFormValues, { setFieldError }: FormikHelpers<RegisterFormValues>) => {
+    try {
+      const checkEmailResponse = await checkEmailMutation.mutateAsync(values.email);
+
+      if (checkEmailResponse.data.exists) {
+        setFieldError('email', t('errors:EMAIL_ALREADY_EXISTS'));
+        return;
+      }
+
+      await registerMutation.mutateAsync(values);
+
+      toast.success(t('register.registerSuccess'));
+
+      navigate(`${ROUTES.verifyCode}?email=${encodeURIComponent(values.email)}&role=${encodeURIComponent(values.role)}`);
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t));
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-main px-4 pb-16 pt-24">
+      <Formik<RegisterFormValues>
+        initialValues={{ email: emailParam, password: '', c_password: '', role: `${ROLES.customer}` }}
+        validate={toFormikValidate<RegisterFormValues>(registerSchema)}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <Form className="mx-auto w-full max-w-lg rounded-2xl bg-white p-8 text-center text-main">
+            <h1 className="text-3xl font-bold">{t('register.title')}</h1>
+
+            <div className="mt-6 text-left">
+              <Field
+                as={Input}
+                label={t('register.emailLabel')}
+                type="email"
+                id="email"
+                name="email"
+                placeholder={t('register.emailPlaceholder')}
+                error={formik.touched.email ? formik.errors.email : undefined}
+              />
+            </div>
+            <div className="mt-4 text-left">
+              <Field
+                as={Input}
+                label={t('register.passwordLabel')}
+                type="password"
+                id="pwd"
+                name="password"
+                placeholder={t('register.passwordPlaceholder')}
+                error={formik.touched.password ? formik.errors.password : undefined}
+              />
+            </div>
+            <div className="mt-4 text-left">
+              <Field
+                as={Input}
+                label={t('register.confirmPasswordLabel')}
+                type="password"
+                id="confirm-pwd"
+                name="c_password"
+                placeholder={t('register.confirmPasswordPlaceholder')}
+                error={formik.touched.c_password ? formik.errors.c_password : undefined}
+              />
+            </div>
+            <div className="mt-4 text-left">
+              <Field
+                as={Select}
+                label={t('register.accountTypeLabel')}
+                id="role"
+                name="role"
+                error={formik.touched.role ? formik.errors.role : undefined}
+                options={[
+                  { label: t('register.roleUser'), value: `${ROLES.customer}` },
+                  { label: t('register.roleCinema'), value: `${ROLES.owner}` },
+                ]}
+              />
+            </div>
+
+            <p className="mt-4 text-sm">
+              {t('register.alreadyHaveAccount')}{' '}
+              <Link to={ROUTES.login} className="text-accent hover:underline">
+                {t('register.loginLink')}
+              </Link>
+            </p>
+
+            <Button type="submit" loading={registerMutation.isPending} className="mt-6 w-full">
+              {t('register.submit')}
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+export default Register;

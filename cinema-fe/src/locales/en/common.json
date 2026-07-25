@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "Home",
+    "movies": "Movies",
+    "playing": "Playing",
+    "upcoming": "Upcoming",
+    "cinemas": "Cinemas"
+  },
+  "header": {
+    "toggleMenu": "Toggle menu",
+    "toggleSearch": "Toggle search",
+    "toggleUserMenu": "Toggle user menu",
+    "viewProfile": "View Profile",
+    "myBookings": "My Bookings",
+    "changePassword": "Change Password",
+    "manage": "Manage",
+    "logout": "Logout",
+    "login": "Login",
+    "logoutSuccess": "Logged out successfully"
+  },
+  "footer": {
+    "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
+    "quickLink": "Quick Link",
+    "aboutUs": "About Us",
+    "movies": "Movies",
+    "partner": "Partner",
+    "help": "Help",
+    "important": "Important",
+    "support": "Support",
+    "faq": "FAQ",
+    "check": "Check",
+    "contactUs": "Contact Us",
+    "contact": "Contact",
+    "newsletter": "Subscribe our newsletter to get latest update & news.",
+    "emailPlaceholder": "Enter Email",
+    "send": "Send"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "User",
+      "dashboard": "Dashboard",
+      "films": "Films",
+      "schedule": "Schedule",
+      "cinemas": "Cinemas",
+      "combos": "Combos",
+      "vouchers": "Vouchers",
+      "bookings": "Bookings",
+      "transactions": "Transactions",
+      "reviews": "Reviews"
+    },
+    "toggleMenu": "Toggle admin menu",
+    "adminFallback": "Admin",
+    "breadcrumbPrefix": "User",
+    "hello": "Hello!"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "close": "Close",
+    "submit": "Submit",
+    "back": "Back",
+    "tryAgain": "Try again",
+    "loading": "Loading..."
+  },
+  "feedback": {
+    "noData": "No data yet.",
+    "somethingWrong": "Something went wrong."
+  },
+  "auth": {
+    "loginRequired": "You are not logged in. Please log in or register to use this feature.",
+    "accessDenied": "You do not have permission to access this page."
+  }
+}

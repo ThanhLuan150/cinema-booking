@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Dancing+Script&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-main text-txt;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    @apply h-4 w-4 cursor-pointer accent-accent;
+  }
+  input[type='file'] {
+    @apply cursor-pointer text-sm text-txt/70 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-accent/90;
+  }
+}
+
+/* react-slick centers the track when there are fewer slides than slidesToShow; keep it left-aligned */
+.slick-track {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Thin, themed scrollbar for scrollable containers (e.g. Modal body) */
+.themed-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 245, 220, 0.25) transparent;
+}
+.themed-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(245, 245, 220, 0.25);
+  border-radius: 9999px;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(245, 245, 220, 0.4);
+}

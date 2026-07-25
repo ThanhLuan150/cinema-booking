@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "सीटें चुनें",
+    "screen": "स्क्रीन",
+    "legend": {
+      "standard": "स्टैंडर्ड",
+      "vip": "VIP",
+      "couple": "कपल",
+      "selecting": "चयनित हो रही है",
+      "sold": "बिक चुकी है"
+    },
+    "noSeatMap": {
+      "title": "इस शो के लिए अभी तक कोई सीट मैप नहीं है",
+      "description": "कृपया सिनेमा से संपर्क करें या कोई दूसरा शो टाइम आज़माएं।"
+    },
+    "combo": {
+      "title": "कॉम्बो ऑफर"
+    },
+    "selectedSeatsLabel": "चुनी गई सीटें:",
+    "noneSelected": "कोई सीट नहीं चुनी गई",
+    "checkout": "MoMo से बुक करें और भुगतान करें",
+    "notLoggedIn": "आप लॉग इन नहीं हैं। इस सुविधा का उपयोग करने के लिए कृपया लॉग इन करें या रजिस्टर करें।",
+    "selectSeatFirst": "कृपया कम से कम एक सीट चुनें",
+    "checkoutFailed": "भुगतान शुरू नहीं किया जा सका।",
+    "momoModal": {
+      "title": "MoMo से भुगतान करने का तरीका चुनें",
+      "qrTitle": "QR कोड स्कैन करें",
+      "qrDescription": "भुगतान करने के लिए अपने फोन पर MoMo ऐप खोलें और इस कोड को स्कैन करें।",
+      "testAccountTitle": "MoMo टेस्ट खाते से साइन इन करें",
+      "testAccountDescription": "MoMo भुगतान पेज खोलें और एक टेस्ट खाते के फोन नंबर से साइन इन करें।",
+      "openButton": "MoMo भुगतान पेज खोलें"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "टिकट बुक करें",
+    "dateLabel": "तारीख",
+    "timeLabel": "समय",
+    "noSchedule": "कोई शो टाइम उपलब्ध नहीं है",
+    "noAvailableTimes": "आज के लिए और कोई शो टाइम उपलब्ध नहीं है",
+    "bookButton": "बुक करें",
+    "selectDateTime": "कृपया तारीख और समय चुनें",
+    "notLoggedIn": "आप लॉग इन नहीं हैं। इस सुविधा का उपयोग करने के लिए कृपया लॉग इन करें या रजिस्टर करें।"
+  },
+  "myBookings": {
+    "pageTitle": "बुकिंग इतिहास",
+    "seatType": {
+      "standard": "स्टैंडर्ड",
+      "vip": "VIP",
+      "couple": "कपल"
+    },
+    "status": {
+      "booked": "बुक की गई",
+      "cancelled": "रद्द",
+      "refunded": "रिफंड की गई"
+    },
+    "empty": "आपके पास अभी तक कोई टिकट नहीं है",
+    "movieFallback": "फिल्म",
+    "seatLabel": "सीट {{code}} ({{type}})",
+    "ticketCode": "टिकट कोड: {{code}}",
+    "discount": "छूट: -{{amount}}",
+    "print": "टिकट प्रिंट करें",
+    "cancel": "टिकट रद्द करें",
+    "confirmCancel": "क्या आप वाकई इस टिकट को रद्द करना चाहते हैं?",
+    "cancelSuccess": "टिकट सफलतापूर्वक रद्द कर दिया गया।",
+    "cancelFailed": "टिकट रद्द नहीं किया जा सका।"
+  },
+  "voucher": {
+    "title": "डिस्काउंट कोड",
+    "placeholder": "कोड दर्ज करें...",
+    "apply": "लागू करें",
+    "applied": "लागू किया गया: -{{amount}}",
+    "applyFailed": "डिस्काउंट कोड लागू नहीं किया जा सका।"
+  }
+}

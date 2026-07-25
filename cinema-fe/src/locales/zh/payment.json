@@ -1,0 +1,15 @@
+{
+  "confirming": "正在确认支付...",
+  "notLoggedIn": "您需要登录才能确认支付。",
+  "genericFailed": "支付未成功。",
+  "success": {
+    "title": "支付成功",
+    "message": "预订成功！您的票券已发送至您的邮箱。",
+    "viewBookings": "查看我的票券"
+  },
+  "failed": {
+    "title": "支付失败",
+    "confirmFailed": "无法确认支付。",
+    "backHome": "返回首页"
+  }
+}

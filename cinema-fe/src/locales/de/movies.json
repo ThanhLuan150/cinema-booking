@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "Kinos",
+    "title": "Kinosystem",
+    "empty": "Noch keine Kinos verfügbar",
+    "addressUpdating": "Adresse wird aktualisiert",
+    "viewDetails": "Details ansehen"
+  },
+  "playing": {
+    "breadcrumbMovie": "Film",
+    "breadcrumbCurrent": "Im Kino",
+    "title": "Aktuell im Kino",
+    "empty": "Derzeit läuft kein Film.",
+    "moreDetails": "Mehr Details"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "Film",
+    "breadcrumbCurrent": "Demnächst",
+    "title": "Demnächst im Kino",
+    "empty": "Derzeit keine kommenden Filme.",
+    "moreDetails": "Mehr Details"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "Kino zu Favoriten hinzufügen",
+    "removeFavorite": "Kino aus Favoriten entfernen",
+    "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen."
+  },
+  "like": {
+    "unlikeError": "Gefällt-mir-Angabe konnte nicht entfernt werden, bitte versuchen Sie es erneut.",
+    "unlikeErrorLog": "Fehler beim Entfernen des Likes aus der Datenbank:",
+    "likeError": "Gefällt mir konnte nicht gespeichert werden, bitte versuchen Sie es erneut.",
+    "likeErrorLog": "Fehler beim Speichern des Likes in der Datenbank:",
+    "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen."
+  },
+  "filterBar": {
+    "category": "Kategorie",
+    "country": "Land",
+    "cinema": "Kino",
+    "date": "Vorstellungsdatum",
+    "search": "Suche",
+    "searchPlaceholder": "Filmtitel...",
+    "all": "Alle"
+  }
+}

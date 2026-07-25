@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "Н/Д",
+    "bookNow": "Забронировать"
+  },
+  "castSection": {
+    "director": "Режиссёр:",
+    "producer": "Продюсер:",
+    "cast": "В ролях"
+  },
+  "reviews": {
+    "title": "Отзывы",
+    "ratingSummary": "{{average}}/5 · отзывов: {{count}}",
+    "ratingLabel": "Оценка:",
+    "starOption": "{{count}} звёзд",
+    "commentPlaceholder": "Поделитесь впечатлениями об этом фильме...",
+    "submit": "Оставить отзыв",
+    "loginRequired": "Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь, чтобы воспользоваться этой функцией.",
+    "submitSuccess": "Отзыв отправлен.",
+    "submitError": "Не удалось отправить отзыв.",
+    "emptyState": "Пока нет отзывов"
+  },
+  "otherMovieSlider": {
+    "trending": "В тренде",
+    "moreDetails": "Подробнее",
+    "empty": "Сейчас нет популярных фильмов"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "ダッシュボード",
+    "allMyCinemas": "自分の映画館一覧",
+    "loading": "読み込み中...",
+    "revenue": "売上",
+    "ticketsSold": "販売済みチケット数",
+    "occupancyRate": "座席稼働率",
+    "scheduleCount": "上映回数",
+    "revenueByDay": "日別売上",
+    "noData": "データがまだありません"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "予約照会",
+    "codePlaceholder": "チケットコードを入力...",
+    "searchButton": "検索",
+    "notFound": "チケットが見つかりませんでした。",
+    "ticketCode": "チケットコード:",
+    "movie": "映画:",
+    "cinema": "映画館:",
+    "schedule": "上映時間:",
+    "seat": "座席:",
+    "status": "状態:",
+    "totalPrice": "合計金額:",
+    "statusLabels": {
+      "0": "キャンセル済み",
+      "1": "予約済み",
+      "2": "返金済み"
+    },
+    "seatTypeLabels": {
+      "0": "スタンダード",
+      "1": "VIP",
+      "2": "カップルシート"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "映画館",
+    "addButton": "映画館を追加 +",
+    "addTitle": "映画館を追加",
+    "nameLabel": "映画館名",
+    "addressLabel": "住所",
+    "cityLabel": "都市",
+    "submit": "追加",
+    "createSuccess": "映画館の作成リクエストを送信しました。管理者の承認をお待ちください。",
+    "createError": "映画館を作成できませんでした。",
+    "manageRooms": "上映室を管理",
+    "statusLabels": {
+      "0": "承認待ち",
+      "1": "承認済み",
+      "2": "ブロック済み"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "映画館名",
+      "address": "住所",
+      "city": "都市",
+      "status": "状態",
+      "actions": "操作"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "上映室",
+    "addButton": "上映室を追加 +",
+    "addTitle": "上映室を追加",
+    "nameLabel": "上映室名",
+    "submit": "追加",
+    "createSuccess": "上映室を追加しました。",
+    "createError": "上映室を追加できませんでした。",
+    "deleteConfirm": "この上映室を削除しますか?",
+    "deleteSuccess": "上映室を削除しました。",
+    "deleteError": "上映室を削除できませんでした。",
+    "seatMapAction": "座席表",
+    "delete": "削除",
+    "headers": {
+      "id": "ID",
+      "name": "上映室名",
+      "actions": "操作"
+    },
+    "seatMapModal": {
+      "title": "座席表 - {{roomName}}",
+      "rowsLabel": "行(例: A,B,C)",
+      "seatsPerRowLabel": "1行あたりの座席数",
+      "vipRowsLabel": "VIP行(例: A)",
+      "coupleRowsLabel": "カップルシート行",
+      "generateButton": "座席表を生成",
+      "regenerateConfirm": "座席表を再生成すると、現在の座席表は消去されます。続けますか?",
+      "generateSuccess": "座席表を生成しました。",
+      "generateError": "座席表を生成できませんでした。",
+      "lockedSuffix": " - メンテナンスのためロック中",
+      "clickHint": "座席をクリックすると、メンテナンス用にロック/解除できます。",
+      "emptyTitle": "この上映室にはまだ座席表がありません",
+      "emptyDescription": "上のフォームに入力して座席表を作成してください。",
+      "seatTypeLabels": {
+        "0": "スタンダード",
+        "1": "VIP",
+        "2": "カップルシート"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "コンボセット",
+    "addButton": "コンボを追加 +",
+    "addTitle": "コンボを追加",
+    "cinemaLabel": "映画館",
+    "cinemaPlaceholder": "映画館を選択",
+    "nameLabel": "コンボ名",
+    "descriptionLabel": "説明",
+    "priceLabel": "価格",
+    "submit": "追加",
+    "createSuccess": "コンボを追加しました。",
+    "createError": "コンボを追加できませんでした。",
+    "deleteConfirm": "このコンボを削除しますか?",
+    "deleteSuccess": "コンボを削除しました。",
+    "deleteError": "コンボを削除できませんでした。",
+    "statusActive": "販売中",
+    "statusInactive": "販売停止中",
+    "activate": "販売開始",
+    "deactivate": "販売停止",
+    "delete": "削除",
+    "headers": {
+      "id": "ID",
+      "cinema": "映画館",
+      "name": "コンボ名",
+      "price": "価格",
+      "status": "状態",
+      "actions": "操作"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "割引クーポン",
+    "addButton": "クーポンを追加 +",
+    "addTitle": "クーポンを追加",
+    "cinemaLabel": "映画館",
+    "cinemaPlaceholder": "映画館を選択",
+    "codeLabel": "コード",
+    "discountTypeLabel": "割引タイプ",
+    "discountTypePercent": "割合(%)",
+    "discountTypeFixed": "固定金額",
+    "discountValueLabel": "割引値",
+    "minOrderValueLabel": "最低注文金額",
+    "submit": "追加",
+    "createSuccess": "クーポンを追加しました。",
+    "deleteConfirm": "このクーポンを削除しますか?",
+    "deleteSuccess": "クーポンを削除しました。",
+    "deleteError": "削除できませんでした。",
+    "statusActive": "有効",
+    "statusInactive": "無効",
+    "activate": "有効化",
+    "deactivate": "無効化",
+    "delete": "削除",
+    "headers": {
+      "id": "ID",
+      "cinema": "映画館",
+      "code": "コード",
+      "discount": "割引",
+      "used": "使用回数",
+      "status": "状態",
+      "actions": "操作"
+    }
+  }
+}

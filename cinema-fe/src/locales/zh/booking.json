@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "选座",
+    "screen": "银幕",
+    "legend": {
+      "standard": "普通座",
+      "vip": "VIP座",
+      "couple": "情侣座",
+      "selecting": "已选",
+      "sold": "已售"
+    },
+    "noSeatMap": {
+      "title": "该场次暂无座位图",
+      "description": "请联系影院或尝试选择其他场次。"
+    },
+    "combo": {
+      "title": "超值套餐"
+    },
+    "selectedSeatsLabel": "已选座位：",
+    "noneSelected": "尚未选择",
+    "checkout": "预订并使用 MoMo 支付",
+    "notLoggedIn": "您尚未登录，请登录或注册后使用此功能。",
+    "selectSeatFirst": "请至少选择一个座位",
+    "checkoutFailed": "无法发起支付。",
+    "momoModal": {
+      "title": "选择 MoMo 支付方式",
+      "qrTitle": "扫描二维码",
+      "qrDescription": "打开手机上的 MoMo 应用，扫描此二维码完成支付。",
+      "testAccountTitle": "使用 MoMo 测试账号登录",
+      "testAccountDescription": "打开 MoMo 支付页面，使用测试账号手机号登录。",
+      "openButton": "打开 MoMo 支付页面"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "购票",
+    "dateLabel": "日期",
+    "timeLabel": "时间",
+    "noSchedule": "暂无可选场次",
+    "noAvailableTimes": "今日已无更多场次",
+    "bookButton": "购票",
+    "selectDateTime": "请选择日期和时间",
+    "notLoggedIn": "您尚未登录，请登录或注册后使用此功能。"
+  },
+  "myBookings": {
+    "pageTitle": "订单记录",
+    "seatType": {
+      "standard": "普通座",
+      "vip": "VIP座",
+      "couple": "情侣座"
+    },
+    "status": {
+      "booked": "已预订",
+      "cancelled": "已取消",
+      "refunded": "已退款"
+    },
+    "empty": "您还没有任何票券",
+    "movieFallback": "电影",
+    "seatLabel": "座位 {{code}}（{{type}}）",
+    "ticketCode": "票号：{{code}}",
+    "discount": "优惠：-{{amount}}",
+    "print": "打印票券",
+    "cancel": "取消订单",
+    "confirmCancel": "确定要取消这张票吗？",
+    "cancelSuccess": "订单取消成功。",
+    "cancelFailed": "无法取消该订单。"
+  },
+  "voucher": {
+    "title": "优惠码",
+    "placeholder": "请输入优惠码...",
+    "apply": "使用",
+    "applied": "已使用：-{{amount}}",
+    "applyFailed": "无法使用该优惠码。"
+  }
+}

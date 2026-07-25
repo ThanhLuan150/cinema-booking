@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "Xác nhận",
+    "cancelLabel": "Hủy",
+    "confirmLabel": "Đồng ý"
+  },
+  "realtimeBridge": {
+    "newMovie": "Phim mới: {{name}}",
+    "cinemaPending": "Rạp mới đăng ký chờ duyệt: {{name}}",
+    "cinemaApproved": "Rạp \"{{name}}\" đã được duyệt.",
+    "cinemaBlocked": "Rạp \"{{name}}\" đã bị khóa.",
+    "newBooking": "Có đơn đặt vé mới: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "Đóng"
+  }
+}

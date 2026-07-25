@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "होम",
+    "movies": "फिल्में",
+    "playing": "अभी चल रही हैं",
+    "upcoming": "जल्द आ रही हैं",
+    "cinemas": "सिनेमा"
+  },
+  "header": {
+    "toggleMenu": "मेनू टॉगल करें",
+    "toggleSearch": "खोज टॉगल करें",
+    "toggleUserMenu": "उपयोगकर्ता मेनू टॉगल करें",
+    "viewProfile": "प्रोफ़ाइल देखें",
+    "myBookings": "मेरी बुकिंग",
+    "changePassword": "पासवर्ड बदलें",
+    "manage": "प्रबंधित करें",
+    "logout": "लॉगआउट",
+    "login": "लॉगिन",
+    "logoutSuccess": "सफलतापूर्वक लॉगआउट हो गए"
+  },
+  "footer": {
+    "tagline": "हमारी मूवी टिकट बुकिंग साइट पर आने पर हम गुणवत्ता और संतुष्टि की गारंटी देते हैं।",
+    "quickLink": "क्विक लिंक",
+    "aboutUs": "हमारे बारे में",
+    "movies": "फिल्में",
+    "partner": "पार्टनर",
+    "help": "सहायता",
+    "important": "महत्वपूर्ण",
+    "support": "सपोर्ट",
+    "faq": "अक्सर पूछे जाने वाले प्रश्न",
+    "check": "टिकट जांचें",
+    "contactUs": "संपर्क करें",
+    "contact": "संपर्क",
+    "newsletter": "नवीनतम अपडेट और खबरें पाने के लिए हमारे न्यूज़लेटर को सब्सक्राइब करें।",
+    "emailPlaceholder": "ईमेल दर्ज करें",
+    "send": "भेजें"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "उपयोगकर्ता",
+      "dashboard": "डैशबोर्ड",
+      "films": "फिल्में",
+      "schedule": "शेड्यूल",
+      "cinemas": "सिनेमा",
+      "combos": "कॉम्बो",
+      "vouchers": "वाउचर",
+      "bookings": "बुकिंग",
+      "transactions": "लेन-देन",
+      "reviews": "समीक्षाएं"
+    },
+    "toggleMenu": "एडमिन मेनू टॉगल करें",
+    "adminFallback": "एडमिन",
+    "breadcrumbPrefix": "उपयोगकर्ता",
+    "hello": "नमस्ते!"
+  },
+  "language": {
+    "label": "भाषा"
+  },
+  "actions": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "confirm": "पुष्टि करें",
+    "close": "बंद करें",
+    "submit": "सबमिट करें",
+    "back": "वापस",
+    "tryAgain": "फिर से प्रयास करें",
+    "loading": "लोड हो रहा है..."
+  },
+  "feedback": {
+    "noData": "अभी तक कोई डेटा नहीं है।",
+    "somethingWrong": "कुछ गलत हो गया।"
+  },
+  "auth": {
+    "loginRequired": "आप लॉग इन नहीं हैं। इस सुविधा का उपयोग करने के लिए कृपया लॉग इन करें या रजिस्टर करें।",
+    "accessDenied": "आपके पास इस पेज तक पहुंचने की अनुमति नहीं है।"
+  }
+}

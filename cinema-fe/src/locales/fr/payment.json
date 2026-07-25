@@ -1,0 +1,15 @@
+{
+  "confirming": "Confirmation du paiement...",
+  "notLoggedIn": "Vous devez vous connecter pour confirmer le paiement.",
+  "genericFailed": "Le paiement n'a pas abouti.",
+  "success": {
+    "title": "Paiement réussi",
+    "message": "Réservation réussie ! Votre billet a été envoyé à votre email.",
+    "viewBookings": "Voir mes billets"
+  },
+  "failed": {
+    "title": "Échec du paiement",
+    "confirmFailed": "Impossible de confirmer le paiement.",
+    "backHome": "Retour à l'accueil"
+  }
+}

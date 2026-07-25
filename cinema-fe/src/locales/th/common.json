@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "หน้าแรก",
+    "movies": "ภาพยนตร์",
+    "playing": "กำลังฉาย",
+    "upcoming": "เร็วๆ นี้",
+    "cinemas": "โรงภาพยนตร์"
+  },
+  "header": {
+    "toggleMenu": "เปิด/ปิดเมนู",
+    "toggleSearch": "เปิด/ปิดการค้นหา",
+    "toggleUserMenu": "เปิด/ปิดเมนูผู้ใช้",
+    "viewProfile": "ดูโปรไฟล์",
+    "myBookings": "การจองของฉัน",
+    "changePassword": "เปลี่ยนรหัสผ่าน",
+    "manage": "จัดการ",
+    "logout": "ออกจากระบบ",
+    "login": "เข้าสู่ระบบ",
+    "logoutSuccess": "ออกจากระบบสำเร็จ"
+  },
+  "footer": {
+    "tagline": "เรารับประกันคุณภาพและความพึงพอใจเมื่อมาใช้บริการเว็บไซต์จองตั๋วภาพยนตร์ของเรา",
+    "quickLink": "ลิงก์ด่วน",
+    "aboutUs": "เกี่ยวกับเรา",
+    "movies": "ภาพยนตร์",
+    "partner": "พันธมิตร",
+    "help": "ช่วยเหลือ",
+    "important": "สำคัญ",
+    "support": "สนับสนุน",
+    "faq": "คำถามที่พบบ่อย",
+    "check": "ตรวจสอบ",
+    "contactUs": "ติดต่อเรา",
+    "contact": "ติดต่อ",
+    "newsletter": "สมัครรับจดหมายข่าวเพื่อรับข่าวสารและอัปเดตล่าสุดจากเรา",
+    "emailPlaceholder": "กรอกอีเมล",
+    "send": "ส่ง"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "ผู้ใช้",
+      "dashboard": "แดชบอร์ด",
+      "films": "ภาพยนตร์",
+      "schedule": "ตารางฉาย",
+      "cinemas": "โรงภาพยนตร์",
+      "combos": "คอมโบ",
+      "vouchers": "คูปองส่วนลด",
+      "bookings": "การจอง",
+      "transactions": "ธุรกรรม",
+      "reviews": "รีวิว"
+    },
+    "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
+    "adminFallback": "ผู้ดูแลระบบ",
+    "breadcrumbPrefix": "ผู้ใช้",
+    "hello": "สวัสดี!"
+  },
+  "language": {
+    "label": "ภาษา"
+  },
+  "actions": {
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "confirm": "ยืนยัน",
+    "close": "ปิด",
+    "submit": "ส่ง",
+    "back": "กลับ",
+    "tryAgain": "ลองใหม่อีกครั้ง",
+    "loading": "กำลังโหลด..."
+  },
+  "feedback": {
+    "noData": "ยังไม่มีข้อมูล",
+    "somethingWrong": "เกิดข้อผิดพลาดบางอย่าง"
+  },
+  "auth": {
+    "loginRequired": "คุณยังไม่ได้เข้าสู่ระบบ กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อใช้งานฟีเจอร์นี้",
+    "accessDenied": "คุณไม่มีสิทธิ์เข้าถึงหน้านี้"
+  }
+}

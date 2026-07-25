@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "Подтверждение",
+    "cancelLabel": "Отмена",
+    "confirmLabel": "ОК"
+  },
+  "realtimeBridge": {
+    "newMovie": "Новый фильм: {{name}}",
+    "cinemaPending": "Зарегистрирован новый кинотеатр, ожидает одобрения: {{name}}",
+    "cinemaApproved": "Кинотеатр «{{name}}» одобрен.",
+    "cinemaBlocked": "Кинотеатр «{{name}}» заблокирован.",
+    "newBooking": "Новое бронирование: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "Закрыть"
+  }
+}

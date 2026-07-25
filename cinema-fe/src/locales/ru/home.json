@@ -1,0 +1,28 @@
+{
+  "empty": "Сейчас нет фильмов в прокате",
+  "bannerSlider": {
+    "prevSlide": "Предыдущий слайд",
+    "nextSlide": "Следующий слайд",
+    "goToSlide": "Перейти к слайду",
+    "bookNow": "Забронировать",
+    "viewDetails": "Подробнее"
+  },
+  "trendingMoviesSlider": {
+    "title": "В тренде",
+    "viewDetails": "Подробнее"
+  },
+  "newMoviesSlider": {
+    "title": "Новинки",
+    "viewDetails": "Подробнее"
+  },
+  "upcomingMoviesSlider": {
+    "title": "Скоро",
+    "viewDetails": "Подробнее"
+  },
+  "topCinemasSlider": {
+    "title": "Лучшие кинотеатры",
+    "addressUpdating": "Адрес уточняется",
+    "newRating": "Новый",
+    "ticketsBooked": "билетов забронировано"
+  }
+}

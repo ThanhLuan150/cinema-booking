@@ -1,0 +1,15 @@
+{
+  "confirming": "Zahlung wird bestätigt...",
+  "notLoggedIn": "Sie müssen sich anmelden, um die Zahlung zu bestätigen.",
+  "genericFailed": "Die Zahlung war nicht erfolgreich.",
+  "success": {
+    "title": "Zahlung erfolgreich",
+    "message": "Buchung erfolgreich! Ihr Ticket wurde an Ihre E-Mail-Adresse gesendet.",
+    "viewBookings": "Meine Tickets ansehen"
+  },
+  "failed": {
+    "title": "Zahlung fehlgeschlagen",
+    "confirmFailed": "Die Zahlung konnte nicht bestätigt werden.",
+    "backHome": "Zurück zur Startseite"
+  }
+}

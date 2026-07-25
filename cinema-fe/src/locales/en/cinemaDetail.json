@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "addressUpdating": "Address not available yet",
+    "favoriteCount": "{{count}} favorites",
+    "statusPending": "Pending approval",
+    "statusActive": "Active",
+    "statusPaused": "Temporarily closed",
+    "viewShowtimes": "View showtimes"
+  },
+  "moviesSection": {
+    "title": "Now showing at this cinema",
+    "emptyState": "This cinema has no showtimes yet",
+    "moreDetails": "More Details"
+  },
+  "reviews": {
+    "title": "Cinema experience reviews",
+    "ratingSummary": "{{average}}/5 · {{count}} reviews",
+    "ratingLabel": "Rating:",
+    "starOption": "{{count}} stars",
+    "commentPlaceholder": "Share your experience at this cinema (seats, sound, staff, cleanliness...)...",
+    "submit": "Submit review",
+    "loginRequired": "You are not logged in. Please log in or sign up to use this feature.",
+    "submitSuccess": "Review submitted.",
+    "submitError": "Unable to submit review.",
+    "emptyState": "No reviews yet"
+  }
+}

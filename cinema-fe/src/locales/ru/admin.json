@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "Панель администратора",
+    "loading": "Загрузка...",
+    "stats": {
+      "totalRevenue": "Общая выручка",
+      "totalUsers": "Пользователи",
+      "totalOwners": "Владельцы кинотеатров",
+      "totalCinemas": "Кинотеатры",
+      "totalTicketsSold": "Продано билетов",
+      "totalTransactions": "Транзакции"
+    },
+    "chartTitle": "Выручка по системе за день",
+    "noData": "Пока нет данных"
+  },
+  "movies": {
+    "add": {
+      "title": "Добавить фильм",
+      "fields": {
+        "name": "Название:",
+        "avatar": "Постер:",
+        "premiereDate": "Дата премьеры:",
+        "country": "Страна:",
+        "description": "Описание:",
+        "trailer": "Трейлер:",
+        "producer": "Продюсер:",
+        "director": "Режиссёр:"
+      },
+      "cast": {
+        "label": "Актёрский состав:",
+        "name": "Имя",
+        "role": "Роль",
+        "avatarUrl": "URL изображения",
+        "remove": "Удалить",
+        "add": "+ Добавить актёра"
+      },
+      "category": "Категория:",
+      "submit": "Добавить",
+      "toastSuccess": "Успешно добавлено",
+      "toastError": "Не удалось добавить"
+    },
+    "edit": {
+      "title": "Редактировать фильм",
+      "fields": {
+        "name": "Название:",
+        "avatar": "Постер:",
+        "uploadNewAvatar": "Загрузить новый постер:",
+        "premiereDate": "Дата премьеры:",
+        "country": "Страна:",
+        "description": "Описание:",
+        "trailer": "Трейлер:",
+        "uploadNewTrailer": "Загрузить новый трейлер:",
+        "producer": "Продюсер:",
+        "director": "Режиссёр:"
+      },
+      "cast": {
+        "label": "Актёрский состав:",
+        "name": "Имя",
+        "role": "Роль",
+        "avatarUrl": "URL изображения",
+        "remove": "Удалить",
+        "add": "+ Добавить актёра"
+      },
+      "category": "Категория:",
+      "submit": "Обновить",
+      "toastSuccess": "Фильм успешно обновлён!"
+    },
+    "delete": {
+      "confirm": "Удалить фильм с id {{id}}?",
+      "toastSuccess": "Успешно удалено",
+      "toastError": "Не удалось удалить"
+    },
+    "list": {
+      "breadcrumb": "Фильмы",
+      "addButton": "Добавить +",
+      "headers": ["ID", "Постер", "Название", "Дата премьеры", "Страна", "Описание", "Трейлер", "Категория", "Действие"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "Добавить сеанс",
+      "cinema": {
+        "label": "Филиал:",
+        "placeholder": "Выберите филиал"
+      },
+      "room": {
+        "label": "Зал:",
+        "placeholder": "Выберите зал",
+        "placeholderSelectCinemaFirst": "Сначала выберите филиал"
+      },
+      "date": "Дата показа:",
+      "slot": {
+        "label": "Сеанс:",
+        "placeholder": "Выберите сеанс"
+      },
+      "price": "Цена билета:",
+      "submit": "Добавить",
+      "validationError": "Пожалуйста, выберите филиал, зал, дату и сеанс.",
+      "toastSuccess": "Сеанс добавлен."
+    },
+    "list": {
+      "breadcrumb": "Расписание",
+      "headers": ["ID", "Фильм", "Начало", "Окончание", "Дата показа", "Цена"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "Отзывы",
+    "headers": ["ID", "Тема", "Оценка", "Содержание", "Статус", "Действие"],
+    "cinemaSuffix": "{{name}} (кинотеатр)",
+    "hiddenStatus": "Скрыт",
+    "visibleStatus": "Виден",
+    "hideButton": "Скрыть",
+    "deleteButton": "Удалить",
+    "hideSuccess": "Отзыв скрыт.",
+    "deleteConfirm": "Удалить этот отзыв?",
+    "deleteSuccess": "Отзыв удалён."
+  },
+  "transactions": {
+    "breadcrumb": "Транзакции",
+    "headers": ["ID", "Код билета", "Клиент", "Фильм", "Место", "Итого", "Статус", "Действие"],
+    "status": {
+      "booked": "Забронировано",
+      "cancelled": "Отменено",
+      "refunded": "Возвращено"
+    },
+    "refundButton": "Вернуть средства",
+    "refundConfirm": "Вернуть средства по этой транзакции?",
+    "refundSuccess": "Средства по транзакции возвращены."
+  },
+  "cinemas": {
+    "breadcrumb": "Кинотеатры",
+    "headers": ["ID", "Название кинотеатра", "Владелец (ID)", "Адрес", "Статус", "Действие"],
+    "status": {
+      "pending": "Ожидает одобрения",
+      "approved": "Одобрено",
+      "blocked": "Заблокировано"
+    },
+    "approveButton": "Одобрить",
+    "blockButton": "Заблокировать",
+    "deleteButton": "Удалить",
+    "blockConfirm": "Заблокировать этот кинотеатр?",
+    "deleteConfirm": "Удалить этот кинотеатр? Это действие нельзя отменить.",
+    "approveSuccess": "Кинотеатр одобрен.",
+    "blockSuccess": "Кинотеатр заблокирован.",
+    "deleteSuccess": "Кинотеатр удалён."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "Пользователь успешно заблокирован",
+      "swalText": "Успешно",
+      "confirmTitle": "Подтвердите блокировку",
+      "confirmMessage": "Вы уверены, что хотите заблокировать пользователя {{name}}?",
+      "confirmLabel": "Заблокировать"
+    },
+    "unblock": {
+      "swalTitle": "Пользователь успешно разблокирован",
+      "swalText": "Успешно",
+      "confirmTitle": "Подтвердите разблокировку",
+      "confirmMessage": "Вы уверены, что хотите разблокировать пользователя {{name}}?",
+      "confirmLabel": "Разблокировать"
+    },
+    "delete": {
+      "swalTitle": "Пользователь успешно удалён",
+      "swalText": "Успешно",
+      "confirmTitle": "Подтвердите удаление",
+      "confirmMessage": "Вы уверены, что хотите удалить этого пользователя?",
+      "confirmLabel": "Удалить"
+    },
+    "list": {
+      "breadcrumb": "Пользователи",
+      "headers": ["ID", "Полное имя", "Телефон", "Email", "Роль", "Статус", "Действие"],
+      "roles": {
+        "admin": "Администратор",
+        "user": "Пользователь",
+        "theater": "Владелец кинотеатра"
+      },
+      "statusActive": "Активен",
+      "statusInactive": "Неактивен",
+      "roleChangeSuccess": "Роль обновлена."
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "एडमिन डैशबोर्ड",
+    "loading": "लोड हो रहा है...",
+    "stats": {
+      "totalRevenue": "कुल आय",
+      "totalUsers": "उपयोगकर्ता",
+      "totalOwners": "थिएटर मालिक",
+      "totalCinemas": "सिनेमा",
+      "totalTicketsSold": "बिकी टिकटें",
+      "totalTransactions": "लेन-देन"
+    },
+    "chartTitle": "प्रतिदिन संपूर्ण सिस्टम की आय",
+    "noData": "अभी तक कोई डेटा नहीं है"
+  },
+  "movies": {
+    "add": {
+      "title": "फिल्म जोड़ें",
+      "fields": {
+        "name": "नाम:",
+        "avatar": "अवतार:",
+        "premiereDate": "प्रीमियर तिथि:",
+        "country": "देश:",
+        "description": "विवरण:",
+        "trailer": "ट्रेलर:",
+        "producer": "निर्माता:",
+        "director": "निर्देशक:"
+      },
+      "cast": {
+        "label": "कलाकार:",
+        "name": "नाम",
+        "role": "भूमिका",
+        "avatarUrl": "इमेज URL",
+        "remove": "हटाएं",
+        "add": "+ कलाकार जोड़ें"
+      },
+      "category": "श्रेणी:",
+      "submit": "जोड़ें",
+      "toastSuccess": "सफलतापूर्वक जोड़ा गया",
+      "toastError": "जोड़ने में विफल"
+    },
+    "edit": {
+      "title": "फिल्म संपादित करें",
+      "fields": {
+        "name": "नाम:",
+        "avatar": "अवतार:",
+        "uploadNewAvatar": "नया अवतार अपलोड करें:",
+        "premiereDate": "प्रीमियर तिथि:",
+        "country": "देश:",
+        "description": "विवरण:",
+        "trailer": "ट्रेलर:",
+        "uploadNewTrailer": "नया ट्रेलर अपलोड करें:",
+        "producer": "निर्माता:",
+        "director": "निर्देशक:"
+      },
+      "cast": {
+        "label": "कलाकार:",
+        "name": "नाम",
+        "role": "भूमिका",
+        "avatarUrl": "इमेज URL",
+        "remove": "हटाएं",
+        "add": "+ कलाकार जोड़ें"
+      },
+      "category": "श्रेणी:",
+      "submit": "अपडेट करें",
+      "toastSuccess": "फिल्म सफलतापूर्वक अपडेट की गई!"
+    },
+    "delete": {
+      "confirm": "क्या आप ID {{id}} वाली फिल्म को हटाना चाहते हैं?",
+      "toastSuccess": "सफलतापूर्वक हटाया गया",
+      "toastError": "हटाने में विफल"
+    },
+    "list": {
+      "breadcrumb": "फिल्में",
+      "addButton": "जोड़ें +",
+      "headers": ["ID", "अवतार", "नाम", "प्रीमियर तिथि", "देश", "विवरण", "ट्रेलर", "श्रेणी", "कार्रवाई"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "शो टाइम जोड़ें",
+      "cinema": {
+        "label": "शाखा:",
+        "placeholder": "शाखा चुनें"
+      },
+      "room": {
+        "label": "स्क्रीन:",
+        "placeholder": "स्क्रीन चुनें",
+        "placeholderSelectCinemaFirst": "पहले एक शाखा चुनें"
+      },
+      "date": "शो की तारीख:",
+      "slot": {
+        "label": "शो टाइम:",
+        "placeholder": "शो टाइम चुनें"
+      },
+      "price": "टिकट की कीमत:",
+      "submit": "जोड़ें",
+      "validationError": "कृपया शाखा, स्क्रीन, तारीख और शो टाइम चुनें।",
+      "toastSuccess": "शो टाइम जोड़ा गया।"
+    },
+    "list": {
+      "breadcrumb": "शेड्यूल",
+      "headers": ["ID", "फिल्म", "प्रारंभ समय", "समाप्ति समय", "फिल्म की तारीख", "कीमत"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "समीक्षाएं",
+    "headers": ["ID", "विषय", "रेटिंग", "सामग्री", "स्थिति", "कार्रवाई"],
+    "cinemaSuffix": "{{name}} (सिनेमा)",
+    "hiddenStatus": "छिपी हुई",
+    "visibleStatus": "दिखाई दे रही है",
+    "hideButton": "छिपाएं",
+    "deleteButton": "हटाएं",
+    "hideSuccess": "समीक्षा छिपा दी गई।",
+    "deleteConfirm": "क्या इस समीक्षा को हटाना है?",
+    "deleteSuccess": "समीक्षा हटा दी गई।"
+  },
+  "transactions": {
+    "breadcrumb": "लेन-देन",
+    "headers": ["ID", "टिकट कोड", "ग्राहक", "फिल्म", "सीट", "कुल", "स्थिति", "कार्रवाई"],
+    "status": {
+      "booked": "बुक की गई",
+      "cancelled": "रद्द",
+      "refunded": "रिफंड की गई"
+    },
+    "refundButton": "रिफंड",
+    "refundConfirm": "क्या इस लेन-देन को रिफंड करना है?",
+    "refundSuccess": "लेन-देन का रिफंड कर दिया गया।"
+  },
+  "cinemas": {
+    "breadcrumb": "सिनेमा",
+    "headers": ["ID", "सिनेमा का नाम", "मालिक (ID)", "पता", "स्थिति", "कार्रवाई"],
+    "status": {
+      "pending": "स्वीकृति लंबित",
+      "approved": "स्वीकृत",
+      "blocked": "अवरुद्ध"
+    },
+    "approveButton": "स्वीकृत करें",
+    "blockButton": "अवरुद्ध करें",
+    "deleteButton": "हटाएं",
+    "blockConfirm": "क्या इस सिनेमा को अवरुद्ध करना है?",
+    "deleteConfirm": "क्या इस सिनेमा को हटाना है? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+    "approveSuccess": "सिनेमा स्वीकृत हो गया।",
+    "blockSuccess": "सिनेमा अवरुद्ध कर दिया गया।",
+    "deleteSuccess": "सिनेमा हटा दिया गया।"
+  },
+  "users": {
+    "block": {
+      "swalTitle": "उपयोगकर्ता सफलतापूर्वक अवरुद्ध किया गया",
+      "swalText": "सफल",
+      "confirmTitle": "अवरुद्ध करने की पुष्टि करें",
+      "confirmMessage": "क्या आप वाकई {{name}} को अवरुद्ध करना चाहते हैं?",
+      "confirmLabel": "अवरुद्ध करें"
+    },
+    "unblock": {
+      "swalTitle": "उपयोगकर्ता सफलतापूर्वक अनब्लॉक किया गया",
+      "swalText": "सफल",
+      "confirmTitle": "अनब्लॉक करने की पुष्टि करें",
+      "confirmMessage": "क्या आप वाकई {{name}} को अनब्लॉक करना चाहते हैं?",
+      "confirmLabel": "अनब्लॉक करें"
+    },
+    "delete": {
+      "swalTitle": "उपयोगकर्ता सफलतापूर्वक हटाया गया",
+      "swalText": "सफल",
+      "confirmTitle": "हटाने की पुष्टि करें",
+      "confirmMessage": "क्या आप वाकई इस उपयोगकर्ता को हटाना चाहते हैं?",
+      "confirmLabel": "हटाएं"
+    },
+    "list": {
+      "breadcrumb": "उपयोगकर्ता",
+      "headers": ["ID", "पूरा नाम", "फोन", "ईमेल", "भूमिका", "स्थिति", "कार्रवाई"],
+      "roles": {
+        "admin": "एडमिन",
+        "user": "उपयोगकर्ता",
+        "theater": "थिएटर मालिक"
+      },
+      "statusActive": "सक्रिय",
+      "statusInactive": "निष्क्रिय",
+      "roleChangeSuccess": "भूमिका अपडेट कर दी गई।"
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "Dashboard",
+    "allMyCinemas": "All my cinemas",
+    "loading": "Loading...",
+    "revenue": "Revenue",
+    "ticketsSold": "Tickets sold",
+    "occupancyRate": "Seat occupancy rate",
+    "scheduleCount": "Number of showtimes",
+    "revenueByDay": "Revenue by day",
+    "noData": "No data yet"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "Ticket lookup",
+    "codePlaceholder": "Enter ticket code...",
+    "searchButton": "Look up",
+    "notFound": "No ticket found.",
+    "ticketCode": "Ticket code:",
+    "movie": "Movie:",
+    "cinema": "Cinema:",
+    "schedule": "Showtime:",
+    "seat": "Seat:",
+    "status": "Status:",
+    "totalPrice": "Total price:",
+    "statusLabels": {
+      "0": "Cancelled",
+      "1": "Booked",
+      "2": "Refunded"
+    },
+    "seatTypeLabels": {
+      "0": "Standard",
+      "1": "VIP",
+      "2": "Couple"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "Cinemas",
+    "addButton": "Add cinema +",
+    "addTitle": "Add cinema",
+    "nameLabel": "Cinema name",
+    "addressLabel": "Address",
+    "cityLabel": "City",
+    "submit": "Add",
+    "createSuccess": "Cinema creation request sent, pending Admin approval.",
+    "createError": "Unable to create cinema.",
+    "manageRooms": "Manage rooms",
+    "statusLabels": {
+      "0": "Pending approval",
+      "1": "Approved",
+      "2": "Blocked"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "Cinema name",
+      "address": "Address",
+      "city": "City",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "Rooms",
+    "addButton": "Add room +",
+    "addTitle": "Add room",
+    "nameLabel": "Room name",
+    "submit": "Add",
+    "createSuccess": "Room added.",
+    "createError": "Unable to add room.",
+    "deleteConfirm": "Delete this room?",
+    "deleteSuccess": "Room deleted.",
+    "deleteError": "Unable to delete room.",
+    "seatMapAction": "Seat map",
+    "delete": "Delete",
+    "headers": {
+      "id": "ID",
+      "name": "Room name",
+      "actions": "Actions"
+    },
+    "seatMapModal": {
+      "title": "Seat map - {{roomName}}",
+      "rowsLabel": "Rows (e.g. A,B,C)",
+      "seatsPerRowLabel": "Seats / row",
+      "vipRowsLabel": "VIP rows (e.g. A)",
+      "coupleRowsLabel": "Couple rows",
+      "generateButton": "Generate seat map",
+      "regenerateConfirm": "Regenerating the seat map will erase the current one. Continue?",
+      "generateSuccess": "Seat map generated.",
+      "generateError": "Unable to generate seat map.",
+      "lockedSuffix": " - Locked for maintenance",
+      "clickHint": "Click a seat to lock/unlock it for maintenance.",
+      "emptyTitle": "This room has no seat map yet",
+      "emptyDescription": "Fill in the form above to create one.",
+      "seatTypeLabels": {
+        "0": "Standard",
+        "1": "VIP",
+        "2": "Couple"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "Combos",
+    "addButton": "Add combo +",
+    "addTitle": "Add combo",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "nameLabel": "Combo name",
+    "descriptionLabel": "Description",
+    "priceLabel": "Price",
+    "submit": "Add",
+    "createSuccess": "Combo added.",
+    "createError": "Unable to add combo.",
+    "deleteConfirm": "Delete this combo?",
+    "deleteSuccess": "Combo deleted.",
+    "deleteError": "Unable to delete combo.",
+    "statusActive": "On sale",
+    "statusInactive": "Off sale",
+    "activate": "Activate",
+    "deactivate": "Take off sale",
+    "delete": "Delete",
+    "headers": {
+      "id": "ID",
+      "cinema": "Cinema",
+      "name": "Name",
+      "price": "Price",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "Vouchers",
+    "addButton": "Add voucher +",
+    "addTitle": "Add voucher",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "codeLabel": "Code",
+    "discountTypeLabel": "Discount type",
+    "discountTypePercent": "Percentage (%)",
+    "discountTypeFixed": "Fixed amount",
+    "discountValueLabel": "Discount value",
+    "minOrderValueLabel": "Minimum order value",
+    "submit": "Add",
+    "createSuccess": "Voucher added.",
+    "deleteConfirm": "Delete this voucher?",
+    "deleteSuccess": "Voucher deleted.",
+    "deleteError": "Unable to delete.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Enable",
+    "deactivate": "Disable",
+    "delete": "Delete",
+    "headers": {
+      "id": "ID",
+      "cinema": "Cinema",
+      "code": "Code",
+      "discount": "Discount",
+      "used": "Used",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  }
+}

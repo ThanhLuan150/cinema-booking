@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "แดชบอร์ดผู้ดูแลระบบ",
+    "loading": "กำลังโหลด...",
+    "stats": {
+      "totalRevenue": "รายได้รวม",
+      "totalUsers": "ผู้ใช้งาน",
+      "totalOwners": "เจ้าของโรงภาพยนตร์",
+      "totalCinemas": "โรงภาพยนตร์",
+      "totalTicketsSold": "ตั๋วที่ขายได้",
+      "totalTransactions": "ธุรกรรม"
+    },
+    "chartTitle": "รายได้ทั้งระบบรายวัน",
+    "noData": "ยังไม่มีข้อมูล"
+  },
+  "movies": {
+    "add": {
+      "title": "เพิ่มภาพยนตร์",
+      "fields": {
+        "name": "ชื่อ:",
+        "avatar": "รูปภาพ:",
+        "premiereDate": "วันฉายรอบปฐมทัศน์:",
+        "country": "ประเทศ:",
+        "description": "รายละเอียด:",
+        "trailer": "ตัวอย่างภาพยนตร์:",
+        "producer": "ผู้อำนวยการสร้าง:",
+        "director": "ผู้กำกับ:"
+      },
+      "cast": {
+        "label": "นักแสดง:",
+        "name": "ชื่อ",
+        "role": "บทบาท",
+        "avatarUrl": "URL รูปภาพ",
+        "remove": "ลบ",
+        "add": "+ เพิ่มนักแสดง"
+      },
+      "category": "หมวดหมู่:",
+      "submit": "เพิ่ม",
+      "toastSuccess": "เพิ่มสำเร็จ",
+      "toastError": "เพิ่มไม่สำเร็จ"
+    },
+    "edit": {
+      "title": "แก้ไขภาพยนตร์",
+      "fields": {
+        "name": "ชื่อ:",
+        "avatar": "รูปภาพ:",
+        "uploadNewAvatar": "อัปโหลดรูปภาพใหม่:",
+        "premiereDate": "วันฉายรอบปฐมทัศน์:",
+        "country": "ประเทศ:",
+        "description": "รายละเอียด:",
+        "trailer": "ตัวอย่างภาพยนตร์:",
+        "uploadNewTrailer": "อัปโหลดตัวอย่างภาพยนตร์ใหม่:",
+        "producer": "ผู้อำนวยการสร้าง:",
+        "director": "ผู้กำกับ:"
+      },
+      "cast": {
+        "label": "นักแสดง:",
+        "name": "ชื่อ",
+        "role": "บทบาท",
+        "avatarUrl": "URL รูปภาพ",
+        "remove": "ลบ",
+        "add": "+ เพิ่มนักแสดง"
+      },
+      "category": "หมวดหมู่:",
+      "submit": "อัปเดต",
+      "toastSuccess": "อัปเดตภาพยนตร์สำเร็จ!"
+    },
+    "delete": {
+      "confirm": "ต้องการลบภาพยนตร์ที่มีรหัส {{id}} หรือไม่?",
+      "toastSuccess": "ลบสำเร็จ",
+      "toastError": "ลบไม่สำเร็จ"
+    },
+    "list": {
+      "breadcrumb": "ภาพยนตร์",
+      "addButton": "เพิ่ม +",
+      "headers": ["รหัส", "รูปภาพ", "ชื่อ", "วันฉาย", "ประเทศ", "รายละเอียด", "ตัวอย่างภาพยนตร์", "หมวดหมู่", "การดำเนินการ"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "เพิ่มรอบฉาย",
+      "cinema": {
+        "label": "สาขา:",
+        "placeholder": "เลือกสาขา"
+      },
+      "room": {
+        "label": "ห้องฉาย:",
+        "placeholder": "เลือกห้องฉาย",
+        "placeholderSelectCinemaFirst": "กรุณาเลือกสาขาก่อน"
+      },
+      "date": "วันที่ฉาย:",
+      "slot": {
+        "label": "รอบฉาย:",
+        "placeholder": "เลือกรอบฉาย"
+      },
+      "price": "ราคาตั๋ว:",
+      "submit": "เพิ่ม",
+      "validationError": "กรุณาเลือกสาขา ห้องฉาย วันที่ และรอบฉายให้ครบถ้วน",
+      "toastSuccess": "เพิ่มรอบฉายเรียบร้อยแล้ว"
+    },
+    "list": {
+      "breadcrumb": "ตารางฉาย",
+      "headers": ["รหัส", "ภาพยนตร์", "เวลาเริ่ม", "เวลาสิ้นสุด", "วันที่ฉาย", "ราคา"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "รีวิว",
+    "headers": ["รหัส", "หัวข้อ", "คะแนน", "เนื้อหา", "สถานะ", "การดำเนินการ"],
+    "cinemaSuffix": "{{name}} (โรงภาพยนตร์)",
+    "hiddenStatus": "ซ่อนอยู่",
+    "visibleStatus": "แสดงอยู่",
+    "hideButton": "ซ่อน",
+    "deleteButton": "ลบ",
+    "hideSuccess": "ซ่อนรีวิวเรียบร้อยแล้ว",
+    "deleteConfirm": "ต้องการลบรีวิวนี้หรือไม่?",
+    "deleteSuccess": "ลบรีวิวเรียบร้อยแล้ว"
+  },
+  "transactions": {
+    "breadcrumb": "ธุรกรรม",
+    "headers": ["รหัส", "รหัสตั๋ว", "ลูกค้า", "ภาพยนตร์", "ที่นั่ง", "ยอดรวม", "สถานะ", "การดำเนินการ"],
+    "status": {
+      "booked": "จองแล้ว",
+      "cancelled": "ยกเลิกแล้ว",
+      "refunded": "คืนเงินแล้ว"
+    },
+    "refundButton": "คืนเงิน",
+    "refundConfirm": "ต้องการคืนเงินสำหรับธุรกรรมนี้หรือไม่?",
+    "refundSuccess": "คืนเงินสำหรับธุรกรรมเรียบร้อยแล้ว"
+  },
+  "cinemas": {
+    "breadcrumb": "โรงภาพยนตร์",
+    "headers": ["รหัส", "ชื่อโรงภาพยนตร์", "เจ้าของ (รหัส)", "ที่อยู่", "สถานะ", "การดำเนินการ"],
+    "status": {
+      "pending": "รอการอนุมัติ",
+      "approved": "อนุมัติแล้ว",
+      "blocked": "ถูกระงับ"
+    },
+    "approveButton": "อนุมัติ",
+    "blockButton": "ระงับ",
+    "deleteButton": "ลบ",
+    "blockConfirm": "ต้องการระงับโรงภาพยนตร์นี้หรือไม่?",
+    "deleteConfirm": "ต้องการลบโรงภาพยนตร์นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+    "approveSuccess": "อนุมัติโรงภาพยนตร์เรียบร้อยแล้ว",
+    "blockSuccess": "ระงับโรงภาพยนตร์เรียบร้อยแล้ว",
+    "deleteSuccess": "ลบโรงภาพยนตร์เรียบร้อยแล้ว"
+  },
+  "users": {
+    "block": {
+      "swalTitle": "ระงับผู้ใช้สำเร็จ",
+      "swalText": "สำเร็จ",
+      "confirmTitle": "ยืนยันการระงับ",
+      "confirmMessage": "คุณแน่ใจหรือไม่ว่าต้องการระงับ {{name}}?",
+      "confirmLabel": "ระงับ"
+    },
+    "unblock": {
+      "swalTitle": "ยกเลิกการระงับผู้ใช้สำเร็จ",
+      "swalText": "สำเร็จ",
+      "confirmTitle": "ยืนยันการยกเลิกระงับ",
+      "confirmMessage": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการระงับ {{name}}?",
+      "confirmLabel": "ยกเลิกการระงับ"
+    },
+    "delete": {
+      "swalTitle": "ลบผู้ใช้สำเร็จ",
+      "swalText": "สำเร็จ",
+      "confirmTitle": "ยืนยันการลบ",
+      "confirmMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?",
+      "confirmLabel": "ลบ"
+    },
+    "list": {
+      "breadcrumb": "ผู้ใช้งาน",
+      "headers": ["รหัส", "ชื่อ-นามสกุล", "เบอร์โทรศัพท์", "อีเมล", "บทบาท", "สถานะ", "การดำเนินการ"],
+      "roles": {
+        "admin": "ผู้ดูแลระบบ",
+        "user": "ผู้ใช้งาน",
+        "theater": "เจ้าของโรงภาพยนตร์"
+      },
+      "statusActive": "ใช้งานอยู่",
+      "statusInactive": "ไม่ได้ใช้งาน",
+      "roleChangeSuccess": "อัปเดตบทบาทเรียบร้อยแล้ว"
+    }
+  }
+}

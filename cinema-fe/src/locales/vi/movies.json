@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "Rạp",
+    "title": "Hệ thống rạp",
+    "empty": "Chưa có rạp nào",
+    "addressUpdating": "Đang cập nhật địa chỉ",
+    "viewDetails": "Xem chi tiết"
+  },
+  "playing": {
+    "breadcrumbMovie": "Phim",
+    "breadcrumbCurrent": "Đang chiếu",
+    "title": "Phim đang chiếu",
+    "empty": "Hiện không có phim nào đang chiếu.",
+    "moreDetails": "Xem thêm"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "Phim",
+    "breadcrumbCurrent": "Sắp chiếu",
+    "title": "Phim sắp chiếu",
+    "empty": "Hiện chưa có phim sắp chiếu.",
+    "moreDetails": "Xem thêm"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "Yêu thích rạp",
+    "removeFavorite": "Bỏ yêu thích rạp",
+    "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này."
+  },
+  "like": {
+    "unlikeError": "Không bỏ thích được, vui lòng thử lại.",
+    "unlikeErrorLog": "Lỗi khi xóa lượt thích khỏi cơ sở dữ liệu:",
+    "likeError": "Không thích được, vui lòng thử lại.",
+    "likeErrorLog": "Lỗi khi lưu lượt thích vào cơ sở dữ liệu:",
+    "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này."
+  },
+  "filterBar": {
+    "category": "Thể loại",
+    "country": "Quốc gia",
+    "cinema": "Rạp",
+    "date": "Ngày chiếu",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tên phim...",
+    "all": "Tất cả"
+  }
+}

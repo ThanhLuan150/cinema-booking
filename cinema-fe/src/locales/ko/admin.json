@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "관리자 대시보드",
+    "loading": "로딩 중...",
+    "stats": {
+      "totalRevenue": "총 매출",
+      "totalUsers": "회원 수",
+      "totalOwners": "극장주",
+      "totalCinemas": "영화관 수",
+      "totalTicketsSold": "판매된 티켓 수",
+      "totalTransactions": "거래 건수"
+    },
+    "chartTitle": "일별 전체 매출",
+    "noData": "아직 데이터가 없습니다"
+  },
+  "movies": {
+    "add": {
+      "title": "영화 추가",
+      "fields": {
+        "name": "이름:",
+        "avatar": "포스터:",
+        "premiereDate": "개봉일:",
+        "country": "국가:",
+        "description": "설명:",
+        "trailer": "예고편:",
+        "producer": "제작자:",
+        "director": "감독:"
+      },
+      "cast": {
+        "label": "출연진:",
+        "name": "이름",
+        "role": "역할",
+        "avatarUrl": "이미지 URL",
+        "remove": "삭제",
+        "add": "+ 출연진 추가"
+      },
+      "category": "장르:",
+      "submit": "추가",
+      "toastSuccess": "추가되었습니다",
+      "toastError": "추가에 실패했습니다"
+    },
+    "edit": {
+      "title": "영화 수정",
+      "fields": {
+        "name": "이름:",
+        "avatar": "포스터:",
+        "uploadNewAvatar": "새 포스터 업로드:",
+        "premiereDate": "개봉일:",
+        "country": "국가:",
+        "description": "설명:",
+        "trailer": "예고편:",
+        "uploadNewTrailer": "새 예고편 업로드:",
+        "producer": "제작자:",
+        "director": "감독:"
+      },
+      "cast": {
+        "label": "출연진:",
+        "name": "이름",
+        "role": "역할",
+        "avatarUrl": "이미지 URL",
+        "remove": "삭제",
+        "add": "+ 출연진 추가"
+      },
+      "category": "장르:",
+      "submit": "수정",
+      "toastSuccess": "영화가 수정되었습니다!"
+    },
+    "delete": {
+      "confirm": "ID가 {{id}}인 영화를 삭제하시겠습니까?",
+      "toastSuccess": "삭제되었습니다",
+      "toastError": "삭제에 실패했습니다"
+    },
+    "list": {
+      "breadcrumb": "영화",
+      "addButton": "추가 +",
+      "headers": ["ID", "포스터", "이름", "개봉일", "국가", "설명", "예고편", "장르", "작업"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "상영 일정 추가",
+      "cinema": {
+        "label": "지점:",
+        "placeholder": "지점 선택"
+      },
+      "room": {
+        "label": "상영관:",
+        "placeholder": "상영관 선택",
+        "placeholderSelectCinemaFirst": "먼저 지점을 선택하세요"
+      },
+      "date": "상영일:",
+      "slot": {
+        "label": "상영 시간:",
+        "placeholder": "상영 시간 선택"
+      },
+      "price": "티켓 가격:",
+      "submit": "추가",
+      "validationError": "지점, 상영관, 날짜, 상영 시간을 모두 선택해 주세요.",
+      "toastSuccess": "상영 일정이 추가되었습니다."
+    },
+    "list": {
+      "breadcrumb": "상영 일정",
+      "headers": ["ID", "영화", "시작 시간", "종료 시간", "상영일", "가격"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "리뷰",
+    "headers": ["ID", "대상", "평점", "내용", "상태", "작업"],
+    "cinemaSuffix": "{{name}} (영화관)",
+    "hiddenStatus": "숨김",
+    "visibleStatus": "공개",
+    "hideButton": "숨기기",
+    "deleteButton": "삭제",
+    "hideSuccess": "리뷰가 숨겨졌습니다.",
+    "deleteConfirm": "이 리뷰를 삭제하시겠습니까?",
+    "deleteSuccess": "리뷰가 삭제되었습니다."
+  },
+  "transactions": {
+    "breadcrumb": "거래 내역",
+    "headers": ["ID", "티켓 코드", "고객", "영화", "좌석", "합계", "상태", "작업"],
+    "status": {
+      "booked": "예매 완료",
+      "cancelled": "취소됨",
+      "refunded": "환불됨"
+    },
+    "refundButton": "환불",
+    "refundConfirm": "이 거래를 환불하시겠습니까?",
+    "refundSuccess": "거래가 환불되었습니다."
+  },
+  "cinemas": {
+    "breadcrumb": "영화관",
+    "headers": ["ID", "영화관 이름", "소유자 (ID)", "주소", "상태", "작업"],
+    "status": {
+      "pending": "승인 대기",
+      "approved": "승인됨",
+      "blocked": "차단됨"
+    },
+    "approveButton": "승인",
+    "blockButton": "차단",
+    "deleteButton": "삭제",
+    "blockConfirm": "이 영화관을 차단하시겠습니까?",
+    "deleteConfirm": "이 영화관을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "approveSuccess": "영화관이 승인되었습니다.",
+    "blockSuccess": "영화관이 차단되었습니다.",
+    "deleteSuccess": "영화관이 삭제되었습니다."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "회원이 차단되었습니다",
+      "swalText": "성공",
+      "confirmTitle": "차단 확인",
+      "confirmMessage": "{{name}} 님을 차단하시겠습니까?",
+      "confirmLabel": "차단"
+    },
+    "unblock": {
+      "swalTitle": "회원 차단이 해제되었습니다",
+      "swalText": "성공",
+      "confirmTitle": "차단 해제 확인",
+      "confirmMessage": "{{name}} 님의 차단을 해제하시겠습니까?",
+      "confirmLabel": "차단 해제"
+    },
+    "delete": {
+      "swalTitle": "회원이 삭제되었습니다",
+      "swalText": "성공",
+      "confirmTitle": "삭제 확인",
+      "confirmMessage": "이 회원을 삭제하시겠습니까?",
+      "confirmLabel": "삭제"
+    },
+    "list": {
+      "breadcrumb": "회원",
+      "headers": ["ID", "이름", "전화번호", "이메일", "역할", "상태", "작업"],
+      "roles": {
+        "admin": "관리자",
+        "user": "회원",
+        "theater": "극장주"
+      },
+      "statusActive": "활성",
+      "statusInactive": "비활성",
+      "roleChangeSuccess": "역할이 변경되었습니다."
+    }
+  }
+}

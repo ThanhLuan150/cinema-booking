@@ -1,0 +1,28 @@
+{
+  "empty": "Aucun film n'est actuellement à l'affiche",
+  "bannerSlider": {
+    "prevSlide": "Diapositive précédente",
+    "nextSlide": "Diapositive suivante",
+    "goToSlide": "Aller à la diapositive",
+    "bookNow": "Réserver maintenant",
+    "viewDetails": "Voir les détails"
+  },
+  "trendingMoviesSlider": {
+    "title": "Tendances",
+    "viewDetails": "Voir les détails"
+  },
+  "newMoviesSlider": {
+    "title": "Nouveautés",
+    "viewDetails": "Voir les détails"
+  },
+  "upcomingMoviesSlider": {
+    "title": "Prochainement",
+    "viewDetails": "Voir les détails"
+  },
+  "topCinemasSlider": {
+    "title": "Meilleurs cinémas",
+    "addressUpdating": "Adresse en cours de mise à jour",
+    "newRating": "Nouveau",
+    "ticketsBooked": "billets réservés"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "영화관",
+    "title": "영화관 시스템",
+    "empty": "아직 등록된 영화관이 없습니다",
+    "addressUpdating": "주소 업데이트 중",
+    "viewDetails": "자세히 보기"
+  },
+  "playing": {
+    "breadcrumbMovie": "영화",
+    "breadcrumbCurrent": "상영 중",
+    "title": "현재 상영작",
+    "empty": "현재 상영 중인 영화가 없습니다.",
+    "moreDetails": "자세히 보기"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "영화",
+    "breadcrumbCurrent": "상영 예정",
+    "title": "상영 예정작",
+    "empty": "현재 상영 예정인 영화가 없습니다.",
+    "moreDetails": "자세히 보기"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "영화관 즐겨찾기 추가",
+    "removeFavorite": "영화관 즐겨찾기 해제",
+    "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요."
+  },
+  "like": {
+    "unlikeError": "좋아요를 취소할 수 없습니다. 다시 시도해 주세요.",
+    "unlikeErrorLog": "데이터베이스에서 좋아요를 삭제하는 중 오류 발생:",
+    "likeError": "좋아요를 누를 수 없습니다. 다시 시도해 주세요.",
+    "likeErrorLog": "데이터베이스에 좋아요를 저장하는 중 오류 발생:",
+    "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요."
+  },
+  "filterBar": {
+    "category": "장르",
+    "country": "국가",
+    "cinema": "영화관",
+    "date": "상영일",
+    "search": "검색",
+    "searchPlaceholder": "영화 제목...",
+    "all": "전체"
+  }
+}

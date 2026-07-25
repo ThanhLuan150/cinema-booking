@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "डैशबोर्ड",
+    "allMyCinemas": "मेरे सभी सिनेमा",
+    "loading": "लोड हो रहा है...",
+    "revenue": "आय",
+    "ticketsSold": "बिकी टिकटें",
+    "occupancyRate": "सीट भरने की दर",
+    "scheduleCount": "शो टाइम की संख्या",
+    "revenueByDay": "प्रतिदिन आय",
+    "noData": "अभी तक कोई डेटा नहीं है"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "टिकट खोजें",
+    "codePlaceholder": "टिकट कोड दर्ज करें...",
+    "searchButton": "खोजें",
+    "notFound": "कोई टिकट नहीं मिली।",
+    "ticketCode": "टिकट कोड:",
+    "movie": "फिल्म:",
+    "cinema": "सिनेमा:",
+    "schedule": "शो टाइम:",
+    "seat": "सीट:",
+    "status": "स्थिति:",
+    "totalPrice": "कुल कीमत:",
+    "statusLabels": {
+      "0": "रद्द",
+      "1": "बुक की गई",
+      "2": "रिफंड की गई"
+    },
+    "seatTypeLabels": {
+      "0": "स्टैंडर्ड",
+      "1": "VIP",
+      "2": "कपल"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "सिनेमा",
+    "addButton": "सिनेमा जोड़ें +",
+    "addTitle": "सिनेमा जोड़ें",
+    "nameLabel": "सिनेमा का नाम",
+    "addressLabel": "पता",
+    "cityLabel": "शहर",
+    "submit": "जोड़ें",
+    "createSuccess": "सिनेमा बनाने का अनुरोध भेज दिया गया है, एडमिन की स्वीकृति लंबित है।",
+    "createError": "सिनेमा नहीं बनाया जा सका।",
+    "manageRooms": "स्क्रीन प्रबंधित करें",
+    "statusLabels": {
+      "0": "स्वीकृति लंबित",
+      "1": "स्वीकृत",
+      "2": "अवरुद्ध"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "सिनेमा का नाम",
+      "address": "पता",
+      "city": "शहर",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "स्क्रीन",
+    "addButton": "स्क्रीन जोड़ें +",
+    "addTitle": "स्क्रीन जोड़ें",
+    "nameLabel": "स्क्रीन का नाम",
+    "submit": "जोड़ें",
+    "createSuccess": "स्क्रीन जोड़ी गई।",
+    "createError": "स्क्रीन नहीं जोड़ी जा सकी।",
+    "deleteConfirm": "क्या इस स्क्रीन को हटाना है?",
+    "deleteSuccess": "स्क्रीन हटा दी गई।",
+    "deleteError": "स्क्रीन नहीं हटाई जा सकी।",
+    "seatMapAction": "सीट मैप",
+    "delete": "हटाएं",
+    "headers": {
+      "id": "ID",
+      "name": "स्क्रीन का नाम",
+      "actions": "कार्रवाई"
+    },
+    "seatMapModal": {
+      "title": "सीट मैप - {{roomName}}",
+      "rowsLabel": "पंक्तियां (जैसे A,B,C)",
+      "seatsPerRowLabel": "सीटें / पंक्ति",
+      "vipRowsLabel": "VIP पंक्तियां (जैसे A)",
+      "coupleRowsLabel": "कपल पंक्तियां",
+      "generateButton": "सीट मैप बनाएं",
+      "regenerateConfirm": "सीट मैप को फिर से बनाने से मौजूदा मैप मिट जाएगा। जारी रखें?",
+      "generateSuccess": "सीट मैप बना दिया गया।",
+      "generateError": "सीट मैप नहीं बनाया जा सका।",
+      "lockedSuffix": " - रखरखाव के लिए लॉक",
+      "clickHint": "किसी सीट को रखरखाव के लिए लॉक/अनलॉक करने के लिए उस पर क्लिक करें।",
+      "emptyTitle": "इस स्क्रीन में अभी तक कोई सीट मैप नहीं है",
+      "emptyDescription": "एक बनाने के लिए ऊपर दिया गया फॉर्म भरें।",
+      "seatTypeLabels": {
+        "0": "स्टैंडर्ड",
+        "1": "VIP",
+        "2": "कपल"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "कॉम्बो",
+    "addButton": "कॉम्बो जोड़ें +",
+    "addTitle": "कॉम्बो जोड़ें",
+    "cinemaLabel": "सिनेमा",
+    "cinemaPlaceholder": "सिनेमा चुनें",
+    "nameLabel": "कॉम्बो का नाम",
+    "descriptionLabel": "विवरण",
+    "priceLabel": "कीमत",
+    "submit": "जोड़ें",
+    "createSuccess": "कॉम्बो जोड़ा गया।",
+    "createError": "कॉम्बो नहीं जोड़ा जा सका।",
+    "deleteConfirm": "क्या इस कॉम्बो को हटाना है?",
+    "deleteSuccess": "कॉम्बो हटा दिया गया।",
+    "deleteError": "कॉम्बो नहीं हटाया जा सका।",
+    "statusActive": "बिक्री पर",
+    "statusInactive": "बिक्री बंद",
+    "activate": "सक्रिय करें",
+    "deactivate": "बिक्री से हटाएं",
+    "delete": "हटाएं",
+    "headers": {
+      "id": "ID",
+      "cinema": "सिनेमा",
+      "name": "नाम",
+      "price": "कीमत",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "वाउचर",
+    "addButton": "वाउचर जोड़ें +",
+    "addTitle": "वाउचर जोड़ें",
+    "cinemaLabel": "सिनेमा",
+    "cinemaPlaceholder": "सिनेमा चुनें",
+    "codeLabel": "कोड",
+    "discountTypeLabel": "छूट का प्रकार",
+    "discountTypePercent": "प्रतिशत (%)",
+    "discountTypeFixed": "निश्चित राशि",
+    "discountValueLabel": "छूट का मूल्य",
+    "minOrderValueLabel": "न्यूनतम ऑर्डर मूल्य",
+    "submit": "जोड़ें",
+    "createSuccess": "वाउचर जोड़ा गया।",
+    "deleteConfirm": "क्या इस वाउचर को हटाना है?",
+    "deleteSuccess": "वाउचर हटा दिया गया।",
+    "deleteError": "हटाया नहीं जा सका।",
+    "statusActive": "सक्रिय",
+    "statusInactive": "निष्क्रिय",
+    "activate": "सक्षम करें",
+    "deactivate": "अक्षम करें",
+    "delete": "हटाएं",
+    "headers": {
+      "id": "ID",
+      "cinema": "सिनेमा",
+      "code": "कोड",
+      "discount": "छूट",
+      "used": "उपयोग किया गया",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    }
+  }
+}

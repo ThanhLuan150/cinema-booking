@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "bookNow": "지금 예매하기"
+  },
+  "castSection": {
+    "director": "감독:",
+    "producer": "제작자:",
+    "cast": "출연진"
+  },
+  "reviews": {
+    "title": "리뷰",
+    "ratingSummary": "{{average}}/5 · 리뷰 {{count}}개",
+    "ratingLabel": "평점:",
+    "starOption": "{{count}}점",
+    "commentPlaceholder": "이 영화에 대한 감상을 남겨주세요...",
+    "submit": "리뷰 등록",
+    "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
+    "submitSuccess": "리뷰가 등록되었습니다.",
+    "submitError": "리뷰를 등록할 수 없습니다.",
+    "emptyState": "아직 리뷰가 없습니다"
+  },
+  "otherMovieSlider": {
+    "trending": "인기 급상승",
+    "moreDetails": "자세히 보기",
+    "empty": "현재 인기 급상승 영화가 없습니다"
+  }
+}

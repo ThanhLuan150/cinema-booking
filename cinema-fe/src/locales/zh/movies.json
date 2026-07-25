@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "影院",
+    "title": "影院系统",
+    "empty": "暂无影院信息",
+    "addressUpdating": "地址更新中",
+    "viewDetails": "查看详情"
+  },
+  "playing": {
+    "breadcrumbMovie": "电影",
+    "breadcrumbCurrent": "正在热映",
+    "title": "正在热映",
+    "empty": "目前没有正在上映的电影。",
+    "moreDetails": "查看详情"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "电影",
+    "breadcrumbCurrent": "即将上映",
+    "title": "即将上映的电影",
+    "empty": "目前暂无即将上映的电影。",
+    "moreDetails": "查看详情"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "收藏该影院",
+    "removeFavorite": "取消收藏该影院",
+    "loginRequired": "您尚未登录，请登录或注册后使用此功能。"
+  },
+  "like": {
+    "unlikeError": "取消喜欢失败，请重试。",
+    "unlikeErrorLog": "从数据库中移除喜欢时出错：",
+    "likeError": "点赞失败，请重试。",
+    "likeErrorLog": "保存喜欢到数据库时出错：",
+    "loginRequired": "您尚未登录，请登录或注册后使用此功能。"
+  },
+  "filterBar": {
+    "category": "类型",
+    "country": "国家",
+    "cinema": "影院",
+    "date": "放映日期",
+    "search": "搜索",
+    "searchPlaceholder": "电影名称...",
+    "all": "全部"
+  }
+}

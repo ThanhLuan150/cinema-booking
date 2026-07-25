@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "Cinémas",
+    "title": "Réseau de cinémas",
+    "empty": "Aucun cinéma disponible pour le moment",
+    "addressUpdating": "Adresse en cours de mise à jour",
+    "viewDetails": "Voir les détails"
+  },
+  "playing": {
+    "breadcrumbMovie": "Film",
+    "breadcrumbCurrent": "À l'affiche",
+    "title": "À l'affiche",
+    "empty": "Aucun film n'est actuellement à l'affiche.",
+    "moreDetails": "Plus de détails"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "Film",
+    "breadcrumbCurrent": "Prochainement",
+    "title": "Films à venir",
+    "empty": "Aucun film à venir pour le moment.",
+    "moreDetails": "Plus de détails"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "Ajouter le cinéma aux favoris",
+    "removeFavorite": "Retirer le cinéma des favoris",
+    "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité."
+  },
+  "like": {
+    "unlikeError": "Impossible de retirer le like, veuillez réessayer.",
+    "unlikeErrorLog": "Erreur lors de la suppression du like dans la base de données :",
+    "likeError": "Impossible d'aimer, veuillez réessayer.",
+    "likeErrorLog": "Erreur lors de l'enregistrement du like dans la base de données :",
+    "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité."
+  },
+  "filterBar": {
+    "category": "Catégorie",
+    "country": "Pays",
+    "cinema": "Cinéma",
+    "date": "Date de séance",
+    "search": "Rechercher",
+    "searchPlaceholder": "Nom du film...",
+    "all": "Tous"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "empty": "अभी कोई फिल्म प्रदर्शित नहीं हो रही है",
+  "bannerSlider": {
+    "prevSlide": "पिछला स्लाइड",
+    "nextSlide": "अगला स्लाइड",
+    "goToSlide": "स्लाइड पर जाएं",
+    "bookNow": "अभी बुक करें",
+    "viewDetails": "विवरण देखें"
+  },
+  "trendingMoviesSlider": {
+    "title": "ट्रेंडिंग",
+    "viewDetails": "विवरण देखें"
+  },
+  "newMoviesSlider": {
+    "title": "नई",
+    "viewDetails": "विवरण देखें"
+  },
+  "upcomingMoviesSlider": {
+    "title": "जल्द आ रही हैं",
+    "viewDetails": "विवरण देखें"
+  },
+  "topCinemasSlider": {
+    "title": "टॉप सिनेमा",
+    "addressUpdating": "पता अपडेट हो रहा है",
+    "newRating": "नया",
+    "ticketsBooked": "टिकट बुक हुईं"
+  }
+}

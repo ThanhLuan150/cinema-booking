@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "addressUpdating": "Đang cập nhật địa chỉ",
+    "favoriteCount": "{{count}} lượt yêu thích",
+    "statusPending": "Chờ duyệt",
+    "statusActive": "Đang hoạt động",
+    "statusPaused": "Tạm ngừng",
+    "viewShowtimes": "Xem phim đang chiếu"
+  },
+  "moviesSection": {
+    "title": "Phim đang chiếu tại rạp",
+    "emptyState": "Rạp này hiện chưa có suất chiếu nào",
+    "moreDetails": "Xem chi tiết"
+  },
+  "reviews": {
+    "title": "Đánh giá trải nghiệm tại rạp",
+    "ratingSummary": "{{average}}/5 · {{count}} đánh giá",
+    "ratingLabel": "Điểm:",
+    "starOption": "{{count}} sao",
+    "commentPlaceholder": "Cảm nhận của bạn khi tới rạp (chỗ ngồi, âm thanh, nhân viên, vệ sinh...)...",
+    "submit": "Gửi đánh giá",
+    "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
+    "submitSuccess": "Đã gửi đánh giá.",
+    "submitError": "Không thể gửi đánh giá.",
+    "emptyState": "Chưa có đánh giá nào"
+  }
+}

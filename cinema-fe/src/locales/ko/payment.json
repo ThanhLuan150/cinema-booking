@@ -1,0 +1,15 @@
+{
+  "confirming": "결제를 확인하는 중...",
+  "notLoggedIn": "결제를 확인하려면 로그인해야 합니다.",
+  "genericFailed": "결제가 완료되지 않았습니다.",
+  "success": {
+    "title": "결제 완료",
+    "message": "예매가 완료되었습니다! 티켓이 이메일로 발송되었습니다.",
+    "viewBookings": "내 티켓 보기"
+  },
+  "failed": {
+    "title": "결제 실패",
+    "confirmFailed": "결제를 확인할 수 없습니다.",
+    "backHome": "홈으로 돌아가기"
+  }
+}

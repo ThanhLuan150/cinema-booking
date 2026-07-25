@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "Select seats",
+    "screen": "Screen",
+    "legend": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Couple",
+      "selecting": "Selecting",
+      "sold": "Sold"
+    },
+    "noSeatMap": {
+      "title": "This showtime has no seat map yet",
+      "description": "Please contact the cinema or try another showtime."
+    },
+    "combo": {
+      "title": "Combo deals"
+    },
+    "selectedSeatsLabel": "Selected seats:",
+    "noneSelected": "None selected",
+    "checkout": "Book & Pay with MoMo",
+    "notLoggedIn": "You are not logged in. Please log in or register to use this feature.",
+    "selectSeatFirst": "Please select at least one seat",
+    "checkoutFailed": "Could not initiate payment.",
+    "momoModal": {
+      "title": "Choose how to pay with MoMo",
+      "qrTitle": "Scan QR code",
+      "qrDescription": "Open the MoMo app on your phone and scan this code to pay.",
+      "testAccountTitle": "Sign in with a MoMo test account",
+      "testAccountDescription": "Open the MoMo payment page and sign in with a test account phone number.",
+      "openButton": "Open MoMo payment page"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "Book Ticket",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "noSchedule": "No showtimes available",
+    "noAvailableTimes": "No more showtimes available today",
+    "bookButton": "Book",
+    "selectDateTime": "Please select date and time",
+    "notLoggedIn": "You are not logged in. Please log in or register to use this feature."
+  },
+  "myBookings": {
+    "pageTitle": "Booking history",
+    "seatType": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Couple"
+    },
+    "status": {
+      "booked": "Booked",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "empty": "You have no tickets yet",
+    "movieFallback": "Movie",
+    "seatLabel": "Seat {{code}} ({{type}})",
+    "ticketCode": "Ticket code: {{code}}",
+    "discount": "Discount: -{{amount}}",
+    "print": "Print ticket",
+    "cancel": "Cancel ticket",
+    "confirmCancel": "Are you sure you want to cancel this ticket?",
+    "cancelSuccess": "Ticket cancelled successfully.",
+    "cancelFailed": "Could not cancel the ticket."
+  },
+  "voucher": {
+    "title": "Discount code",
+    "placeholder": "Enter code...",
+    "apply": "Apply",
+    "applied": "Applied: -{{amount}}",
+    "applyFailed": "Could not apply the discount code."
+  }
+}

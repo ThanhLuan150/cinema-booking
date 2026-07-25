@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "Н/Д",
+    "addressUpdating": "Адрес пока недоступен",
+    "favoriteCount": "{{count}} в избранном",
+    "statusPending": "Ожидает одобрения",
+    "statusActive": "Работает",
+    "statusPaused": "Временно закрыт",
+    "viewShowtimes": "Смотреть сеансы"
+  },
+  "moviesSection": {
+    "title": "Сейчас идут в этом кинотеатре",
+    "emptyState": "В этом кинотеатре пока нет сеансов",
+    "moreDetails": "Подробнее"
+  },
+  "reviews": {
+    "title": "Отзывы о кинотеатре",
+    "ratingSummary": "{{average}}/5 · отзывов: {{count}}",
+    "ratingLabel": "Оценка:",
+    "starOption": "{{count}} звёзд",
+    "commentPlaceholder": "Поделитесь впечатлениями об этом кинотеатре (места, звук, персонал, чистота...)...",
+    "submit": "Оставить отзыв",
+    "loginRequired": "Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь, чтобы воспользоваться этой функцией.",
+    "submitSuccess": "Отзыв отправлен.",
+    "submitError": "Не удалось отправить отзыв.",
+    "emptyState": "Пока нет отзывов"
+  }
+}

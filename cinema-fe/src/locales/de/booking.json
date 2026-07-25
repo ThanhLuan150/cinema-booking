@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "Sitzplätze auswählen",
+    "screen": "Leinwand",
+    "legend": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Paar",
+      "selecting": "Ausgewählt",
+      "sold": "Verkauft"
+    },
+    "noSeatMap": {
+      "title": "Für diese Vorstellung gibt es noch keinen Saalplan",
+      "description": "Bitte wenden Sie sich an das Kino oder wählen Sie eine andere Vorstellung."
+    },
+    "combo": {
+      "title": "Combo-Angebote"
+    },
+    "selectedSeatsLabel": "Ausgewählte Sitzplätze:",
+    "noneSelected": "Keine Auswahl",
+    "checkout": "Buchen & mit MoMo bezahlen",
+    "notLoggedIn": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
+    "selectSeatFirst": "Bitte wählen Sie mindestens einen Sitzplatz aus",
+    "checkoutFailed": "Zahlung konnte nicht gestartet werden.",
+    "momoModal": {
+      "title": "Wählen Sie, wie Sie mit MoMo bezahlen möchten",
+      "qrTitle": "QR-Code scannen",
+      "qrDescription": "Öffnen Sie die MoMo-App auf Ihrem Smartphone und scannen Sie diesen Code, um zu bezahlen.",
+      "testAccountTitle": "Mit einem MoMo-Testkonto anmelden",
+      "testAccountDescription": "Öffnen Sie die MoMo-Zahlungsseite und melden Sie sich mit einer Test-Telefonnummer an.",
+      "openButton": "MoMo-Zahlungsseite öffnen"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "Ticket buchen",
+    "dateLabel": "Datum",
+    "timeLabel": "Uhrzeit",
+    "noSchedule": "Keine Vorstellungen verfügbar",
+    "noAvailableTimes": "Heute sind keine weiteren Vorstellungen verfügbar",
+    "bookButton": "Buchen",
+    "selectDateTime": "Bitte wählen Sie Datum und Uhrzeit aus",
+    "notLoggedIn": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen."
+  },
+  "myBookings": {
+    "pageTitle": "Buchungsverlauf",
+    "seatType": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Paar"
+    },
+    "status": {
+      "booked": "Gebucht",
+      "cancelled": "Storniert",
+      "refunded": "Erstattet"
+    },
+    "empty": "Sie haben noch keine Tickets",
+    "movieFallback": "Film",
+    "seatLabel": "Sitzplatz {{code}} ({{type}})",
+    "ticketCode": "Ticketcode: {{code}}",
+    "discount": "Rabatt: -{{amount}}",
+    "print": "Ticket drucken",
+    "cancel": "Ticket stornieren",
+    "confirmCancel": "Möchten Sie dieses Ticket wirklich stornieren?",
+    "cancelSuccess": "Ticket erfolgreich storniert.",
+    "cancelFailed": "Das Ticket konnte nicht storniert werden."
+  },
+  "voucher": {
+    "title": "Gutscheincode",
+    "placeholder": "Code eingeben...",
+    "apply": "Anwenden",
+    "applied": "Angewendet: -{{amount}}",
+    "applyFailed": "Der Gutscheincode konnte nicht angewendet werden."
+  }
+}

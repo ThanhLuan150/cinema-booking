@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "Nicht verfügbar",
+    "bookNow": "Jetzt buchen"
+  },
+  "castSection": {
+    "director": "Regisseur:",
+    "producer": "Produzent:",
+    "cast": "Besetzung"
+  },
+  "reviews": {
+    "title": "Bewertungen",
+    "ratingSummary": "{{average}}/5 · {{count}} Bewertungen",
+    "ratingLabel": "Bewertung:",
+    "starOption": "{{count}} Sterne",
+    "commentPlaceholder": "Teilen Sie Ihre Meinung zu diesem Film...",
+    "submit": "Bewertung abschicken",
+    "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
+    "submitSuccess": "Bewertung übermittelt.",
+    "submitError": "Bewertung konnte nicht übermittelt werden.",
+    "emptyState": "Noch keine Bewertungen"
+  },
+  "otherMovieSlider": {
+    "trending": "Angesagt",
+    "moreDetails": "Mehr Details",
+    "empty": "Derzeit keine angesagten Filme"
+  }
+}

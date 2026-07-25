@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "Cinemas",
+    "title": "Cinema System",
+    "empty": "No cinemas available yet",
+    "addressUpdating": "Address updating",
+    "viewDetails": "View Details"
+  },
+  "playing": {
+    "breadcrumbMovie": "Movie",
+    "breadcrumbCurrent": "Playing",
+    "title": "Now Playing",
+    "empty": "No movies are currently playing.",
+    "moreDetails": "More Details"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "Movie",
+    "breadcrumbCurrent": "Upcoming",
+    "title": "Upcoming Movies",
+    "empty": "No upcoming movies right now.",
+    "moreDetails": "More Details"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "Add cinema to favorites",
+    "removeFavorite": "Remove cinema from favorites",
+    "loginRequired": "You are not logged in. Please log in or sign up to use this feature."
+  },
+  "like": {
+    "unlikeError": "Could not unlike, please try again.",
+    "unlikeErrorLog": "Error removing like from database:",
+    "likeError": "Could not like, please try again.",
+    "likeErrorLog": "Error saving like to database:",
+    "loginRequired": "You are not logged in. Please log in or sign up to use this feature."
+  },
+  "filterBar": {
+    "category": "Category",
+    "country": "Country",
+    "cinema": "Cinema",
+    "date": "Show Date",
+    "search": "Search",
+    "searchPlaceholder": "Movie name...",
+    "all": "All"
+  }
+}

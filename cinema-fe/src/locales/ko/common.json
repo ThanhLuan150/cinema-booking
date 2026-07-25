@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "홈",
+    "movies": "영화",
+    "playing": "상영 중",
+    "upcoming": "상영 예정",
+    "cinemas": "영화관"
+  },
+  "header": {
+    "toggleMenu": "메뉴 열기/닫기",
+    "toggleSearch": "검색 열기/닫기",
+    "toggleUserMenu": "사용자 메뉴 열기/닫기",
+    "viewProfile": "프로필 보기",
+    "myBookings": "예매 내역",
+    "changePassword": "비밀번호 변경",
+    "manage": "관리",
+    "logout": "로그아웃",
+    "login": "로그인",
+    "logoutSuccess": "로그아웃되었습니다"
+  },
+  "footer": {
+    "tagline": "저희 영화 예매 사이트를 이용하실 때 품질과 만족을 보장해 드립니다.",
+    "quickLink": "빠른 링크",
+    "aboutUs": "회사 소개",
+    "movies": "영화",
+    "partner": "파트너",
+    "help": "도움말",
+    "important": "중요 안내",
+    "support": "고객 지원",
+    "faq": "자주 묻는 질문",
+    "check": "티켓 확인",
+    "contactUs": "문의하기",
+    "contact": "연락처",
+    "newsletter": "뉴스레터를 구독하고 최신 소식을 받아보세요.",
+    "emailPlaceholder": "이메일 입력",
+    "send": "전송"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "회원",
+      "dashboard": "대시보드",
+      "films": "영화",
+      "schedule": "상영 일정",
+      "cinemas": "영화관",
+      "combos": "콤보",
+      "vouchers": "할인 쿠폰",
+      "bookings": "예매 관리",
+      "transactions": "거래 내역",
+      "reviews": "리뷰"
+    },
+    "toggleMenu": "관리자 메뉴 열기/닫기",
+    "adminFallback": "관리자",
+    "breadcrumbPrefix": "회원",
+    "hello": "안녕하세요!"
+  },
+  "language": {
+    "label": "언어"
+  },
+  "actions": {
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "confirm": "확인",
+    "close": "닫기",
+    "submit": "제출",
+    "back": "뒤로",
+    "tryAgain": "다시 시도",
+    "loading": "로딩 중..."
+  },
+  "feedback": {
+    "noData": "아직 데이터가 없습니다.",
+    "somethingWrong": "문제가 발생했습니다."
+  },
+  "auth": {
+    "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
+    "accessDenied": "이 페이지에 접근할 권한이 없습니다."
+  }
+}

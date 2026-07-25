@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "แดชบอร์ด",
+    "allMyCinemas": "โรงภาพยนตร์ทั้งหมดของฉัน",
+    "loading": "กำลังโหลด...",
+    "revenue": "รายได้",
+    "ticketsSold": "ตั๋วที่ขายได้",
+    "occupancyRate": "อัตราการเข้าใช้ที่นั่ง",
+    "scheduleCount": "จำนวนรอบฉาย",
+    "revenueByDay": "รายได้รายวัน",
+    "noData": "ยังไม่มีข้อมูล"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "ตรวจสอบการจอง",
+    "codePlaceholder": "กรอกรหัสตั๋ว...",
+    "searchButton": "ค้นหา",
+    "notFound": "ไม่พบตั๋วนี้",
+    "ticketCode": "รหัสตั๋ว:",
+    "movie": "ภาพยนตร์:",
+    "cinema": "โรงภาพยนตร์:",
+    "schedule": "รอบฉาย:",
+    "seat": "ที่นั่ง:",
+    "status": "สถานะ:",
+    "totalPrice": "ราคารวม:",
+    "statusLabels": {
+      "0": "ยกเลิกแล้ว",
+      "1": "จองแล้ว",
+      "2": "คืนเงินแล้ว"
+    },
+    "seatTypeLabels": {
+      "0": "ที่นั่งมาตรฐาน",
+      "1": "VIP",
+      "2": "ที่นั่งคู่รัก"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "โรงภาพยนตร์",
+    "addButton": "เพิ่มโรงภาพยนตร์ +",
+    "addTitle": "เพิ่มโรงภาพยนตร์",
+    "nameLabel": "ชื่อโรงภาพยนตร์",
+    "addressLabel": "ที่อยู่",
+    "cityLabel": "เมือง",
+    "submit": "เพิ่ม",
+    "createSuccess": "ส่งคำขอสร้างโรงภาพยนตร์แล้ว กำลังรอการอนุมัติจากผู้ดูแลระบบ",
+    "createError": "ไม่สามารถสร้างโรงภาพยนตร์ได้",
+    "manageRooms": "จัดการห้องฉาย",
+    "statusLabels": {
+      "0": "รอการอนุมัติ",
+      "1": "อนุมัติแล้ว",
+      "2": "ถูกระงับ"
+    },
+    "headers": {
+      "id": "รหัส",
+      "name": "ชื่อโรงภาพยนตร์",
+      "address": "ที่อยู่",
+      "city": "เมือง",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "ห้องฉาย",
+    "addButton": "เพิ่มห้องฉาย +",
+    "addTitle": "เพิ่มห้องฉาย",
+    "nameLabel": "ชื่อห้องฉาย",
+    "submit": "เพิ่ม",
+    "createSuccess": "เพิ่มห้องฉายเรียบร้อยแล้ว",
+    "createError": "ไม่สามารถเพิ่มห้องฉายได้",
+    "deleteConfirm": "ต้องการลบห้องฉายนี้หรือไม่?",
+    "deleteSuccess": "ลบห้องฉายเรียบร้อยแล้ว",
+    "deleteError": "ไม่สามารถลบห้องฉายได้",
+    "seatMapAction": "ผังที่นั่ง",
+    "delete": "ลบ",
+    "headers": {
+      "id": "รหัส",
+      "name": "ชื่อห้องฉาย",
+      "actions": "การดำเนินการ"
+    },
+    "seatMapModal": {
+      "title": "ผังที่นั่ง - {{roomName}}",
+      "rowsLabel": "แถว (เช่น A,B,C)",
+      "seatsPerRowLabel": "จำนวนที่นั่ง / แถว",
+      "vipRowsLabel": "แถว VIP (เช่น A)",
+      "coupleRowsLabel": "แถวที่นั่งคู่รัก",
+      "generateButton": "สร้างผังที่นั่ง",
+      "regenerateConfirm": "การสร้างผังที่นั่งใหม่จะลบผังที่นั่งปัจจุบัน ต้องการดำเนินการต่อหรือไม่?",
+      "generateSuccess": "สร้างผังที่นั่งเรียบร้อยแล้ว",
+      "generateError": "ไม่สามารถสร้างผังที่นั่งได้",
+      "lockedSuffix": " - ล็อกเพื่อซ่อมบำรุง",
+      "clickHint": "คลิกที่นั่งเพื่อล็อก/ปลดล็อกสำหรับการซ่อมบำรุง",
+      "emptyTitle": "ห้องฉายนี้ยังไม่มีผังที่นั่ง",
+      "emptyDescription": "กรอกแบบฟอร์มด้านบนเพื่อสร้างผังที่นั่ง",
+      "seatTypeLabels": {
+        "0": "ที่นั่งมาตรฐาน",
+        "1": "VIP",
+        "2": "ที่นั่งคู่รัก"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "คอมโบ",
+    "addButton": "เพิ่มคอมโบ +",
+    "addTitle": "เพิ่มคอมโบ",
+    "cinemaLabel": "โรงภาพยนตร์",
+    "cinemaPlaceholder": "เลือกโรงภาพยนตร์",
+    "nameLabel": "ชื่อคอมโบ",
+    "descriptionLabel": "รายละเอียด",
+    "priceLabel": "ราคา",
+    "submit": "เพิ่ม",
+    "createSuccess": "เพิ่มคอมโบเรียบร้อยแล้ว",
+    "createError": "ไม่สามารถเพิ่มคอมโบได้",
+    "deleteConfirm": "ต้องการลบคอมโบนี้หรือไม่?",
+    "deleteSuccess": "ลบคอมโบเรียบร้อยแล้ว",
+    "deleteError": "ไม่สามารถลบคอมโบได้",
+    "statusActive": "วางจำหน่าย",
+    "statusInactive": "หยุดจำหน่าย",
+    "activate": "เปิดใช้งาน",
+    "deactivate": "หยุดจำหน่าย",
+    "delete": "ลบ",
+    "headers": {
+      "id": "รหัส",
+      "cinema": "โรงภาพยนตร์",
+      "name": "ชื่อ",
+      "price": "ราคา",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "คูปองส่วนลด",
+    "addButton": "เพิ่มคูปองส่วนลด +",
+    "addTitle": "เพิ่มคูปองส่วนลด",
+    "cinemaLabel": "โรงภาพยนตร์",
+    "cinemaPlaceholder": "เลือกโรงภาพยนตร์",
+    "codeLabel": "รหัสคูปอง",
+    "discountTypeLabel": "ประเภทส่วนลด",
+    "discountTypePercent": "เปอร์เซ็นต์ (%)",
+    "discountTypeFixed": "จำนวนเงินคงที่",
+    "discountValueLabel": "มูลค่าส่วนลด",
+    "minOrderValueLabel": "ยอดสั่งซื้อขั้นต่ำ",
+    "submit": "เพิ่ม",
+    "createSuccess": "เพิ่มคูปองส่วนลดเรียบร้อยแล้ว",
+    "deleteConfirm": "ต้องการลบคูปองส่วนลดนี้หรือไม่?",
+    "deleteSuccess": "ลบคูปองส่วนลดเรียบร้อยแล้ว",
+    "deleteError": "ไม่สามารถลบได้",
+    "statusActive": "ใช้งานอยู่",
+    "statusInactive": "ไม่ได้ใช้งาน",
+    "activate": "เปิดใช้งาน",
+    "deactivate": "ปิดใช้งาน",
+    "delete": "ลบ",
+    "headers": {
+      "id": "รหัส",
+      "cinema": "โรงภาพยนตร์",
+      "code": "รหัสคูปอง",
+      "discount": "ส่วนลด",
+      "used": "ใช้ไปแล้ว",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    }
+  }
+}

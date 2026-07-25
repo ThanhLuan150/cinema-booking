@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "पुष्टि करें",
+    "cancelLabel": "रद्द करें",
+    "confirmLabel": "ठीक है"
+  },
+  "realtimeBridge": {
+    "newMovie": "नई फिल्म: {{name}}",
+    "cinemaPending": "नया सिनेमा पंजीकृत हुआ, स्वीकृति लंबित: {{name}}",
+    "cinemaApproved": "सिनेमा \"{{name}}\" स्वीकृत कर दिया गया है।",
+    "cinemaBlocked": "सिनेमा \"{{name}}\" अवरुद्ध कर दिया गया है।",
+    "newBooking": "नई बुकिंग प्राप्त हुई: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "हटाएं"
+  }
+}

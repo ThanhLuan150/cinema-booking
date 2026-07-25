@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "座席を選択",
+    "screen": "スクリーン",
+    "legend": {
+      "standard": "スタンダード",
+      "vip": "VIP",
+      "couple": "カップルシート",
+      "selecting": "選択中",
+      "sold": "販売済み"
+    },
+    "noSeatMap": {
+      "title": "この上映回にはまだ座席表がありません",
+      "description": "映画館にお問い合わせいただくか、別の上映回をお試しください。"
+    },
+    "combo": {
+      "title": "コンボセット"
+    },
+    "selectedSeatsLabel": "選択した座席:",
+    "noneSelected": "未選択",
+    "checkout": "予約してMoMoで支払う",
+    "notLoggedIn": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。",
+    "selectSeatFirst": "座席を1つ以上選択してください",
+    "checkoutFailed": "決済を開始できませんでした。",
+    "momoModal": {
+      "title": "MoMoでの支払い方法を選択",
+      "qrTitle": "QRコードを読み取る",
+      "qrDescription": "スマートフォンでMoMoアプリを開き、このコードを読み取ってお支払いください。",
+      "testAccountTitle": "MoMoテストアカウントでログイン",
+      "testAccountDescription": "MoMo決済ページを開き、テストアカウントの電話番号でログインしてください。",
+      "openButton": "MoMo決済ページを開く"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "チケットを予約",
+    "dateLabel": "日付",
+    "timeLabel": "時間",
+    "noSchedule": "上映スケジュールがありません",
+    "noAvailableTimes": "本日の上映はこれ以上ありません",
+    "bookButton": "予約",
+    "selectDateTime": "日付と時間を選択してください",
+    "notLoggedIn": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。"
+  },
+  "myBookings": {
+    "pageTitle": "予約履歴",
+    "seatType": {
+      "standard": "スタンダード",
+      "vip": "VIP",
+      "couple": "カップルシート"
+    },
+    "status": {
+      "booked": "予約済み",
+      "cancelled": "キャンセル済み",
+      "refunded": "返金済み"
+    },
+    "empty": "まだチケットがありません",
+    "movieFallback": "映画",
+    "seatLabel": "座席 {{code}}({{type}})",
+    "ticketCode": "チケットコード: {{code}}",
+    "discount": "割引: -{{amount}}",
+    "print": "チケットを印刷",
+    "cancel": "チケットをキャンセル",
+    "confirmCancel": "このチケットをキャンセルしてもよろしいですか?",
+    "cancelSuccess": "チケットをキャンセルしました。",
+    "cancelFailed": "チケットをキャンセルできませんでした。"
+  },
+  "voucher": {
+    "title": "割引コード",
+    "placeholder": "コードを入力...",
+    "apply": "適用",
+    "applied": "適用済み: -{{amount}}",
+    "applyFailed": "割引コードを適用できませんでした。"
+  }
+}

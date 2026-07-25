@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "Startseite",
+    "movies": "Filme",
+    "playing": "Im Kino",
+    "upcoming": "Demnächst",
+    "cinemas": "Kinos"
+  },
+  "header": {
+    "toggleMenu": "Menü umschalten",
+    "toggleSearch": "Suche umschalten",
+    "toggleUserMenu": "Benutzermenü umschalten",
+    "viewProfile": "Profil ansehen",
+    "myBookings": "Meine Buchungen",
+    "changePassword": "Passwort ändern",
+    "manage": "Verwalten",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "logoutSuccess": "Erfolgreich abgemeldet"
+  },
+  "footer": {
+    "tagline": "Wir garantieren Qualität und Zufriedenheit bei der Nutzung unserer Kinoticket-Buchungsseite.",
+    "quickLink": "Schnellzugriff",
+    "aboutUs": "Über uns",
+    "movies": "Filme",
+    "partner": "Partner",
+    "help": "Hilfe",
+    "important": "Wichtig",
+    "support": "Support",
+    "faq": "FAQ",
+    "check": "Überprüfen",
+    "contactUs": "Kontakt",
+    "contact": "Kontakt",
+    "newsletter": "Abonnieren Sie unseren Newsletter für die neuesten Updates & News.",
+    "emailPlaceholder": "E-Mail eingeben",
+    "send": "Senden"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "Benutzer",
+      "dashboard": "Dashboard",
+      "films": "Filme",
+      "schedule": "Spielplan",
+      "cinemas": "Kinos",
+      "combos": "Combos",
+      "vouchers": "Gutscheine",
+      "bookings": "Buchungen",
+      "transactions": "Transaktionen",
+      "reviews": "Bewertungen"
+    },
+    "toggleMenu": "Admin-Menü umschalten",
+    "adminFallback": "Admin",
+    "breadcrumbPrefix": "Benutzer",
+    "hello": "Hallo!"
+  },
+  "language": {
+    "label": "Sprache"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "confirm": "Bestätigen",
+    "close": "Schließen",
+    "submit": "Absenden",
+    "back": "Zurück",
+    "tryAgain": "Erneut versuchen",
+    "loading": "Wird geladen..."
+  },
+  "feedback": {
+    "noData": "Noch keine Daten.",
+    "somethingWrong": "Etwas ist schiefgelaufen."
+  },
+  "auth": {
+    "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
+    "accessDenied": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen."
+  }
+}

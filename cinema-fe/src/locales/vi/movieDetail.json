@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "bookNow": "Đặt vé ngay"
+  },
+  "castSection": {
+    "director": "Đạo diễn:",
+    "producer": "Nhà sản xuất:",
+    "cast": "Diễn viên"
+  },
+  "reviews": {
+    "title": "Đánh giá",
+    "ratingSummary": "{{average}}/5 · {{count}} đánh giá",
+    "ratingLabel": "Điểm:",
+    "starOption": "{{count}} sao",
+    "commentPlaceholder": "Cảm nhận của bạn về bộ phim...",
+    "submit": "Gửi đánh giá",
+    "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
+    "submitSuccess": "Đã gửi đánh giá.",
+    "submitError": "Không thể gửi đánh giá.",
+    "emptyState": "Chưa có đánh giá nào"
+  },
+  "otherMovieSlider": {
+    "trending": "Đang thịnh hành",
+    "moreDetails": "Xem chi tiết",
+    "empty": "Hiện chưa có phim thịnh hành"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "confirming": "Confirming payment...",
+  "notLoggedIn": "You need to log in to confirm the payment.",
+  "genericFailed": "Payment was not successful.",
+  "success": {
+    "title": "Payment successful",
+    "message": "Booking successful! Your ticket has been sent to your email.",
+    "viewBookings": "View my tickets"
+  },
+  "failed": {
+    "title": "Payment failed",
+    "confirmFailed": "Could not confirm the payment.",
+    "backHome": "Back to home"
+  }
+}

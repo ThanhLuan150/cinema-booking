@@ -1,0 +1,28 @@
+{
+  "empty": "暂无正在上映的电影",
+  "bannerSlider": {
+    "prevSlide": "上一张",
+    "nextSlide": "下一张",
+    "goToSlide": "跳转到指定幻灯片",
+    "bookNow": "立即购票",
+    "viewDetails": "查看详情"
+  },
+  "trendingMoviesSlider": {
+    "title": "热门电影",
+    "viewDetails": "查看详情"
+  },
+  "newMoviesSlider": {
+    "title": "新片上线",
+    "viewDetails": "查看详情"
+  },
+  "upcomingMoviesSlider": {
+    "title": "即将上映",
+    "viewDetails": "查看详情"
+  },
+  "topCinemasSlider": {
+    "title": "热门影院",
+    "addressUpdating": "地址更新中",
+    "newRating": "新",
+    "ticketsBooked": "张已售"
+  }
+}

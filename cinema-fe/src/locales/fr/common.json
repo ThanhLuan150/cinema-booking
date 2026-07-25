@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "Accueil",
+    "movies": "Films",
+    "playing": "À l'affiche",
+    "upcoming": "Prochainement",
+    "cinemas": "Cinémas"
+  },
+  "header": {
+    "toggleMenu": "Afficher/masquer le menu",
+    "toggleSearch": "Afficher/masquer la recherche",
+    "toggleUserMenu": "Afficher/masquer le menu utilisateur",
+    "viewProfile": "Voir le profil",
+    "myBookings": "Mes réservations",
+    "changePassword": "Changer le mot de passe",
+    "manage": "Gérer",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "logoutSuccess": "Déconnexion réussie"
+  },
+  "footer": {
+    "tagline": "Nous garantissons qualité et satisfaction sur notre site de réservation de billets de cinéma.",
+    "quickLink": "Liens rapides",
+    "aboutUs": "À propos de nous",
+    "movies": "Films",
+    "partner": "Partenaire",
+    "help": "Aide",
+    "important": "Important",
+    "support": "Assistance",
+    "faq": "FAQ",
+    "check": "Vérifier",
+    "contactUs": "Nous contacter",
+    "contact": "Contact",
+    "newsletter": "Abonnez-vous à notre newsletter pour recevoir les dernières actualités.",
+    "emailPlaceholder": "Saisissez votre email",
+    "send": "Envoyer"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "Utilisateur",
+      "dashboard": "Tableau de bord",
+      "films": "Films",
+      "schedule": "Programmation",
+      "cinemas": "Cinémas",
+      "combos": "Combos",
+      "vouchers": "Codes promo",
+      "bookings": "Réservations",
+      "transactions": "Transactions",
+      "reviews": "Avis"
+    },
+    "toggleMenu": "Afficher/masquer le menu admin",
+    "adminFallback": "Admin",
+    "breadcrumbPrefix": "Utilisateur",
+    "hello": "Bonjour !"
+  },
+  "language": {
+    "label": "Langue"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "submit": "Envoyer",
+    "back": "Retour",
+    "tryAgain": "Réessayer",
+    "loading": "Chargement..."
+  },
+  "feedback": {
+    "noData": "Aucune donnée pour le moment.",
+    "somethingWrong": "Une erreur s'est produite."
+  },
+  "auth": {
+    "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
+    "accessDenied": "Vous n'avez pas la permission d'accéder à cette page."
+  }
+}

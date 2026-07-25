@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "情報なし",
+    "bookNow": "今すぐ予約"
+  },
+  "castSection": {
+    "director": "監督:",
+    "producer": "製作:",
+    "cast": "出演者"
+  },
+  "reviews": {
+    "title": "レビュー",
+    "ratingSummary": "{{average}}/5 ・ {{count}}件のレビュー",
+    "ratingLabel": "評価:",
+    "starOption": "星{{count}}つ",
+    "commentPlaceholder": "この映画についての感想を教えてください...",
+    "submit": "レビューを投稿",
+    "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。",
+    "submitSuccess": "レビューを投稿しました。",
+    "submitError": "レビューを投稿できませんでした。",
+    "emptyState": "まだレビューがありません"
+  },
+  "otherMovieSlider": {
+    "trending": "話題の映画",
+    "moreDetails": "詳細を見る",
+    "empty": "現在話題の映画はありません"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "bookNow": "Book now"
+  },
+  "castSection": {
+    "director": "Director:",
+    "producer": "Producer:",
+    "cast": "Cast"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "ratingSummary": "{{average}}/5 · {{count}} reviews",
+    "ratingLabel": "Rating:",
+    "starOption": "{{count}} stars",
+    "commentPlaceholder": "Share your thoughts about this movie...",
+    "submit": "Submit review",
+    "loginRequired": "You are not logged in. Please log in or sign up to use this feature.",
+    "submitSuccess": "Review submitted.",
+    "submitError": "Unable to submit review.",
+    "emptyState": "No reviews yet"
+  },
+  "otherMovieSlider": {
+    "trending": "Trending",
+    "moreDetails": "More Details",
+    "empty": "No trending movies right now"
+  }
+}

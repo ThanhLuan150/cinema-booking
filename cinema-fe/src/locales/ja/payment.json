@@ -1,0 +1,15 @@
+{
+  "confirming": "決済を確認しています...",
+  "notLoggedIn": "決済を確認するにはログインが必要です。",
+  "genericFailed": "決済が完了しませんでした。",
+  "success": {
+    "title": "決済が完了しました",
+    "message": "ご予約ありがとうございます!チケットはメールに送信されました。",
+    "viewBookings": "マイチケットを見る"
+  },
+  "failed": {
+    "title": "決済に失敗しました",
+    "confirmFailed": "決済を確認できませんでした。",
+    "backHome": "ホームに戻る"
+  }
+}

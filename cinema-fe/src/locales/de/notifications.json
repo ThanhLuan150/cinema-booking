@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "Bestätigen",
+    "cancelLabel": "Abbrechen",
+    "confirmLabel": "OK"
+  },
+  "realtimeBridge": {
+    "newMovie": "Neuer Film: {{name}}",
+    "cinemaPending": "Neues Kino registriert, Genehmigung ausstehend: {{name}}",
+    "cinemaApproved": "Kino \"{{name}}\" wurde genehmigt.",
+    "cinemaBlocked": "Kino \"{{name}}\" wurde gesperrt.",
+    "newBooking": "Neue Buchung erhalten: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "Schließen"
+  }
+}

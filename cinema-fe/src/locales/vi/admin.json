@@ -1,0 +1,185 @@
+{
+  "dashboard": {
+    "breadcrumb": "Admin Dashboard",
+    "loading": "Đang tải...",
+    "stats": {
+      "totalRevenue": "Tổng doanh thu",
+      "totalUsers": "Người dùng",
+      "totalOwners": "Chủ rạp",
+      "totalCinemas": "Rạp",
+      "totalTicketsSold": "Vé đã bán",
+      "totalTransactions": "Giao dịch"
+    },
+    "chartTitle": "Doanh thu toàn hệ thống theo ngày",
+    "noData": "Chưa có dữ liệu"
+  },
+  "movies": {
+    "add": {
+      "title": "Thêm phim",
+      "fields": {
+        "name": "Tên:",
+        "avatar": "Ảnh đại diện:",
+        "premiereDate": "Ngày công chiếu:",
+        "country": "Quốc gia:",
+        "description": "Mô tả:",
+        "trailer": "Trailer:",
+        "producer": "Nhà sản xuất:",
+        "director": "Đạo diễn:"
+      },
+      "cast": {
+        "label": "Diễn viên:",
+        "name": "Tên",
+        "role": "Vai diễn",
+        "avatarUrl": "URL ảnh",
+        "remove": "Xóa",
+        "add": "+ Thêm diễn viên"
+      },
+      "category": "Danh mục:",
+      "submit": "Thêm",
+      "toastSuccess": "Thêm thành công",
+      "toastError": "Thêm không thành công"
+    },
+    "edit": {
+      "title": "Sửa phim",
+      "fields": {
+        "name": "Tên:",
+        "avatar": "Ảnh đại diện:",
+        "uploadNewAvatar": "Tải ảnh mới:",
+        "premiereDate": "Ngày công chiếu:",
+        "country": "Quốc gia:",
+        "description": "Mô tả:",
+        "trailer": "Trailer:",
+        "uploadNewTrailer": "Tải trailer mới:",
+        "producer": "Nhà sản xuất:",
+        "director": "Đạo diễn:"
+      },
+      "cast": {
+        "label": "Diễn viên:",
+        "name": "Tên",
+        "role": "Vai diễn",
+        "avatarUrl": "URL ảnh",
+        "remove": "Xóa",
+        "add": "+ Thêm diễn viên"
+      },
+      "category": "Danh mục:",
+      "submit": "Cập nhật",
+      "toastSuccess": "Cập nhật phim thành công!"
+    },
+    "delete": {
+      "confirm": "Bạn muốn xóa phim có id là {{id}}?",
+      "toastSuccess": "Xóa thành công",
+      "toastError": "Xóa không thành công"
+    },
+    "list": {
+      "breadcrumb": "Phim",
+      "addButton": "Thêm +",
+      "headers": ["ID", "Ảnh", "Tên", "Ngày công chiếu", "Quốc gia", "Mô tả", "Trailer", "Danh mục", "Hành động"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "Thêm suất chiếu",
+      "cinema": {
+        "label": "Chi nhánh:",
+        "placeholder": "Chọn chi nhánh"
+      },
+      "room": {
+        "label": "Phòng chiếu:",
+        "placeholder": "Chọn phòng",
+        "placeholderSelectCinemaFirst": "Chọn chi nhánh trước"
+      },
+      "date": "Ngày chiếu:",
+      "slot": {
+        "label": "Suất chiếu:",
+        "placeholder": "Chọn suất chiếu"
+      },
+      "price": "Giá vé:",
+      "submit": "Thêm",
+      "validationError": "Vui lòng chọn đầy đủ rạp, phòng, ngày và suất chiếu.",
+      "toastSuccess": "Đã thêm suất chiếu."
+    },
+    "list": {
+      "breadcrumb": "Lịch chiếu",
+      "headers": ["ID", "Phim", "Giờ bắt đầu", "Giờ kết thúc", "Ngày chiếu", "Giá vé"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "Đánh giá",
+    "headers": ["ID", "Đối tượng", "Điểm", "Nội dung", "Trạng thái", "Hành động"],
+    "cinemaSuffix": "{{name}} (rạp)",
+    "hiddenStatus": "Đã ẩn",
+    "visibleStatus": "Hiển thị",
+    "hideButton": "Ẩn",
+    "deleteButton": "Xóa",
+    "hideSuccess": "Đã ẩn đánh giá.",
+    "deleteConfirm": "Xóa đánh giá này?",
+    "deleteSuccess": "Đã xóa đánh giá."
+  },
+  "transactions": {
+    "breadcrumb": "Giao dịch",
+    "headers": ["ID", "Mã vé", "Khách hàng", "Phim", "Ghế", "Tổng tiền", "Trạng thái", "Hành động"],
+    "status": {
+      "booked": "Đã đặt vé",
+      "cancelled": "Đã hủy",
+      "refunded": "Đã hoàn tiền"
+    },
+    "refundButton": "Hoàn tiền",
+    "refundConfirm": "Hoàn tiền cho giao dịch này?",
+    "refundSuccess": "Đã hoàn tiền cho giao dịch."
+  },
+  "cinemas": {
+    "breadcrumb": "Rạp chiếu",
+    "headers": ["ID", "Tên rạp", "Chủ sở hữu (ID)", "Địa chỉ", "Trạng thái", "Hành động"],
+    "status": {
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "blocked": "Bị khóa"
+    },
+    "approveButton": "Duyệt",
+    "blockButton": "Khóa",
+    "deleteButton": "Xóa",
+    "blockConfirm": "Khóa rạp này?",
+    "deleteConfirm": "Xóa rạp này? Hành động không thể hoàn tác.",
+    "approveSuccess": "Đã duyệt rạp.",
+    "blockSuccess": "Đã khóa rạp.",
+    "deleteSuccess": "Đã xóa rạp."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "Đã khóa người dùng",
+      "swalText": "Thành công",
+      "confirmTitle": "Xác nhận khóa",
+      "confirmMessage": "Bạn có chắc muốn khóa {{name}}?",
+      "confirmLabel": "Khóa"
+    },
+    "unblock": {
+      "swalTitle": "Đã mở khóa người dùng",
+      "swalText": "Thành công",
+      "confirmTitle": "Xác nhận mở khóa",
+      "confirmMessage": "Bạn có chắc muốn mở khóa {{name}}?",
+      "confirmLabel": "Mở khóa"
+    },
+    "delete": {
+      "swalTitle": "Đã xóa người dùng",
+      "swalText": "Thành công",
+      "confirmTitle": "Xác nhận xóa",
+      "confirmMessage": "Bạn có chắc muốn xóa người dùng này?",
+      "confirmLabel": "Xóa"
+    },
+    "list": {
+      "breadcrumb": "Người dùng",
+      "headers": ["ID", "Họ tên", "Số điện thoại", "Email", "Vai trò", "Trạng thái", "Hành động"],
+      "roles": {
+        "admin": "Quản trị viên",
+        "user": "Người dùng",
+        "theater": "Chủ rạp"
+      },
+      "statusActive": "Hoạt động",
+      "statusInactive": "Đã khóa",
+      "roleChangeSuccess": "Đã đổi quyền.",
+      "pendingApproval": "Chờ duyệt",
+      "approveButton": "Duyệt",
+      "approveSuccess": "Đã duyệt tài khoản chủ rạp."
+    }
+  }
+}

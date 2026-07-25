@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "管理者ダッシュボード",
+    "loading": "読み込み中...",
+    "stats": {
+      "totalRevenue": "総売上",
+      "totalUsers": "会員数",
+      "totalOwners": "劇場オーナー数",
+      "totalCinemas": "映画館数",
+      "totalTicketsSold": "販売済みチケット数",
+      "totalTransactions": "取引件数"
+    },
+    "chartTitle": "全体の日別売上",
+    "noData": "データがまだありません"
+  },
+  "movies": {
+    "add": {
+      "title": "映画を追加",
+      "fields": {
+        "name": "タイトル:",
+        "avatar": "サムネイル画像:",
+        "premiereDate": "公開日:",
+        "country": "製作国:",
+        "description": "概要:",
+        "trailer": "予告編:",
+        "producer": "製作:",
+        "director": "監督:"
+      },
+      "cast": {
+        "label": "出演者:",
+        "name": "名前",
+        "role": "役柄",
+        "avatarUrl": "画像URL",
+        "remove": "削除",
+        "add": "+ 出演者を追加"
+      },
+      "category": "ジャンル:",
+      "submit": "追加",
+      "toastSuccess": "追加しました",
+      "toastError": "追加に失敗しました"
+    },
+    "edit": {
+      "title": "映画を編集",
+      "fields": {
+        "name": "タイトル:",
+        "avatar": "サムネイル画像:",
+        "uploadNewAvatar": "新しいサムネイル画像をアップロード:",
+        "premiereDate": "公開日:",
+        "country": "製作国:",
+        "description": "概要:",
+        "trailer": "予告編:",
+        "uploadNewTrailer": "新しい予告編をアップロード:",
+        "producer": "製作:",
+        "director": "監督:"
+      },
+      "cast": {
+        "label": "出演者:",
+        "name": "名前",
+        "role": "役柄",
+        "avatarUrl": "画像URL",
+        "remove": "削除",
+        "add": "+ 出演者を追加"
+      },
+      "category": "ジャンル:",
+      "submit": "更新",
+      "toastSuccess": "映画情報を更新しました!"
+    },
+    "delete": {
+      "confirm": "ID {{id}} の映画を削除しますか?",
+      "toastSuccess": "削除しました",
+      "toastError": "削除に失敗しました"
+    },
+    "list": {
+      "breadcrumb": "映画一覧",
+      "addButton": "追加 +",
+      "headers": ["ID", "サムネイル", "タイトル", "公開日", "製作国", "概要", "予告編", "ジャンル", "操作"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "上映スケジュールを追加",
+      "cinema": {
+        "label": "劇場:",
+        "placeholder": "劇場を選択"
+      },
+      "room": {
+        "label": "上映室:",
+        "placeholder": "上映室を選択",
+        "placeholderSelectCinemaFirst": "先に劇場を選択してください"
+      },
+      "date": "上映日:",
+      "slot": {
+        "label": "上映時間:",
+        "placeholder": "上映時間を選択"
+      },
+      "price": "チケット料金:",
+      "submit": "追加",
+      "validationError": "劇場、上映室、日付、上映時間を選択してください。",
+      "toastSuccess": "上映スケジュールを追加しました。"
+    },
+    "list": {
+      "breadcrumb": "上映スケジュール",
+      "headers": ["ID", "映画", "開始時刻", "終了時刻", "上映日", "料金"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "レビュー",
+    "headers": ["ID", "対象", "評価", "内容", "状態", "操作"],
+    "cinemaSuffix": "{{name}}(映画館)",
+    "hiddenStatus": "非表示",
+    "visibleStatus": "表示",
+    "hideButton": "非表示にする",
+    "deleteButton": "削除",
+    "hideSuccess": "レビューを非表示にしました。",
+    "deleteConfirm": "このレビューを削除しますか?",
+    "deleteSuccess": "レビューを削除しました。"
+  },
+  "transactions": {
+    "breadcrumb": "取引履歴",
+    "headers": ["ID", "チケットコード", "顧客", "映画", "座席", "合計金額", "状態", "操作"],
+    "status": {
+      "booked": "予約済み",
+      "cancelled": "キャンセル済み",
+      "refunded": "返金済み"
+    },
+    "refundButton": "返金",
+    "refundConfirm": "この取引を返金しますか?",
+    "refundSuccess": "取引を返金しました。"
+  },
+  "cinemas": {
+    "breadcrumb": "映画館",
+    "headers": ["ID", "映画館名", "オーナー(ID)", "住所", "状態", "操作"],
+    "status": {
+      "pending": "承認待ち",
+      "approved": "承認済み",
+      "blocked": "ブロック済み"
+    },
+    "approveButton": "承認",
+    "blockButton": "ブロック",
+    "deleteButton": "削除",
+    "blockConfirm": "この映画館をブロックしますか?",
+    "deleteConfirm": "この映画館を削除しますか?この操作は取り消せません。",
+    "approveSuccess": "映画館を承認しました。",
+    "blockSuccess": "映画館をブロックしました。",
+    "deleteSuccess": "映画館を削除しました。"
+  },
+  "users": {
+    "block": {
+      "swalTitle": "ユーザーをブロックしました",
+      "swalText": "成功",
+      "confirmTitle": "ブロックの確認",
+      "confirmMessage": "{{name}}さんをブロックしてもよろしいですか?",
+      "confirmLabel": "ブロック"
+    },
+    "unblock": {
+      "swalTitle": "ユーザーのブロックを解除しました",
+      "swalText": "成功",
+      "confirmTitle": "ブロック解除の確認",
+      "confirmMessage": "{{name}}さんのブロックを解除してもよろしいですか?",
+      "confirmLabel": "ブロック解除"
+    },
+    "delete": {
+      "swalTitle": "ユーザーを削除しました",
+      "swalText": "成功",
+      "confirmTitle": "削除の確認",
+      "confirmMessage": "このユーザーを削除してもよろしいですか?",
+      "confirmLabel": "削除"
+    },
+    "list": {
+      "breadcrumb": "ユーザー",
+      "headers": ["ID", "氏名", "電話番号", "メールアドレス", "権限", "状態", "操作"],
+      "roles": {
+        "admin": "管理者",
+        "user": "一般ユーザー",
+        "theater": "劇場オーナー"
+      },
+      "statusActive": "有効",
+      "statusInactive": "無効",
+      "roleChangeSuccess": "権限を更新しました。"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "empty": "ขณะนี้ไม่มีภาพยนตร์ที่กำลังฉาย",
+  "bannerSlider": {
+    "prevSlide": "สไลด์ก่อนหน้า",
+    "nextSlide": "สไลด์ถัดไป",
+    "goToSlide": "ไปที่สไลด์",
+    "bookNow": "จองเลย",
+    "viewDetails": "ดูรายละเอียด"
+  },
+  "trendingMoviesSlider": {
+    "title": "กำลังมาแรง",
+    "viewDetails": "ดูรายละเอียด"
+  },
+  "newMoviesSlider": {
+    "title": "ใหม่ล่าสุด",
+    "viewDetails": "ดูรายละเอียด"
+  },
+  "upcomingMoviesSlider": {
+    "title": "เร็วๆ นี้",
+    "viewDetails": "ดูรายละเอียด"
+  },
+  "topCinemasSlider": {
+    "title": "โรงภาพยนตร์ยอดนิยม",
+    "addressUpdating": "กำลังอัปเดตที่อยู่",
+    "newRating": "ใหม่",
+    "ticketsBooked": "ตั๋วที่จองแล้ว"
+  }
+}

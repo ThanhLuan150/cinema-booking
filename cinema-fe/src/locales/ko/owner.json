@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "대시보드",
+    "allMyCinemas": "내 영화관 전체",
+    "loading": "로딩 중...",
+    "revenue": "매출",
+    "ticketsSold": "판매된 티켓 수",
+    "occupancyRate": "좌석 점유율",
+    "scheduleCount": "상영 횟수",
+    "revenueByDay": "일별 매출",
+    "noData": "아직 데이터가 없습니다"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "티켓 조회",
+    "codePlaceholder": "티켓 코드를 입력하세요...",
+    "searchButton": "조회",
+    "notFound": "티켓을 찾을 수 없습니다.",
+    "ticketCode": "티켓 코드:",
+    "movie": "영화:",
+    "cinema": "영화관:",
+    "schedule": "상영 시간:",
+    "seat": "좌석:",
+    "status": "상태:",
+    "totalPrice": "총 금액:",
+    "statusLabels": {
+      "0": "취소됨",
+      "1": "예매 완료",
+      "2": "환불됨"
+    },
+    "seatTypeLabels": {
+      "0": "일반석",
+      "1": "VIP석",
+      "2": "커플석"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "영화관",
+    "addButton": "영화관 추가 +",
+    "addTitle": "영화관 추가",
+    "nameLabel": "영화관 이름",
+    "addressLabel": "주소",
+    "cityLabel": "도시",
+    "submit": "추가",
+    "createSuccess": "영화관 등록 요청이 전송되었습니다. 관리자 승인을 기다려 주세요.",
+    "createError": "영화관을 등록할 수 없습니다.",
+    "manageRooms": "상영관 관리",
+    "statusLabels": {
+      "0": "승인 대기",
+      "1": "승인됨",
+      "2": "차단됨"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "영화관 이름",
+      "address": "주소",
+      "city": "도시",
+      "status": "상태",
+      "actions": "작업"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "상영관",
+    "addButton": "상영관 추가 +",
+    "addTitle": "상영관 추가",
+    "nameLabel": "상영관 이름",
+    "submit": "추가",
+    "createSuccess": "상영관이 추가되었습니다.",
+    "createError": "상영관을 추가할 수 없습니다.",
+    "deleteConfirm": "이 상영관을 삭제하시겠습니까?",
+    "deleteSuccess": "상영관이 삭제되었습니다.",
+    "deleteError": "상영관을 삭제할 수 없습니다.",
+    "seatMapAction": "좌석 배치도",
+    "delete": "삭제",
+    "headers": {
+      "id": "ID",
+      "name": "상영관 이름",
+      "actions": "작업"
+    },
+    "seatMapModal": {
+      "title": "좌석 배치도 - {{roomName}}",
+      "rowsLabel": "열 (예: A,B,C)",
+      "seatsPerRowLabel": "열당 좌석 수",
+      "vipRowsLabel": "VIP 열 (예: A)",
+      "coupleRowsLabel": "커플석 열",
+      "generateButton": "좌석 배치도 생성",
+      "regenerateConfirm": "좌석 배치도를 다시 생성하면 기존 배치도가 삭제됩니다. 계속하시겠습니까?",
+      "generateSuccess": "좌석 배치도가 생성되었습니다.",
+      "generateError": "좌석 배치도를 생성할 수 없습니다.",
+      "lockedSuffix": " - 점검으로 잠김",
+      "clickHint": "좌석을 클릭하면 점검을 위해 잠금/잠금 해제할 수 있습니다.",
+      "emptyTitle": "이 상영관은 아직 좌석 배치도가 없습니다",
+      "emptyDescription": "위 양식을 작성하여 생성하세요.",
+      "seatTypeLabels": {
+        "0": "일반석",
+        "1": "VIP석",
+        "2": "커플석"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "콤보",
+    "addButton": "콤보 추가 +",
+    "addTitle": "콤보 추가",
+    "cinemaLabel": "영화관",
+    "cinemaPlaceholder": "영화관 선택",
+    "nameLabel": "콤보 이름",
+    "descriptionLabel": "설명",
+    "priceLabel": "가격",
+    "submit": "추가",
+    "createSuccess": "콤보가 추가되었습니다.",
+    "createError": "콤보를 추가할 수 없습니다.",
+    "deleteConfirm": "이 콤보를 삭제하시겠습니까?",
+    "deleteSuccess": "콤보가 삭제되었습니다.",
+    "deleteError": "콤보를 삭제할 수 없습니다.",
+    "statusActive": "판매 중",
+    "statusInactive": "판매 중지",
+    "activate": "활성화",
+    "deactivate": "판매 중지",
+    "delete": "삭제",
+    "headers": {
+      "id": "ID",
+      "cinema": "영화관",
+      "name": "이름",
+      "price": "가격",
+      "status": "상태",
+      "actions": "작업"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "할인 쿠폰",
+    "addButton": "쿠폰 추가 +",
+    "addTitle": "쿠폰 추가",
+    "cinemaLabel": "영화관",
+    "cinemaPlaceholder": "영화관 선택",
+    "codeLabel": "코드",
+    "discountTypeLabel": "할인 유형",
+    "discountTypePercent": "비율 할인 (%)",
+    "discountTypeFixed": "정액 할인",
+    "discountValueLabel": "할인 값",
+    "minOrderValueLabel": "최소 주문 금액",
+    "submit": "추가",
+    "createSuccess": "쿠폰이 추가되었습니다.",
+    "deleteConfirm": "이 쿠폰을 삭제하시겠습니까?",
+    "deleteSuccess": "쿠폰이 삭제되었습니다.",
+    "deleteError": "삭제할 수 없습니다.",
+    "statusActive": "활성",
+    "statusInactive": "비활성",
+    "activate": "사용",
+    "deactivate": "미사용",
+    "delete": "삭제",
+    "headers": {
+      "id": "ID",
+      "cinema": "영화관",
+      "code": "코드",
+      "discount": "할인",
+      "used": "사용됨",
+      "status": "상태",
+      "actions": "작업"
+    }
+  }
+}

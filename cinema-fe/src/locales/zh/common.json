@@ -1,0 +1,80 @@
+{
+  "brand": "CineNova",
+  "nav": {
+    "home": "首页",
+    "movies": "电影",
+    "playing": "正在热映",
+    "upcoming": "即将上映",
+    "cinemas": "影院"
+  },
+  "header": {
+    "toggleMenu": "切换菜单",
+    "toggleSearch": "切换搜索",
+    "toggleUserMenu": "切换用户菜单",
+    "viewProfile": "查看个人主页",
+    "myBookings": "我的订单",
+    "changePassword": "修改密码",
+    "manage": "管理后台",
+    "logout": "退出登录",
+    "login": "登录",
+    "logoutSuccess": "退出登录成功"
+  },
+  "footer": {
+    "tagline": "我们承诺为您提供高品质、放心的购票体验。",
+    "quickLink": "快捷链接",
+    "aboutUs": "关于我们",
+    "movies": "电影",
+    "partner": "合作伙伴",
+    "help": "帮助",
+    "important": "重要信息",
+    "support": "客服支持",
+    "faq": "常见问题",
+    "check": "订单查询",
+    "contactUs": "联系我们",
+    "contact": "联系方式",
+    "newsletter": "订阅我们的新闻简报，获取最新资讯。",
+    "emailPlaceholder": "请输入邮箱",
+    "send": "发送"
+  },
+  "adminLayout": {
+    "nav": {
+      "user": "用户",
+      "dashboard": "控制台",
+      "films": "电影管理",
+      "schedule": "排片管理",
+      "cinemas": "影院管理",
+      "combos": "套餐管理",
+      "vouchers": "优惠券管理",
+      "bookings": "订单管理",
+      "transactions": "交易管理",
+      "reviews": "评价管理"
+    },
+    "toggleMenu": "切换管理菜单",
+    "adminFallback": "管理员",
+    "breadcrumbPrefix": "用户",
+    "hello": "您好！"
+  },
+  "language": {
+    "label": "语言"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "confirm": "确认",
+    "close": "关闭",
+    "submit": "提交",
+    "back": "返回",
+    "tryAgain": "重试",
+    "loading": "加载中..."
+  },
+  "feedback": {
+    "noData": "暂无数据。",
+    "somethingWrong": "出了点问题。"
+  },
+  "auth": {
+    "loginRequired": "您尚未登录，请登录或注册后使用此功能。",
+    "accessDenied": "您没有权限访问此页面。"
+  }
+}

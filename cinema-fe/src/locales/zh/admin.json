@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "管理后台",
+    "loading": "加载中...",
+    "stats": {
+      "totalRevenue": "总收入",
+      "totalUsers": "用户数",
+      "totalOwners": "影院业主",
+      "totalCinemas": "影院数",
+      "totalTicketsSold": "已售票数",
+      "totalTransactions": "交易数"
+    },
+    "chartTitle": "全站每日收入",
+    "noData": "暂无数据"
+  },
+  "movies": {
+    "add": {
+      "title": "新增电影",
+      "fields": {
+        "name": "名称：",
+        "avatar": "封面图：",
+        "premiereDate": "上映日期：",
+        "country": "国家：",
+        "description": "简介：",
+        "trailer": "预告片：",
+        "producer": "制片人：",
+        "director": "导演："
+      },
+      "cast": {
+        "label": "演员：",
+        "name": "姓名",
+        "role": "角色",
+        "avatarUrl": "图片链接",
+        "remove": "删除",
+        "add": "+ 添加演员"
+      },
+      "category": "类型：",
+      "submit": "新增",
+      "toastSuccess": "添加成功",
+      "toastError": "添加失败"
+    },
+    "edit": {
+      "title": "编辑电影",
+      "fields": {
+        "name": "名称：",
+        "avatar": "封面图：",
+        "uploadNewAvatar": "上传新封面图：",
+        "premiereDate": "上映日期：",
+        "country": "国家：",
+        "description": "简介：",
+        "trailer": "预告片：",
+        "uploadNewTrailer": "上传新预告片：",
+        "producer": "制片人：",
+        "director": "导演："
+      },
+      "cast": {
+        "label": "演员：",
+        "name": "姓名",
+        "role": "角色",
+        "avatarUrl": "图片链接",
+        "remove": "删除",
+        "add": "+ 添加演员"
+      },
+      "category": "类型：",
+      "submit": "更新",
+      "toastSuccess": "电影更新成功！"
+    },
+    "delete": {
+      "confirm": "确定要删除 ID 为 {{id}} 的电影吗？",
+      "toastSuccess": "删除成功",
+      "toastError": "删除失败"
+    },
+    "list": {
+      "breadcrumb": "电影管理",
+      "addButton": "新增 +",
+      "headers": ["ID", "封面图", "名称", "上映日期", "国家", "简介", "预告片", "类型", "操作"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "新增场次",
+      "cinema": {
+        "label": "分店：",
+        "placeholder": "选择分店"
+      },
+      "room": {
+        "label": "影厅：",
+        "placeholder": "选择影厅",
+        "placeholderSelectCinemaFirst": "请先选择分店"
+      },
+      "date": "放映日期：",
+      "slot": {
+        "label": "场次时间：",
+        "placeholder": "选择场次时间"
+      },
+      "price": "票价：",
+      "submit": "新增",
+      "validationError": "请选择分店、影厅、日期和场次时间。",
+      "toastSuccess": "场次已添加。"
+    },
+    "list": {
+      "breadcrumb": "排片表",
+      "headers": ["ID", "电影", "开始时间", "结束时间", "放映日期", "票价"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "评价管理",
+    "headers": ["ID", "评价对象", "评分", "内容", "状态", "操作"],
+    "cinemaSuffix": "{{name}}（影院）",
+    "hiddenStatus": "已隐藏",
+    "visibleStatus": "显示中",
+    "hideButton": "隐藏",
+    "deleteButton": "删除",
+    "hideSuccess": "评价已隐藏。",
+    "deleteConfirm": "确定要删除这条评价吗？",
+    "deleteSuccess": "评价已删除。"
+  },
+  "transactions": {
+    "breadcrumb": "交易管理",
+    "headers": ["ID", "票号", "客户", "电影", "座位", "总额", "状态", "操作"],
+    "status": {
+      "booked": "已预订",
+      "cancelled": "已取消",
+      "refunded": "已退款"
+    },
+    "refundButton": "退款",
+    "refundConfirm": "确定要为该笔交易退款吗？",
+    "refundSuccess": "交易已退款。"
+  },
+  "cinemas": {
+    "breadcrumb": "影院管理",
+    "headers": ["ID", "影院名称", "业主（ID）", "地址", "状态", "操作"],
+    "status": {
+      "pending": "待审核",
+      "approved": "已通过",
+      "blocked": "已封禁"
+    },
+    "approveButton": "通过",
+    "blockButton": "封禁",
+    "deleteButton": "删除",
+    "blockConfirm": "确定要封禁该影院吗？",
+    "deleteConfirm": "确定要删除该影院吗？此操作不可撤销。",
+    "approveSuccess": "影院已通过审核。",
+    "blockSuccess": "影院已封禁。",
+    "deleteSuccess": "影院已删除。"
+  },
+  "users": {
+    "block": {
+      "swalTitle": "用户已封禁",
+      "swalText": "操作成功",
+      "confirmTitle": "确认封禁",
+      "confirmMessage": "确定要封禁 {{name}} 吗？",
+      "confirmLabel": "封禁"
+    },
+    "unblock": {
+      "swalTitle": "用户已解封",
+      "swalText": "操作成功",
+      "confirmTitle": "确认解封",
+      "confirmMessage": "确定要解封 {{name}} 吗？",
+      "confirmLabel": "解封"
+    },
+    "delete": {
+      "swalTitle": "用户已删除",
+      "swalText": "操作成功",
+      "confirmTitle": "确认删除",
+      "confirmMessage": "确定要删除该用户吗？",
+      "confirmLabel": "删除"
+    },
+    "list": {
+      "breadcrumb": "用户管理",
+      "headers": ["ID", "姓名", "手机号", "邮箱", "角色", "状态", "操作"],
+      "roles": {
+        "admin": "管理员",
+        "user": "普通用户",
+        "theater": "影院业主"
+      },
+      "statusActive": "正常",
+      "statusInactive": "已停用",
+      "roleChangeSuccess": "角色已更新。"
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "Панель управления",
+    "allMyCinemas": "Все мои кинотеатры",
+    "loading": "Загрузка...",
+    "revenue": "Выручка",
+    "ticketsSold": "Продано билетов",
+    "occupancyRate": "Заполняемость зала",
+    "scheduleCount": "Количество сеансов",
+    "revenueByDay": "Выручка по дням",
+    "noData": "Пока нет данных"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "Поиск бронирований",
+    "codePlaceholder": "Введите код билета...",
+    "searchButton": "Найти",
+    "notFound": "Билет не найден.",
+    "ticketCode": "Код билета:",
+    "movie": "Фильм:",
+    "cinema": "Кинотеатр:",
+    "schedule": "Сеанс:",
+    "seat": "Место:",
+    "status": "Статус:",
+    "totalPrice": "Итоговая цена:",
+    "statusLabels": {
+      "0": "Отменено",
+      "1": "Забронировано",
+      "2": "Возвращено"
+    },
+    "seatTypeLabels": {
+      "0": "Стандарт",
+      "1": "VIP",
+      "2": "Для пар"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "Кинотеатры",
+    "addButton": "Добавить кинотеатр +",
+    "addTitle": "Добавить кинотеатр",
+    "nameLabel": "Название кинотеатра",
+    "addressLabel": "Адрес",
+    "cityLabel": "Город",
+    "submit": "Добавить",
+    "createSuccess": "Запрос на создание кинотеатра отправлен и ожидает одобрения администратора.",
+    "createError": "Не удалось создать кинотеатр.",
+    "manageRooms": "Управление залами",
+    "statusLabels": {
+      "0": "Ожидает одобрения",
+      "1": "Одобрено",
+      "2": "Заблокировано"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "Название кинотеатра",
+      "address": "Адрес",
+      "city": "Город",
+      "status": "Статус",
+      "actions": "Действия"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "Залы",
+    "addButton": "Добавить зал +",
+    "addTitle": "Добавить зал",
+    "nameLabel": "Название зала",
+    "submit": "Добавить",
+    "createSuccess": "Зал добавлен.",
+    "createError": "Не удалось добавить зал.",
+    "deleteConfirm": "Удалить этот зал?",
+    "deleteSuccess": "Зал удалён.",
+    "deleteError": "Не удалось удалить зал.",
+    "seatMapAction": "Схема зала",
+    "delete": "Удалить",
+    "headers": {
+      "id": "ID",
+      "name": "Название зала",
+      "actions": "Действия"
+    },
+    "seatMapModal": {
+      "title": "Схема зала - {{roomName}}",
+      "rowsLabel": "Ряды (например, A,B,C)",
+      "seatsPerRowLabel": "Мест в ряду",
+      "vipRowsLabel": "VIP-ряды (например, A)",
+      "coupleRowsLabel": "Ряды для пар",
+      "generateButton": "Создать схему зала",
+      "regenerateConfirm": "Повторное создание схемы зала удалит текущую. Продолжить?",
+      "generateSuccess": "Схема зала создана.",
+      "generateError": "Не удалось создать схему зала.",
+      "lockedSuffix": " - Заблокировано на обслуживание",
+      "clickHint": "Нажмите на место, чтобы заблокировать/разблокировать его для обслуживания.",
+      "emptyTitle": "Для этого зала пока нет схемы",
+      "emptyDescription": "Заполните форму выше, чтобы создать её.",
+      "seatTypeLabels": {
+        "0": "Стандарт",
+        "1": "VIP",
+        "2": "Для пар"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "Комбо-наборы",
+    "addButton": "Добавить комбо +",
+    "addTitle": "Добавить комбо",
+    "cinemaLabel": "Кинотеатр",
+    "cinemaPlaceholder": "Выберите кинотеатр",
+    "nameLabel": "Название комбо",
+    "descriptionLabel": "Описание",
+    "priceLabel": "Цена",
+    "submit": "Добавить",
+    "createSuccess": "Комбо добавлено.",
+    "createError": "Не удалось добавить комбо.",
+    "deleteConfirm": "Удалить это комбо?",
+    "deleteSuccess": "Комбо удалено.",
+    "deleteError": "Не удалось удалить комбо.",
+    "statusActive": "В продаже",
+    "statusInactive": "Снято с продажи",
+    "activate": "Активировать",
+    "deactivate": "Снять с продажи",
+    "delete": "Удалить",
+    "headers": {
+      "id": "ID",
+      "cinema": "Кинотеатр",
+      "name": "Название",
+      "price": "Цена",
+      "status": "Статус",
+      "actions": "Действия"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "Промокоды",
+    "addButton": "Добавить промокод +",
+    "addTitle": "Добавить промокод",
+    "cinemaLabel": "Кинотеатр",
+    "cinemaPlaceholder": "Выберите кинотеатр",
+    "codeLabel": "Код",
+    "discountTypeLabel": "Тип скидки",
+    "discountTypePercent": "Процент (%)",
+    "discountTypeFixed": "Фиксированная сумма",
+    "discountValueLabel": "Размер скидки",
+    "minOrderValueLabel": "Минимальная сумма заказа",
+    "submit": "Добавить",
+    "createSuccess": "Промокод добавлен.",
+    "deleteConfirm": "Удалить этот промокод?",
+    "deleteSuccess": "Промокод удалён.",
+    "deleteError": "Не удалось удалить.",
+    "statusActive": "Активен",
+    "statusInactive": "Неактивен",
+    "activate": "Включить",
+    "deactivate": "Отключить",
+    "delete": "Удалить",
+    "headers": {
+      "id": "ID",
+      "cinema": "Кинотеатр",
+      "code": "Код",
+      "discount": "Скидка",
+      "used": "Использовано",
+      "status": "Статус",
+      "actions": "Действия"
+    }
+  }
+}

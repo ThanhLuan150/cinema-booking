@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "Dashboard",
+    "allMyCinemas": "Alle meine Kinos",
+    "loading": "Wird geladen...",
+    "revenue": "Umsatz",
+    "ticketsSold": "Verkaufte Tickets",
+    "occupancyRate": "Sitzplatzauslastung",
+    "scheduleCount": "Anzahl der Vorstellungen",
+    "revenueByDay": "Umsatz nach Tag",
+    "noData": "Noch keine Daten"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "Ticketsuche",
+    "codePlaceholder": "Ticketcode eingeben...",
+    "searchButton": "Suchen",
+    "notFound": "Kein Ticket gefunden.",
+    "ticketCode": "Ticketcode:",
+    "movie": "Film:",
+    "cinema": "Kino:",
+    "schedule": "Vorstellung:",
+    "seat": "Sitzplatz:",
+    "status": "Status:",
+    "totalPrice": "Gesamtpreis:",
+    "statusLabels": {
+      "0": "Storniert",
+      "1": "Gebucht",
+      "2": "Erstattet"
+    },
+    "seatTypeLabels": {
+      "0": "Standard",
+      "1": "VIP",
+      "2": "Paar"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "Kinos",
+    "addButton": "Kino hinzufügen +",
+    "addTitle": "Kino hinzufügen",
+    "nameLabel": "Kinoname",
+    "addressLabel": "Adresse",
+    "cityLabel": "Stadt",
+    "submit": "Hinzufügen",
+    "createSuccess": "Anfrage zur Kinoerstellung gesendet, Genehmigung durch den Administrator ausstehend.",
+    "createError": "Kino konnte nicht erstellt werden.",
+    "manageRooms": "Säle verwalten",
+    "statusLabels": {
+      "0": "Genehmigung ausstehend",
+      "1": "Genehmigt",
+      "2": "Gesperrt"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "Kinoname",
+      "address": "Adresse",
+      "city": "Stadt",
+      "status": "Status",
+      "actions": "Aktionen"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "Säle",
+    "addButton": "Saal hinzufügen +",
+    "addTitle": "Saal hinzufügen",
+    "nameLabel": "Saalname",
+    "submit": "Hinzufügen",
+    "createSuccess": "Saal hinzugefügt.",
+    "createError": "Saal konnte nicht hinzugefügt werden.",
+    "deleteConfirm": "Diesen Saal löschen?",
+    "deleteSuccess": "Saal gelöscht.",
+    "deleteError": "Saal konnte nicht gelöscht werden.",
+    "seatMapAction": "Saalplan",
+    "delete": "Löschen",
+    "headers": {
+      "id": "ID",
+      "name": "Saalname",
+      "actions": "Aktionen"
+    },
+    "seatMapModal": {
+      "title": "Saalplan - {{roomName}}",
+      "rowsLabel": "Reihen (z. B. A,B,C)",
+      "seatsPerRowLabel": "Sitzplätze / Reihe",
+      "vipRowsLabel": "VIP-Reihen (z. B. A)",
+      "coupleRowsLabel": "Paar-Reihen",
+      "generateButton": "Saalplan erstellen",
+      "regenerateConfirm": "Das erneute Erstellen des Saalplans löscht den aktuellen Plan. Fortfahren?",
+      "generateSuccess": "Saalplan erstellt.",
+      "generateError": "Saalplan konnte nicht erstellt werden.",
+      "lockedSuffix": " - Für Wartung gesperrt",
+      "clickHint": "Klicken Sie auf einen Sitzplatz, um ihn für die Wartung zu sperren oder zu entsperren.",
+      "emptyTitle": "Dieser Saal hat noch keinen Saalplan",
+      "emptyDescription": "Füllen Sie das obige Formular aus, um einen zu erstellen.",
+      "seatTypeLabels": {
+        "0": "Standard",
+        "1": "VIP",
+        "2": "Paar"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "Combos",
+    "addButton": "Combo hinzufügen +",
+    "addTitle": "Combo hinzufügen",
+    "cinemaLabel": "Kino",
+    "cinemaPlaceholder": "Kino auswählen",
+    "nameLabel": "Combo-Name",
+    "descriptionLabel": "Beschreibung",
+    "priceLabel": "Preis",
+    "submit": "Hinzufügen",
+    "createSuccess": "Combo hinzugefügt.",
+    "createError": "Combo konnte nicht hinzugefügt werden.",
+    "deleteConfirm": "Diese Combo löschen?",
+    "deleteSuccess": "Combo gelöscht.",
+    "deleteError": "Combo konnte nicht gelöscht werden.",
+    "statusActive": "Im Verkauf",
+    "statusInactive": "Nicht im Verkauf",
+    "activate": "Aktivieren",
+    "deactivate": "Aus dem Verkauf nehmen",
+    "delete": "Löschen",
+    "headers": {
+      "id": "ID",
+      "cinema": "Kino",
+      "name": "Name",
+      "price": "Preis",
+      "status": "Status",
+      "actions": "Aktionen"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "Gutscheine",
+    "addButton": "Gutschein hinzufügen +",
+    "addTitle": "Gutschein hinzufügen",
+    "cinemaLabel": "Kino",
+    "cinemaPlaceholder": "Kino auswählen",
+    "codeLabel": "Code",
+    "discountTypeLabel": "Rabattart",
+    "discountTypePercent": "Prozentual (%)",
+    "discountTypeFixed": "Fester Betrag",
+    "discountValueLabel": "Rabattwert",
+    "minOrderValueLabel": "Mindestbestellwert",
+    "submit": "Hinzufügen",
+    "createSuccess": "Gutschein hinzugefügt.",
+    "deleteConfirm": "Diesen Gutschein löschen?",
+    "deleteSuccess": "Gutschein gelöscht.",
+    "deleteError": "Löschen nicht möglich.",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "delete": "Löschen",
+    "headers": {
+      "id": "ID",
+      "cinema": "Kino",
+      "code": "Code",
+      "discount": "Rabatt",
+      "used": "Verwendet",
+      "status": "Status",
+      "actions": "Aktionen"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "暂无",
+    "bookNow": "立即购票"
+  },
+  "castSection": {
+    "director": "导演：",
+    "producer": "制片人：",
+    "cast": "演员阵容"
+  },
+  "reviews": {
+    "title": "影评",
+    "ratingSummary": "{{average}}/5 · {{count}} 条评价",
+    "ratingLabel": "评分：",
+    "starOption": "{{count}} 星",
+    "commentPlaceholder": "分享您对这部电影的看法...",
+    "submit": "提交评价",
+    "loginRequired": "您尚未登录，请登录或注册后使用此功能。",
+    "submitSuccess": "评价已提交。",
+    "submitError": "无法提交评价。",
+    "emptyState": "暂无评价"
+  },
+  "otherMovieSlider": {
+    "trending": "热门电影",
+    "moreDetails": "查看详情",
+    "empty": "暂无热门电影"
+  }
+}

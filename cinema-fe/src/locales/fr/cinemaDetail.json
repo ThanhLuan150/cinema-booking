@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "addressUpdating": "Adresse pas encore disponible",
+    "favoriteCount": "{{count}} favoris",
+    "statusPending": "En attente d'approbation",
+    "statusActive": "Actif",
+    "statusPaused": "Temporairement fermé",
+    "viewShowtimes": "Voir les séances"
+  },
+  "moviesSection": {
+    "title": "À l'affiche dans ce cinéma",
+    "emptyState": "Ce cinéma n'a pas encore de séances",
+    "moreDetails": "Plus de détails"
+  },
+  "reviews": {
+    "title": "Avis sur l'expérience en salle",
+    "ratingSummary": "{{average}}/5 · {{count}} avis",
+    "ratingLabel": "Note :",
+    "starOption": "{{count}} étoiles",
+    "commentPlaceholder": "Partagez votre expérience dans ce cinéma (sièges, son, personnel, propreté...)...",
+    "submit": "Envoyer l'avis",
+    "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
+    "submitSuccess": "Avis envoyé.",
+    "submitError": "Impossible d'envoyer l'avis.",
+    "emptyState": "Aucun avis pour le moment"
+  }
+}

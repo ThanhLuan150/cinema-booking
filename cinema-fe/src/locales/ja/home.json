@@ -1,0 +1,28 @@
+{
+  "empty": "現在上映中の映画はありません",
+  "bannerSlider": {
+    "prevSlide": "前のスライド",
+    "nextSlide": "次のスライド",
+    "goToSlide": "スライドへ移動",
+    "bookNow": "今すぐ予約",
+    "viewDetails": "詳細を見る"
+  },
+  "trendingMoviesSlider": {
+    "title": "話題の映画",
+    "viewDetails": "詳細を見る"
+  },
+  "newMoviesSlider": {
+    "title": "新着",
+    "viewDetails": "詳細を見る"
+  },
+  "upcomingMoviesSlider": {
+    "title": "公開予定",
+    "viewDetails": "詳細を見る"
+  },
+  "topCinemasSlider": {
+    "title": "人気の映画館",
+    "addressUpdating": "住所情報を更新中",
+    "newRating": "新規",
+    "ticketsBooked": "件予約済み"
+  }
+}

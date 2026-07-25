@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "Tableau de bord admin",
+    "loading": "Chargement...",
+    "stats": {
+      "totalRevenue": "Revenu total",
+      "totalUsers": "Utilisateurs",
+      "totalOwners": "Propriétaires de salles",
+      "totalCinemas": "Cinémas",
+      "totalTicketsSold": "Billets vendus",
+      "totalTransactions": "Transactions"
+    },
+    "chartTitle": "Revenu quotidien du système",
+    "noData": "Aucune donnée pour le moment"
+  },
+  "movies": {
+    "add": {
+      "title": "Ajouter un film",
+      "fields": {
+        "name": "Nom :",
+        "avatar": "Affiche :",
+        "premiereDate": "Date de sortie :",
+        "country": "Pays :",
+        "description": "Description :",
+        "trailer": "Bande-annonce :",
+        "producer": "Producteur :",
+        "director": "Réalisateur :"
+      },
+      "cast": {
+        "label": "Distribution :",
+        "name": "Nom",
+        "role": "Rôle",
+        "avatarUrl": "URL de l'image",
+        "remove": "Retirer",
+        "add": "+ Ajouter un acteur"
+      },
+      "category": "Catégorie :",
+      "submit": "Ajouter",
+      "toastSuccess": "Ajout effectué avec succès",
+      "toastError": "Échec de l'ajout"
+    },
+    "edit": {
+      "title": "Modifier le film",
+      "fields": {
+        "name": "Nom :",
+        "avatar": "Affiche :",
+        "uploadNewAvatar": "Téléverser une nouvelle affiche :",
+        "premiereDate": "Date de sortie :",
+        "country": "Pays :",
+        "description": "Description :",
+        "trailer": "Bande-annonce :",
+        "uploadNewTrailer": "Téléverser une nouvelle bande-annonce :",
+        "producer": "Producteur :",
+        "director": "Réalisateur :"
+      },
+      "cast": {
+        "label": "Distribution :",
+        "name": "Nom",
+        "role": "Rôle",
+        "avatarUrl": "URL de l'image",
+        "remove": "Retirer",
+        "add": "+ Ajouter un acteur"
+      },
+      "category": "Catégorie :",
+      "submit": "Mettre à jour",
+      "toastSuccess": "Film mis à jour avec succès !"
+    },
+    "delete": {
+      "confirm": "Voulez-vous supprimer le film avec l'id {{id}} ?",
+      "toastSuccess": "Suppression effectuée avec succès",
+      "toastError": "Échec de la suppression"
+    },
+    "list": {
+      "breadcrumb": "Films",
+      "addButton": "Ajouter +",
+      "headers": ["ID", "Affiche", "Nom", "Date de sortie", "Pays", "Description", "Bande-annonce", "Catégorie", "Action"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "Ajouter une séance",
+      "cinema": {
+        "label": "Établissement :",
+        "placeholder": "Sélectionner un établissement"
+      },
+      "room": {
+        "label": "Salle :",
+        "placeholder": "Sélectionner une salle",
+        "placeholderSelectCinemaFirst": "Sélectionnez d'abord un établissement"
+      },
+      "date": "Date de la séance :",
+      "slot": {
+        "label": "Horaire :",
+        "placeholder": "Sélectionner un horaire"
+      },
+      "price": "Prix du billet :",
+      "submit": "Ajouter",
+      "validationError": "Veuillez sélectionner l'établissement, la salle, la date et l'horaire.",
+      "toastSuccess": "Séance ajoutée."
+    },
+    "list": {
+      "breadcrumb": "Programmation",
+      "headers": ["ID", "Film", "Heure de début", "Heure de fin", "Date de la séance", "Prix"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "Avis",
+    "headers": ["ID", "Sujet", "Note", "Contenu", "Statut", "Action"],
+    "cinemaSuffix": "{{name}} (cinéma)",
+    "hiddenStatus": "Masqué",
+    "visibleStatus": "Visible",
+    "hideButton": "Masquer",
+    "deleteButton": "Supprimer",
+    "hideSuccess": "Avis masqué.",
+    "deleteConfirm": "Supprimer cet avis ?",
+    "deleteSuccess": "Avis supprimé."
+  },
+  "transactions": {
+    "breadcrumb": "Transactions",
+    "headers": ["ID", "Code du billet", "Client", "Film", "Siège", "Total", "Statut", "Action"],
+    "status": {
+      "booked": "Réservé",
+      "cancelled": "Annulé",
+      "refunded": "Remboursé"
+    },
+    "refundButton": "Rembourser",
+    "refundConfirm": "Rembourser cette transaction ?",
+    "refundSuccess": "Transaction remboursée."
+  },
+  "cinemas": {
+    "breadcrumb": "Cinémas",
+    "headers": ["ID", "Nom du cinéma", "Propriétaire (ID)", "Adresse", "Statut", "Action"],
+    "status": {
+      "pending": "En attente d'approbation",
+      "approved": "Approuvé",
+      "blocked": "Bloqué"
+    },
+    "approveButton": "Approuver",
+    "blockButton": "Bloquer",
+    "deleteButton": "Supprimer",
+    "blockConfirm": "Bloquer ce cinéma ?",
+    "deleteConfirm": "Supprimer ce cinéma ? Cette action est irréversible.",
+    "approveSuccess": "Cinéma approuvé.",
+    "blockSuccess": "Cinéma bloqué.",
+    "deleteSuccess": "Cinéma supprimé."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "Utilisateur bloqué avec succès",
+      "swalText": "Succès",
+      "confirmTitle": "Confirmer le blocage",
+      "confirmMessage": "Êtes-vous sûr de vouloir bloquer {{name}} ?",
+      "confirmLabel": "Bloquer"
+    },
+    "unblock": {
+      "swalTitle": "Utilisateur débloqué avec succès",
+      "swalText": "Succès",
+      "confirmTitle": "Confirmer le déblocage",
+      "confirmMessage": "Êtes-vous sûr de vouloir débloquer {{name}} ?",
+      "confirmLabel": "Débloquer"
+    },
+    "delete": {
+      "swalTitle": "Utilisateur supprimé avec succès",
+      "swalText": "Succès",
+      "confirmTitle": "Confirmer la suppression",
+      "confirmMessage": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "confirmLabel": "Supprimer"
+    },
+    "list": {
+      "breadcrumb": "Utilisateurs",
+      "headers": ["ID", "Nom complet", "Téléphone", "Email", "Rôle", "Statut", "Action"],
+      "roles": {
+        "admin": "Administrateur",
+        "user": "Utilisateur",
+        "theater": "Propriétaire de salle"
+      },
+      "statusActive": "Actif",
+      "statusInactive": "Inactif",
+      "roleChangeSuccess": "Rôle mis à jour."
+    }
+  }
+}

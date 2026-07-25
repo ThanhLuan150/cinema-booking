@@ -1,0 +1,44 @@
+{
+  "cinemas": {
+    "breadcrumb": "映画館",
+    "title": "映画館一覧",
+    "empty": "まだ映画館がありません",
+    "addressUpdating": "住所情報を更新中",
+    "viewDetails": "詳細を見る"
+  },
+  "playing": {
+    "breadcrumbMovie": "映画",
+    "breadcrumbCurrent": "上映中",
+    "title": "上映中の映画",
+    "empty": "現在上映中の映画はありません。",
+    "moreDetails": "詳細を見る"
+  },
+  "upcoming": {
+    "breadcrumbMovie": "映画",
+    "breadcrumbCurrent": "公開予定",
+    "title": "公開予定の映画",
+    "empty": "現在、公開予定の映画はありません。",
+    "moreDetails": "詳細を見る"
+  },
+  "favoriteCinemaButton": {
+    "addFavorite": "映画館をお気に入りに追加",
+    "removeFavorite": "映画館をお気に入りから削除",
+    "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。"
+  },
+  "like": {
+    "unlikeError": "いいねを取り消せませんでした。もう一度お試しください。",
+    "unlikeErrorLog": "データベースからのいいね削除に失敗しました:",
+    "likeError": "いいねできませんでした。もう一度お試しください。",
+    "likeErrorLog": "データベースへのいいね保存に失敗しました:",
+    "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。"
+  },
+  "filterBar": {
+    "category": "ジャンル",
+    "country": "製作国",
+    "cinema": "映画館",
+    "date": "上映日",
+    "search": "検索",
+    "searchPlaceholder": "映画名...",
+    "all": "すべて"
+  }
+}

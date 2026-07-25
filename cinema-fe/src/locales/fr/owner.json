@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "breadcrumb": "Tableau de bord",
+    "allMyCinemas": "Tous mes cinémas",
+    "loading": "Chargement...",
+    "revenue": "Revenu",
+    "ticketsSold": "Billets vendus",
+    "occupancyRate": "Taux d'occupation des sièges",
+    "scheduleCount": "Nombre de séances",
+    "revenueByDay": "Revenu par jour",
+    "noData": "Aucune donnée pour le moment"
+  },
+  "bookingsLookup": {
+    "breadcrumb": "Recherche de billet",
+    "codePlaceholder": "Saisissez le code du billet...",
+    "searchButton": "Rechercher",
+    "notFound": "Aucun billet trouvé.",
+    "ticketCode": "Code du billet :",
+    "movie": "Film :",
+    "cinema": "Cinéma :",
+    "schedule": "Séance :",
+    "seat": "Siège :",
+    "status": "Statut :",
+    "totalPrice": "Prix total :",
+    "statusLabels": {
+      "0": "Annulé",
+      "1": "Réservé",
+      "2": "Remboursé"
+    },
+    "seatTypeLabels": {
+      "0": "Standard",
+      "1": "VIP",
+      "2": "Duo"
+    }
+  },
+  "cinemas": {
+    "breadcrumb": "Cinémas",
+    "addButton": "Ajouter un cinéma +",
+    "addTitle": "Ajouter un cinéma",
+    "nameLabel": "Nom du cinéma",
+    "addressLabel": "Adresse",
+    "cityLabel": "Ville",
+    "submit": "Ajouter",
+    "createSuccess": "Demande de création de cinéma envoyée, en attente d'approbation par l'administrateur.",
+    "createError": "Impossible de créer le cinéma.",
+    "manageRooms": "Gérer les salles",
+    "statusLabels": {
+      "0": "En attente d'approbation",
+      "1": "Approuvé",
+      "2": "Bloqué"
+    },
+    "headers": {
+      "id": "ID",
+      "name": "Nom du cinéma",
+      "address": "Adresse",
+      "city": "Ville",
+      "status": "Statut",
+      "actions": "Actions"
+    }
+  },
+  "rooms": {
+    "breadcrumb": "Salles",
+    "addButton": "Ajouter une salle +",
+    "addTitle": "Ajouter une salle",
+    "nameLabel": "Nom de la salle",
+    "submit": "Ajouter",
+    "createSuccess": "Salle ajoutée.",
+    "createError": "Impossible d'ajouter la salle.",
+    "deleteConfirm": "Supprimer cette salle ?",
+    "deleteSuccess": "Salle supprimée.",
+    "deleteError": "Impossible de supprimer la salle.",
+    "seatMapAction": "Plan de salle",
+    "delete": "Supprimer",
+    "headers": {
+      "id": "ID",
+      "name": "Nom de la salle",
+      "actions": "Actions"
+    },
+    "seatMapModal": {
+      "title": "Plan de salle - {{roomName}}",
+      "rowsLabel": "Rangées (ex. A,B,C)",
+      "seatsPerRowLabel": "Sièges / rangée",
+      "vipRowsLabel": "Rangées VIP (ex. A)",
+      "coupleRowsLabel": "Rangées duo",
+      "generateButton": "Générer le plan de salle",
+      "regenerateConfirm": "Régénérer le plan de salle effacera le plan actuel. Continuer ?",
+      "generateSuccess": "Plan de salle généré.",
+      "generateError": "Impossible de générer le plan de salle.",
+      "lockedSuffix": " - Verrouillé pour maintenance",
+      "clickHint": "Cliquez sur un siège pour le verrouiller/déverrouiller pour maintenance.",
+      "emptyTitle": "Cette salle n'a pas encore de plan de salle",
+      "emptyDescription": "Remplissez le formulaire ci-dessus pour en créer un.",
+      "seatTypeLabels": {
+        "0": "Standard",
+        "1": "VIP",
+        "2": "Duo"
+      }
+    }
+  },
+  "combos": {
+    "breadcrumb": "Combos",
+    "addButton": "Ajouter un combo +",
+    "addTitle": "Ajouter un combo",
+    "cinemaLabel": "Cinéma",
+    "cinemaPlaceholder": "Sélectionner un cinéma",
+    "nameLabel": "Nom du combo",
+    "descriptionLabel": "Description",
+    "priceLabel": "Prix",
+    "submit": "Ajouter",
+    "createSuccess": "Combo ajouté.",
+    "createError": "Impossible d'ajouter le combo.",
+    "deleteConfirm": "Supprimer ce combo ?",
+    "deleteSuccess": "Combo supprimé.",
+    "deleteError": "Impossible de supprimer le combo.",
+    "statusActive": "En vente",
+    "statusInactive": "Hors vente",
+    "activate": "Activer",
+    "deactivate": "Retirer de la vente",
+    "delete": "Supprimer",
+    "headers": {
+      "id": "ID",
+      "cinema": "Cinéma",
+      "name": "Nom",
+      "price": "Prix",
+      "status": "Statut",
+      "actions": "Actions"
+    }
+  },
+  "vouchers": {
+    "breadcrumb": "Codes promo",
+    "addButton": "Ajouter un code promo +",
+    "addTitle": "Ajouter un code promo",
+    "cinemaLabel": "Cinéma",
+    "cinemaPlaceholder": "Sélectionner un cinéma",
+    "codeLabel": "Code",
+    "discountTypeLabel": "Type de remise",
+    "discountTypePercent": "Pourcentage (%)",
+    "discountTypeFixed": "Montant fixe",
+    "discountValueLabel": "Valeur de la remise",
+    "minOrderValueLabel": "Montant minimum de commande",
+    "submit": "Ajouter",
+    "createSuccess": "Code promo ajouté.",
+    "deleteConfirm": "Supprimer ce code promo ?",
+    "deleteSuccess": "Code promo supprimé.",
+    "deleteError": "Impossible de supprimer.",
+    "statusActive": "Actif",
+    "statusInactive": "Inactif",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "delete": "Supprimer",
+    "headers": {
+      "id": "ID",
+      "cinema": "Cinéma",
+      "code": "Code",
+      "discount": "Remise",
+      "used": "Utilisé",
+      "status": "Statut",
+      "actions": "Actions"
+    }
+  }
+}

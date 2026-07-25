@@ -1,0 +1,28 @@
+{
+  "empty": "Derzeit werden keine Filme gezeigt",
+  "bannerSlider": {
+    "prevSlide": "Vorheriges Bild",
+    "nextSlide": "Nächstes Bild",
+    "goToSlide": "Zu Bild wechseln",
+    "bookNow": "Jetzt buchen",
+    "viewDetails": "Details ansehen"
+  },
+  "trendingMoviesSlider": {
+    "title": "Angesagt",
+    "viewDetails": "Details ansehen"
+  },
+  "newMoviesSlider": {
+    "title": "Neu",
+    "viewDetails": "Details ansehen"
+  },
+  "upcomingMoviesSlider": {
+    "title": "Demnächst",
+    "viewDetails": "Details ansehen"
+  },
+  "topCinemasSlider": {
+    "title": "Top-Kinos",
+    "addressUpdating": "Adresse wird aktualisiert",
+    "newRating": "Neu",
+    "ticketsBooked": "gebuchte Tickets"
+  }
+}

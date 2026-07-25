@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "उपलब्ध नहीं",
+    "bookNow": "अभी बुक करें"
+  },
+  "castSection": {
+    "director": "निर्देशक:",
+    "producer": "निर्माता:",
+    "cast": "कलाकार"
+  },
+  "reviews": {
+    "title": "समीक्षाएं",
+    "ratingSummary": "{{average}}/5 · {{count}} समीक्षाएं",
+    "ratingLabel": "रेटिंग:",
+    "starOption": "{{count}} स्टार",
+    "commentPlaceholder": "इस फिल्म के बारे में अपने विचार साझा करें...",
+    "submit": "समीक्षा सबमिट करें",
+    "loginRequired": "आप लॉग इन नहीं हैं। इस सुविधा का उपयोग करने के लिए कृपया लॉग इन करें या साइन अप करें।",
+    "submitSuccess": "समीक्षा सबमिट कर दी गई।",
+    "submitError": "समीक्षा सबमिट नहीं की जा सकी।",
+    "emptyState": "अभी तक कोई समीक्षा नहीं है"
+  },
+  "otherMovieSlider": {
+    "trending": "ट्रेंडिंग",
+    "moreDetails": "अधिक विवरण",
+    "empty": "अभी कोई ट्रेंडिंग फिल्म नहीं है"
+  }
+}

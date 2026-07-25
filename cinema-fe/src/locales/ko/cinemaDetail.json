@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "N/A",
+    "addressUpdating": "주소 정보 업데이트 중",
+    "favoriteCount": "즐겨찾기 {{count}}회",
+    "statusPending": "승인 대기",
+    "statusActive": "운영 중",
+    "statusPaused": "임시 휴업",
+    "viewShowtimes": "상영 시간 보기"
+  },
+  "moviesSection": {
+    "title": "이 영화관 상영작",
+    "emptyState": "이 영화관은 아직 상영 일정이 없습니다",
+    "moreDetails": "자세히 보기"
+  },
+  "reviews": {
+    "title": "영화관 이용 후기",
+    "ratingSummary": "{{average}}/5 · 리뷰 {{count}}개",
+    "ratingLabel": "평점:",
+    "starOption": "{{count}}점",
+    "commentPlaceholder": "이 영화관에서의 경험을 남겨주세요 (좌석, 음향, 직원 서비스, 청결도 등)...",
+    "submit": "리뷰 등록",
+    "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
+    "submitSuccess": "리뷰가 등록되었습니다.",
+    "submitError": "리뷰를 등록할 수 없습니다.",
+    "emptyState": "아직 리뷰가 없습니다"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "确认",
+    "cancelLabel": "取消",
+    "confirmLabel": "确定"
+  },
+  "realtimeBridge": {
+    "newMovie": "新片上线：{{name}}",
+    "cinemaPending": "新影院已注册，等待审核：{{name}}",
+    "cinemaApproved": "影院“{{name}}”已通过审核。",
+    "cinemaBlocked": "影院“{{name}}”已被封禁。",
+    "newBooking": "收到新订单：+{{amount}}元"
+  },
+  "toastContainer": {
+    "dismiss": "关闭"
+  }
+}

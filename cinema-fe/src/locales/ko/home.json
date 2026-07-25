@@ -1,0 +1,28 @@
+{
+  "empty": "현재 상영 중인 영화가 없습니다",
+  "bannerSlider": {
+    "prevSlide": "이전 슬라이드",
+    "nextSlide": "다음 슬라이드",
+    "goToSlide": "슬라이드로 이동",
+    "bookNow": "지금 예매하기",
+    "viewDetails": "자세히 보기"
+  },
+  "trendingMoviesSlider": {
+    "title": "인기 영화",
+    "viewDetails": "자세히 보기"
+  },
+  "newMoviesSlider": {
+    "title": "신작",
+    "viewDetails": "자세히 보기"
+  },
+  "upcomingMoviesSlider": {
+    "title": "상영 예정",
+    "viewDetails": "자세히 보기"
+  },
+  "topCinemasSlider": {
+    "title": "인기 영화관",
+    "addressUpdating": "주소 업데이트 중",
+    "newRating": "신규",
+    "ticketsBooked": "장 예매됨"
+  }
+}

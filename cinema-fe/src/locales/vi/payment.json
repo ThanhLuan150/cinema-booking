@@ -1,0 +1,15 @@
+{
+  "confirming": "Đang xác nhận thanh toán...",
+  "notLoggedIn": "Bạn cần đăng nhập để xác nhận thanh toán.",
+  "genericFailed": "Thanh toán không thành công.",
+  "success": {
+    "title": "Thanh toán thành công",
+    "message": "Đặt vé thành công! Vé của bạn đã được gửi qua email.",
+    "viewBookings": "Xem vé của tôi"
+  },
+  "failed": {
+    "title": "Thanh toán thất bại",
+    "confirmFailed": "Không thể xác nhận thanh toán.",
+    "backHome": "Về trang chủ"
+  }
+}

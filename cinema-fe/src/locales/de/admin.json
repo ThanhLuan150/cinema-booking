@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "breadcrumb": "Admin-Dashboard",
+    "loading": "Wird geladen...",
+    "stats": {
+      "totalRevenue": "Gesamtumsatz",
+      "totalUsers": "Benutzer",
+      "totalOwners": "Kinobetreiber",
+      "totalCinemas": "Kinos",
+      "totalTicketsSold": "Verkaufte Tickets",
+      "totalTransactions": "Transaktionen"
+    },
+    "chartTitle": "Systemweiter Umsatz nach Tag",
+    "noData": "Noch keine Daten"
+  },
+  "movies": {
+    "add": {
+      "title": "Film hinzufügen",
+      "fields": {
+        "name": "Name:",
+        "avatar": "Bild:",
+        "premiereDate": "Premierendatum:",
+        "country": "Land:",
+        "description": "Beschreibung:",
+        "trailer": "Trailer:",
+        "producer": "Produzent:",
+        "director": "Regisseur:"
+      },
+      "cast": {
+        "label": "Besetzung:",
+        "name": "Name",
+        "role": "Rolle",
+        "avatarUrl": "Bild-URL",
+        "remove": "Entfernen",
+        "add": "+ Darsteller hinzufügen"
+      },
+      "category": "Kategorie:",
+      "submit": "Hinzufügen",
+      "toastSuccess": "Erfolgreich hinzugefügt",
+      "toastError": "Hinzufügen fehlgeschlagen"
+    },
+    "edit": {
+      "title": "Film bearbeiten",
+      "fields": {
+        "name": "Name:",
+        "avatar": "Bild:",
+        "uploadNewAvatar": "Neues Bild hochladen:",
+        "premiereDate": "Premierendatum:",
+        "country": "Land:",
+        "description": "Beschreibung:",
+        "trailer": "Trailer:",
+        "uploadNewTrailer": "Neuen Trailer hochladen:",
+        "producer": "Produzent:",
+        "director": "Regisseur:"
+      },
+      "cast": {
+        "label": "Besetzung:",
+        "name": "Name",
+        "role": "Rolle",
+        "avatarUrl": "Bild-URL",
+        "remove": "Entfernen",
+        "add": "+ Darsteller hinzufügen"
+      },
+      "category": "Kategorie:",
+      "submit": "Aktualisieren",
+      "toastSuccess": "Film erfolgreich aktualisiert!"
+    },
+    "delete": {
+      "confirm": "Möchten Sie den Film mit der ID {{id}} löschen?",
+      "toastSuccess": "Erfolgreich gelöscht",
+      "toastError": "Löschen fehlgeschlagen"
+    },
+    "list": {
+      "breadcrumb": "Filme",
+      "addButton": "Hinzufügen +",
+      "headers": ["ID", "Bild", "Name", "Premierendatum", "Land", "Beschreibung", "Trailer", "Kategorie", "Aktion"]
+    }
+  },
+  "schedules": {
+    "add": {
+      "title": "Vorstellung hinzufügen",
+      "cinema": {
+        "label": "Filiale:",
+        "placeholder": "Filiale auswählen"
+      },
+      "room": {
+        "label": "Saal:",
+        "placeholder": "Saal auswählen",
+        "placeholderSelectCinemaFirst": "Bitte zuerst eine Filiale auswählen"
+      },
+      "date": "Vorstellungsdatum:",
+      "slot": {
+        "label": "Uhrzeit:",
+        "placeholder": "Uhrzeit auswählen"
+      },
+      "price": "Ticketpreis:",
+      "submit": "Hinzufügen",
+      "validationError": "Bitte wählen Sie Filiale, Saal, Datum und Uhrzeit aus.",
+      "toastSuccess": "Vorstellung hinzugefügt."
+    },
+    "list": {
+      "breadcrumb": "Spielplan",
+      "headers": ["ID", "Film", "Beginn", "Ende", "Vorstellungsdatum", "Preis"]
+    }
+  },
+  "reviews": {
+    "breadcrumb": "Bewertungen",
+    "headers": ["ID", "Betreff", "Bewertung", "Inhalt", "Status", "Aktion"],
+    "cinemaSuffix": "{{name}} (Kino)",
+    "hiddenStatus": "Ausgeblendet",
+    "visibleStatus": "Sichtbar",
+    "hideButton": "Ausblenden",
+    "deleteButton": "Löschen",
+    "hideSuccess": "Bewertung ausgeblendet.",
+    "deleteConfirm": "Diese Bewertung löschen?",
+    "deleteSuccess": "Bewertung gelöscht."
+  },
+  "transactions": {
+    "breadcrumb": "Transaktionen",
+    "headers": ["ID", "Ticketcode", "Kunde", "Film", "Sitzplatz", "Gesamt", "Status", "Aktion"],
+    "status": {
+      "booked": "Gebucht",
+      "cancelled": "Storniert",
+      "refunded": "Erstattet"
+    },
+    "refundButton": "Erstatten",
+    "refundConfirm": "Diese Transaktion erstatten?",
+    "refundSuccess": "Transaktion erstattet."
+  },
+  "cinemas": {
+    "breadcrumb": "Kinos",
+    "headers": ["ID", "Kinoname", "Betreiber (ID)", "Adresse", "Status", "Aktion"],
+    "status": {
+      "pending": "Genehmigung ausstehend",
+      "approved": "Genehmigt",
+      "blocked": "Gesperrt"
+    },
+    "approveButton": "Genehmigen",
+    "blockButton": "Sperren",
+    "deleteButton": "Löschen",
+    "blockConfirm": "Dieses Kino sperren?",
+    "deleteConfirm": "Dieses Kino löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "approveSuccess": "Kino genehmigt.",
+    "blockSuccess": "Kino gesperrt.",
+    "deleteSuccess": "Kino gelöscht."
+  },
+  "users": {
+    "block": {
+      "swalTitle": "Benutzer erfolgreich gesperrt",
+      "swalText": "Erfolgreich",
+      "confirmTitle": "Sperrung bestätigen",
+      "confirmMessage": "Möchten Sie {{name}} wirklich sperren?",
+      "confirmLabel": "Sperren"
+    },
+    "unblock": {
+      "swalTitle": "Benutzer erfolgreich entsperrt",
+      "swalText": "Erfolgreich",
+      "confirmTitle": "Entsperrung bestätigen",
+      "confirmMessage": "Möchten Sie {{name}} wirklich entsperren?",
+      "confirmLabel": "Entsperren"
+    },
+    "delete": {
+      "swalTitle": "Benutzer erfolgreich gelöscht",
+      "swalText": "Erfolgreich",
+      "confirmTitle": "Löschung bestätigen",
+      "confirmMessage": "Möchten Sie diesen Benutzer wirklich löschen?",
+      "confirmLabel": "Löschen"
+    },
+    "list": {
+      "breadcrumb": "Benutzer",
+      "headers": ["ID", "Vollständiger Name", "Telefon", "E-Mail", "Rolle", "Status", "Aktion"],
+      "roles": {
+        "admin": "Admin",
+        "user": "Benutzer",
+        "theater": "Kinobetreiber"
+      },
+      "statusActive": "Aktiv",
+      "statusInactive": "Inaktiv",
+      "roleChangeSuccess": "Rolle aktualisiert."
+    }
+  }
+}

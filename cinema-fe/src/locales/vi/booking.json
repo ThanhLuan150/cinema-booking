@@ -1,0 +1,74 @@
+{
+  "bookSeat": {
+    "defaultTitle": "Chọn ghế",
+    "screen": "Màn hình",
+    "legend": {
+      "standard": "Thường",
+      "vip": "VIP",
+      "couple": "Đôi",
+      "selecting": "Đang chọn",
+      "sold": "Đã bán"
+    },
+    "noSeatMap": {
+      "title": "Suất chiếu này chưa có sơ đồ ghế",
+      "description": "Vui lòng liên hệ rạp hoặc thử suất chiếu khác."
+    },
+    "combo": {
+      "title": "Combo bắp nước"
+    },
+    "selectedSeatsLabel": "Ghế đã chọn:",
+    "noneSelected": "Chưa chọn",
+    "checkout": "Đặt vé & Thanh toán MoMo",
+    "notLoggedIn": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
+    "selectSeatFirst": "Vui lòng chọn ít nhất một ghế",
+    "checkoutFailed": "Không thể khởi tạo thanh toán.",
+    "momoModal": {
+      "title": "Chọn cách thanh toán MoMo",
+      "qrTitle": "Quét mã QR",
+      "qrDescription": "Mở ứng dụng MoMo trên điện thoại và quét mã này để thanh toán.",
+      "testAccountTitle": "Nhập tài khoản MoMo test",
+      "testAccountDescription": "Mở trang thanh toán MoMo và đăng nhập bằng số điện thoại tài khoản test.",
+      "openButton": "Mở trang thanh toán MoMo"
+    }
+  },
+  "bookTicket": {
+    "pageTitle": "Đặt vé",
+    "dateLabel": "Ngày",
+    "timeLabel": "Giờ",
+    "noSchedule": "Không có suất chiếu",
+    "noAvailableTimes": "Không còn suất chiếu nào phù hợp trong hôm nay",
+    "bookButton": "Đặt vé",
+    "selectDateTime": "Vui lòng chọn ngày và giờ",
+    "notLoggedIn": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này."
+  },
+  "myBookings": {
+    "pageTitle": "Lịch sử đặt vé",
+    "seatType": {
+      "standard": "Thường",
+      "vip": "VIP",
+      "couple": "Đôi"
+    },
+    "status": {
+      "booked": "Đã đặt vé",
+      "cancelled": "Đã hủy",
+      "refunded": "Đã hoàn tiền"
+    },
+    "empty": "Bạn chưa có vé nào",
+    "movieFallback": "Phim",
+    "seatLabel": "Ghế {{code}} ({{type}})",
+    "ticketCode": "Mã vé: {{code}}",
+    "discount": "Giảm giá: -{{amount}}đ",
+    "print": "In vé",
+    "cancel": "Hủy vé",
+    "confirmCancel": "Bạn có chắc muốn hủy vé này?",
+    "cancelSuccess": "Hủy vé thành công.",
+    "cancelFailed": "Không thể hủy vé."
+  },
+  "voucher": {
+    "title": "Mã giảm giá",
+    "placeholder": "Nhập mã...",
+    "apply": "Áp dụng",
+    "applied": "Đã áp dụng: -{{amount}}đ",
+    "applyFailed": "Không thể áp dụng mã giảm giá."
+  }
+}

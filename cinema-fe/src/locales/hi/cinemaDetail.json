@@ -1,0 +1,28 @@
+{
+  "bannerDetail": {
+    "notAvailable": "उपलब्ध नहीं",
+    "addressUpdating": "पता अभी उपलब्ध नहीं है",
+    "favoriteCount": "{{count}} पसंद",
+    "statusPending": "स्वीकृति लंबित",
+    "statusActive": "सक्रिय",
+    "statusPaused": "अस्थायी रूप से बंद",
+    "viewShowtimes": "शो टाइम देखें"
+  },
+  "moviesSection": {
+    "title": "इस सिनेमा में अभी चल रही फिल्में",
+    "emptyState": "इस सिनेमा में अभी तक कोई शो टाइम नहीं है",
+    "moreDetails": "अधिक विवरण"
+  },
+  "reviews": {
+    "title": "सिनेमा अनुभव समीक्षाएं",
+    "ratingSummary": "{{average}}/5 · {{count}} समीक्षाएं",
+    "ratingLabel": "रेटिंग:",
+    "starOption": "{{count}} स्टार",
+    "commentPlaceholder": "इस सिनेमा में अपना अनुभव साझा करें (सीटें, साउंड, स्टाफ, स्वच्छता...)...",
+    "submit": "समीक्षा सबमिट करें",
+    "loginRequired": "आप लॉग इन नहीं हैं। इस सुविधा का उपयोग करने के लिए कृपया लॉग इन करें या साइन अप करें।",
+    "submitSuccess": "समीक्षा सबमिट कर दी गई।",
+    "submitError": "समीक्षा सबमिट नहीं की जा सकी।",
+    "emptyState": "अभी तक कोई समीक्षा नहीं है"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "confirmDialog": {
+    "defaultTitle": "확인",
+    "cancelLabel": "취소",
+    "confirmLabel": "확인"
+  },
+  "realtimeBridge": {
+    "newMovie": "신작 영화: {{name}}",
+    "cinemaPending": "새 영화관이 등록되어 승인 대기 중입니다: {{name}}",
+    "cinemaApproved": "영화관 \"{{name}}\"이(가) 승인되었습니다.",
+    "cinemaBlocked": "영화관 \"{{name}}\"이(가) 차단되었습니다.",
+    "newBooking": "새 예매 접수: +{{amount}}đ"
+  },
+  "toastContainer": {
+    "dismiss": "닫기"
+  }
+}
