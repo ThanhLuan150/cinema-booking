@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Spinner } from '@/components/ui/Spinner';
+import { Pagination } from '@/components/ui/Pagination';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import Like from '../components/Like';
 import { MovieFilterBar } from '../components/MovieFilterBar';
@@ -12,12 +13,14 @@ import { resetFilters, setFilters } from '../store/moviesSlice';
 import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
 import { MAX_VISIBLE_CATEGORIES } from '@/constants/movieCard';
+import { MOVIE_GRID_PAGE_SIZE } from '@/constants/pagination';
 
 const Playing = () => {
   const { t } = useTranslation('movies');
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const filters = useAppSelector((state) => state.movies.filters);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const cinema = searchParams.get('cinema');
@@ -25,14 +28,12 @@ const Playing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { data: movies = [], isLoading } = useMovies(filters);
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
 
-  const isPlaying = (premiereDate: string) => {
-    const now = new Date().toISOString().split('T')[0];
-    return premiereDate <= now;
-  };
-
-  const playingMovies = movies.filter((movie) => isPlaying(movie.premiere_date));
+  const { data, isLoading } = useMovies({ ...filters, status: 'playing' }, { page, limit: MOVIE_GRID_PAGE_SIZE });
+  const playingMovies = data?.data ?? [];
 
   return (
     <div className="flex min-h-screen flex-col bg-main">
@@ -95,6 +96,7 @@ const Playing = () => {
               ))}
             </div>
           )}
+          <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
         </div>
       </div>
       <Footer />

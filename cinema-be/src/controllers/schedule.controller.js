@@ -1,16 +1,21 @@
 const scheduleRepository = require('../repositories/schedule.repository');
 const nextId = require('../utils/nextId');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// GET /api/schedule -> management list (admin or theater staff). Admin sees every showtime;
-// a theater owner only sees showtimes in rooms that belong to their own cinema(s).
+// GET /api/schedule?cinemaId=&roomId=&page=&limit= -> management list (admin or theater staff).
+// Admin sees every showtime; a theater owner only sees showtimes in rooms that belong to
+// their own cinema(s). cinemaId/roomId narrow the result further.
 async function list(req, res) {
-  if (req.account.role === 2) {
-    const schedules = await scheduleRepository.findForOwner(req.account.accountId);
-    return res.json(schedules);
-  }
-
-  const schedules = await scheduleRepository.findAll();
-  res.json(schedules);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await scheduleRepository.findFiltered({
+    role: req.account.role,
+    accountId: req.account.accountId,
+    cinemaId: req.query.cinemaId,
+    roomId: req.query.roomId,
+    skip,
+    limit,
+  });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // GET /api/schedule/:id

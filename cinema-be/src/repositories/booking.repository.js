@@ -122,8 +122,12 @@ async function saveInvoice(invoice) {
   return invoice;
 }
 
-async function findAllInvoices() {
-  return Invoice.find().sort({ createdAt: -1 });
+async function findAllInvoices({ skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Invoice.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Invoice.countDocuments(),
+  ]);
+  return { data, total };
 }
 
 async function findAccountsByIds(ids) {

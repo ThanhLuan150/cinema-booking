@@ -63,8 +63,11 @@ async function buildThread(reviews, viewerAccountId) {
 }
 
 // All reviews including hidden ones, joined with movie/cinema name (admin moderation view)
-async function findAllForModeration() {
-  const reviews = await Review.find().sort({ createdAt: -1 });
+async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
+  const [reviews, total] = await Promise.all([
+    Review.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Review.countDocuments(),
+  ]);
   const movieIds = [...new Set(reviews.filter((r) => r.movie_id != null).map((r) => r.movie_id))];
   const cinemaIds = [...new Set(reviews.filter((r) => r.cinema_id != null).map((r) => r.cinema_id))];
   const movies = await Movie.find({ id: { $in: movieIds } });
@@ -72,12 +75,13 @@ async function findAllForModeration() {
   const movieById = new Map(movies.map((m) => [m.id, m]));
   const cinemaById = new Map(cinemas.map((c) => [c.id, c]));
 
-  return reviews.map((r) => ({
+  const data = reviews.map((r) => ({
     ...r.toJSON(),
     movie: r.movie_id != null && movieById.get(r.movie_id) ? { name: movieById.get(r.movie_id).name } : null,
     cinema: r.cinema_id != null && cinemaById.get(r.cinema_id) ? { name: cinemaById.get(r.cinema_id).name } : null,
     reportCount: (r.reports || []).length,
   }));
+  return { data, total };
 }
 
 async function findVisibleByCinemaId(cinemaId, viewerAccountId) {

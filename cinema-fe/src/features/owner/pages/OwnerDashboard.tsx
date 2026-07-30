@@ -15,7 +15,8 @@ function OwnerDashboard() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const selectedCinemaId = useAppSelector((state) => state.ownerDashboard.selectedCinemaId);
-  const { data: cinemas = [] } = useMyCinemas();
+  const { data: cinemasPage } = useMyCinemas();
+  const cinemas = cinemasPage?.data ?? [];
   const { data: stats } = useOwnerDashboardStats(selectedCinemaId);
 
   const bookingVersion = useAppSelector((state) => state.realtime.ownerBookingVersion);

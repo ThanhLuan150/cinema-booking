@@ -1,5 +1,12 @@
-import { myCinemasQueryKey, useMyCinemas } from '@/features/owner/hooks/useMyCinemas';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { getMyCinemas } from '@/features/owner/api/owner.api';
 
-export const adminCinemasQueryKey = myCinemasQueryKey;
+export const adminCinemasQueryKey = ['adminCinemas'] as const;
 
-export const useAdminCinemas = useMyCinemas;
+export function useAdminCinemas(page: number, limit: number) {
+  return useQuery({
+    queryKey: [...adminCinemasQueryKey, page, limit],
+    queryFn: () => getMyCinemas({ page, limit }),
+    placeholderData: keepPreviousData,
+  });
+}

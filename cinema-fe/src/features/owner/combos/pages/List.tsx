@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -6,10 +7,12 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useOwnerCombos } from '../../hooks/useOwnerCombos';
 import { useCreateCombo, useDeleteCombo, useUpdateCombo } from '../../hooks/useComboMutations';
@@ -21,8 +24,11 @@ const emptyForm = (): ComboFormValues => ({ cinema_id: '', name: '', description
 function ComboList() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
-  const { data: cinemas = [] } = useMyCinemas();
-  const { data: combos = [] } = useOwnerCombos();
+  const [page, setPage] = useState(1);
+  const { data: cinemasPage } = useMyCinemas();
+  const cinemas = cinemasPage?.data ?? [];
+  const { data } = useOwnerCombos(page, DEFAULT_PAGE_SIZE);
+  const combos = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerCombos);
   const createComboMutation = useCreateCombo();
   const updateComboMutation = useUpdateCombo();
@@ -154,6 +160,7 @@ function ComboList() {
             </tr>
           ))}
         </DataTable>
+        <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
       </div>
     </AdminLayout>
   );

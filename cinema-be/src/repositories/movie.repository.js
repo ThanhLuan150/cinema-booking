@@ -19,17 +19,25 @@ async function findScheduleMovieIds({ date, cinema }) {
   return [...new Set(schedules.map((s) => s.movie_id))];
 }
 
-async function findFiltered(filter) {
-  return Movie.find(filter).sort({ id: -1 });
+async function findFiltered(filter, { skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Movie.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Movie.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function findById(id) {
   return Movie.findOne({ id: Number(id) });
 }
 
-async function findMine({ role, accountId }) {
+async function findMine({ role, accountId, skip = 0, limit = 20 }) {
   const filter = role === 2 ? { owner_id: accountId } : {};
-  return Movie.find(filter).sort({ id: -1 });
+  const [data, total] = await Promise.all([
+    Movie.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Movie.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function create(data) {

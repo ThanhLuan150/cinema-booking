@@ -1,17 +1,25 @@
 const cinemaRepository = require('../repositories/cinema.repository');
 const nextId = require('../utils/nextId');
 const { emitToAdmin, emitToOwner } = require('../utils/socket');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// GET /api/cinema -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
+// GET /api/cinema?page=&limit= -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
 async function list(req, res) {
-  const cinemas = await cinemaRepository.findApproved();
-  res.json(cinemas);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await cinemaRepository.findApproved({ skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
-// GET /api/cinema/mine -> cinemas owned by the caller, any status (auth: admin or theater staff)
+// GET /api/cinema/mine?page=&limit= -> cinemas owned by the caller, any status (auth: admin or theater staff)
 async function mine(req, res) {
-  const cinemas = await cinemaRepository.findMine({ role: req.account.role, accountId: req.account.accountId });
-  res.json(cinemas);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await cinemaRepository.findMine({
+    role: req.account.role,
+    accountId: req.account.accountId,
+    skip,
+    limit,
+  });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // GET /api/cinema/pending -> admin only, cinemas awaiting approval

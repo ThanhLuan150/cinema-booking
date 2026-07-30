@@ -6,8 +6,12 @@ async function findOwnedCinemaIds(accountId) {
   return ownedCinemas.map((c) => c.id);
 }
 
-async function findFiltered(filter) {
-  return Voucher.find(filter).sort({ id: -1 });
+async function findFiltered(filter, { skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Voucher.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Voucher.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function findByCode(code) {

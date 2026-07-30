@@ -15,7 +15,8 @@ export interface MovieFilterBarProps {
 export function MovieFilterBar({ filters, onChange }: MovieFilterBarProps) {
   const { t } = useTranslation('movies');
   const { data: categories = [] } = useCategories();
-  const { data: cinemas = [] } = useCinemasList();
+  const { data: cinemasPage } = useCinemasList();
+  const cinemas = cinemasPage?.data ?? [];
 
   return (
     <div className="mb-6 flex flex-wrap items-end gap-3 rounded-lg bg-white/5 p-4">

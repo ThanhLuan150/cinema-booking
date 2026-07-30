@@ -1,12 +1,14 @@
 const reviewRepository = require('../repositories/review.repository');
 const nextId = require('../utils/nextId');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 const REACTION_TYPES = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
 
-// GET /api/review -> all reviews including hidden ones, joined with movie/cinema name (admin only — moderation)
+// GET /api/review?page=&limit= -> all reviews including hidden ones, joined with movie/cinema name (admin only — moderation)
 async function listForModeration(req, res) {
-  const result = await reviewRepository.findAllForModeration();
-  res.json(result);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await reviewRepository.findAllForModeration({ skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // GET /api/review/cinema/:cinemaId -> visible reviews (threaded with replies) for a cinema + average rating

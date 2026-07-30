@@ -1,16 +1,20 @@
 import apiClient from 'services/apiClient';
 import type { Movie, Category, Cinema } from '@/types/entities';
+import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type { LikePayload, MovieFilters, TopCinema } from '../types/movie.types';
 
-export const getMovies = (filters?: MovieFilters) =>
-  apiClient.get('/movie', { params: filters }).then((res) => res.data as Movie[]);
+export const getMovies = (filters?: MovieFilters, pagination?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<Movie>>('/movie', { params: { ...filters, ...pagination } })
+    .then((res) => res.data);
 
 export const getMovieById = (id: string | number) =>
   apiClient.get(`/movie/${id}`).then((res) => res.data as Movie);
 
 export const getCategoriesList = () => apiClient.get('/cat').then((res) => res.data as Category[]);
 
-export const getCinemasList = () => apiClient.get('/cinema').then((res) => res.data as Cinema[]);
+export const getCinemasList = (pagination?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Cinema>>('/cinema', { params: pagination }).then((res) => res.data);
 
 export const getCinemaById = (id: string | number) => apiClient.get(`/cinema/${id}`).then((res) => res.data as Cinema);
 

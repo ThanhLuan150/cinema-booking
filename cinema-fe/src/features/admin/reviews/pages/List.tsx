@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useAdminReviews } from '../hooks/useAdminReviews';
 import { useDeleteReview, useHideReview } from '../hooks/useReviewModeration';
 
 function AdminReviews() {
   const { t } = useTranslation('admin');
-  const { data: reviews = [] } = useAdminReviews();
+  const [page, setPage] = useState(1);
+  const { data } = useAdminReviews(page, DEFAULT_PAGE_SIZE);
+  const reviews = data?.data ?? [];
   const hideMutation = useHideReview();
   const deleteMutation = useDeleteReview();
 
@@ -64,6 +69,7 @@ function AdminReviews() {
           </tr>
         ))}
       </DataTable>
+      <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
     </AdminLayout>
   );
 }

@@ -5,8 +5,12 @@ async function findCinemaIdByRoomId(roomId) {
   return room ? room.cinema_id : null;
 }
 
-async function findAll(filter) {
-  return Room.find(filter).sort({ id: -1 });
+async function findAll(filter, { skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Room.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Room.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function create({ id, cinema_id, name }) {

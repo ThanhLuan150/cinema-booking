@@ -1,5 +1,6 @@
 import apiClient from 'services/apiClient';
 import type { Movie } from '@/types/entities';
+import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type { CastMemberDraft, MovieFormValues } from '../types/adminMovie.types';
 
 export function buildMovieFormData(
@@ -19,7 +20,8 @@ export function buildMovieFormData(
 }
 
 // Management listing: admin sees every movie, a theater owner only sees the ones they added.
-export const getMyMovies = () => apiClient.get<Movie[]>('/movie/mine').then((res) => res.data);
+export const getMyMovies = (params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Movie>>('/movie/mine', { params }).then((res) => res.data);
 
 export const getMovieCategoriesByMovieId = (id: number | string) =>
   apiClient.get<number[]>(`/movieCat/${id}`).then((res) => res.data);

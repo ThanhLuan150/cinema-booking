@@ -9,8 +9,12 @@ async function updateOwnProfile(accountId, updates) {
   return Account.findOneAndUpdate({ id: accountId }, { $set: updates }, { new: true });
 }
 
-async function findAll() {
-  return Account.find().sort({ id: -1 });
+async function findAll({ skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Account.find().sort({ id: -1 }).skip(skip).limit(limit),
+    Account.countDocuments(),
+  ]);
+  return { data, total };
 }
 
 async function remove(id) {

@@ -1,5 +1,6 @@
 const voucherRepository = require('../repositories/voucher.repository');
 const nextId = require('../utils/nextId');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // A role-2 caller may only touch vouchers on a cinema they own; admin (role 0) always passes.
 async function assertCinemaOwnership(req, cinemaId) {
@@ -22,8 +23,9 @@ async function list(req, res) {
   } else if (req.query.cinemaId) {
     filter.cinema_id = Number(req.query.cinemaId);
   }
-  const vouchers = await voucherRepository.findFiltered(filter);
-  res.json(vouchers);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await voucherRepository.findFiltered(filter, { skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // POST /api/voucher/validate { code, cinema_id, order_value } -> (auth) checks a code without consuming it

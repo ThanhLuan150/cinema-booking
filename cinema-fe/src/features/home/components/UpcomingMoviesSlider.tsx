@@ -6,10 +6,12 @@ import { useMovies } from '@/features/movies/hooks/useMovies';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 
 const Upcoming = () => {
   const { t } = useTranslation('home');
-  const { data: movies = [] } = useMovies();
+  const { data } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
+  const movies = data?.data ?? [];
 
   const today = new Date().toISOString().split('T')[0];
   const upcomingMovies = movies

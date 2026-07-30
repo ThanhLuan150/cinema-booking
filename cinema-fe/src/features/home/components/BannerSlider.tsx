@@ -7,6 +7,7 @@ import { useMovies } from '@/features/movies/hooks/useMovies';
 import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
 import { MAX_VISIBLE_CATEGORIES } from '@/constants/movieCard';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 
 interface ArrowProps {
   className?: string;
@@ -32,8 +33,8 @@ function Arrow({ className, style, onClick, direction, t }: ArrowProps) {
 
 const Banner = () => {
   const { t } = useTranslation('home');
-  const { data: movies = [] } = useMovies();
-  const bannerMovies = movies.slice(0, 5);
+  const { data } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
+  const bannerMovies = (data?.data ?? []).slice(0, 5);
 
   const settings = {
     dots: true,

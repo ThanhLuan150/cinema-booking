@@ -77,5 +77,10 @@
   "auth": {
     "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
     "accessDenied": "Bạn không có quyền truy cập trang này."
+  },
+  "pagination": {
+    "previous": "Trước",
+    "next": "Sau",
+    "pageInfo": "Trang {{page}} / {{totalPages}}"
   }
 }

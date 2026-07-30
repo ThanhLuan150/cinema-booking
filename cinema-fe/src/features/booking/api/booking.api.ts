@@ -1,5 +1,7 @@
 import apiClient from 'services/apiClient';
 import type { Combo, Room, Schedule } from '@/types/entities';
+import type { PaginatedResponse } from '@/types/pagination';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import type {
   BookedSeatTicket,
   Invoice,
@@ -38,6 +40,11 @@ export const validateVoucher = (payload: VoucherValidationPayload) =>
   apiClient.post<VoucherValidationResult>('/voucher/validate', payload).then((res) => res.data);
 
 export const getCombos = (cinemaId?: number | null) =>
-  apiClient.get<Combo[]>('/combo', { params: { cinemaId } }).then((res) => res.data);
+  apiClient
+    .get<PaginatedResponse<Combo>>('/combo', { params: { cinemaId, limit: FULL_LIST_FETCH_LIMIT } })
+    .then((res) => res.data.data);
 
-export const getRoomsList = () => apiClient.get<Room[]>('/room').then((res) => res.data);
+export const getRoomsList = () =>
+  apiClient
+    .get<PaginatedResponse<Room>>('/room', { params: { limit: FULL_LIST_FETCH_LIMIT } })
+    .then((res) => res.data.data);

@@ -7,11 +7,13 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
 import { MAX_VISIBLE_CATEGORIES } from '@/constants/movieCard';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 
 const CinemaMoviesSection = () => {
   const { t } = useTranslation('cinemaDetail');
   const { id } = useParams<{ id: string }>();
-  const { data: movies = [], isLoading } = useMovies({ cinema: id });
+  const { data, isLoading } = useMovies({ cinema: id }, { limit: FULL_LIST_FETCH_LIMIT });
+  const movies = data?.data ?? [];
 
   return (
     <div id="showtimes" className="mx-auto w-4/5 py-8">
