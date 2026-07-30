@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
@@ -36,20 +36,24 @@ const List = () => {
     [movies],
   );
 
-  const roomOptions = (rooms ?? [])
-    .filter((room) => !cinemaFilter || String(room.cinema_id) === cinemaFilter)
-    .map((room) => ({ label: room.name, value: room.id }));
+  const roomOptions = useMemo(
+    () =>
+      (rooms ?? [])
+        .filter((room) => !cinemaFilter || String(room.cinema_id) === cinemaFilter)
+        .map((room) => ({ label: room.name, value: room.id })),
+    [rooms, cinemaFilter],
+  );
 
-  const handleCinemaFilterChange = (e: { target: { value: string } }) => {
+  const handleCinemaFilterChange = useCallback((e: { target: { value: string } }) => {
     setCinemaFilter(e.target.value);
     setRoomFilter('');
     setPage(1);
-  };
+  }, []);
 
-  const handleRoomFilterChange = (e: { target: { value: string } }) => {
+  const handleRoomFilterChange = useCallback((e: { target: { value: string } }) => {
     setRoomFilter(e.target.value);
     setPage(1);
-  };
+  }, []);
 
   return (
     <AdminLayout breadcrumb={t('schedules.list.breadcrumb')}>

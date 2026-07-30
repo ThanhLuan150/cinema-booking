@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -33,7 +33,7 @@ function VoucherList() {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const { data: cinemasPage } = useMyCinemas();
-  const cinemas = cinemasPage?.data ?? [];
+  const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data } = useOwnerVouchers(page, DEFAULT_PAGE_SIZE);
   const vouchers = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerVouchers);
@@ -41,54 +41,68 @@ function VoucherList() {
   const updateVoucherMutation = useUpdateVoucher();
   const deleteVoucherMutation = useDeleteVoucher();
 
-  const toggleActive = async (voucher: { id: number; active: boolean }) => {
-    try {
-      await updateVoucherMutation.mutateAsync({ id: voucher.id, active: !voucher.active });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const toggleActive = useCallback(
+    async (voucher: { id: number; active: boolean }) => {
+      try {
+        await updateVoucherMutation.mutateAsync({ id: voucher.id, active: !voucher.active });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [updateVoucherMutation],
+  );
 
-  const handleDelete = async (id: number) => {
-    if (!(await confirmDialog(t('vouchers.deleteConfirm')))) return;
-    try {
-      await deleteVoucherMutation.mutateAsync(id);
-      toast.success(t('vouchers.deleteSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('vouchers.deleteConfirm')))) return;
+      try {
+        await deleteVoucherMutation.mutateAsync(id);
+        toast.success(t('vouchers.deleteSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [deleteVoucherMutation, t],
+  );
 
-  const handleSubmit = async (values: VoucherFormValues, { resetForm }: FormikHelpers<VoucherFormValues>) => {
-    try {
-      await createVoucherMutation.mutateAsync(values);
-      toast.success(t('vouchers.createSuccess'));
-      resetForm();
-      dispatch(closeAddModal());
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleSubmit = useCallback(
+    async (values: VoucherFormValues, { resetForm }: FormikHelpers<VoucherFormValues>) => {
+      try {
+        await createVoucherMutation.mutateAsync(values);
+        toast.success(t('vouchers.createSuccess'));
+        resetForm();
+        dispatch(closeAddModal());
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [createVoucherMutation, dispatch, t],
+  );
 
-  const validateVoucher = (values: VoucherFormValues) => {
-    const errors: Partial<Record<keyof VoucherFormValues, string>> = {};
-    if (!values.cinema_id) errors.cinema_id = t('vouchers.validation.cinemaRequired');
-    if (!values.code) errors.code = t('vouchers.validation.codeRequired');
-    if (values.discount_value === '') {
-      errors.discount_value = t('vouchers.validation.discountValueRequired');
-    } else {
-      const discountValue = Number(values.discount_value);
-      const isValid =
-        values.discount_type === DISCOUNT_TYPE.percent ? discountValue >= 1 && discountValue <= 100 : discountValue > 0;
-      if (!isValid) errors.discount_value = t('vouchers.validation.discountValueInvalid');
-    }
-    if (values.min_order_value === '') {
-      errors.min_order_value = t('vouchers.validation.minOrderValueRequired');
-    } else if (Number(values.min_order_value) < 0) {
-      errors.min_order_value = t('vouchers.validation.minOrderValueInvalid');
-    }
-    return errors;
-  };
+  const validateVoucher = useCallback(
+    (values: VoucherFormValues) => {
+      const errors: Partial<Record<keyof VoucherFormValues, string>> = {};
+      if (!values.cinema_id) errors.cinema_id = t('vouchers.validation.cinemaRequired');
+      if (!values.code) errors.code = t('vouchers.validation.codeRequired');
+      if (values.discount_value === '') {
+        errors.discount_value = t('vouchers.validation.discountValueRequired');
+      } else {
+        const discountValue = Number(values.discount_value);
+        const isValid =
+          values.discount_type === DISCOUNT_TYPE.percent ? discountValue >= 1 && discountValue <= 100 : discountValue > 0;
+        if (!isValid) errors.discount_value = t('vouchers.validation.discountValueInvalid');
+      }
+      if (values.min_order_value === '') {
+        errors.min_order_value = t('vouchers.validation.minOrderValueRequired');
+      } else if (Number(values.min_order_value) < 0) {
+        errors.min_order_value = t('vouchers.validation.minOrderValueInvalid');
+      }
+      return errors;
+    },
+    [t],
+  );
+
+  const cinemaNameById = useMemo(() => new Map<number | null, string>(cinemas.map((c) => [c.id, c.name])), [cinemas]);
 
   return (
     <AdminLayout breadcrumb={t('vouchers.breadcrumb')}>
@@ -171,7 +185,7 @@ function VoucherList() {
           {vouchers.map((voucher) => (
             <tr key={voucher.id}>
               <td>{voucher.id}</td>
-              <td>{cinemas.find((c) => c.id === voucher.cinema_id)?.name || voucher.cinema_id}</td>
+              <td>{cinemaNameById.get(voucher.cinema_id) || voucher.cinema_id}</td>
               <td>{voucher.code}</td>
               <td>
                 {voucher.discount_type === DISCOUNT_TYPE.percent ? `${voucher.discount_value}%` : `${voucher.discount_value.toLocaleString()}đ`}

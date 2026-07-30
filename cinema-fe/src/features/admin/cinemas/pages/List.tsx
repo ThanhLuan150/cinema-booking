@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -28,34 +28,43 @@ function AdminCinemas() {
     if (pendingVersion > 0) queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey });
   }, [pendingVersion, queryClient]);
 
-  const handleApprove = async (id: number) => {
-    try {
-      await approveMutation.mutateAsync(id);
-      toast.success(t('cinemas.approveSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleApprove = useCallback(
+    async (id: number) => {
+      try {
+        await approveMutation.mutateAsync(id);
+        toast.success(t('cinemas.approveSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [approveMutation, t],
+  );
 
-  const handleBlock = async (id: number) => {
-    if (!(await confirmDialog(t('cinemas.blockConfirm')))) return;
-    try {
-      await blockMutation.mutateAsync(id);
-      toast.success(t('cinemas.blockSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleBlock = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('cinemas.blockConfirm')))) return;
+      try {
+        await blockMutation.mutateAsync(id);
+        toast.success(t('cinemas.blockSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [blockMutation, t],
+  );
 
-  const handleDelete = async (id: number) => {
-    if (!(await confirmDialog(t('cinemas.deleteConfirm')))) return;
-    try {
-      await deleteMutation.mutateAsync(id);
-      toast.success(t('cinemas.deleteSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('cinemas.deleteConfirm')))) return;
+      try {
+        await deleteMutation.mutateAsync(id);
+        toast.success(t('cinemas.deleteSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [deleteMutation, t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('cinemas.breadcrumb')}>

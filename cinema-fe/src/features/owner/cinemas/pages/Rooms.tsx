@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -39,42 +39,51 @@ function SeatMapModal({ room, onClose }: { room: Room; onClose: () => void }) {
   const generateSeatMapMutation = useGenerateSeatMap();
   const updateSeatMutation = useUpdateSeat();
 
-  const toggleLock = async (seat: { id: number; is_locked: boolean }) => {
-    try {
-      await updateSeatMutation.mutateAsync({ id: seat.id, isLocked: !seat.is_locked });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const toggleLock = useCallback(
+    async (seat: { id: number; is_locked: boolean }) => {
+      try {
+        await updateSeatMutation.mutateAsync({ id: seat.id, isLocked: !seat.is_locked });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [updateSeatMutation],
+  );
 
-  const validateSeatMap = (values: SeatMapFormValues) => {
-    const errors: Partial<Record<keyof SeatMapFormValues, string>> = {};
-    if (!values.rowsInput.split(',').map((r) => r.trim()).filter(Boolean).length) {
-      errors.rowsInput = t('rooms.seatMapModal.validation.rowsRequired');
-    }
-    if (!(Number(values.seatsPerRow) > 0)) {
-      errors.seatsPerRow = t('rooms.seatMapModal.validation.seatsPerRowRequired');
-    }
-    return errors;
-  };
+  const validateSeatMap = useCallback(
+    (values: SeatMapFormValues) => {
+      const errors: Partial<Record<keyof SeatMapFormValues, string>> = {};
+      if (!values.rowsInput.split(',').map((r) => r.trim()).filter(Boolean).length) {
+        errors.rowsInput = t('rooms.seatMapModal.validation.rowsRequired');
+      }
+      if (!(Number(values.seatsPerRow) > 0)) {
+        errors.seatsPerRow = t('rooms.seatMapModal.validation.seatsPerRowRequired');
+      }
+      return errors;
+    },
+    [t],
+  );
 
-  const handleGenerateSeatMap = async (values: SeatMapFormValues) => {
-    if (!(await confirmDialog(t('rooms.seatMapModal.regenerateConfirm')))) return;
-    try {
-      await generateSeatMapMutation.mutateAsync({
-        roomId: room.id,
-        payload: {
-          rows: values.rowsInput.split(',').map((r) => r.trim()).filter(Boolean),
-          seatsPerRow: Number(values.seatsPerRow),
-          vipRows: values.vipRows.split(',').map((r) => r.trim()).filter(Boolean),
-          coupleRows: values.coupleRows.split(',').map((r) => r.trim()).filter(Boolean),
-        },
-      });
-      toast.success(t('rooms.seatMapModal.generateSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleGenerateSeatMap = useCallback(
+    async (values: SeatMapFormValues) => {
+      if (!(await confirmDialog(t('rooms.seatMapModal.regenerateConfirm')))) return;
+      try {
+        await generateSeatMapMutation.mutateAsync({
+          roomId: room.id,
+          payload: {
+            rows: values.rowsInput.split(',').map((r) => r.trim()).filter(Boolean),
+            seatsPerRow: Number(values.seatsPerRow),
+            vipRows: values.vipRows.split(',').map((r) => r.trim()).filter(Boolean),
+            coupleRows: values.coupleRows.split(',').map((r) => r.trim()).filter(Boolean),
+          },
+        });
+        toast.success(t('rooms.seatMapModal.generateSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [generateSeatMapMutation, room.id, t],
+  );
 
   return (
     <Modal open onClose={onClose} title={t('rooms.seatMapModal.title', { roomName: room.name })} className="max-w-2xl">
@@ -146,53 +155,65 @@ function Rooms() {
   const dispatch = useAppDispatch();
   const { cinemaId: cinemaIdParam } = useParams<{ cinemaId?: string }>();
   const { data: cinemasPage } = useMyCinemas();
-  const cinemas = cinemasPage?.data ?? [];
+  const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const [selectedCinemaId, setSelectedCinemaId] = useState(cinemaIdParam ?? '');
+  const didAutoSelectCinema = useRef(false);
 
   useEffect(() => {
     if (cinemaIdParam) {
       setSelectedCinemaId(cinemaIdParam);
-    } else if (!selectedCinemaId && cinemas.length > 0) {
+      return;
+    }
+    if (!didAutoSelectCinema.current && cinemas.length > 0) {
+      didAutoSelectCinema.current = true;
       setSelectedCinemaId(String(cinemas[0].id));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cinemaIdParam, cinemas]);
 
   const { data: roomsPage } = useRoomsByCinema(selectedCinemaId || undefined);
-  const rooms = roomsPage?.data ?? [];
+  const rooms = useMemo(() => roomsPage?.data ?? [], [roomsPage]);
   const { showAddRoomModal, seatMapRoomId } = useAppSelector((state) => state.ownerCinemas);
   const createRoomMutation = useCreateRoom();
   const deleteRoomMutation = useDeleteRoom();
 
-  const seatMapRoom = rooms.find((room) => room.id === seatMapRoomId) ?? null;
+  const seatMapRoom = useMemo(() => rooms.find((room) => room.id === seatMapRoomId) ?? null, [rooms, seatMapRoomId]);
 
-  const handleDeleteRoom = async (id: number) => {
-    if (!(await confirmDialog(t('rooms.deleteConfirm')))) return;
-    try {
-      await deleteRoomMutation.mutateAsync(id);
-      toast.success(t('rooms.deleteSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleDeleteRoom = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('rooms.deleteConfirm')))) return;
+      try {
+        await deleteRoomMutation.mutateAsync(id);
+        toast.success(t('rooms.deleteSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [deleteRoomMutation, t],
+  );
 
-  const validateRoom = (values: { name: string }) => {
-    const errors: Partial<Record<'name', string>> = {};
-    if (!values.name.trim()) errors.name = t('rooms.validation.nameRequired');
-    return errors;
-  };
+  const validateRoom = useCallback(
+    (values: { name: string }) => {
+      const errors: Partial<Record<'name', string>> = {};
+      if (!values.name.trim()) errors.name = t('rooms.validation.nameRequired');
+      return errors;
+    },
+    [t],
+  );
 
-  const handleAddRoom = async (values: { name: string }, { resetForm }: FormikHelpers<{ name: string }>) => {
-    if (!selectedCinemaId) return;
-    try {
-      await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(selectedCinemaId) });
-      toast.success(t('rooms.createSuccess'));
-      resetForm();
-      dispatch(closeAddRoomModal());
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleAddRoom = useCallback(
+    async (values: { name: string }, { resetForm }: FormikHelpers<{ name: string }>) => {
+      if (!selectedCinemaId) return;
+      try {
+        await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(selectedCinemaId) });
+        toast.success(t('rooms.createSuccess'));
+        resetForm();
+        dispatch(closeAddRoomModal());
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [selectedCinemaId, createRoomMutation, dispatch, t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('rooms.breadcrumb')}>
