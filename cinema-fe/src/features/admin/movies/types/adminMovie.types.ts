@@ -19,12 +19,16 @@ export interface MovieFormValues {
 export interface CreateMoviePayload extends Omit<MovieFormValues, 'cast'> {
   cast: CastMemberDraft[];
   categoryIds: number[];
+  avatarFile?: File | null;
+  trailerFile?: File | null;
 }
 
 export interface UpdateMoviePayload {
   id: number | string;
   values: MovieFormValues;
   categoryIds: number[];
+  avatarFile?: File | null;
+  trailerFile?: File | null;
 }
 
 export interface AdminMoviesState {
