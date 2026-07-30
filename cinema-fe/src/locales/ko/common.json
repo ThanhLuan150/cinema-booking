@@ -47,7 +47,8 @@
       "vouchers": "할인 쿠폰",
       "bookings": "예매 관리",
       "transactions": "거래 내역",
-      "reviews": "리뷰"
+      "reviews": "리뷰",
+      "rooms": "상영관"
     },
     "toggleMenu": "관리자 메뉴 열기/닫기",
     "adminFallback": "관리자",

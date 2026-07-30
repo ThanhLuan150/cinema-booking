@@ -18,11 +18,42 @@
     "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
     "submitSuccess": "리뷰가 등록되었습니다.",
     "submitError": "리뷰를 등록할 수 없습니다.",
-    "emptyState": "아직 리뷰가 없습니다"
+    "emptyState": "아직 리뷰가 없습니다",
+    "reply": "답글",
+    "replyPlaceholder": "답글 작성...",
+    "replySubmit": "게시",
+    "replySubmitError": "답글을 게시할 수 없습니다.",
+    "reactError": "반응을 남길 수 없습니다.",
+    "reactionLike": "좋아요",
+    "reactionLove": "최고예요",
+    "reactionHaha": "웃겨요",
+    "reactionWow": "멋져요",
+    "reactionSad": "슬퍼요",
+    "reactionAngry": "화나요",
+    "edit": "수정",
+    "editSave": "저장",
+    "editCancel": "취소",
+    "editSuccess": "수정되었습니다.",
+    "editError": "수정할 수 없습니다.",
+    "delete": "삭제",
+    "deleteConfirm": "이 댓글을 삭제하시겠습니까?",
+    "deleteSuccess": "삭제되었습니다.",
+    "deleteError": "삭제할 수 없습니다.",
+    "report": "신고",
+    "reportReasonPlaceholder": "이 댓글을 신고하는 이유를 입력하세요",
+    "reportSubmit": "신고 보내기",
+    "reportSuccess": "신고가 접수되었습니다. 감사합니다.",
+    "reportError": "신고를 보낼 수 없습니다.",
+    "alreadyReported": "신고됨",
+    "loadMore": "리뷰 더 보기",
+    "viewMoreReplies": "답글 {{count}}개 더 보기"
   },
   "otherMovieSlider": {
     "trending": "인기 급상승",
     "moreDetails": "자세히 보기",
     "empty": "현재 인기 급상승 영화가 없습니다"
+  },
+  "detailTrailer": {
+    "title": "예고편"
   }
 }

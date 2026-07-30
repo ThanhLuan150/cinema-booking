@@ -18,11 +18,42 @@
     "loginRequired": "คุณยังไม่ได้เข้าสู่ระบบ กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อใช้งานฟีเจอร์นี้",
     "submitSuccess": "ส่งรีวิวเรียบร้อยแล้ว",
     "submitError": "ไม่สามารถส่งรีวิวได้",
-    "emptyState": "ยังไม่มีรีวิว"
+    "emptyState": "ยังไม่มีรีวิว",
+    "reply": "ตอบกลับ",
+    "replyPlaceholder": "เขียนการตอบกลับ...",
+    "replySubmit": "โพสต์",
+    "replySubmitError": "ไม่สามารถโพสต์การตอบกลับได้",
+    "reactError": "ไม่สามารถแสดงความรู้สึกได้",
+    "reactionLike": "ถูกใจ",
+    "reactionLove": "รักเลย",
+    "reactionHaha": "ฮ่าฮ่า",
+    "reactionWow": "ว้าว",
+    "reactionSad": "เศร้า",
+    "reactionAngry": "โกรธ",
+    "edit": "แก้ไข",
+    "editSave": "บันทึก",
+    "editCancel": "ยกเลิก",
+    "editSuccess": "อัปเดตแล้ว",
+    "editError": "ไม่สามารถอัปเดตได้",
+    "delete": "ลบ",
+    "deleteConfirm": "ลบความคิดเห็นนี้หรือไม่?",
+    "deleteSuccess": "ลบแล้ว",
+    "deleteError": "ไม่สามารถลบได้",
+    "report": "รายงาน",
+    "reportReasonPlaceholder": "เหตุใดคุณจึงรายงานความคิดเห็นนี้",
+    "reportSubmit": "ส่งรายงาน",
+    "reportSuccess": "รายงานเรียบร้อยแล้ว ขอบคุณค่ะ/ครับ",
+    "reportError": "ไม่สามารถส่งรายงานได้",
+    "alreadyReported": "รายงานแล้ว",
+    "loadMore": "ดูรีวิวเพิ่มเติม",
+    "viewMoreReplies": "ดูการตอบกลับอีก {{count}} รายการ"
   },
   "otherMovieSlider": {
     "trending": "กำลังมาแรง",
     "moreDetails": "ดูรายละเอียดเพิ่มเติม",
     "empty": "ขณะนี้ยังไม่มีภาพยนตร์กำลังมาแรง"
+  },
+  "detailTrailer": {
+    "title": "ตัวอย่างหนัง"
   }
 }

@@ -18,11 +18,42 @@
     "loginRequired": "You are not logged in. Please log in or sign up to use this feature.",
     "submitSuccess": "Review submitted.",
     "submitError": "Unable to submit review.",
-    "emptyState": "No reviews yet"
+    "emptyState": "No reviews yet",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply...",
+    "replySubmit": "Post",
+    "replySubmitError": "Unable to post reply.",
+    "reactError": "Unable to react.",
+    "reactionLike": "Like",
+    "reactionLove": "Love",
+    "reactionHaha": "Haha",
+    "reactionWow": "Wow",
+    "reactionSad": "Sad",
+    "reactionAngry": "Angry",
+    "edit": "Edit",
+    "editSave": "Save",
+    "editCancel": "Cancel",
+    "editSuccess": "Updated.",
+    "editError": "Unable to update.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this comment?",
+    "deleteSuccess": "Deleted.",
+    "deleteError": "Unable to delete.",
+    "report": "Report",
+    "reportReasonPlaceholder": "Why are you reporting this?",
+    "reportSubmit": "Submit report",
+    "reportSuccess": "Reported. Thanks for letting us know.",
+    "reportError": "Unable to submit report.",
+    "alreadyReported": "Reported",
+    "loadMore": "Load more reviews",
+    "viewMoreReplies": "View {{count}} more replies"
   },
   "otherMovieSlider": {
     "trending": "Trending",
     "moreDetails": "More Details",
     "empty": "No trending movies right now"
+  },
+  "detailTrailer": {
+    "title": "Trailer"
   }
 }

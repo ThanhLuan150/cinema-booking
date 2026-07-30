@@ -5,4 +5,5 @@ export interface AdminReview {
   hidden: boolean;
   movie?: { name: string };
   cinema?: { name: string };
+  reportCount?: number;
 }

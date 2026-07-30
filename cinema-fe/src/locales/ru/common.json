@@ -47,7 +47,8 @@
       "vouchers": "Промокоды",
       "bookings": "Бронирования",
       "transactions": "Транзакции",
-      "reviews": "Отзывы"
+      "reviews": "Отзывы",
+      "rooms": "Залы"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

@@ -66,6 +66,10 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
             <ion-icon name="business" />
             <b>{t('adminLayout.nav.cinemas')}</b>
           </NavLink>
+          <NavLink to={ROUTES.ownerRooms} className={navLinkClass}>
+            <ion-icon name="grid" />
+            <b>{t('adminLayout.nav.rooms')}</b>
+          </NavLink>
           <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
             <ion-icon name="fast-food" />
             <b>{t('adminLayout.nav.combos')}</b>

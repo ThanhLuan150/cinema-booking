@@ -18,11 +18,42 @@
     "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
     "submitSuccess": "Avis envoyé.",
     "submitError": "Impossible d'envoyer l'avis.",
-    "emptyState": "Aucun avis pour le moment"
+    "emptyState": "Aucun avis pour le moment",
+    "reply": "Répondre",
+    "replyPlaceholder": "Écrire une réponse...",
+    "replySubmit": "Publier",
+    "replySubmitError": "Impossible de publier la réponse.",
+    "reactError": "Impossible de réagir.",
+    "reactionLike": "J'aime",
+    "reactionLove": "J'adore",
+    "reactionHaha": "Haha",
+    "reactionWow": "Wouah",
+    "reactionSad": "Triste",
+    "reactionAngry": "Grrr",
+    "edit": "Modifier",
+    "editSave": "Enregistrer",
+    "editCancel": "Annuler",
+    "editSuccess": "Mis à jour.",
+    "editError": "Impossible de mettre à jour.",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer ce commentaire ?",
+    "deleteSuccess": "Supprimé.",
+    "deleteError": "Impossible de supprimer.",
+    "report": "Signaler",
+    "reportReasonPlaceholder": "Pourquoi signalez-vous ce commentaire ?",
+    "reportSubmit": "Envoyer le signalement",
+    "reportSuccess": "Signalement envoyé. Merci.",
+    "reportError": "Impossible d'envoyer le signalement.",
+    "alreadyReported": "Signalé",
+    "loadMore": "Voir plus d'avis",
+    "viewMoreReplies": "Voir {{count}} réponses de plus"
   },
   "otherMovieSlider": {
     "trending": "Tendances",
     "moreDetails": "Plus de détails",
     "empty": "Aucun film tendance pour le moment"
+  },
+  "detailTrailer": {
+    "title": "Bande-annonce"
   }
 }

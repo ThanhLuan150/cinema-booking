@@ -47,7 +47,8 @@
       "vouchers": "वाउचर",
       "bookings": "बुकिंग",
       "transactions": "लेन-देन",
-      "reviews": "समीक्षाएं"
+      "reviews": "समीक्षाएं",
+      "rooms": "स्क्रीन"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

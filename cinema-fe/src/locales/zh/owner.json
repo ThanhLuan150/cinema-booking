@@ -31,6 +31,9 @@
       "0": "普通座",
       "1": "VIP座",
       "2": "情侣座"
+    },
+    "validation": {
+      "codeRequired": "请输入票号。"
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "无法删除该影厅。",
     "seatMapAction": "座位图",
     "delete": "删除",
+    "validation": {
+      "nameRequired": "请输入影厅名称。"
+    },
     "headers": {
       "id": "ID",
       "name": "影厅名称",
@@ -94,8 +100,13 @@
         "0": "普通座",
         "1": "VIP座",
         "2": "情侣座"
+      },
+      "validation": {
+        "rowsRequired": "请至少输入一排。",
+        "seatsPerRowRequired": "请输入大于 0 的每排座位数。"
       }
-    }
+    },
+    "selectCinemaPlaceholder": "选择分店"
   },
   "combos": {
     "breadcrumb": "套餐管理",
@@ -124,6 +135,13 @@
       "price": "价格",
       "status": "状态",
       "actions": "操作"
+    },
+    "validation": {
+      "cinemaRequired": "请选择影院。",
+      "nameRequired": "请输入套餐名称。",
+      "descriptionRequired": "请输入简介。",
+      "priceRequired": "请输入价格。",
+      "priceInvalid": "价格必须大于 0。"
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "已使用",
       "status": "状态",
       "actions": "操作"
+    },
+    "validation": {
+      "cinemaRequired": "请选择影院。",
+      "codeRequired": "请输入代码。",
+      "discountValueRequired": "请输入折扣值。",
+      "discountValueInvalid": "百分比类型请输入1-100之间的值，固定金额类型请输入大于0的值。",
+      "minOrderValueRequired": "请输入最低订单金额。",
+      "minOrderValueInvalid": "最低订单金额不能为负数。"
     }
   }
 }

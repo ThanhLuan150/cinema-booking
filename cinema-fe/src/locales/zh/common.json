@@ -47,7 +47,8 @@
       "vouchers": "优惠券管理",
       "bookings": "订单管理",
       "transactions": "交易管理",
-      "reviews": "评价管理"
+      "reviews": "评价管理",
+      "rooms": "影厅"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",
