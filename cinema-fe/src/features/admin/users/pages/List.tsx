@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -25,23 +25,34 @@ const List = () => {
   const updateUserRoleMutation = useUpdateUserRole();
   const approveUserMutation = useApproveUser();
 
-  const handleRoleChange = async (userId: number, role: string) => {
-    try {
-      await updateUserRoleMutation.mutateAsync({ userId, role: Number(role) });
-      toast.success(t('users.list.roleChangeSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleRoleChange = useCallback(
+    async (userId: number, role: string) => {
+      try {
+        await updateUserRoleMutation.mutateAsync({ userId, role: Number(role) });
+        toast.success(t('users.list.roleChangeSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [updateUserRoleMutation, t],
+  );
 
-  const handleApprove = async (userId: number) => {
-    try {
-      await approveUserMutation.mutateAsync(userId);
-      toast.success(t('users.list.approveSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleApprove = useCallback(
+    async (userId: number) => {
+      try {
+        await approveUserMutation.mutateAsync(userId);
+        toast.success(t('users.list.approveSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [approveUserMutation, t],
+  );
+
+  const roleOptions = useMemo(
+    () => Object.entries(ROLE_KEY).map(([value, key]) => ({ value, label: t(`users.list.roles.${key}`) })),
+    [t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('users.list.breadcrumb')}>
@@ -55,10 +66,7 @@ const List = () => {
             <td>
               <Select
                 value={user.role}
-                options={Object.entries(ROLE_KEY).map(([value, key]) => ({
-                  value,
-                  label: t(`users.list.roles.${key}`),
-                }))}
+                options={roleOptions}
                 onChange={(e) => handleRoleChange(user.id, e.target.value)}
                 className="border-white/20 bg-transparent text-white"
               />

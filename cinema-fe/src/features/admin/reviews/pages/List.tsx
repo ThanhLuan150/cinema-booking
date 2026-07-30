@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
@@ -18,24 +18,30 @@ function AdminReviews() {
   const hideMutation = useHideReview();
   const deleteMutation = useDeleteReview();
 
-  const handleHide = async (id: number) => {
-    try {
-      await hideMutation.mutateAsync(id);
-      toast.success(t('reviews.hideSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleHide = useCallback(
+    async (id: number) => {
+      try {
+        await hideMutation.mutateAsync(id);
+        toast.success(t('reviews.hideSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [hideMutation, t],
+  );
 
-  const handleDelete = async (id: number) => {
-    if (!(await confirmDialog(t('reviews.deleteConfirm')))) return;
-    try {
-      await deleteMutation.mutateAsync(id);
-      toast.success(t('reviews.deleteSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('reviews.deleteConfirm')))) return;
+      try {
+        await deleteMutation.mutateAsync(id);
+        toast.success(t('reviews.deleteSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [deleteMutation, t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('reviews.breadcrumb')}>

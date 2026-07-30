@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -16,8 +16,9 @@ function OwnerDashboard() {
   const queryClient = useQueryClient();
   const selectedCinemaId = useAppSelector((state) => state.ownerDashboard.selectedCinemaId);
   const { data: cinemasPage } = useMyCinemas();
-  const cinemas = cinemasPage?.data ?? [];
+  const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data: stats } = useOwnerDashboardStats(selectedCinemaId);
+  const cinemaOptions = useMemo(() => cinemas.map((c) => ({ label: c.name, value: c.id })), [cinemas]);
 
   const bookingVersion = useAppSelector((state) => state.realtime.ownerBookingVersion);
   useEffect(() => {
@@ -32,7 +33,7 @@ function OwnerDashboard() {
           value={selectedCinemaId}
           onChange={(e) => dispatch(setSelectedCinemaId(e.target.value))}
           placeholder={t('dashboard.allMyCinemas')}
-          options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
+          options={cinemaOptions}
           className="bg-white"
         />
       </div>

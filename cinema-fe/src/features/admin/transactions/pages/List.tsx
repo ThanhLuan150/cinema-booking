@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
@@ -18,15 +18,18 @@ function AdminTransactions() {
   const invoices = data?.data ?? [];
   const refundMutation = useRefundInvoice();
 
-  const handleRefund = async (id: number) => {
-    if (!(await confirmDialog(t('transactions.refundConfirm')))) return;
-    try {
-      await refundMutation.mutateAsync(id);
-      toast.success(t('transactions.refundSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleRefund = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('transactions.refundConfirm')))) return;
+      try {
+        await refundMutation.mutateAsync(id);
+        toast.success(t('transactions.refundSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [refundMutation, t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('transactions.breadcrumb')}>

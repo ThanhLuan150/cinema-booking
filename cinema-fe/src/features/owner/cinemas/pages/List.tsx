@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -35,16 +35,19 @@ function CinemaList() {
     if (statusVersion > 0) queryClient.invalidateQueries({ queryKey: myCinemasQueryKey });
   }, [statusVersion, queryClient]);
 
-  const handleSubmit = async (values: CinemaFormValues, { resetForm }: FormikHelpers<CinemaFormValues>) => {
-    try {
-      await createCinemaMutation.mutateAsync(values);
-      toast.success(t('cinemas.createSuccess'));
-      resetForm();
-      dispatch(closeAddCinemaModal());
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleSubmit = useCallback(
+    async (values: CinemaFormValues, { resetForm }: FormikHelpers<CinemaFormValues>) => {
+      try {
+        await createCinemaMutation.mutateAsync(values);
+        toast.success(t('cinemas.createSuccess'));
+        resetForm();
+        dispatch(closeAddCinemaModal());
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [createCinemaMutation, dispatch, t],
+  );
 
   return (
     <AdminLayout breadcrumb={t('cinemas.breadcrumb')}>

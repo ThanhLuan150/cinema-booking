@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -26,7 +26,7 @@ function ComboList() {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const { data: cinemasPage } = useMyCinemas();
-  const cinemas = cinemasPage?.data ?? [];
+  const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data } = useOwnerCombos(page, DEFAULT_PAGE_SIZE);
   const combos = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerCombos);
@@ -34,47 +34,61 @@ function ComboList() {
   const updateComboMutation = useUpdateCombo();
   const deleteComboMutation = useDeleteCombo();
 
-  const toggleActive = async (combo: { id: number; active: boolean }) => {
-    try {
-      await updateComboMutation.mutateAsync({ id: combo.id, active: !combo.active });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const toggleActive = useCallback(
+    async (combo: { id: number; active: boolean }) => {
+      try {
+        await updateComboMutation.mutateAsync({ id: combo.id, active: !combo.active });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [updateComboMutation],
+  );
 
-  const handleDelete = async (id: number) => {
-    if (!(await confirmDialog(t('combos.deleteConfirm')))) return;
-    try {
-      await deleteComboMutation.mutateAsync(id);
-      toast.success(t('combos.deleteSuccess'));
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('combos.deleteConfirm')))) return;
+      try {
+        await deleteComboMutation.mutateAsync(id);
+        toast.success(t('combos.deleteSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [deleteComboMutation, t],
+  );
 
-  const handleSubmit = async (values: ComboFormValues, { resetForm }: FormikHelpers<ComboFormValues>) => {
-    try {
-      await createComboMutation.mutateAsync(values);
-      toast.success(t('combos.createSuccess'));
-      resetForm();
-      dispatch(closeAddModal());
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, t));
-    }
-  };
+  const handleSubmit = useCallback(
+    async (values: ComboFormValues, { resetForm }: FormikHelpers<ComboFormValues>) => {
+      try {
+        await createComboMutation.mutateAsync(values);
+        toast.success(t('combos.createSuccess'));
+        resetForm();
+        dispatch(closeAddModal());
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [createComboMutation, dispatch, t],
+  );
 
-  const validateCombo = (values: ComboFormValues) => {
-    const errors: Partial<Record<keyof ComboFormValues, string>> = {};
-    if (!values.cinema_id) errors.cinema_id = t('combos.validation.cinemaRequired');
-    if (!values.name) errors.name = t('combos.validation.nameRequired');
-    if (!values.description.trim()) errors.description = t('combos.validation.descriptionRequired');
-    if (values.price === '') {
-      errors.price = t('combos.validation.priceRequired');
-    } else if (Number(values.price) <= 0) {
-      errors.price = t('combos.validation.priceInvalid');
-    }
-    return errors;
-  };
+  const validateCombo = useCallback(
+    (values: ComboFormValues) => {
+      const errors: Partial<Record<keyof ComboFormValues, string>> = {};
+      if (!values.cinema_id) errors.cinema_id = t('combos.validation.cinemaRequired');
+      if (!values.name) errors.name = t('combos.validation.nameRequired');
+      if (!values.description.trim()) errors.description = t('combos.validation.descriptionRequired');
+      if (values.price === '') {
+        errors.price = t('combos.validation.priceRequired');
+      } else if (Number(values.price) <= 0) {
+        errors.price = t('combos.validation.priceInvalid');
+      }
+      return errors;
+    },
+    [t],
+  );
+
+  const cinemaNameById = useMemo(() => new Map(cinemas.map((c) => [c.id, c.name])), [cinemas]);
 
   return (
     <AdminLayout breadcrumb={t('combos.breadcrumb')}>
@@ -145,7 +159,7 @@ function ComboList() {
           {combos.map((combo) => (
             <tr key={combo.id}>
               <td>{combo.id}</td>
-              <td>{cinemas.find((c) => c.id === combo.cinema_id)?.name || combo.cinema_id}</td>
+              <td>{cinemaNameById.get(combo.cinema_id) || combo.cinema_id}</td>
               <td>{combo.name}</td>
               <td>{combo.price.toLocaleString()}đ</td>
               <td>{combo.active ? t('combos.statusActive') : t('combos.statusInactive')}</td>
