@@ -1,7 +1,7 @@
 import type { ZodTypeAny } from 'zod';
 import type { FormikErrors } from 'formik';
 
-export const toFormikValidate = <T extends Record<string, unknown>>(schema: ZodTypeAny) => {
+export const toFormikValidate = <T extends object>(schema: ZodTypeAny) => {
   return (values: T): FormikErrors<T> => {
     const result = schema.safeParse(values);
     if (result.success) return {};

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,12 +7,14 @@ import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import type { Room } from '@/types/entities';
+import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useRoomsByCinema } from '../../hooks/useRoomsByCinema';
 import { useCreateRoom } from '../../hooks/useCreateRoom';
 import { useDeleteRoom } from '../../hooks/useDeleteRoom';
@@ -44,6 +47,17 @@ function SeatMapModal({ room, onClose }: { room: Room; onClose: () => void }) {
     }
   };
 
+  const validateSeatMap = (values: SeatMapFormValues) => {
+    const errors: Partial<Record<keyof SeatMapFormValues, string>> = {};
+    if (!values.rowsInput.split(',').map((r) => r.trim()).filter(Boolean).length) {
+      errors.rowsInput = t('rooms.seatMapModal.validation.rowsRequired');
+    }
+    if (!(Number(values.seatsPerRow) > 0)) {
+      errors.seatsPerRow = t('rooms.seatMapModal.validation.seatsPerRowRequired');
+    }
+    return errors;
+  };
+
   const handleGenerateSeatMap = async (values: SeatMapFormValues) => {
     if (!(await confirmDialog(t('rooms.seatMapModal.regenerateConfirm')))) return;
     try {
@@ -64,18 +78,34 @@ function SeatMapModal({ room, onClose }: { room: Room; onClose: () => void }) {
 
   return (
     <Modal open onClose={onClose} title={t('rooms.seatMapModal.title', { roomName: room.name })} className="max-w-2xl">
-      <Formik<SeatMapFormValues> initialValues={emptySeatMapForm()} onSubmit={handleGenerateSeatMap}>
-        <Form className="mb-4 grid grid-cols-2 gap-3">
-          <Field as={Input} label={t('rooms.seatMapModal.rowsLabel')} name="rowsInput" />
-          <Field as={Input} label={t('rooms.seatMapModal.seatsPerRowLabel')} type="number" name="seatsPerRow" />
-          <Field as={Input} label={t('rooms.seatMapModal.vipRowsLabel')} name="vipRows" />
-          <Field as={Input} label={t('rooms.seatMapModal.coupleRowsLabel')} name="coupleRows" />
-          <div className="col-span-2">
-            <Button type="submit" variant="danger" loading={generateSeatMapMutation.isPending}>
-              {t('rooms.seatMapModal.generateButton')}
-            </Button>
-          </div>
-        </Form>
+      <Formik<SeatMapFormValues> initialValues={emptySeatMapForm()} validate={validateSeatMap} onSubmit={handleGenerateSeatMap}>
+        {(formik) => {
+          const showErrors = formik.submitCount > 0;
+          return (
+            <Form className="mb-4 grid grid-cols-2 gap-3">
+              <Field
+                as={Input}
+                label={t('rooms.seatMapModal.rowsLabel')}
+                name="rowsInput"
+                error={showErrors ? formik.errors.rowsInput : undefined}
+              />
+              <Field
+                as={Input}
+                label={t('rooms.seatMapModal.seatsPerRowLabel')}
+                type="number"
+                name="seatsPerRow"
+                error={showErrors ? formik.errors.seatsPerRow : undefined}
+              />
+              <Field as={Input} label={t('rooms.seatMapModal.vipRowsLabel')} name="vipRows" />
+              <Field as={Input} label={t('rooms.seatMapModal.coupleRowsLabel')} name="coupleRows" />
+              <div className="col-span-2">
+                <Button type="submit" variant="danger" loading={generateSeatMapMutation.isPending}>
+                  {t('rooms.seatMapModal.generateButton')}
+                </Button>
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
 
       {seats.length > 0 ? (
@@ -114,8 +144,20 @@ function SeatMapModal({ room, onClose }: { room: Room; onClose: () => void }) {
 function Rooms() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
-  const { cinemaId } = useParams<{ cinemaId: string }>();
-  const { data: rooms = [] } = useRoomsByCinema(cinemaId);
+  const { cinemaId: cinemaIdParam } = useParams<{ cinemaId?: string }>();
+  const { data: cinemas = [] } = useMyCinemas();
+  const [selectedCinemaId, setSelectedCinemaId] = useState(cinemaIdParam ?? '');
+
+  useEffect(() => {
+    if (cinemaIdParam) {
+      setSelectedCinemaId(cinemaIdParam);
+    } else if (!selectedCinemaId && cinemas.length > 0) {
+      setSelectedCinemaId(String(cinemas[0].id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cinemaIdParam, cinemas]);
+
+  const { data: rooms = [] } = useRoomsByCinema(selectedCinemaId || undefined);
   const { showAddRoomModal, seatMapRoomId } = useAppSelector((state) => state.ownerCinemas);
   const createRoomMutation = useCreateRoom();
   const deleteRoomMutation = useDeleteRoom();
@@ -132,9 +174,16 @@ function Rooms() {
     }
   };
 
+  const validateRoom = (values: { name: string }) => {
+    const errors: Partial<Record<'name', string>> = {};
+    if (!values.name.trim()) errors.name = t('rooms.validation.nameRequired');
+    return errors;
+  };
+
   const handleAddRoom = async (values: { name: string }, { resetForm }: FormikHelpers<{ name: string }>) => {
+    if (!selectedCinemaId) return;
     try {
-      await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(cinemaId) });
+      await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(selectedCinemaId) });
       toast.success(t('rooms.createSuccess'));
       resetForm();
       dispatch(closeAddRoomModal());
@@ -145,21 +194,38 @@ function Rooms() {
 
   return (
     <AdminLayout breadcrumb={t('rooms.breadcrumb')}>
-      <Button type="button" variant="danger" onClick={() => dispatch(openAddRoomModal())}>
+      <div className="mb-4 max-w-xs">
+        <Select
+          value={selectedCinemaId}
+          onChange={(e) => setSelectedCinemaId(e.target.value)}
+          options={cinemas.map((cinema) => ({ label: cinema.name, value: cinema.id }))}
+          placeholder={t('rooms.selectCinemaPlaceholder')}
+          className="bg-white"
+        />
+      </div>
+
+      <Button type="button" variant="danger" disabled={!selectedCinemaId} onClick={() => dispatch(openAddRoomModal())}>
         {t('rooms.addButton')}
       </Button>
 
       {showAddRoomModal && (
         <Modal open onClose={() => dispatch(closeAddRoomModal())} title={t('rooms.addTitle')}>
-          <Formik initialValues={{ name: '' }} onSubmit={handleAddRoom}>
-            <Form>
-              <Field as={Input} label={t('rooms.nameLabel')} name="name" required />
-              <div className="mt-6 flex justify-end">
-                <Button type="submit" variant="danger" loading={createRoomMutation.isPending}>
-                  {t('rooms.submit')}
-                </Button>
-              </div>
-            </Form>
+          <Formik initialValues={{ name: '' }} validate={validateRoom} onSubmit={handleAddRoom}>
+            {(formik) => (
+              <Form>
+                <Field
+                  as={Input}
+                  label={t('rooms.nameLabel')}
+                  name="name"
+                  error={formik.submitCount > 0 ? formik.errors.name : undefined}
+                />
+                <div className="mt-6 flex justify-end">
+                  <Button type="submit" variant="danger" loading={createRoomMutation.isPending}>
+                    {t('rooms.submit')}
+                  </Button>
+                </div>
+              </Form>
+            )}
           </Formik>
         </Modal>
       )}

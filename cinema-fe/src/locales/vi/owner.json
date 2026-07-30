@@ -31,6 +31,9 @@
       "0": "Thường",
       "1": "VIP",
       "2": "Đôi"
+    },
+    "validation": {
+      "codeRequired": "Vui lòng nhập mã vé."
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "Không thể xóa phòng.",
     "seatMapAction": "Sơ đồ ghế",
     "delete": "Xóa",
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên phòng."
+    },
     "headers": {
       "id": "ID",
       "name": "Tên phòng",
@@ -94,8 +100,13 @@
         "0": "Thường",
         "1": "VIP",
         "2": "Đôi"
+      },
+      "validation": {
+        "rowsRequired": "Vui lòng nhập ít nhất một dãy ghế.",
+        "seatsPerRowRequired": "Vui lòng nhập số ghế mỗi dãy lớn hơn 0."
       }
-    }
+    },
+    "selectCinemaPlaceholder": "Chọn chi nhánh"
   },
   "combos": {
     "breadcrumb": "Combo",
@@ -124,6 +135,13 @@
       "price": "Giá",
       "status": "Trạng thái",
       "actions": "Hành động"
+    },
+    "validation": {
+      "cinemaRequired": "Vui lòng chọn rạp.",
+      "nameRequired": "Vui lòng nhập tên combo.",
+      "descriptionRequired": "Vui lòng nhập mô tả.",
+      "priceRequired": "Vui lòng nhập giá.",
+      "priceInvalid": "Giá phải lớn hơn 0."
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "Đã dùng",
       "status": "Trạng thái",
       "actions": "Hành động"
+    },
+    "validation": {
+      "cinemaRequired": "Vui lòng chọn rạp.",
+      "codeRequired": "Vui lòng nhập mã giảm giá.",
+      "discountValueRequired": "Vui lòng nhập giá trị giảm.",
+      "discountValueInvalid": "Nhập giá trị giảm từ 1-100 cho loại phần trăm, hoặc lớn hơn 0 cho loại giảm cố định.",
+      "minOrderValueRequired": "Vui lòng nhập giá trị đơn hàng tối thiểu.",
+      "minOrderValueInvalid": "Giá trị đơn hàng tối thiểu không được âm."
     }
   }
 }

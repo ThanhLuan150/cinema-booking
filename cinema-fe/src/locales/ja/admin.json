@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "映画一覧",
       "addButton": "追加 +",
-      "headers": ["ID", "サムネイル", "タイトル", "公開日", "製作国", "概要", "予告編", "ジャンル", "操作"]
+      "headers": [
+        "ID",
+        "サムネイル",
+        "タイトル",
+        "公開日",
+        "製作国",
+        "概要",
+        "予告編",
+        "ジャンル",
+        "操作"
+      ]
+    },
+    "validation": {
+      "nameRequired": "タイトルを入力してください",
+      "avatarRequired": "サムネイル画像を選択してください",
+      "premiereDateRequired": "公開日を入力してください",
+      "premiereDateInvalid": "公開日の形式が正しくありません",
+      "descriptionRequired": "概要を入力してください",
+      "countryRequired": "製作国を入力してください",
+      "trailerRequired": "予告編を追加してください",
+      "producerRequired": "製作者を入力してください",
+      "directorRequired": "監督を入力してください",
+      "castNameRequired": "出演者名を入力してください",
+      "castAvatarInvalid": "出演者の画像URLが正しくありません",
+      "categoryRequired": "少なくとも1つのジャンルを選択してください"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "上映スケジュールを追加",
       "cinema": {
         "label": "劇場:",
-        "placeholder": "劇場を選択"
+        "placeholder": "劇場を選択",
+        "required": "劇場を選択してください。"
       },
       "room": {
         "label": "上映室:",
         "placeholder": "上映室を選択",
-        "placeholderSelectCinemaFirst": "先に劇場を選択してください"
+        "placeholderSelectCinemaFirst": "先に劇場を選択してください",
+        "required": "上映室を選択してください。",
+        "placeholderNoRooms": "この劇場には上映室がありません",
+        "noRoomsHint": "この劇場にはまだ上映室がありません。",
+        "noRoomsHintLink": "上映室を作成"
       },
       "date": "上映日:",
+      "dateRequired": "上映日を選択してください。",
       "slot": {
         "label": "上映時間:",
-        "placeholder": "上映時間を選択"
+        "placeholder": "上映時間を選択",
+        "required": "上映時間を選択してください。"
       },
       "price": "チケット料金:",
+      "priceRequired": "チケット料金を入力してください。",
       "submit": "追加",
-      "validationError": "劇場、上映室、日付、上映時間を選択してください。",
       "toastSuccess": "上映スケジュールを追加しました。"
     },
     "list": {
       "breadcrumb": "上映スケジュール",
-      "headers": ["ID", "映画", "開始時刻", "終了時刻", "上映日", "料金"]
+      "headers": [
+        "ID",
+        "映画",
+        "劇場",
+        "上映室",
+        "開始時刻",
+        "終了時刻",
+        "上映日",
+        "料金"
+      ],
+      "filterCinemaPlaceholder": "すべての劇場",
+      "filterRoomPlaceholder": "すべての上映室"
     }
   },
   "reviews": {
     "breadcrumb": "レビュー",
-    "headers": ["ID", "対象", "評価", "内容", "状態", "操作"],
+    "headers": [
+      "ID",
+      "対象",
+      "評価",
+      "内容",
+      "状態",
+      "操作"
+    ],
     "cinemaSuffix": "{{name}}(映画館)",
     "hiddenStatus": "非表示",
     "visibleStatus": "表示",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "取引履歴",
-    "headers": ["ID", "チケットコード", "顧客", "映画", "座席", "合計金額", "状態", "操作"],
+    "headers": [
+      "ID",
+      "チケットコード",
+      "顧客",
+      "映画",
+      "座席",
+      "合計金額",
+      "状態",
+      "操作"
+    ],
     "status": {
       "booked": "予約済み",
       "cancelled": "キャンセル済み",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "映画館",
-    "headers": ["ID", "映画館名", "オーナー(ID)", "住所", "状態", "操作"],
+    "headers": [
+      "ID",
+      "映画館名",
+      "オーナー(ID)",
+      "住所",
+      "状態",
+      "操作"
+    ],
     "status": {
       "pending": "承認待ち",
       "approved": "承認済み",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "ユーザー",
-      "headers": ["ID", "氏名", "電話番号", "メールアドレス", "権限", "状態", "操作"],
+      "headers": [
+        "ID",
+        "氏名",
+        "電話番号",
+        "メールアドレス",
+        "権限",
+        "状態",
+        "操作"
+      ],
       "roles": {
         "admin": "管理者",
         "user": "一般ユーザー",

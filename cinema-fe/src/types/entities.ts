@@ -8,6 +8,7 @@ export interface CastMember {
 
 export interface Movie {
   id: number;
+  owner_id?: number | null;
   name: string;
   avatar: string;
   premiere_date: string;

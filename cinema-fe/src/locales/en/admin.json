@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "Films",
       "addButton": "Add +",
-      "headers": ["ID", "Avatar", "Name", "Premiere date", "Country", "Describe", "Trailer", "Category", "Action"]
+      "headers": [
+        "ID",
+        "Avatar",
+        "Name",
+        "Premiere date",
+        "Country",
+        "Describe",
+        "Trailer",
+        "Category",
+        "Action"
+      ]
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "avatarRequired": "Avatar is required",
+      "premiereDateRequired": "Premiere date is required",
+      "premiereDateInvalid": "Premiere date is invalid",
+      "descriptionRequired": "Description is required",
+      "countryRequired": "Country is required",
+      "trailerRequired": "Trailer is required",
+      "producerRequired": "Producer is required",
+      "directorRequired": "Director is required",
+      "castNameRequired": "Cast member name is required",
+      "castAvatarInvalid": "Cast avatar URL is invalid",
+      "categoryRequired": "Select at least one category"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "Add showtime",
       "cinema": {
         "label": "Branch:",
-        "placeholder": "Select branch"
+        "placeholder": "Select branch",
+        "required": "Please select a branch."
       },
       "room": {
         "label": "Room:",
         "placeholder": "Select room",
-        "placeholderSelectCinemaFirst": "Select a branch first"
+        "placeholderSelectCinemaFirst": "Select a branch first",
+        "required": "Please select a room.",
+        "placeholderNoRooms": "No rooms in this branch",
+        "noRoomsHint": "This branch doesn't have any rooms yet.",
+        "noRoomsHintLink": "Create a room"
       },
       "date": "Show date:",
+      "dateRequired": "Please select a show date.",
       "slot": {
         "label": "Showtime:",
-        "placeholder": "Select showtime"
+        "placeholder": "Select showtime",
+        "required": "Please select a showtime."
       },
       "price": "Ticket price:",
+      "priceRequired": "Please enter a ticket price.",
       "submit": "Add",
-      "validationError": "Please select branch, room, date and showtime.",
       "toastSuccess": "Showtime added."
     },
     "list": {
       "breadcrumb": "Schedule",
-      "headers": ["ID", "Movie", "Time Begin", "Time End", "Movie Date", "Price"]
+      "headers": [
+        "ID",
+        "Movie",
+        "Branch",
+        "Room",
+        "Time Begin",
+        "Time End",
+        "Movie Date",
+        "Price"
+      ],
+      "filterCinemaPlaceholder": "All branches",
+      "filterRoomPlaceholder": "All rooms"
     }
   },
   "reviews": {
     "breadcrumb": "Reviews",
-    "headers": ["ID", "Subject", "Rating", "Content", "Status", "Action"],
+    "headers": [
+      "ID",
+      "Subject",
+      "Rating",
+      "Content",
+      "Status",
+      "Action"
+    ],
     "cinemaSuffix": "{{name}} (cinema)",
     "hiddenStatus": "Hidden",
     "visibleStatus": "Visible",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "Transactions",
-    "headers": ["ID", "Ticket code", "Customer", "Movie", "Seat", "Total", "Status", "Action"],
+    "headers": [
+      "ID",
+      "Ticket code",
+      "Customer",
+      "Movie",
+      "Seat",
+      "Total",
+      "Status",
+      "Action"
+    ],
     "status": {
       "booked": "Booked",
       "cancelled": "Cancelled",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "Cinemas",
-    "headers": ["ID", "Cinema name", "Owner (ID)", "Address", "Status", "Action"],
+    "headers": [
+      "ID",
+      "Cinema name",
+      "Owner (ID)",
+      "Address",
+      "Status",
+      "Action"
+    ],
     "status": {
       "pending": "Pending approval",
       "approved": "Approved",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "Users",
-      "headers": ["ID", "Full name", "Phone", "Email", "Role", "Status", "Action"],
+      "headers": [
+        "ID",
+        "Full name",
+        "Phone",
+        "Email",
+        "Role",
+        "Status",
+        "Action"
+      ],
       "roles": {
         "admin": "Admin",
         "user": "User",

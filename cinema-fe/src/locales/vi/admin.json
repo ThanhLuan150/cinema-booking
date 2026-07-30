@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "Phim",
       "addButton": "Thêm +",
-      "headers": ["ID", "Ảnh", "Tên", "Ngày công chiếu", "Quốc gia", "Mô tả", "Trailer", "Danh mục", "Hành động"]
+      "headers": [
+        "ID",
+        "Ảnh",
+        "Tên",
+        "Ngày công chiếu",
+        "Quốc gia",
+        "Mô tả",
+        "Trailer",
+        "Danh mục",
+        "Hành động"
+      ]
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên phim",
+      "avatarRequired": "Vui lòng chọn ảnh đại diện",
+      "premiereDateRequired": "Vui lòng chọn ngày công chiếu",
+      "premiereDateInvalid": "Ngày công chiếu không hợp lệ",
+      "descriptionRequired": "Vui lòng nhập mô tả",
+      "countryRequired": "Vui lòng nhập quốc gia",
+      "trailerRequired": "Vui lòng thêm trailer",
+      "producerRequired": "Vui lòng nhập nhà sản xuất",
+      "directorRequired": "Vui lòng nhập đạo diễn",
+      "castNameRequired": "Vui lòng nhập tên diễn viên",
+      "castAvatarInvalid": "URL ảnh diễn viên không hợp lệ",
+      "categoryRequired": "Vui lòng chọn ít nhất một danh mục"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "Thêm suất chiếu",
       "cinema": {
         "label": "Chi nhánh:",
-        "placeholder": "Chọn chi nhánh"
+        "placeholder": "Chọn chi nhánh",
+        "required": "Vui lòng chọn chi nhánh."
       },
       "room": {
         "label": "Phòng chiếu:",
         "placeholder": "Chọn phòng",
-        "placeholderSelectCinemaFirst": "Chọn chi nhánh trước"
+        "placeholderSelectCinemaFirst": "Chọn chi nhánh trước",
+        "required": "Vui lòng chọn phòng.",
+        "placeholderNoRooms": "Chi nhánh này chưa có phòng",
+        "noRoomsHint": "Chi nhánh này chưa có phòng chiếu nào.",
+        "noRoomsHintLink": "Tạo phòng ngay"
       },
       "date": "Ngày chiếu:",
+      "dateRequired": "Vui lòng chọn ngày chiếu.",
       "slot": {
         "label": "Suất chiếu:",
-        "placeholder": "Chọn suất chiếu"
+        "placeholder": "Chọn suất chiếu",
+        "required": "Vui lòng chọn suất chiếu."
       },
       "price": "Giá vé:",
+      "priceRequired": "Vui lòng nhập giá vé.",
       "submit": "Thêm",
-      "validationError": "Vui lòng chọn đầy đủ rạp, phòng, ngày và suất chiếu.",
       "toastSuccess": "Đã thêm suất chiếu."
     },
     "list": {
       "breadcrumb": "Lịch chiếu",
-      "headers": ["ID", "Phim", "Giờ bắt đầu", "Giờ kết thúc", "Ngày chiếu", "Giá vé"]
+      "headers": [
+        "ID",
+        "Phim",
+        "Chi nhánh",
+        "Phòng chiếu",
+        "Giờ bắt đầu",
+        "Giờ kết thúc",
+        "Ngày chiếu",
+        "Giá vé"
+      ],
+      "filterCinemaPlaceholder": "Tất cả chi nhánh",
+      "filterRoomPlaceholder": "Tất cả phòng"
     }
   },
   "reviews": {
     "breadcrumb": "Đánh giá",
-    "headers": ["ID", "Đối tượng", "Điểm", "Nội dung", "Trạng thái", "Hành động"],
+    "headers": [
+      "ID",
+      "Đối tượng",
+      "Điểm",
+      "Nội dung",
+      "Trạng thái",
+      "Hành động"
+    ],
     "cinemaSuffix": "{{name}} (rạp)",
     "hiddenStatus": "Đã ẩn",
     "visibleStatus": "Hiển thị",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "Giao dịch",
-    "headers": ["ID", "Mã vé", "Khách hàng", "Phim", "Ghế", "Tổng tiền", "Trạng thái", "Hành động"],
+    "headers": [
+      "ID",
+      "Mã vé",
+      "Khách hàng",
+      "Phim",
+      "Ghế",
+      "Tổng tiền",
+      "Trạng thái",
+      "Hành động"
+    ],
     "status": {
       "booked": "Đã đặt vé",
       "cancelled": "Đã hủy",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "Rạp chiếu",
-    "headers": ["ID", "Tên rạp", "Chủ sở hữu (ID)", "Địa chỉ", "Trạng thái", "Hành động"],
+    "headers": [
+      "ID",
+      "Tên rạp",
+      "Chủ sở hữu (ID)",
+      "Địa chỉ",
+      "Trạng thái",
+      "Hành động"
+    ],
     "status": {
       "pending": "Chờ duyệt",
       "approved": "Đã duyệt",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "Người dùng",
-      "headers": ["ID", "Họ tên", "Số điện thoại", "Email", "Vai trò", "Trạng thái", "Hành động"],
+      "headers": [
+        "ID",
+        "Họ tên",
+        "Số điện thoại",
+        "Email",
+        "Vai trò",
+        "Trạng thái",
+        "Hành động"
+      ],
       "roles": {
         "admin": "Quản trị viên",
         "user": "Người dùng",

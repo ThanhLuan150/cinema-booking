@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "电影管理",
       "addButton": "新增 +",
-      "headers": ["ID", "封面图", "名称", "上映日期", "国家", "简介", "预告片", "类型", "操作"]
+      "headers": [
+        "ID",
+        "封面图",
+        "名称",
+        "上映日期",
+        "国家",
+        "简介",
+        "预告片",
+        "类型",
+        "操作"
+      ]
+    },
+    "validation": {
+      "nameRequired": "请输入名称",
+      "avatarRequired": "请上传封面图",
+      "premiereDateRequired": "请选择上映日期",
+      "premiereDateInvalid": "上映日期格式无效",
+      "descriptionRequired": "请输入简介",
+      "countryRequired": "请输入国家",
+      "trailerRequired": "请上传预告片",
+      "producerRequired": "请输入制片人",
+      "directorRequired": "请输入导演",
+      "castNameRequired": "请输入演员姓名",
+      "castAvatarInvalid": "演员图片URL无效",
+      "categoryRequired": "请至少选择一个分类"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "新增场次",
       "cinema": {
         "label": "分店：",
-        "placeholder": "选择分店"
+        "placeholder": "选择分店",
+        "required": "请选择分店。"
       },
       "room": {
         "label": "影厅：",
         "placeholder": "选择影厅",
-        "placeholderSelectCinemaFirst": "请先选择分店"
+        "placeholderSelectCinemaFirst": "请先选择分店",
+        "required": "请选择影厅。",
+        "placeholderNoRooms": "该分店暂无影厅",
+        "noRoomsHint": "该分店还没有影厅。",
+        "noRoomsHintLink": "立即创建影厅"
       },
       "date": "放映日期：",
+      "dateRequired": "请选择放映日期。",
       "slot": {
         "label": "场次时间：",
-        "placeholder": "选择场次时间"
+        "placeholder": "选择场次时间",
+        "required": "请选择场次时间。"
       },
       "price": "票价：",
+      "priceRequired": "请输入票价。",
       "submit": "新增",
-      "validationError": "请选择分店、影厅、日期和场次时间。",
       "toastSuccess": "场次已添加。"
     },
     "list": {
       "breadcrumb": "排片表",
-      "headers": ["ID", "电影", "开始时间", "结束时间", "放映日期", "票价"]
+      "headers": [
+        "ID",
+        "电影",
+        "分店",
+        "影厅",
+        "开始时间",
+        "结束时间",
+        "放映日期",
+        "票价"
+      ],
+      "filterCinemaPlaceholder": "全部分店",
+      "filterRoomPlaceholder": "全部影厅"
     }
   },
   "reviews": {
     "breadcrumb": "评价管理",
-    "headers": ["ID", "评价对象", "评分", "内容", "状态", "操作"],
+    "headers": [
+      "ID",
+      "评价对象",
+      "评分",
+      "内容",
+      "状态",
+      "操作"
+    ],
     "cinemaSuffix": "{{name}}（影院）",
     "hiddenStatus": "已隐藏",
     "visibleStatus": "显示中",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "交易管理",
-    "headers": ["ID", "票号", "客户", "电影", "座位", "总额", "状态", "操作"],
+    "headers": [
+      "ID",
+      "票号",
+      "客户",
+      "电影",
+      "座位",
+      "总额",
+      "状态",
+      "操作"
+    ],
     "status": {
       "booked": "已预订",
       "cancelled": "已取消",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "影院管理",
-    "headers": ["ID", "影院名称", "业主（ID）", "地址", "状态", "操作"],
+    "headers": [
+      "ID",
+      "影院名称",
+      "业主（ID）",
+      "地址",
+      "状态",
+      "操作"
+    ],
     "status": {
       "pending": "待审核",
       "approved": "已通过",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "用户管理",
-      "headers": ["ID", "姓名", "手机号", "邮箱", "角色", "状态", "操作"],
+      "headers": [
+        "ID",
+        "姓名",
+        "手机号",
+        "邮箱",
+        "角色",
+        "状态",
+        "操作"
+      ],
       "roles": {
         "admin": "管理员",
         "user": "普通用户",

@@ -31,6 +31,9 @@
       "0": "Standard",
       "1": "VIP",
       "2": "Couple"
+    },
+    "validation": {
+      "codeRequired": "Please enter a ticket code."
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "Unable to delete room.",
     "seatMapAction": "Seat map",
     "delete": "Delete",
+    "validation": {
+      "nameRequired": "Please enter a room name."
+    },
     "headers": {
       "id": "ID",
       "name": "Room name",
@@ -94,8 +100,13 @@
         "0": "Standard",
         "1": "VIP",
         "2": "Couple"
+      },
+      "validation": {
+        "rowsRequired": "Please enter at least one row.",
+        "seatsPerRowRequired": "Please enter a seats-per-row greater than 0."
       }
-    }
+    },
+    "selectCinemaPlaceholder": "Select a branch"
   },
   "combos": {
     "breadcrumb": "Combos",
@@ -124,6 +135,13 @@
       "price": "Price",
       "status": "Status",
       "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "nameRequired": "Please enter a combo name.",
+      "descriptionRequired": "Please enter a description.",
+      "priceRequired": "Please enter a price.",
+      "priceInvalid": "Price must be greater than 0."
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "Used",
       "status": "Status",
       "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "codeRequired": "Please enter a code.",
+      "discountValueRequired": "Please enter a discount value.",
+      "discountValueInvalid": "Enter a value between 1-100 for a percentage, or greater than 0 for a fixed amount.",
+      "minOrderValueRequired": "Please enter a minimum order value.",
+      "minOrderValueInvalid": "Minimum order value cannot be negative."
     }
   }
 }

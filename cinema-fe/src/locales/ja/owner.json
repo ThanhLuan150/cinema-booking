@@ -31,6 +31,9 @@
       "0": "スタンダード",
       "1": "VIP",
       "2": "カップルシート"
+    },
+    "validation": {
+      "codeRequired": "チケットコードを入力してください。"
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "上映室を削除できませんでした。",
     "seatMapAction": "座席表",
     "delete": "削除",
+    "validation": {
+      "nameRequired": "上映室名を入力してください。"
+    },
     "headers": {
       "id": "ID",
       "name": "上映室名",
@@ -94,8 +100,13 @@
         "0": "スタンダード",
         "1": "VIP",
         "2": "カップルシート"
+      },
+      "validation": {
+        "rowsRequired": "少なくとも1つの行を入力してください。",
+        "seatsPerRowRequired": "1行あたりの座席数を0より大きく入力してください。"
       }
-    }
+    },
+    "selectCinemaPlaceholder": "劇場を選択"
   },
   "combos": {
     "breadcrumb": "コンボセット",
@@ -124,6 +135,13 @@
       "price": "価格",
       "status": "状態",
       "actions": "操作"
+    },
+    "validation": {
+      "cinemaRequired": "劇場を選択してください。",
+      "nameRequired": "コンボ名を入力してください。",
+      "descriptionRequired": "説明を入力してください。",
+      "priceRequired": "価格を入力してください。",
+      "priceInvalid": "価格は0より大きくしてください。"
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "使用回数",
       "status": "状態",
       "actions": "操作"
+    },
+    "validation": {
+      "cinemaRequired": "劇場を選択してください。",
+      "codeRequired": "コードを入力してください。",
+      "discountValueRequired": "割引値を入力してください。",
+      "discountValueInvalid": "パーセントの場合は1〜100、固定額の場合は0より大きい値を入力してください。",
+      "minOrderValueRequired": "最低注文金額を入力してください。",
+      "minOrderValueInvalid": "最低注文金額はマイナスにできません。"
     }
   }
 }

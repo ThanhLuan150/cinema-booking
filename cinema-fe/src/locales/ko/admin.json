@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "영화",
       "addButton": "추가 +",
-      "headers": ["ID", "포스터", "이름", "개봉일", "국가", "설명", "예고편", "장르", "작업"]
+      "headers": [
+        "ID",
+        "포스터",
+        "이름",
+        "개봉일",
+        "국가",
+        "설명",
+        "예고편",
+        "장르",
+        "작업"
+      ]
+    },
+    "validation": {
+      "nameRequired": "이름을 입력해 주세요",
+      "avatarRequired": "포스터를 등록해 주세요",
+      "premiereDateRequired": "개봉일을 입력해 주세요",
+      "premiereDateInvalid": "개봉일 형식이 올바르지 않습니다",
+      "descriptionRequired": "설명을 입력해 주세요",
+      "countryRequired": "국가를 입력해 주세요",
+      "trailerRequired": "예고편을 등록해 주세요",
+      "producerRequired": "제작자를 입력해 주세요",
+      "directorRequired": "감독을 입력해 주세요",
+      "castNameRequired": "출연진 이름을 입력해 주세요",
+      "castAvatarInvalid": "출연진 이미지 URL이 올바르지 않습니다",
+      "categoryRequired": "장르를 하나 이상 선택해 주세요"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "상영 일정 추가",
       "cinema": {
         "label": "지점:",
-        "placeholder": "지점 선택"
+        "placeholder": "지점 선택",
+        "required": "지점을 선택해 주세요."
       },
       "room": {
         "label": "상영관:",
         "placeholder": "상영관 선택",
-        "placeholderSelectCinemaFirst": "먼저 지점을 선택하세요"
+        "placeholderSelectCinemaFirst": "먼저 지점을 선택하세요",
+        "required": "상영관을 선택해 주세요.",
+        "placeholderNoRooms": "이 지점에 상영관이 없습니다",
+        "noRoomsHint": "이 지점에는 아직 상영관이 없습니다.",
+        "noRoomsHintLink": "상영관 만들기"
       },
       "date": "상영일:",
+      "dateRequired": "상영일을 선택해 주세요.",
       "slot": {
         "label": "상영 시간:",
-        "placeholder": "상영 시간 선택"
+        "placeholder": "상영 시간 선택",
+        "required": "상영 시간을 선택해 주세요."
       },
       "price": "티켓 가격:",
+      "priceRequired": "티켓 가격을 입력해 주세요.",
       "submit": "추가",
-      "validationError": "지점, 상영관, 날짜, 상영 시간을 모두 선택해 주세요.",
       "toastSuccess": "상영 일정이 추가되었습니다."
     },
     "list": {
       "breadcrumb": "상영 일정",
-      "headers": ["ID", "영화", "시작 시간", "종료 시간", "상영일", "가격"]
+      "headers": [
+        "ID",
+        "영화",
+        "지점",
+        "상영관",
+        "시작 시간",
+        "종료 시간",
+        "상영일",
+        "가격"
+      ],
+      "filterCinemaPlaceholder": "전체 지점",
+      "filterRoomPlaceholder": "전체 상영관"
     }
   },
   "reviews": {
     "breadcrumb": "리뷰",
-    "headers": ["ID", "대상", "평점", "내용", "상태", "작업"],
+    "headers": [
+      "ID",
+      "대상",
+      "평점",
+      "내용",
+      "상태",
+      "작업"
+    ],
     "cinemaSuffix": "{{name}} (영화관)",
     "hiddenStatus": "숨김",
     "visibleStatus": "공개",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "거래 내역",
-    "headers": ["ID", "티켓 코드", "고객", "영화", "좌석", "합계", "상태", "작업"],
+    "headers": [
+      "ID",
+      "티켓 코드",
+      "고객",
+      "영화",
+      "좌석",
+      "합계",
+      "상태",
+      "작업"
+    ],
     "status": {
       "booked": "예매 완료",
       "cancelled": "취소됨",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "영화관",
-    "headers": ["ID", "영화관 이름", "소유자 (ID)", "주소", "상태", "작업"],
+    "headers": [
+      "ID",
+      "영화관 이름",
+      "소유자 (ID)",
+      "주소",
+      "상태",
+      "작업"
+    ],
     "status": {
       "pending": "승인 대기",
       "approved": "승인됨",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "회원",
-      "headers": ["ID", "이름", "전화번호", "이메일", "역할", "상태", "작업"],
+      "headers": [
+        "ID",
+        "이름",
+        "전화번호",
+        "이메일",
+        "역할",
+        "상태",
+        "작업"
+      ],
       "roles": {
         "admin": "관리자",
         "user": "회원",

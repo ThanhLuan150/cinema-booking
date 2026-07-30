@@ -31,6 +31,9 @@
       "0": "Standard",
       "1": "VIP",
       "2": "Duo"
+    },
+    "validation": {
+      "codeRequired": "Veuillez saisir un code de billet."
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "Impossible de supprimer la salle.",
     "seatMapAction": "Plan de salle",
     "delete": "Supprimer",
+    "validation": {
+      "nameRequired": "Veuillez saisir un nom de salle."
+    },
     "headers": {
       "id": "ID",
       "name": "Nom de la salle",
@@ -94,8 +100,13 @@
         "0": "Standard",
         "1": "VIP",
         "2": "Duo"
+      },
+      "validation": {
+        "rowsRequired": "Veuillez saisir au moins une rangée.",
+        "seatsPerRowRequired": "Veuillez saisir un nombre de sièges par rangée supérieur à 0."
       }
-    }
+    },
+    "selectCinemaPlaceholder": "Sélectionner un établissement"
   },
   "combos": {
     "breadcrumb": "Combos",
@@ -124,6 +135,13 @@
       "price": "Prix",
       "status": "Statut",
       "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Veuillez sélectionner un cinéma.",
+      "nameRequired": "Veuillez saisir un nom de combo.",
+      "descriptionRequired": "Veuillez saisir une description.",
+      "priceRequired": "Veuillez saisir un prix.",
+      "priceInvalid": "Le prix doit être supérieur à 0."
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "Utilisé",
       "status": "Statut",
       "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Veuillez sélectionner un cinéma.",
+      "codeRequired": "Veuillez saisir un code.",
+      "discountValueRequired": "Veuillez saisir une valeur de remise.",
+      "discountValueInvalid": "Saisissez une valeur entre 1 et 100 pour un pourcentage, ou supérieure à 0 pour un montant fixe.",
+      "minOrderValueRequired": "Veuillez saisir une valeur de commande minimale.",
+      "minOrderValueInvalid": "La valeur de commande minimale ne peut pas être négative."
     }
   }
 }

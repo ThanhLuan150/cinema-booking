@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "Filme",
       "addButton": "Hinzufügen +",
-      "headers": ["ID", "Bild", "Name", "Premierendatum", "Land", "Beschreibung", "Trailer", "Kategorie", "Aktion"]
+      "headers": [
+        "ID",
+        "Bild",
+        "Name",
+        "Premierendatum",
+        "Land",
+        "Beschreibung",
+        "Trailer",
+        "Kategorie",
+        "Aktion"
+      ]
+    },
+    "validation": {
+      "nameRequired": "Name ist erforderlich",
+      "avatarRequired": "Bild ist erforderlich",
+      "premiereDateRequired": "Premierendatum ist erforderlich",
+      "premiereDateInvalid": "Premierendatum ist ungültig",
+      "descriptionRequired": "Beschreibung ist erforderlich",
+      "countryRequired": "Land ist erforderlich",
+      "trailerRequired": "Trailer ist erforderlich",
+      "producerRequired": "Produzent ist erforderlich",
+      "directorRequired": "Regisseur ist erforderlich",
+      "castNameRequired": "Name des Darstellers ist erforderlich",
+      "castAvatarInvalid": "Bild-URL des Darstellers ist ungültig",
+      "categoryRequired": "Bitte mindestens eine Kategorie auswählen"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "Vorstellung hinzufügen",
       "cinema": {
         "label": "Filiale:",
-        "placeholder": "Filiale auswählen"
+        "placeholder": "Filiale auswählen",
+        "required": "Bitte wählen Sie eine Filiale aus."
       },
       "room": {
         "label": "Saal:",
         "placeholder": "Saal auswählen",
-        "placeholderSelectCinemaFirst": "Bitte zuerst eine Filiale auswählen"
+        "placeholderSelectCinemaFirst": "Bitte zuerst eine Filiale auswählen",
+        "required": "Bitte wählen Sie einen Saal aus.",
+        "placeholderNoRooms": "Keine Säle in dieser Filiale",
+        "noRoomsHint": "Diese Filiale hat noch keine Säle.",
+        "noRoomsHintLink": "Saal erstellen"
       },
       "date": "Vorstellungsdatum:",
+      "dateRequired": "Bitte wählen Sie ein Vorstellungsdatum aus.",
       "slot": {
         "label": "Uhrzeit:",
-        "placeholder": "Uhrzeit auswählen"
+        "placeholder": "Uhrzeit auswählen",
+        "required": "Bitte wählen Sie eine Uhrzeit aus."
       },
       "price": "Ticketpreis:",
+      "priceRequired": "Bitte geben Sie einen Ticketpreis ein.",
       "submit": "Hinzufügen",
-      "validationError": "Bitte wählen Sie Filiale, Saal, Datum und Uhrzeit aus.",
       "toastSuccess": "Vorstellung hinzugefügt."
     },
     "list": {
       "breadcrumb": "Spielplan",
-      "headers": ["ID", "Film", "Beginn", "Ende", "Vorstellungsdatum", "Preis"]
+      "headers": [
+        "ID",
+        "Film",
+        "Filiale",
+        "Saal",
+        "Beginn",
+        "Ende",
+        "Vorstellungsdatum",
+        "Preis"
+      ],
+      "filterCinemaPlaceholder": "Alle Filialen",
+      "filterRoomPlaceholder": "Alle Säle"
     }
   },
   "reviews": {
     "breadcrumb": "Bewertungen",
-    "headers": ["ID", "Betreff", "Bewertung", "Inhalt", "Status", "Aktion"],
+    "headers": [
+      "ID",
+      "Betreff",
+      "Bewertung",
+      "Inhalt",
+      "Status",
+      "Aktion"
+    ],
     "cinemaSuffix": "{{name}} (Kino)",
     "hiddenStatus": "Ausgeblendet",
     "visibleStatus": "Sichtbar",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "Transaktionen",
-    "headers": ["ID", "Ticketcode", "Kunde", "Film", "Sitzplatz", "Gesamt", "Status", "Aktion"],
+    "headers": [
+      "ID",
+      "Ticketcode",
+      "Kunde",
+      "Film",
+      "Sitzplatz",
+      "Gesamt",
+      "Status",
+      "Aktion"
+    ],
     "status": {
       "booked": "Gebucht",
       "cancelled": "Storniert",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "Kinos",
-    "headers": ["ID", "Kinoname", "Betreiber (ID)", "Adresse", "Status", "Aktion"],
+    "headers": [
+      "ID",
+      "Kinoname",
+      "Betreiber (ID)",
+      "Adresse",
+      "Status",
+      "Aktion"
+    ],
     "status": {
       "pending": "Genehmigung ausstehend",
       "approved": "Genehmigt",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "Benutzer",
-      "headers": ["ID", "Vollständiger Name", "Telefon", "E-Mail", "Rolle", "Status", "Aktion"],
+      "headers": [
+        "ID",
+        "Vollständiger Name",
+        "Telefon",
+        "E-Mail",
+        "Rolle",
+        "Status",
+        "Aktion"
+      ],
       "roles": {
         "admin": "Admin",
         "user": "Benutzer",
