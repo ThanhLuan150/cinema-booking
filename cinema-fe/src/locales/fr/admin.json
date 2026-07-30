@@ -73,7 +73,31 @@
     "list": {
       "breadcrumb": "Films",
       "addButton": "Ajouter +",
-      "headers": ["ID", "Affiche", "Nom", "Date de sortie", "Pays", "Description", "Bande-annonce", "Catégorie", "Action"]
+      "headers": [
+        "ID",
+        "Affiche",
+        "Nom",
+        "Date de sortie",
+        "Pays",
+        "Description",
+        "Bande-annonce",
+        "Catégorie",
+        "Action"
+      ]
+    },
+    "validation": {
+      "nameRequired": "Le nom est requis",
+      "avatarRequired": "L'affiche est requise",
+      "premiereDateRequired": "La date de sortie est requise",
+      "premiereDateInvalid": "La date de sortie est invalide",
+      "descriptionRequired": "La description est requise",
+      "countryRequired": "Le pays est requis",
+      "trailerRequired": "La bande-annonce est requise",
+      "producerRequired": "Le producteur est requis",
+      "directorRequired": "Le réalisateur est requis",
+      "castNameRequired": "Le nom de l'acteur est requis",
+      "castAvatarInvalid": "L'URL de l'image de l'acteur est invalide",
+      "categoryRequired": "Veuillez sélectionner au moins une catégorie"
     }
   },
   "schedules": {
@@ -81,31 +105,56 @@
       "title": "Ajouter une séance",
       "cinema": {
         "label": "Établissement :",
-        "placeholder": "Sélectionner un établissement"
+        "placeholder": "Sélectionner un établissement",
+        "required": "Veuillez sélectionner un établissement."
       },
       "room": {
         "label": "Salle :",
         "placeholder": "Sélectionner une salle",
-        "placeholderSelectCinemaFirst": "Sélectionnez d'abord un établissement"
+        "placeholderSelectCinemaFirst": "Sélectionnez d'abord un établissement",
+        "required": "Veuillez sélectionner une salle.",
+        "placeholderNoRooms": "Aucune salle dans cet établissement",
+        "noRoomsHint": "Cet établissement n'a pas encore de salle.",
+        "noRoomsHintLink": "Créer une salle"
       },
       "date": "Date de la séance :",
+      "dateRequired": "Veuillez sélectionner une date de séance.",
       "slot": {
         "label": "Horaire :",
-        "placeholder": "Sélectionner un horaire"
+        "placeholder": "Sélectionner un horaire",
+        "required": "Veuillez sélectionner un horaire."
       },
       "price": "Prix du billet :",
+      "priceRequired": "Veuillez saisir un prix de billet.",
       "submit": "Ajouter",
-      "validationError": "Veuillez sélectionner l'établissement, la salle, la date et l'horaire.",
       "toastSuccess": "Séance ajoutée."
     },
     "list": {
       "breadcrumb": "Programmation",
-      "headers": ["ID", "Film", "Heure de début", "Heure de fin", "Date de la séance", "Prix"]
+      "headers": [
+        "ID",
+        "Film",
+        "Établissement",
+        "Salle",
+        "Heure de début",
+        "Heure de fin",
+        "Date de la séance",
+        "Prix"
+      ],
+      "filterCinemaPlaceholder": "Tous les établissements",
+      "filterRoomPlaceholder": "Toutes les salles"
     }
   },
   "reviews": {
     "breadcrumb": "Avis",
-    "headers": ["ID", "Sujet", "Note", "Contenu", "Statut", "Action"],
+    "headers": [
+      "ID",
+      "Sujet",
+      "Note",
+      "Contenu",
+      "Statut",
+      "Action"
+    ],
     "cinemaSuffix": "{{name}} (cinéma)",
     "hiddenStatus": "Masqué",
     "visibleStatus": "Visible",
@@ -117,7 +166,16 @@
   },
   "transactions": {
     "breadcrumb": "Transactions",
-    "headers": ["ID", "Code du billet", "Client", "Film", "Siège", "Total", "Statut", "Action"],
+    "headers": [
+      "ID",
+      "Code du billet",
+      "Client",
+      "Film",
+      "Siège",
+      "Total",
+      "Statut",
+      "Action"
+    ],
     "status": {
       "booked": "Réservé",
       "cancelled": "Annulé",
@@ -129,7 +187,14 @@
   },
   "cinemas": {
     "breadcrumb": "Cinémas",
-    "headers": ["ID", "Nom du cinéma", "Propriétaire (ID)", "Adresse", "Statut", "Action"],
+    "headers": [
+      "ID",
+      "Nom du cinéma",
+      "Propriétaire (ID)",
+      "Adresse",
+      "Statut",
+      "Action"
+    ],
     "status": {
       "pending": "En attente d'approbation",
       "approved": "Approuvé",
@@ -168,7 +233,15 @@
     },
     "list": {
       "breadcrumb": "Utilisateurs",
-      "headers": ["ID", "Nom complet", "Téléphone", "Email", "Rôle", "Statut", "Action"],
+      "headers": [
+        "ID",
+        "Nom complet",
+        "Téléphone",
+        "Email",
+        "Rôle",
+        "Statut",
+        "Action"
+      ],
       "roles": {
         "admin": "Administrateur",
         "user": "Utilisateur",

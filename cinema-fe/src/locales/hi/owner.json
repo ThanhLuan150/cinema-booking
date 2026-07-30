@@ -31,6 +31,9 @@
       "0": "स्टैंडर्ड",
       "1": "VIP",
       "2": "कपल"
+    },
+    "validation": {
+      "codeRequired": "कृपया टिकट कोड दर्ज करें।"
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "स्क्रीन नहीं हटाई जा सकी।",
     "seatMapAction": "सीट मैप",
     "delete": "हटाएं",
+    "validation": {
+      "nameRequired": "कृपया स्क्रीन का नाम दर्ज करें।"
+    },
     "headers": {
       "id": "ID",
       "name": "स्क्रीन का नाम",
@@ -94,8 +100,13 @@
         "0": "स्टैंडर्ड",
         "1": "VIP",
         "2": "कपल"
+      },
+      "validation": {
+        "rowsRequired": "कृपया कम से कम एक पंक्ति दर्ज करें।",
+        "seatsPerRowRequired": "कृपया प्रति पंक्ति 0 से अधिक सीटें दर्ज करें।"
       }
-    }
+    },
+    "selectCinemaPlaceholder": "शाखा चुनें"
   },
   "combos": {
     "breadcrumb": "कॉम्बो",
@@ -124,6 +135,13 @@
       "price": "कीमत",
       "status": "स्थिति",
       "actions": "कार्रवाई"
+    },
+    "validation": {
+      "cinemaRequired": "कृपया एक सिनेमा चुनें।",
+      "nameRequired": "कृपया कॉम्बो का नाम दर्ज करें।",
+      "descriptionRequired": "कृपया विवरण दर्ज करें।",
+      "priceRequired": "कृपया कीमत दर्ज करें।",
+      "priceInvalid": "कीमत 0 से अधिक होनी चाहिए।"
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "उपयोग किया गया",
       "status": "स्थिति",
       "actions": "कार्रवाई"
+    },
+    "validation": {
+      "cinemaRequired": "कृपया एक सिनेमा चुनें।",
+      "codeRequired": "कृपया एक कोड दर्ज करें।",
+      "discountValueRequired": "कृपया छूट का मूल्य दर्ज करें।",
+      "discountValueInvalid": "प्रतिशत के लिए 1 से 100 के बीच और निश्चित राशि के लिए 0 से अधिक मान दर्ज करें।",
+      "minOrderValueRequired": "कृपया न्यूनतम ऑर्डर मूल्य दर्ज करें।",
+      "minOrderValueInvalid": "न्यूनतम ऑर्डर मूल्य ऋणात्मक नहीं हो सकता।"
     }
   }
 }

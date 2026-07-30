@@ -17,21 +17,34 @@ function BookingLookup() {
   const invoice = lookupMutation.data;
   const error = lookupMutation.isError ? getApiErrorMessage(lookupMutation.error, t) : '';
 
+  const validateLookup = (values: { code: string }) => {
+    const errors: { code?: string } = {};
+    if (!values.code.trim()) errors.code = t('bookingsLookup.validation.codeRequired');
+    return errors;
+  };
+
   const handleSubmit = (values: { code: string }) => {
-    if (!values.code.trim()) return;
     lookupMutation.reset();
     lookupMutation.mutate(values.code.trim().toUpperCase());
   };
 
   return (
     <AdminLayout breadcrumb={t('bookingsLookup.breadcrumb')}>
-      <Formik initialValues={{ code: '' }} onSubmit={handleSubmit}>
-        <Form className="flex max-w-md gap-2">
-          <Field as={Input} name="code" placeholder={t('bookingsLookup.codePlaceholder')} className="flex-1" />
-          <Button type="submit" variant="danger" loading={lookupMutation.isPending}>
-            {t('bookingsLookup.searchButton')}
-          </Button>
-        </Form>
+      <Formik initialValues={{ code: '' }} validate={validateLookup} onSubmit={handleSubmit}>
+        {(formik) => (
+          <Form className="flex max-w-md gap-2">
+            <Field
+              as={Input}
+              name="code"
+              placeholder={t('bookingsLookup.codePlaceholder')}
+              className="flex-1"
+              error={formik.submitCount > 0 ? formik.errors.code : undefined}
+            />
+            <Button type="submit" variant="danger" loading={lookupMutation.isPending}>
+              {t('bookingsLookup.searchButton')}
+            </Button>
+          </Form>
+        )}
       </Formik>
 
       {error && <p className="mt-4 text-red-400">{error}</p>}

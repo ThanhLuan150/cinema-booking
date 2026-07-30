@@ -31,6 +31,9 @@
       "0": "일반석",
       "1": "VIP석",
       "2": "커플석"
+    },
+    "validation": {
+      "codeRequired": "티켓 코드를 입력해 주세요."
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "상영관을 삭제할 수 없습니다.",
     "seatMapAction": "좌석 배치도",
     "delete": "삭제",
+    "validation": {
+      "nameRequired": "상영관 이름을 입력해 주세요."
+    },
     "headers": {
       "id": "ID",
       "name": "상영관 이름",
@@ -94,8 +100,13 @@
         "0": "일반석",
         "1": "VIP석",
         "2": "커플석"
+      },
+      "validation": {
+        "rowsRequired": "열을 하나 이상 입력해 주세요.",
+        "seatsPerRowRequired": "열당 좌석 수를 0보다 크게 입력해 주세요."
       }
-    }
+    },
+    "selectCinemaPlaceholder": "지점 선택"
   },
   "combos": {
     "breadcrumb": "콤보",
@@ -124,6 +135,13 @@
       "price": "가격",
       "status": "상태",
       "actions": "작업"
+    },
+    "validation": {
+      "cinemaRequired": "영화관을 선택해 주세요.",
+      "nameRequired": "콤보 이름을 입력해 주세요.",
+      "descriptionRequired": "설명을 입력해 주세요.",
+      "priceRequired": "가격을 입력해 주세요.",
+      "priceInvalid": "가격은 0보다 커야 합니다."
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "사용됨",
       "status": "상태",
       "actions": "작업"
+    },
+    "validation": {
+      "cinemaRequired": "영화관을 선택해 주세요.",
+      "codeRequired": "코드를 입력해 주세요.",
+      "discountValueRequired": "할인 값을 입력해 주세요.",
+      "discountValueInvalid": "퍼센트는 1~100 사이, 고정 금액은 0보다 큰 값을 입력해 주세요.",
+      "minOrderValueRequired": "최소 주문 금액을 입력해 주세요.",
+      "minOrderValueInvalid": "최소 주문 금액은 음수가 될 수 없습니다."
     }
   }
 }

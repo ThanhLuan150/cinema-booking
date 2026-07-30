@@ -57,6 +57,19 @@ function ComboList() {
     }
   };
 
+  const validateCombo = (values: ComboFormValues) => {
+    const errors: Partial<Record<keyof ComboFormValues, string>> = {};
+    if (!values.cinema_id) errors.cinema_id = t('combos.validation.cinemaRequired');
+    if (!values.name) errors.name = t('combos.validation.nameRequired');
+    if (!values.description.trim()) errors.description = t('combos.validation.descriptionRequired');
+    if (values.price === '') {
+      errors.price = t('combos.validation.priceRequired');
+    } else if (Number(values.price) <= 0) {
+      errors.price = t('combos.validation.priceInvalid');
+    }
+    return errors;
+  };
+
   return (
     <AdminLayout breadcrumb={t('combos.breadcrumb')}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
@@ -65,25 +78,49 @@ function ComboList() {
 
       {showAddModal && (
         <Modal open onClose={() => dispatch(closeAddModal())} title={t('combos.addTitle')}>
-          <Formik<ComboFormValues> initialValues={emptyForm()} onSubmit={handleSubmit}>
-            <Form>
-              <Field
-                as={Select}
-                label={t('combos.cinemaLabel')}
-                name="cinema_id"
-                options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
-                placeholder={t('combos.cinemaPlaceholder')}
-                required
-              />
-              <Field as={Input} label={t('combos.nameLabel')} name="name" className="mt-3" required />
-              <Field as={Input} label={t('combos.descriptionLabel')} name="description" className="mt-3" />
-              <Field as={Input} label={t('combos.priceLabel')} name="price" type="number" className="mt-3" required />
-              <div className="mt-6 flex justify-end">
-                <Button type="submit" variant="danger" loading={createComboMutation.isPending}>
-                  {t('combos.submit')}
-                </Button>
-              </div>
-            </Form>
+          <Formik<ComboFormValues> initialValues={emptyForm()} validate={validateCombo} onSubmit={handleSubmit}>
+            {(formik) => {
+              const showErrors = formik.submitCount > 0;
+              return (
+                <Form>
+                  <Field
+                    as={Select}
+                    label={t('combos.cinemaLabel')}
+                    name="cinema_id"
+                    options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
+                    placeholder={t('combos.cinemaPlaceholder')}
+                    error={showErrors ? formik.errors.cinema_id : undefined}
+                  />
+                  <Field
+                    as={Input}
+                    label={t('combos.nameLabel')}
+                    name="name"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.name : undefined}
+                  />
+                  <Field
+                    as={Input}
+                    label={t('combos.descriptionLabel')}
+                    name="description"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.description : undefined}
+                  />
+                  <Field
+                    as={Input}
+                    label={t('combos.priceLabel')}
+                    name="price"
+                    type="number"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.price : undefined}
+                  />
+                  <div className="mt-6 flex justify-end">
+                    <Button type="submit" variant="danger" loading={createComboMutation.isPending}>
+                      {t('combos.submit')}
+                    </Button>
+                  </div>
+                </Form>
+              );
+            }}
           </Formik>
         </Modal>
       )}

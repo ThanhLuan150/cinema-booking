@@ -64,6 +64,26 @@ function VoucherList() {
     }
   };
 
+  const validateVoucher = (values: VoucherFormValues) => {
+    const errors: Partial<Record<keyof VoucherFormValues, string>> = {};
+    if (!values.cinema_id) errors.cinema_id = t('vouchers.validation.cinemaRequired');
+    if (!values.code) errors.code = t('vouchers.validation.codeRequired');
+    if (values.discount_value === '') {
+      errors.discount_value = t('vouchers.validation.discountValueRequired');
+    } else {
+      const discountValue = Number(values.discount_value);
+      const isValid =
+        values.discount_type === DISCOUNT_TYPE.percent ? discountValue >= 1 && discountValue <= 100 : discountValue > 0;
+      if (!isValid) errors.discount_value = t('vouchers.validation.discountValueInvalid');
+    }
+    if (values.min_order_value === '') {
+      errors.min_order_value = t('vouchers.validation.minOrderValueRequired');
+    } else if (Number(values.min_order_value) < 0) {
+      errors.min_order_value = t('vouchers.validation.minOrderValueInvalid');
+    }
+    return errors;
+  };
+
   return (
     <AdminLayout breadcrumb={t('vouchers.breadcrumb')}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
@@ -72,42 +92,60 @@ function VoucherList() {
 
       {showAddModal && (
         <Modal open onClose={() => dispatch(closeAddModal())} title={t('vouchers.addTitle')}>
-          <Formik<VoucherFormValues> initialValues={emptyForm()} onSubmit={handleSubmit}>
-            <Form>
-              <Field
-                as={Select}
-                label={t('vouchers.cinemaLabel')}
-                name="cinema_id"
-                options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
-                placeholder={t('vouchers.cinemaPlaceholder')}
-                required
-              />
-              <Field as={Input} label={t('vouchers.codeLabel')} name="code" className="mt-3" required />
-              <Field
-                as={Select}
-                label={t('vouchers.discountTypeLabel')}
-                name="discount_type"
-                options={[
-                  { label: t('vouchers.discountTypePercent'), value: DISCOUNT_TYPE.percent },
-                  { label: t('vouchers.discountTypeFixed'), value: DISCOUNT_TYPE.fixed },
-                ]}
-                className="mt-3"
-              />
-              <Field
-                as={Input}
-                label={t('vouchers.discountValueLabel')}
-                name="discount_value"
-                type="number"
-                className="mt-3"
-                required
-              />
-              <Field as={Input} label={t('vouchers.minOrderValueLabel')} name="min_order_value" type="number" className="mt-3" />
-              <div className="mt-6 flex justify-end">
-                <Button type="submit" variant="danger" loading={createVoucherMutation.isPending}>
-                  {t('vouchers.submit')}
-                </Button>
-              </div>
-            </Form>
+          <Formik<VoucherFormValues> initialValues={emptyForm()} validate={validateVoucher} onSubmit={handleSubmit}>
+            {(formik) => {
+              const showErrors = formik.submitCount > 0;
+              return (
+                <Form>
+                  <Field
+                    as={Select}
+                    label={t('vouchers.cinemaLabel')}
+                    name="cinema_id"
+                    options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
+                    placeholder={t('vouchers.cinemaPlaceholder')}
+                    error={showErrors ? formik.errors.cinema_id : undefined}
+                  />
+                  <Field
+                    as={Input}
+                    label={t('vouchers.codeLabel')}
+                    name="code"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.code : undefined}
+                  />
+                  <Field
+                    as={Select}
+                    label={t('vouchers.discountTypeLabel')}
+                    name="discount_type"
+                    options={[
+                      { label: t('vouchers.discountTypePercent'), value: DISCOUNT_TYPE.percent },
+                      { label: t('vouchers.discountTypeFixed'), value: DISCOUNT_TYPE.fixed },
+                    ]}
+                    className="mt-3"
+                  />
+                  <Field
+                    as={Input}
+                    label={t('vouchers.discountValueLabel')}
+                    name="discount_value"
+                    type="number"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.discount_value : undefined}
+                  />
+                  <Field
+                    as={Input}
+                    label={t('vouchers.minOrderValueLabel')}
+                    name="min_order_value"
+                    type="number"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.min_order_value : undefined}
+                  />
+                  <div className="mt-6 flex justify-end">
+                    <Button type="submit" variant="danger" loading={createVoucherMutation.isPending}>
+                      {t('vouchers.submit')}
+                    </Button>
+                  </div>
+                </Form>
+              );
+            }}
           </Formik>
         </Modal>
       )}

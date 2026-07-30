@@ -31,6 +31,9 @@
       "0": "ที่นั่งมาตรฐาน",
       "1": "VIP",
       "2": "ที่นั่งคู่รัก"
+    },
+    "validation": {
+      "codeRequired": "กรุณากรอกรหัสตั๋ว"
     }
   },
   "cinemas": {
@@ -71,6 +74,9 @@
     "deleteError": "ไม่สามารถลบห้องฉายได้",
     "seatMapAction": "ผังที่นั่ง",
     "delete": "ลบ",
+    "validation": {
+      "nameRequired": "กรุณากรอกชื่อห้องฉาย"
+    },
     "headers": {
       "id": "รหัส",
       "name": "ชื่อห้องฉาย",
@@ -94,8 +100,13 @@
         "0": "ที่นั่งมาตรฐาน",
         "1": "VIP",
         "2": "ที่นั่งคู่รัก"
+      },
+      "validation": {
+        "rowsRequired": "กรุณากรอกแถวอย่างน้อยหนึ่งแถว",
+        "seatsPerRowRequired": "กรุณากรอกจำนวนที่นั่งต่อแถวมากกว่า 0"
       }
-    }
+    },
+    "selectCinemaPlaceholder": "เลือกสาขา"
   },
   "combos": {
     "breadcrumb": "คอมโบ",
@@ -124,6 +135,13 @@
       "price": "ราคา",
       "status": "สถานะ",
       "actions": "การดำเนินการ"
+    },
+    "validation": {
+      "cinemaRequired": "กรุณาเลือกโรงภาพยนตร์",
+      "nameRequired": "กรุณากรอกชื่อคอมโบ",
+      "descriptionRequired": "กรุณากรอกรายละเอียด",
+      "priceRequired": "กรุณากรอกราคา",
+      "priceInvalid": "ราคาต้องมากกว่า 0"
     }
   },
   "vouchers": {
@@ -156,6 +174,14 @@
       "used": "ใช้ไปแล้ว",
       "status": "สถานะ",
       "actions": "การดำเนินการ"
+    },
+    "validation": {
+      "cinemaRequired": "กรุณาเลือกโรงภาพยนตร์",
+      "codeRequired": "กรุณากรอกรหัสคูปอง",
+      "discountValueRequired": "กรุณากรอกมูลค่าส่วนลด",
+      "discountValueInvalid": "กรอกค่าส่วนลดระหว่าง 1-100 สำหรับเปอร์เซ็นต์ หรือมากกว่า 0 สำหรับจำนวนคงที่",
+      "minOrderValueRequired": "กรุณากรอกมูลค่าการสั่งซื้อขั้นต่ำ",
+      "minOrderValueInvalid": "มูลค่าการสั่งซื้อขั้นต่ำต้องไม่ติดลบ"
     }
   }
 }

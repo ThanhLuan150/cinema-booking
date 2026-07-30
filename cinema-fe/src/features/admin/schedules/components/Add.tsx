@@ -1,5 +1,6 @@
 import { Formik, Field, Form, type FormikProps, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
@@ -8,6 +9,7 @@ import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useMyCinemas } from '@/features/owner/hooks/useMyCinemas';
 import { useRoomsByCinema } from '@/features/owner/hooks/useRoomsByCinema';
+import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail';
 import { SHOWTIME_SLOTS } from '../constants';
 import { useCreateSchedule } from '../hooks/useCreateSchedule';
 import type { ScheduleFormValues } from '../types/adminSchedule.types';
@@ -42,11 +44,19 @@ function ScheduleFields({
   createScheduleLoading: boolean;
   t: (key: string) => string;
 }) {
-  const { data: rooms = [] } = useRoomsByCinema(formik.values.cinema_id || undefined);
+  const {
+    data: rooms = [],
+    isFetching: roomsFetching,
+    isFetched: roomsFetched,
+  } = useRoomsByCinema(formik.values.cinema_id || undefined);
+
+  const showNoRoomsHint = Boolean(formik.values.cinema_id) && roomsFetched && !roomsFetching && rooms.length === 0;
 
   const selectedSlotIndex = SHOWTIME_SLOTS.findIndex(
     (slot) => slot.time_begin === formik.values.time_begin && slot.time_end === formik.values.time_end,
   );
+
+  const showErrors = formik.submitCount > 0;
 
   const handleCinemaChange = (e: { target: { value: string } }) => {
     formik.setFieldValue('cinema_id', e.target.value);
@@ -69,6 +79,7 @@ function ScheduleFields({
         onChange={handleCinemaChange}
         options={cinemas.map((cinema) => ({ label: cinema.name, value: cinema.id }))}
         placeholder={t('schedules.add.cinema.placeholder')}
+        error={showErrors && formik.errors.cinema_id ? t('schedules.add.cinema.required') : undefined}
       />
       <div className="mt-3">
         <Select
@@ -78,12 +89,33 @@ function ScheduleFields({
           onChange={formik.handleChange}
           options={rooms.map((room) => ({ label: room.name, value: room.id }))}
           placeholder={
-            formik.values.cinema_id ? t('schedules.add.room.placeholder') : t('schedules.add.room.placeholderSelectCinemaFirst')
+            !formik.values.cinema_id
+              ? t('schedules.add.room.placeholderSelectCinemaFirst')
+              : showNoRoomsHint
+                ? t('schedules.add.room.placeholderNoRooms')
+                : t('schedules.add.room.placeholder')
           }
-          disabled={!formik.values.cinema_id}
+          disabled={!formik.values.cinema_id || showNoRoomsHint}
+          error={showErrors && formik.errors.room_id ? t('schedules.add.room.required') : undefined}
         />
+        {showNoRoomsHint && (
+          <p className="mt-1 text-sm text-red-400">
+            {t('schedules.add.room.noRoomsHint')}{' '}
+            <Link to={ROUTES.ownerCinemaRooms(formik.values.cinema_id)} className="text-accent underline">
+              {t('schedules.add.room.noRoomsHintLink')}
+            </Link>
+          </p>
+        )}
       </div>
-      <Field as={Input} label={t('schedules.add.date')} type="date" id="date" name="movie_date" className="mt-3" />
+      <Field
+        as={Input}
+        label={t('schedules.add.date')}
+        type="date"
+        id="date"
+        name="movie_date"
+        className="mt-3"
+        error={showErrors && formik.errors.movie_date ? t('schedules.add.dateRequired') : undefined}
+      />
       <div className="mt-3">
         <Select
           label={t('schedules.add.slot.label')}
@@ -95,9 +127,17 @@ function ScheduleFields({
             value: index,
           }))}
           placeholder={t('schedules.add.slot.placeholder')}
+          error={showErrors && formik.errors.time_begin ? t('schedules.add.slot.required') : undefined}
         />
       </div>
-      <Field as={Input} label={t('schedules.add.price')} name="price" type="number" className="mt-3" />
+      <Field
+        as={Input}
+        label={t('schedules.add.price')}
+        name="price"
+        type="number"
+        className="mt-3"
+        error={showErrors && formik.errors.price ? t('schedules.add.priceRequired') : undefined}
+      />
       <div className="mt-6 flex justify-end">
         <Button type="submit" variant="danger" loading={createScheduleLoading}>
           {t('schedules.add.submit')}
@@ -109,17 +149,31 @@ function ScheduleFields({
 
 const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
   const { t } = useTranslation('admin');
-  const { data: cinemas = [] } = useMyCinemas();
+  const { data: allCinemas = [] } = useMyCinemas();
+  const { data: movie, isFetched: movieFetched } = useMovieDetail(id ?? undefined);
   const createScheduleMutation = useCreateSchedule();
+
+  // Movies added by a cinema owner should only be schedulable at that owner's own branches.
+  // Movies with no owner (owner_id null — seeded/legacy, or added directly by admin without
+  // an owning branch) fall back to showing every branch.
+  const cinemas =
+    !movieFetched || movie?.owner_id == null ? allCinemas : allCinemas.filter((cinema) => cinema.owner_id === movie.owner_id);
+
+  const validate = (values: AddScheduleFormValues) => {
+    const errors: Partial<Record<keyof AddScheduleFormValues, string>> = {};
+    if (!values.cinema_id) errors.cinema_id = 'required';
+    if (!values.room_id) errors.room_id = 'required';
+    if (!values.movie_date) errors.movie_date = 'required';
+    if (!values.time_begin) errors.time_begin = 'required';
+    if (values.price === '' || Number(values.price) <= 0) errors.price = 'required';
+    return errors;
+  };
 
   const handleSubmit = async (
     values: AddScheduleFormValues,
     { resetForm }: FormikHelpers<AddScheduleFormValues>,
   ) => {
-    if (!id || !values.room_id || !values.movie_date || !values.time_begin) {
-      toast.error(t('schedules.add.validationError'));
-      return;
-    }
+    if (!id) return;
     const { cinema_id: _cinema_id, ...form } = values;
     try {
       await createScheduleMutation.mutateAsync({ movieId: id, values: form });
@@ -136,7 +190,7 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
 
   return (
     <Modal open onClose={handleCloseAddSchedule} title={t('schedules.add.title')}>
-      <Formik<AddScheduleFormValues> initialValues={emptyValues()} onSubmit={handleSubmit}>
+      <Formik<AddScheduleFormValues> initialValues={emptyValues()} validate={validate} onSubmit={handleSubmit}>
         {(formik) => (
           <ScheduleFields formik={formik} cinemas={cinemas} createScheduleLoading={createScheduleMutation.isPending} t={t} />
         )}
