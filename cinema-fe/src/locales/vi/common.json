@@ -47,7 +47,8 @@
       "vouchers": "Mã giảm giá",
       "bookings": "Đặt vé",
       "transactions": "Giao dịch",
-      "reviews": "Đánh giá"
+      "reviews": "Đánh giá",
+      "rooms": "Phòng chiếu"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

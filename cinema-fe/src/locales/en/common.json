@@ -47,7 +47,8 @@
       "vouchers": "Vouchers",
       "bookings": "Bookings",
       "transactions": "Transactions",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "rooms": "Rooms"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

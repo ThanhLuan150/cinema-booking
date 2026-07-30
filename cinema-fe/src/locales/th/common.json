@@ -47,7 +47,8 @@
       "vouchers": "คูปองส่วนลด",
       "bookings": "การจอง",
       "transactions": "ธุรกรรม",
-      "reviews": "รีวิว"
+      "reviews": "รีวิว",
+      "rooms": "ห้องฉาย"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

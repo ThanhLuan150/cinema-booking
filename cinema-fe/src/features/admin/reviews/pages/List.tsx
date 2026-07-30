@@ -43,7 +43,14 @@ function AdminReviews() {
             </td>
             <td>{'★'.repeat(review.rating)}</td>
             <td className="max-w-xs truncate">{review.comment}</td>
-            <td>{review.hidden ? t('reviews.hiddenStatus') : t('reviews.visibleStatus')}</td>
+            <td>
+              {review.hidden ? t('reviews.hiddenStatus') : t('reviews.visibleStatus')}
+              {!!review.reportCount && (
+                <span className="ml-2 rounded bg-red-600/20 px-1.5 py-0.5 text-xs text-red-400">
+                  🚩 {review.reportCount}
+                </span>
+              )}
+            </td>
             <td className="flex gap-3">
               {!review.hidden && (
                 <button type="button" className="text-accent" onClick={() => handleHide(review.id)}>

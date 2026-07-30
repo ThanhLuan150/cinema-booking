@@ -18,11 +18,42 @@
     "loginRequired": "您尚未登录，请登录或注册后使用此功能。",
     "submitSuccess": "评价已提交。",
     "submitError": "无法提交评价。",
-    "emptyState": "暂无评价"
+    "emptyState": "暂无评价",
+    "reply": "回复",
+    "replyPlaceholder": "写下你的回复...",
+    "replySubmit": "发布",
+    "replySubmitError": "无法发布回复。",
+    "reactError": "无法添加表情回应。",
+    "reactionLike": "赞",
+    "reactionLove": "爱心",
+    "reactionHaha": "哈哈",
+    "reactionWow": "哇",
+    "reactionSad": "难过",
+    "reactionAngry": "怒",
+    "edit": "编辑",
+    "editSave": "保存",
+    "editCancel": "取消",
+    "editSuccess": "已更新。",
+    "editError": "无法更新。",
+    "delete": "删除",
+    "deleteConfirm": "确定删除此评论吗？",
+    "deleteSuccess": "已删除。",
+    "deleteError": "无法删除。",
+    "report": "举报",
+    "reportReasonPlaceholder": "请说明举报此评论的原因",
+    "reportSubmit": "提交举报",
+    "reportSuccess": "举报已提交，感谢反馈。",
+    "reportError": "无法提交举报。",
+    "alreadyReported": "已举报",
+    "loadMore": "查看更多评价",
+    "viewMoreReplies": "查看另外 {{count}} 条回复"
   },
   "otherMovieSlider": {
     "trending": "热门电影",
     "moreDetails": "查看详情",
     "empty": "暂无热门电影"
+  },
+  "detailTrailer": {
+    "title": "预告片"
   }
 }

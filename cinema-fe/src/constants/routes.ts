@@ -32,6 +32,7 @@ export const ROUTES = {
   ownerDashboard: '/OwnerDashboard',
   ownerCinemas: '/OwnerCinemas',
   ownerCinemaRooms: (cinemaId: string | number) => `/OwnerCinemas/${cinemaId}/Rooms`,
+  ownerRooms: '/OwnerCinemas/Rooms',
   ownerCombos: '/OwnerCombos',
   ownerVouchers: '/OwnerVouchers',
   ownerBookings: '/OwnerBookings',

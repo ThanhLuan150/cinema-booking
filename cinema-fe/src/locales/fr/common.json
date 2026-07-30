@@ -47,7 +47,8 @@
       "vouchers": "Codes promo",
       "bookings": "Réservations",
       "transactions": "Transactions",
-      "reviews": "Avis"
+      "reviews": "Avis",
+      "rooms": "Salles"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

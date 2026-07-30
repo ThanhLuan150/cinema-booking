@@ -47,7 +47,8 @@
       "vouchers": "Gutscheine",
       "bookings": "Buchungen",
       "transactions": "Transaktionen",
-      "reviews": "Bewertungen"
+      "reviews": "Bewertungen",
+      "rooms": "Säle"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

@@ -18,11 +18,42 @@
     "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
     "submitSuccess": "Bewertung übermittelt.",
     "submitError": "Bewertung konnte nicht übermittelt werden.",
-    "emptyState": "Noch keine Bewertungen"
+    "emptyState": "Noch keine Bewertungen",
+    "reply": "Antworten",
+    "replyPlaceholder": "Antwort schreiben...",
+    "replySubmit": "Posten",
+    "replySubmitError": "Antwort konnte nicht gepostet werden.",
+    "reactError": "Reaktion nicht möglich.",
+    "reactionLike": "Gefällt mir",
+    "reactionLove": "Liebe",
+    "reactionHaha": "Haha",
+    "reactionWow": "Wow",
+    "reactionSad": "Traurig",
+    "reactionAngry": "Wütend",
+    "edit": "Bearbeiten",
+    "editSave": "Speichern",
+    "editCancel": "Abbrechen",
+    "editSuccess": "Aktualisiert.",
+    "editError": "Aktualisierung nicht möglich.",
+    "delete": "Löschen",
+    "deleteConfirm": "Diesen Kommentar löschen?",
+    "deleteSuccess": "Gelöscht.",
+    "deleteError": "Löschen nicht möglich.",
+    "report": "Melden",
+    "reportReasonPlaceholder": "Warum melden Sie diesen Kommentar?",
+    "reportSubmit": "Meldung senden",
+    "reportSuccess": "Gemeldet. Danke für den Hinweis.",
+    "reportError": "Meldung konnte nicht gesendet werden.",
+    "alreadyReported": "Gemeldet",
+    "loadMore": "Weitere Bewertungen anzeigen",
+    "viewMoreReplies": "{{count}} weitere Antworten anzeigen"
   },
   "otherMovieSlider": {
     "trending": "Angesagt",
     "moreDetails": "Mehr Details",
     "empty": "Derzeit keine angesagten Filme"
+  },
+  "detailTrailer": {
+    "title": "Trailer"
   }
 }

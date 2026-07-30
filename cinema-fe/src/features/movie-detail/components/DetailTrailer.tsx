@@ -1,16 +1,34 @@
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail';
+import { getTrailerKind, getYoutubeEmbedUrl } from '@/utils';
+
 const DetailTrailer = () => {
+  const { t } = useTranslation('movieDetail');
+  const { id } = useParams<{ id: string }>();
+  const { data: movie } = useMovieDetail(id);
+
+  const kind = getTrailerKind(movie?.trailer);
+  if (!movie || !kind) return null;
+
   return (
-    <div>
-      <div
-        className="absolute left-[45%] top-[60%] w-1/2 -translate-x-1/2 -translate-y-1/2"
-        id="videoPlayer"
-        style={{ display: 'none' }}
-      >
-        <video width="100%" controls autoPlay id="myVideo" src="https://youtu.be/gq2xKJXYZ80">
-          <source src="https://youtu.be/gq2xKJXYZ80" />
-        </video>
-        <i className="fa-solid fa-circle-xmark absolute right-[10px] top-[5px] w-[30px] cursor-pointer text-[50px] text-[#E00813]" />
-      </div>
+    <div className="mx-auto max-w-4xl px-6 py-10 md:px-16">
+      <h2 className="mb-4 text-2xl font-bold text-white">{t('detailTrailer.title')}</h2>
+      {kind === 'youtube' && (
+        <div className="aspect-video w-full overflow-hidden rounded-lg">
+          <iframe
+            className="h-full w-full"
+            src={getYoutubeEmbedUrl(movie.trailer)}
+            title={`${movie.name} trailer`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      )}
+      {kind === 'video' && <video className="w-full rounded-lg" controls src={movie.trailer} />}
+      {kind === 'image' && (
+        <img className="w-full rounded-lg object-cover" src={movie.trailer} alt={`${movie.name} trailer`} />
+      )}
     </div>
   );
 };
