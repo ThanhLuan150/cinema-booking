@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { moviesQueryKey } from '@/features/movies/hooks/useMovies';
 import { myMoviesQueryKey } from './useMyMovies';
-import { updateMovie, addMovieCategory, buildMovieFormData } from '../api/movies.api';
+import { updateMovie, addMovieCategory, deleteMovieCategoryByMovieId, buildMovieFormData } from '../api/movies.api';
 import type { UpdateMoviePayload } from '../types/adminMovie.types';
 
 export function useUpdateMovie() {
@@ -10,6 +10,7 @@ export function useUpdateMovie() {
     mutationFn: async ({ id, values, categoryIds, avatarFile, trailerFile }: UpdateMoviePayload) => {
       const { cast, ...rest } = values;
       await updateMovie(id, buildMovieFormData(rest, cast, avatarFile, trailerFile));
+      await deleteMovieCategoryByMovieId(id);
       for (const categoryId of categoryIds) {
         await addMovieCategory({ movie_id: id, cat_id: categoryId });
       }
