@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -6,10 +7,12 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useOwnerVouchers } from '../../hooks/useOwnerVouchers';
 import { useCreateVoucher, useDeleteVoucher, useUpdateVoucher } from '../../hooks/useVoucherMutations';
@@ -28,8 +31,11 @@ const emptyForm = (): VoucherFormValues => ({
 function VoucherList() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
-  const { data: cinemas = [] } = useMyCinemas();
-  const { data: vouchers = [] } = useOwnerVouchers();
+  const [page, setPage] = useState(1);
+  const { data: cinemasPage } = useMyCinemas();
+  const cinemas = cinemasPage?.data ?? [];
+  const { data } = useOwnerVouchers(page, DEFAULT_PAGE_SIZE);
+  const vouchers = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerVouchers);
   const createVoucherMutation = useCreateVoucher();
   const updateVoucherMutation = useUpdateVoucher();
@@ -186,6 +192,7 @@ function VoucherList() {
             </tr>
           ))}
         </DataTable>
+        <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
       </div>
     </AdminLayout>
   );

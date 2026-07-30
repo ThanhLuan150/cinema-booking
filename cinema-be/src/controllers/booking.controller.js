@@ -1,6 +1,7 @@
 const bookingRepository = require('../repositories/booking.repository');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // POST /api/scheduleId { movie_id, movie_date, time_begin } -> { id } (auth required)
 async function resolveScheduleId(req, res) {
@@ -154,9 +155,10 @@ async function cancelInvoice(req, res) {
   res.json(invoice);
 }
 
-// GET /api/admin/invoices -> all transactions, newest first (admin only)
+// GET /api/admin/invoices?page=&limit= -> transactions, newest first (admin only)
 async function adminInvoices(req, res) {
-  const invoices = await bookingRepository.findAllInvoices();
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data: invoices, total } = await bookingRepository.findAllInvoices({ skip, limit });
   const ticketIds = invoices.map((inv) => inv.ticket_id);
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
@@ -186,7 +188,7 @@ async function adminInvoices(req, res) {
     };
   });
 
-  res.json(result);
+  res.json(buildPaginatedResult({ data: result, total, page, limit }));
 }
 
 // POST /api/invoice/:id/refund -> admin marks a transaction refunded and reopens the seat

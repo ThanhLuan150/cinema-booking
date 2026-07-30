@@ -1,12 +1,14 @@
 const roomRepository = require('../repositories/room.repository');
 const nextId = require('../utils/nextId');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// GET /api/room?cinemaId=
+// GET /api/room?cinemaId=&page=&limit=
 async function list(req, res) {
   const filter = {};
   if (req.query.cinemaId) filter.cinema_id = Number(req.query.cinemaId);
-  const rooms = await roomRepository.findAll(filter);
-  res.json(rooms);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await roomRepository.findAll(filter, { skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // POST /api/room { name, cinema_id } (admin or theater staff, owner-scoped)

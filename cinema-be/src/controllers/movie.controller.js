@@ -3,6 +3,7 @@ const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
 const { withCategories } = require('../utils/withCategories');
 const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -21,12 +22,16 @@ function parseCast(raw) {
   return [];
 }
 
-// GET /api/movie?search=&category=&country=&date=&cinema=
+// GET /api/movie?search=&category=&country=&date=&cinema=&status=&page=&limit=
 async function list(req, res) {
-  const { search, category, country, date, cinema } = req.query;
+  const { search, category, country, date, cinema, status } = req.query;
   const filter = {};
   if (search) filter.name = { $regex: escapeRegex(search), $options: 'i' };
   if (country) filter.country = { $regex: escapeRegex(country), $options: 'i' };
+  if (status === 'playing' || status === 'upcoming') {
+    const today = new Date().toISOString().split('T')[0];
+    filter.premiere_date = status === 'playing' ? { $lte: today } : { $gt: today };
+  }
 
   let movieIds = null; // null = no restriction; array = must be in this set
 
@@ -41,16 +46,23 @@ async function list(req, res) {
 
   if (movieIds !== null) filter.id = { $in: movieIds };
 
-  const movies = await movieRepository.findFiltered(filter);
-  res.json(await withCategories(movies));
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await movieRepository.findFiltered(filter, { skip, limit });
+  res.json(buildPaginatedResult({ data: await withCategories(data), total, page, limit }));
 }
 
 // GET /api/movie/mine -> management list (admin or theater staff). Admin sees every movie;
 // a theater owner only sees the movies they personally added. Must stay above GET /:id so
 // "mine" isn't swallowed as an :id param.
 async function mine(req, res) {
-  const movies = await movieRepository.findMine({ role: req.account.role, accountId: req.account.accountId });
-  res.json(await withCategories(movies));
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await movieRepository.findMine({
+    role: req.account.role,
+    accountId: req.account.accountId,
+    skip,
+    limit,
+  });
+  res.json(buildPaginatedResult({ data: await withCategories(data), total, page, limit }));
 }
 
 // GET /api/movie/:id

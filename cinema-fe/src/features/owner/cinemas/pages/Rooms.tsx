@@ -145,7 +145,8 @@ function Rooms() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
   const { cinemaId: cinemaIdParam } = useParams<{ cinemaId?: string }>();
-  const { data: cinemas = [] } = useMyCinemas();
+  const { data: cinemasPage } = useMyCinemas();
+  const cinemas = cinemasPage?.data ?? [];
   const [selectedCinemaId, setSelectedCinemaId] = useState(cinemaIdParam ?? '');
 
   useEffect(() => {
@@ -157,7 +158,8 @@ function Rooms() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cinemaIdParam, cinemas]);
 
-  const { data: rooms = [] } = useRoomsByCinema(selectedCinemaId || undefined);
+  const { data: roomsPage } = useRoomsByCinema(selectedCinemaId || undefined);
+  const rooms = roomsPage?.data ?? [];
   const { showAddRoomModal, seatMapRoomId } = useAppSelector((state) => state.ownerCinemas);
   const createRoomMutation = useCreateRoom();
   const deleteRoomMutation = useDeleteRoom();

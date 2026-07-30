@@ -1,7 +1,9 @@
 import apiClient from 'services/apiClient';
 import type { User } from '@/types/entities';
+import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 
-export const getUsers = () => apiClient.get<User[]>('/users').then((res) => res.data);
+export const getUsers = (params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<User>>('/users', { params }).then((res) => res.data);
 
 export const getUserById = (id: number | string) => apiClient.get<User>(`/users/${id}`).then((res) => res.data);
 

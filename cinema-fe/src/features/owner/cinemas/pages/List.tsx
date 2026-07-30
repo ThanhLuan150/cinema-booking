@@ -25,7 +25,8 @@ function CinemaList() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const STATUS_LABEL = t('cinemas.statusLabels', { returnObjects: true }) as unknown as string[];
-  const { data: cinemas = [] } = useMyCinemas();
+  const { data: cinemasPage } = useMyCinemas();
+  const cinemas = cinemasPage?.data ?? [];
   const { showAddCinemaModal } = useAppSelector((state) => state.ownerCinemas);
   const createCinemaMutation = useCreateCinema();
 

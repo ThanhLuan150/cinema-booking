@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { useAppSelector } from '@/hooks/redux';
 import { getApiErrorMessage } from '@/lib/apiError';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { adminCinemasQueryKey, useAdminCinemas } from '../hooks/useAdminCinemas';
 import { useApproveCinema, useBlockCinema, useDeleteCinema } from '../hooks/useCinemaModeration';
 import { CINEMA_STATUS, CINEMA_STATUS_META } from '@/constants/cinemaStatus';
@@ -14,7 +16,9 @@ import { CINEMA_STATUS, CINEMA_STATUS_META } from '@/constants/cinemaStatus';
 function AdminCinemas() {
   const { t } = useTranslation('admin');
   const queryClient = useQueryClient();
-  const { data: cinemas = [] } = useAdminCinemas();
+  const [page, setPage] = useState(1);
+  const { data } = useAdminCinemas(page, DEFAULT_PAGE_SIZE);
+  const cinemas = data?.data ?? [];
   const approveMutation = useApproveCinema();
   const blockMutation = useBlockCinema();
   const deleteMutation = useDeleteCinema();
@@ -88,6 +92,7 @@ function AdminCinemas() {
           );
         })}
       </DataTable>
+      <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
     </AdminLayout>
   );
 }

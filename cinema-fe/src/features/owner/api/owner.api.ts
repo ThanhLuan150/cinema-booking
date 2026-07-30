@@ -1,5 +1,6 @@
 import apiClient from 'services/apiClient';
 import type { Cinema, Combo, Room, Seat, Voucher } from '@/types/entities';
+import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
   ComboFormValues,
@@ -9,15 +10,16 @@ import type {
   VoucherFormValues,
 } from '../types/owner.types';
 
-export const getMyCinemas = () => apiClient.get<Cinema[]>('/cinema/mine').then((res) => res.data);
+export const getMyCinemas = (params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Cinema>>('/cinema/mine', { params }).then((res) => res.data);
 
 export const createCinema = (payload: CinemaFormValues) => apiClient.post('/cinema', payload);
 
 export const updateCinema = (id: number | string, payload: Partial<CinemaFormValues>) =>
   apiClient.put(`/cinema/${id}`, payload);
 
-export const getRoomsByCinema = (cinemaId: number | string | undefined) =>
-  apiClient.get<Room[]>('/room', { params: { cinemaId } }).then((res) => res.data);
+export const getRoomsByCinema = (cinemaId: number | string | undefined, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Room>>('/room', { params: { cinemaId, ...params } }).then((res) => res.data);
 
 export const createRoom = (payload: { name: string; cinema_id: number }) => apiClient.post('/room', payload);
 
@@ -35,8 +37,8 @@ export const generateSeatMap = (roomId: number | string, payload: GenerateSeatMa
 export const updateSeat = (id: number | string, payload: { is_locked: boolean }) =>
   apiClient.put(`/seat/${id}`, payload);
 
-export const getOwnerCombos = (cinemaId?: number | string) =>
-  apiClient.get<Combo[]>('/combo', { params: { cinemaId } }).then((res) => res.data);
+export const getOwnerCombos = (cinemaId?: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Combo>>('/combo', { params: { cinemaId, ...params } }).then((res) => res.data);
 
 export const createCombo = (payload: Omit<ComboFormValues, 'price'> & { price: number }) =>
   apiClient.post('/combo', payload);
@@ -46,8 +48,8 @@ export const updateCombo = (id: number | string, payload: Record<string, unknown
 
 export const deleteCombo = (id: number | string) => apiClient.delete(`/combo/${id}`);
 
-export const getOwnerVouchers = (cinemaId?: number | string) =>
-  apiClient.get<Voucher[]>('/voucher', { params: { cinemaId } }).then((res) => res.data);
+export const getOwnerVouchers = (cinemaId?: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Voucher>>('/voucher', { params: { cinemaId, ...params } }).then((res) => res.data);
 
 export const createVoucher = (
   payload: Omit<VoucherFormValues, 'discount_value' | 'min_order_value'> & {

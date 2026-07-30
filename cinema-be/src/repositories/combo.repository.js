@@ -6,20 +6,39 @@ async function findCinemaIdByComboId(comboId) {
   return combo ? combo.cinema_id : null;
 }
 
-async function findActiveByCinemaId(cinemaId) {
-  return Combo.find({ active: true, cinema_id: Number(cinemaId) }).sort({ id: -1 });
+async function findActiveByCinemaId(cinemaId, { skip = 0, limit = 20 } = {}) {
+  const filter = { active: true, cinema_id: Number(cinemaId) };
+  const [data, total] = await Promise.all([
+    Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Combo.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
-async function findByCinemaIds(cinemaIds) {
-  return Combo.find({ cinema_id: { $in: cinemaIds } }).sort({ id: -1 });
+async function findByCinemaIds(cinemaIds, { skip = 0, limit = 20 } = {}) {
+  const filter = { cinema_id: { $in: cinemaIds } };
+  const [data, total] = await Promise.all([
+    Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Combo.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
-async function findAll() {
-  return Combo.find().sort({ id: -1 });
+async function findAll({ skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Combo.find().sort({ id: -1 }).skip(skip).limit(limit),
+    Combo.countDocuments(),
+  ]);
+  return { data, total };
 }
 
-async function findActive() {
-  return Combo.find({ active: true }).sort({ id: -1 });
+async function findActive({ skip = 0, limit = 20 } = {}) {
+  const filter = { active: true };
+  const [data, total] = await Promise.all([
+    Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Combo.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function findById(id) {

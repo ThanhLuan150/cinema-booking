@@ -77,5 +77,10 @@
   "auth": {
     "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
     "accessDenied": "이 페이지에 접근할 권한이 없습니다."
+  },
+  "pagination": {
+    "previous": "이전",
+    "next": "다음",
+    "pageInfo": "{{page}} / {{totalPages}} 페이지"
   }
 }

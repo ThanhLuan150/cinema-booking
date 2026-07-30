@@ -7,13 +7,22 @@ const Ticket = require('../models/Ticket');
 const Review = require('../models/Review');
 const nextId = require('../utils/nextId');
 
-async function findApproved() {
-  return Cinema.find({ status: 1 }).sort({ id: -1 });
+async function findApproved({ skip = 0, limit = 20 } = {}) {
+  const filter = { status: 1 };
+  const [data, total] = await Promise.all([
+    Cinema.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Cinema.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
-async function findMine({ role, accountId }) {
+async function findMine({ role, accountId, skip = 0, limit = 20 }) {
   const filter = role === 0 ? {} : { owner_id: accountId };
-  return Cinema.find(filter).sort({ id: -1 });
+  const [data, total] = await Promise.all([
+    Cinema.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Cinema.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 async function findPending() {

@@ -1,19 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Spinner } from '@/components/ui/Spinner';
+import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { getImageUrl } from '@/utils';
 import { getCinemasList } from '../api/movies.api';
 import { ROUTES } from '@/constants/routes';
+import { MOVIE_GRID_PAGE_SIZE } from '@/constants/pagination';
 
 const Cinemas = () => {
   const { t } = useTranslation('movies');
-  const { data: cinemas = [], isLoading } = useQuery({
-    queryKey: ['cinemas'],
-    queryFn: getCinemasList,
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useQuery({
+    queryKey: ['cinemas', 'page', page],
+    queryFn: () => getCinemasList({ page, limit: MOVIE_GRID_PAGE_SIZE }),
+    placeholderData: keepPreviousData,
   });
+  const cinemas = data?.data ?? [];
 
   return (
     <div className="flex min-h-screen flex-col bg-main">
@@ -69,6 +75,7 @@ const Cinemas = () => {
               ))}
             </div>
           )}
+          <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
         </div>
       </div>
       <Footer />

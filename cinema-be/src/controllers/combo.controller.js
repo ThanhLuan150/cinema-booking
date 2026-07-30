@@ -1,25 +1,28 @@
 const comboRepository = require('../repositories/combo.repository');
 const nextId = require('../utils/nextId');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 async function list(req, res) {
+  const { page, limit, skip } = parsePagination(req.query);
+
   if (req.query.cinemaId) {
-    const combos = await comboRepository.findActiveByCinemaId(req.query.cinemaId);
-    return res.json(combos);
+    const { data, total } = await comboRepository.findActiveByCinemaId(req.query.cinemaId, { skip, limit });
+    return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 
   if (req.account?.role === 2) {
     const cinemaIds = await comboRepository.findOwnedCinemaIds(req.account.accountId);
-    const combos = await comboRepository.findByCinemaIds(cinemaIds);
-    return res.json(combos);
+    const { data, total } = await comboRepository.findByCinemaIds(cinemaIds, { skip, limit });
+    return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 
   if (req.account?.role === 0) {
-    const combos = await comboRepository.findAll();
-    return res.json(combos);
+    const { data, total } = await comboRepository.findAll({ skip, limit });
+    return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 
-  const combos = await comboRepository.findActive();
-  res.json(combos);
+  const { data, total } = await comboRepository.findActive({ skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // GET /api/combo/:id

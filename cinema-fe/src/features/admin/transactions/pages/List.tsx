@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminInvoices } from '../hooks/useAdminInvoices';
 import { useRefundInvoice } from '../hooks/useRefundInvoice';
 import { INVOICE_STATUS, INVOICE_STATUS_META } from '@/constants/invoiceStatus';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 
 function AdminTransactions() {
   const { t } = useTranslation('admin');
-  const { data: invoices = [] } = useAdminInvoices();
+  const [page, setPage] = useState(1);
+  const { data } = useAdminInvoices(page, DEFAULT_PAGE_SIZE);
+  const invoices = data?.data ?? [];
   const refundMutation = useRefundInvoice();
 
   const handleRefund = async (id: number) => {
@@ -50,6 +55,7 @@ function AdminTransactions() {
           );
         })}
       </DataTable>
+      <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
     </AdminLayout>
   );
 }

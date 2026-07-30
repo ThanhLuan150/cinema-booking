@@ -1,4 +1,5 @@
 const userRepository = require('../repositories/user.repository');
+const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 function toProfileJson(account) {
   return {
@@ -30,10 +31,11 @@ async function updateMe(req, res) {
   res.json(toProfileJson(account));
 }
 
-// GET /api/users (admin only)
+// GET /api/users?page=&limit= (admin only)
 async function list(req, res) {
-  const accounts = await userRepository.findAll();
-  res.json(accounts);
+  const { page, limit, skip } = parsePagination(req.query);
+  const { data, total } = await userRepository.findAll({ skip, limit });
+  res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
 // GET /api/users/:id (admin only)

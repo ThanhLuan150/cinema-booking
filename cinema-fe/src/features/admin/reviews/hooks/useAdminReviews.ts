@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getAdminReviews } from '../api/reviews.api';
 
 export const adminReviewsQueryKey = ['adminReviews'] as const;
 
-export function useAdminReviews() {
+export function useAdminReviews(page: number, limit: number) {
   return useQuery({
-    queryKey: adminReviewsQueryKey,
-    queryFn: getAdminReviews,
+    queryKey: [...adminReviewsQueryKey, page, limit],
+    queryFn: () => getAdminReviews({ page, limit }),
+    placeholderData: keepPreviousData,
   });
 }

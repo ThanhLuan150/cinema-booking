@@ -77,5 +77,10 @@
   "auth": {
     "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
     "accessDenied": "Vous n'avez pas la permission d'accéder à cette page."
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "pageInfo": "Page {{page}} sur {{totalPages}}"
   }
 }

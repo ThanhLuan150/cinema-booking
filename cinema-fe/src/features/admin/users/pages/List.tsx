@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminUsers } from '../hooks/useAdminUsers';
@@ -10,13 +12,16 @@ import { useUpdateUserRole } from '../hooks/useUpdateUserRole';
 import { useApproveUser } from '../hooks/useApproveUser';
 import { ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { Select } from 'components/ui/Select';
 
 const ROLE_KEY: Record<number, string> = { [ROLES.admin]: 'admin', [ROLES.customer]: 'user', [ROLES.owner]: 'theater' };
 
 const List = () => {
   const { t } = useTranslation('admin');
-  const { data: users = [] } = useAdminUsers();
+  const [page, setPage] = useState(1);
+  const { data } = useAdminUsers(page, DEFAULT_PAGE_SIZE);
+  const users = data?.data ?? [];
   const updateUserRoleMutation = useUpdateUserRole();
   const approveUserMutation = useApproveUser();
 
@@ -101,6 +106,7 @@ const List = () => {
           </tr>
         ))}
       </DataTable>
+      <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
     </AdminLayout>
   );
 };

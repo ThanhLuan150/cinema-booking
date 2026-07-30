@@ -77,5 +77,10 @@
   "auth": {
     "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。",
     "accessDenied": "このページにアクセスする権限がありません。"
+  },
+  "pagination": {
+    "previous": "前へ",
+    "next": "次へ",
+    "pageInfo": "{{page}} / {{totalPages}} ページ"
   }
 }

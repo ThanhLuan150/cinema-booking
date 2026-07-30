@@ -45,10 +45,11 @@ function ScheduleFields({
   t: (key: string) => string;
 }) {
   const {
-    data: rooms = [],
+    data: roomsPage,
     isFetching: roomsFetching,
     isFetched: roomsFetched,
   } = useRoomsByCinema(formik.values.cinema_id || undefined);
+  const rooms = roomsPage?.data ?? [];
 
   const showNoRoomsHint = Boolean(formik.values.cinema_id) && roomsFetched && !roomsFetching && rooms.length === 0;
 
@@ -149,7 +150,8 @@ function ScheduleFields({
 
 const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
   const { t } = useTranslation('admin');
-  const { data: allCinemas = [] } = useMyCinemas();
+  const { data: allCinemasPage } = useMyCinemas();
+  const allCinemas = allCinemasPage?.data ?? [];
   const { data: movie, isFetched: movieFetched } = useMovieDetail(id ?? undefined);
   const createScheduleMutation = useCreateSchedule();
 

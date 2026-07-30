@@ -8,6 +8,7 @@ export interface MovieFilters {
   country?: string;
   date?: string;
   cinema?: string | number;
+  status?: 'playing' | 'upcoming';
 }
 
 export interface MoviesState {
