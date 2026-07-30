@@ -2,9 +2,23 @@ const movieRepository = require('../repositories/movie.repository');
 const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
 const { withCategories } = require('../utils/withCategories');
+const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
 
 function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function parseCast(raw) {
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string' && raw.trim()) {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }
 
 // GET /api/movie?search=&category=&country=&date=&cinema=
@@ -55,19 +69,24 @@ async function create(req, res) {
     return res.status(400).json({ message: 'name and premiere_date are required' });
   }
 
+  const avatarFile = req.files?.avatar?.[0];
+  const trailerFile = req.files?.trailer?.[0];
+  const avatarUrl = avatarFile ? await uploadImage(avatarFile) : avatar || '';
+  const trailerUrl = trailerFile ? await uploadTrailer(trailerFile) : trailer || '';
+
   const id = await nextId('movie');
   const movie = await movieRepository.create({
     id,
     owner_id: req.account.accountId,
     name,
-    avatar: avatar || '',
+    avatar: avatarUrl,
     premiere_date,
     description: description || '',
     country: country || '',
-    trailer: trailer || '',
+    trailer: trailerUrl,
     producer: producer || '',
     director: director || '',
-    cast: Array.isArray(cast) ? cast : [],
+    cast: parseCast(cast),
   });
 
   emitPublic('movie:new', movie);
@@ -91,6 +110,11 @@ async function update(req, res) {
   for (const field of fields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
+  if (updates.cast !== undefined) updates.cast = parseCast(updates.cast);
+  const avatarFile = req.files?.avatar?.[0];
+  const trailerFile = req.files?.trailer?.[0];
+  if (avatarFile) updates.avatar = await uploadImage(avatarFile);
+  if (trailerFile) updates.trailer = await uploadTrailer(trailerFile);
 
   const movie = await movieRepository.updateFields(req.params.id, updates);
   if (!movie) return res.status(404).json({ message: 'Movie not found' });

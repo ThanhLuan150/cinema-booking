@@ -1,11 +1,31 @@
 import { Button } from '@/components/ui/Button';
-import { getMoviePosterUrl } from '@/utils';
+import { getMoviePosterUrl, getTrailerKind } from '@/utils';
 import { useAuthRole } from '@/features/auth/hooks/useAuth';
 import { useAppDispatch } from '@/hooks/redux';
 import type { Movie } from '@/types/entities';
 import { ROLES } from '@/constants/roles';
 import { openEditModal, openScheduleModal } from '../store/adminMoviesSlice';
 import Delete from './Delete';
+
+const TrailerPreview = ({ trailer }: { trailer: string }) => {
+  const kind = getTrailerKind(trailer);
+  if (!kind) return <span>-</span>;
+
+  if (kind === 'image') {
+    return (
+      <a href={trailer} target="_blank" rel="noreferrer">
+        <img src={trailer} alt="Trailer" style={{ width: '110px', height: '70px', objectFit: 'cover' }} />
+      </a>
+    );
+  }
+
+  const iconName = kind === 'youtube' ? 'logo-youtube' : 'play-circle-outline';
+  return (
+    <a href={trailer} target="_blank" rel="noreferrer">
+      <ion-icon name={iconName} style={{ color: '#E00813', fontSize: '2rem' }} />
+    </a>
+  );
+};
 
 const ListItem = ({ movie }: { movie: Movie }) => {
   const dispatch = useAppDispatch();
@@ -20,7 +40,9 @@ const ListItem = ({ movie }: { movie: Movie }) => {
       <td>{movie.premiere_date}</td>
       <td>{movie.country}</td>
       <td className="max-w-[150px] truncate">{movie.description}</td>
-      <td className="max-w-[150px] truncate">{movie.trailer}</td>
+      <td>
+        <TrailerPreview trailer={movie.trailer} />
+      </td>
       <td>
         {(movie.categories || []).map((cat) => (
           <p key={cat.id}>{cat.name}</p>

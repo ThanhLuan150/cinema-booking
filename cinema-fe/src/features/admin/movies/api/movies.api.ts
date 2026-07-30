@@ -1,6 +1,22 @@
 import apiClient from 'services/apiClient';
 import type { Movie } from '@/types/entities';
-import type { MovieFormValues } from '../types/adminMovie.types';
+import type { CastMemberDraft, MovieFormValues } from '../types/adminMovie.types';
+
+export function buildMovieFormData(
+  values: Omit<MovieFormValues, 'cast'>,
+  cast: CastMemberDraft[],
+  avatarFile?: File | null,
+  trailerFile?: File | null,
+) {
+  const formData = new FormData();
+  Object.entries(values).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) formData.append(key, String(value));
+  });
+  formData.append('cast', JSON.stringify(cast.filter((member) => member.name.trim() !== '')));
+  if (avatarFile) formData.append('avatar', avatarFile);
+  if (trailerFile) formData.append('trailer', trailerFile);
+  return formData;
+}
 
 // Management listing: admin sees every movie, a theater owner only sees the ones they added.
 export const getMyMovies = () => apiClient.get<Movie[]>('/movie/mine').then((res) => res.data);
@@ -8,12 +24,12 @@ export const getMyMovies = () => apiClient.get<Movie[]>('/movie/mine').then((res
 export const getMovieCategoriesByMovieId = (id: number | string) =>
   apiClient.get<number[]>(`/movieCat/${id}`).then((res) => res.data);
 
-export const createMovie = (payload: MovieFormValues) => apiClient.post<{ id: number }>('/movie', payload);
+export const createMovie = (payload: FormData) => apiClient.post<{ id: number }>('/movie', payload);
 
 export const addMovieCategory = (payload: { movie_id: number | string; cat_id: number }) =>
   apiClient.post('/movieCat', payload);
 
-export const updateMovie = (id: number | string, payload: MovieFormValues) => apiClient.put(`/movie/${id}`, payload);
+export const updateMovie = (id: number | string, payload: FormData) => apiClient.put(`/movie/${id}`, payload);
 
 export const deleteMovie = (id: number | string) => apiClient.delete(`/movie/${id}`);
 

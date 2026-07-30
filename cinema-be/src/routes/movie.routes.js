@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth, requireRole } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 const movieController = require('../controllers/movie.controller');
 
 const router = express.Router();
@@ -16,11 +17,16 @@ router.get('/mine', requireAuth, requireRole(0, 2), asyncHandler(movieController
 // GET /api/movie/:id
 router.get('/:id', asyncHandler(movieController.getById));
 
+const uploadMoviePoster = upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'trailer', maxCount: 1 },
+]);
+
 // POST /api/movie (admin or theater staff)
-router.post('/', requireAuth, requireRole(0, 2), asyncHandler(movieController.create));
+router.post('/', requireAuth, requireRole(0, 2), uploadMoviePoster, asyncHandler(movieController.create));
 
 // PUT /api/movie/:id (admin or theater staff)
-router.put('/:id', requireAuth, requireRole(0, 2), asyncHandler(movieController.update));
+router.put('/:id', requireAuth, requireRole(0, 2), uploadMoviePoster, asyncHandler(movieController.update));
 
 // DELETE /api/movie/:id (admin or theater staff)
 router.delete('/:id', requireAuth, requireRole(0, 2), asyncHandler(movieController.remove));

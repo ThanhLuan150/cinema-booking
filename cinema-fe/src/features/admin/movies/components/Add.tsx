@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
@@ -6,10 +6,12 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/features/notifications/toast';
+import { toFormikValidate } from '@/lib/formikZod';
 import { useAppDispatch } from '@/hooks/redux';
 import { useCategories } from '@/features/movies/hooks/useCategories';
 import { useCreateMovie } from '../hooks/useCreateMovie';
 import { closeAddModal } from '../store/adminMoviesSlice';
+import { buildMovieSchema } from '../schemas/movie.schema';
 import type { CastMemberDraft, MovieFormValues } from '../types/adminMovie.types';
 
 interface AddMovieFormValues extends MovieFormValues {
@@ -35,14 +37,21 @@ const Add = () => {
   const { data: cats = [] } = useCategories();
   const createMovieMutation = useCreateMovie();
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const trailerInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [trailerFile, setTrailerFile] = useState<File | null>(null);
+  const movieSchema = useMemo(() => buildMovieSchema(t), [t]);
 
   const handleCloseAdd = () => dispatch(closeAddModal());
 
   const handleSubmit = async (values: AddMovieFormValues) => {
     const { categoryIds, ...form } = values;
     try {
-      await createMovieMutation.mutateAsync({ ...form, categoryIds });
+      await createMovieMutation.mutateAsync({ ...form, categoryIds, avatarFile, trailerFile });
       if (avatarInputRef.current) avatarInputRef.current.value = '';
+      if (trailerInputRef.current) trailerInputRef.current.value = '';
+      setAvatarFile(null);
+      setTrailerFile(null);
       toast.success(t('movies.add.toastSuccess'));
       handleCloseAdd();
     } catch (error) {
@@ -53,10 +62,25 @@ const Add = () => {
 
   return (
     <Modal open onClose={handleCloseAdd} title={t('movies.add.title')}>
-      <Formik<AddMovieFormValues> initialValues={emptyValues()} onSubmit={handleSubmit}>
+      <Formik<AddMovieFormValues>
+        initialValues={emptyValues()}
+        validate={toFormikValidate<AddMovieFormValues>(movieSchema)}
+        onSubmit={handleSubmit}
+      >
         {(formik) => {
+          const showErrors = formik.submitCount > 0;
+          const getError = (key: string) => (showErrors ? (formik.errors as Record<string, string>)[key] : undefined);
+
           const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            formik.setFieldValue('avatar', e.target.value.split('\\')[2] ?? '');
+            const file = e.target.files?.[0] ?? null;
+            setAvatarFile(file);
+            formik.setFieldValue('avatar', file ? file.name : '');
+          };
+
+          const handleTrailerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0] ?? null;
+            setTrailerFile(file);
+            formik.setFieldValue('trailer', file ? file.name : '');
           };
 
           const updateCastRow = (index: number, field: keyof CastMemberDraft, value: string) => {
@@ -85,7 +109,14 @@ const Add = () => {
 
           return (
             <Form encType="multipart/form-data">
-              <Field as={Input} label={t('movies.add.fields.name')} type="text" name="name" id="name" />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.name')}
+                type="text"
+                name="name"
+                id="name"
+                error={getError('name')}
+              />
               <Input
                 label={t('movies.add.fields.avatar')}
                 type="file"
@@ -94,6 +125,7 @@ const Add = () => {
                 ref={avatarInputRef}
                 onChange={handleAvatarChange}
                 className="mt-3"
+                error={getError('avatar')}
               />
               <Field
                 as={Input}
@@ -102,18 +134,53 @@ const Add = () => {
                 name="premiere_date"
                 id="premiere_date"
                 className="mt-3"
+                error={getError('premiere_date')}
               />
-              <Field as={Input} label={t('movies.add.fields.country')} type="text" name="country" id="country" className="mt-3" />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.country')}
+                type="text"
+                name="country"
+                id="country"
+                className="mt-3"
+                error={getError('country')}
+              />
               <Field
                 as={Textarea}
                 label={t('movies.add.fields.description')}
                 name="description"
                 id="description"
                 className="mt-3"
+                error={getError('description')}
               />
-              <Field as={Input} label={t('movies.add.fields.trailer')} type="file" name="trailer" className="mt-3" />
-              <Field as={Input} label={t('movies.add.fields.producer')} type="text" name="producer" id="producer" className="mt-3" />
-              <Field as={Input} label={t('movies.add.fields.director')} type="text" name="director" id="director" className="mt-3" />
+              <Input
+                label={t('movies.add.fields.trailer')}
+                type="file"
+                name="trailer"
+                accept="image/*,video/*"
+                ref={trailerInputRef}
+                onChange={handleTrailerChange}
+                className="mt-3"
+                error={getError('trailer')}
+              />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.producer')}
+                type="text"
+                name="producer"
+                id="producer"
+                className="mt-3"
+                error={getError('producer')}
+              />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.director')}
+                type="text"
+                name="director"
+                id="director"
+                className="mt-3"
+                error={getError('director')}
+              />
 
               <label className="mb-1 mt-3 block text-sm font-medium">{t('movies.add.cast.label')}</label>
               <div className="flex flex-col gap-4">
@@ -124,6 +191,7 @@ const Add = () => {
                       type="text"
                       value={member.name}
                       onChange={(e) => updateCastRow(index, 'name', e.target.value)}
+                      error={getError(`cast.${index}.name`)}
                     />
                     <Input
                       label={t('movies.add.cast.role')}
@@ -136,6 +204,7 @@ const Add = () => {
                       type="text"
                       value={member.avatar}
                       onChange={(e) => updateCastRow(index, 'avatar', e.target.value)}
+                      error={getError(`cast.${index}.avatar`)}
                     />
                     <Button type="button" variant="ghost" size="sm" onClick={() => removeCastRow(index)} className="self-end">
                       {t('movies.add.cast.remove')}
@@ -165,6 +234,12 @@ const Add = () => {
                   </label>
                 ))}
               </div>
+              {getError('categoryIds') && (
+                <span className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <i className="fa-solid fa-circle-exclamation text-xs" />
+                  {getError('categoryIds')}
+                </span>
+              )}
               <div className="mt-6 flex justify-end">
                 <Button type="submit" variant="danger" loading={createMovieMutation.isPending}>
                   {t('movies.add.submit')}
