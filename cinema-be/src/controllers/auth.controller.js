@@ -89,7 +89,7 @@ async function refreshToken(req, res) {
   let payload;
   try {
     payload = verifyRefreshToken(token);
-  } catch (err) {
+  } catch {
     res.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
     return res.status(401).json({ message: 'Invalid or expired refresh token' });
   }
@@ -120,7 +120,7 @@ async function logout(req, res) {
     try {
       const payload = verifyRefreshToken(token);
       await authRepository.clearRefreshToken(payload.accountId);
-    } catch (err) {
+    } catch {
       // Already invalid/expired — nothing to revoke.
     }
   }

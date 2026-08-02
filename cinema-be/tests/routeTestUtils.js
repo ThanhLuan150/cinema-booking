@@ -7,7 +7,7 @@ function buildTestApp(mountPath, router) {
   app.use(express.json());
   app.use(cookieParser());
   app.use(mountPath, router);
-  app.use((err, req, res, next) => {
+  app.use((err, req, res, _next) => {
     res.status(err.status || 500).json({ message: err.message });
   });
   return app;

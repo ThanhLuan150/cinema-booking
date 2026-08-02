@@ -12,7 +12,7 @@ function requireAuth(req, res, next) {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.account = payload; // { accountId, email, role }
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
 }
@@ -33,7 +33,8 @@ function optionalAuth(req, res, next) {
   if (token) {
     try {
       req.account = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
+    } catch {
+      // Invalid token: proceed unauthenticated.
     }
   }
   next();

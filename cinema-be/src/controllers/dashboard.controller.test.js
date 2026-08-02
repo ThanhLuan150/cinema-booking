@@ -1,8 +1,6 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const dashboardController = require('./dashboard.controller');
 const Cinema = require('../models/Cinema');
-const Room = require('../models/Room');
-const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 const Invoice = require('../models/Invoice');
 const Account = require('../models/Account');
