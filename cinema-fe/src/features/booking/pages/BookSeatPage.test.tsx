@@ -46,7 +46,7 @@ import BookSeatPage from './BookSeatPage';
 function renderPage(query = '?movieId=1&day=2026-01-01&time=10:00') {
   const queryClient = new QueryClient();
   const store = configureStore({ reducer: { auth: authReducer, booking: bookingReducer } });
-  store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+  store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
   return render(
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>

@@ -4,8 +4,10 @@ jest.mock('../utils/mailer', () => ({
 }));
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const authController = require('./auth.controller');
 const mailer = require('../utils/mailer');
@@ -14,7 +16,10 @@ const Account = require('../models/Account');
 function buildApp() {
   const app = express();
   app.use(express.json());
+  app.use(cookieParser());
   app.post('/api/Login', authController.login);
+  app.post('/api/refresh-token', authController.refreshToken);
+  app.post('/api/logout', authController.logout);
   app.get('/api/check-email', authController.checkEmail);
   app.post('/api/register', authController.register);
   app.post('/api/verify', authController.verify);
@@ -85,13 +90,95 @@ describe('POST /api/Login', () => {
     expect(res.body.code).toBe('INVALID_PASSWORD');
   });
 
-  it('returns a token and account info for valid credentials', async () => {
+  it('returns an access token and account info for valid credentials', async () => {
     await createAccount();
     const res = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
     expect(res.status).toBe(200);
-    expect(res.body.token).toEqual(expect.any(String));
+    expect(res.body.accessToken).toEqual(expect.any(String));
     expect(res.body.user_id).toBe('1');
     expect(res.body.role).toBe('1');
+  });
+
+  it('sets an httpOnly refreshToken cookie and persists its hash on the account', async () => {
+    await createAccount();
+    const res = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
+
+    const cookie = getRefreshCookie(res);
+    expect(cookie).toBeTruthy();
+    expect(cookie).toMatch(/HttpOnly/);
+
+    const account = await Account.findOne({ email: 'user@example.com' }).select('+refreshTokenHash +refreshTokenExpiresAt');
+    expect(account.refreshTokenHash).toEqual(expect.any(String));
+    expect(account.refreshTokenExpiresAt.getTime()).toBeGreaterThan(Date.now());
+  });
+});
+
+function getRefreshCookie(res) {
+  const cookies = res.headers['set-cookie'] || [];
+  return cookies.find((c) => c.startsWith('refreshToken='));
+}
+
+function extractCookieValue(cookieHeader) {
+  return cookieHeader.split(';')[0].split('=')[1];
+}
+
+describe('POST /api/refresh-token', () => {
+  it('rejects a request with no refresh token cookie', async () => {
+    const res = await request(app).post('/api/refresh-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects a malformed/invalid refresh token cookie', async () => {
+    const res = await request(app).post('/api/refresh-token').set('Cookie', 'refreshToken=not-a-real-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects a refresh token that does not match the stored hash (revoked/stolen)', async () => {
+    await createAccount();
+    const loginRes = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
+    const staleToken = extractCookieValue(getRefreshCookie(loginRes));
+
+    // A second login rotates the stored hash, invalidating the first refresh token.
+    await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
+
+    const res = await request(app).post('/api/refresh-token').set('Cookie', `refreshToken=${staleToken}`);
+    expect(res.status).toBe(401);
+  });
+
+  it('issues a new access token and rotates the refresh cookie for a valid refresh token', async () => {
+    await createAccount();
+    const loginRes = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
+    const refreshCookie = getRefreshCookie(loginRes);
+
+    const res = await request(app).post('/api/refresh-token').set('Cookie', refreshCookie);
+    expect(res.status).toBe(200);
+    expect(res.body.accessToken).toEqual(expect.any(String));
+    expect(getRefreshCookie(res)).toBeTruthy();
+
+    const decoded = jwt.decode(res.body.accessToken);
+    expect(decoded.accountId).toBe(1);
+  });
+});
+
+describe('POST /api/logout', () => {
+  it('clears the refresh cookie and revokes the stored hash', async () => {
+    await createAccount();
+    const loginRes = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
+    const refreshCookie = getRefreshCookie(loginRes);
+
+    const res = await request(app).post('/api/logout').set('Cookie', refreshCookie);
+    expect(res.status).toBe(204);
+
+    const account = await Account.findOne({ email: 'user@example.com' }).select('+refreshTokenHash');
+    expect(account.refreshTokenHash).toBeNull();
+
+    const refreshAfterLogout = await request(app).post('/api/refresh-token').set('Cookie', refreshCookie);
+    expect(refreshAfterLogout.status).toBe(401);
+  });
+
+  it('is a no-op (204) when there is no refresh cookie', async () => {
+    const res = await request(app).post('/api/logout');
+    expect(res.status).toBe(204);
   });
 });
 

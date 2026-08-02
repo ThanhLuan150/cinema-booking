@@ -4,9 +4,41 @@ const authRepository = require('../repositories/auth.repository');
 const nextId = require('../utils/nextId');
 const { generateOtp, otpExpiryDate } = require('../utils/otp');
 const { sendOtpEmail, sendPasswordResetEmail } = require('../utils/mailer');
+const { signAccessToken, signRefreshToken, verifyRefreshToken, hashToken } = require('../utils/tokens');
+
+const REFRESH_COOKIE_NAME = 'refreshToken';
+// The frontend and backend are separate origins (different ports/hosts in dev,
+// typically different subdomains in production), so the cookie must survive
+// cross-site XHR — that requires SameSite=None, which in turn requires Secure.
+// Chromium treats http://localhost and http://127.0.0.1 as secure contexts, so
+// this still works without TLS in local dev.
+const REFRESH_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  path: '/api',
+};
 
 function isOtpValid(account, otp) {
   return Boolean(account.otp && account.otp === otp && account.otpExpiresAt && account.otpExpiresAt.getTime() > Date.now());
+}
+
+// Signs a fresh access+refresh pair, persists the refresh token's hash for
+// rotation/revocation, and sets the httpOnly refresh cookie on the response.
+async function issueTokens(res, account) {
+  const accessToken = signAccessToken(account);
+  const refreshToken = signRefreshToken(account);
+  const { exp } = jwt.decode(refreshToken);
+  const expiresAt = new Date(exp * 1000);
+
+  await authRepository.setRefreshToken(account.id, hashToken(refreshToken), expiresAt);
+
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
+    ...REFRESH_COOKIE_OPTIONS,
+    maxAge: expiresAt.getTime() - Date.now(),
+  });
+
+  return accessToken;
 }
 
 // POST /api/Login
@@ -37,18 +69,63 @@ async function login(req, res) {
     return res.status(401).json({ message: 'Incorrect password', code: 'INVALID_PASSWORD' });
   }
 
-  const token = jwt.sign(
-    { accountId: account.id, email: account.email, role: account.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' },
-  );
+  const accessToken = await issueTokens(res, account);
 
   res.json({
-    token,
+    accessToken,
     account: { id: account.id, email: account.email },
     user_id: String(account.id),
     role: String(account.role),
   });
+}
+
+// POST /api/refresh-token (reads refreshToken httpOnly cookie)
+async function refreshToken(req, res) {
+  const token = req.cookies?.[REFRESH_COOKIE_NAME];
+  if (!token) {
+    return res.status(401).json({ message: 'Missing refresh token' });
+  }
+
+  let payload;
+  try {
+    payload = verifyRefreshToken(token);
+  } catch (err) {
+    res.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
+    return res.status(401).json({ message: 'Invalid or expired refresh token' });
+  }
+
+  const account = await authRepository.findByIdWithRefreshToken(payload.accountId);
+  const presentedHash = hashToken(token);
+  const isValid =
+    account &&
+    account.refreshTokenHash === presentedHash &&
+    account.refreshTokenExpiresAt &&
+    account.refreshTokenExpiresAt.getTime() > Date.now();
+
+  if (!isValid) {
+    // Token reuse/mismatch: revoke whatever is stored so a stolen token can't be replayed.
+    if (account) await authRepository.clearRefreshToken(account.id);
+    res.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
+    return res.status(401).json({ message: 'Invalid or expired refresh token' });
+  }
+
+  const accessToken = await issueTokens(res, account);
+  res.json({ accessToken });
+}
+
+// POST /api/logout (clears the refreshToken httpOnly cookie)
+async function logout(req, res) {
+  const token = req.cookies?.[REFRESH_COOKIE_NAME];
+  if (token) {
+    try {
+      const payload = verifyRefreshToken(token);
+      await authRepository.clearRefreshToken(payload.accountId);
+    } catch (err) {
+      // Already invalid/expired — nothing to revoke.
+    }
+  }
+  res.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
+  res.status(204).end();
 }
 
 // GET /api/check-email?email=
@@ -253,6 +330,8 @@ async function resendOtp(req, res) {
 
 module.exports = {
   login,
+  refreshToken,
+  logout,
   checkEmail,
   register,
   getAccountByEmailParam,

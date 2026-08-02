@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { socket } from '@/lib/socket';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { moviesQueryKey } from '@/features/movies/hooks/useMovies';
+import { refreshAccessToken } from '@/services/apiClient';
+import { setAccessToken } from '@/features/auth/store/authSlice';
 import { bump } from './realtimeSlice';
 import { toast } from './toast';
 import type { BookingEvent, CinemaEvent, MovieEvent } from './types/realtime.types';
@@ -13,18 +15,36 @@ import type { BookingEvent, CinemaEvent, MovieEvent } from './types/realtime.typ
 // toasts, so user/owner/admin views update without a manual page refresh.
 export function RealtimeBridge() {
   const { t } = useTranslation('notifications');
-  const token = useAppSelector((state) => state.auth.token);
+  const token = useAppSelector((state) => state.auth.accessToken);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  // Avoids refresh-retry loops if the server keeps rejecting the same connection attempt.
+  const hasAttemptedRefresh = useRef(false);
 
   useEffect(() => {
     socket.auth = token ? { token } : {};
     if (socket.connected) socket.disconnect();
     socket.connect();
+    hasAttemptedRefresh.current = false;
     return () => {
       socket.disconnect();
     };
   }, [token]);
+
+  useEffect(() => {
+    const onUnauthorized = () => {
+      if (hasAttemptedRefresh.current) return;
+      hasAttemptedRefresh.current = true;
+      refreshAccessToken()
+        .then((accessToken: string) => dispatch(setAccessToken(accessToken)))
+        .catch(() => {});
+    };
+
+    socket.on('unauthorized', onUnauthorized);
+    return () => {
+      socket.off('unauthorized', onUnauthorized);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const onMovieNew = (movie: MovieEvent) => {

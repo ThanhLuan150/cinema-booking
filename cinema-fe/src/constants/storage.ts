@@ -1,5 +1,5 @@
 export const STORAGE_KEYS = {
-  token: 'token',
+  accessToken: 'accessToken',
   userId: 'user_id',
   role: 'role',
   account: 'account',

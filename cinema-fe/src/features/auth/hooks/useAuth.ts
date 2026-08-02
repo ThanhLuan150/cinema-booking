@@ -1,11 +1,11 @@
 import { useAppSelector } from '@/hooks/redux';
 
 export function useIsAuthenticated() {
-  return useAppSelector((state) => !!state.auth.token);
+  return useAppSelector((state) => !!state.auth.accessToken);
 }
 
 export function useAuthToken() {
-  return useAppSelector((state) => state.auth.token);
+  return useAppSelector((state) => state.auth.accessToken);
 }
 
 export function useAuthRole() {

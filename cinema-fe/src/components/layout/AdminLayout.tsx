@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { useAppDispatch } from '@/hooks/redux';
 import { logout } from '@/features/auth/store/authSlice';
+import { logout as logoutApi } from '@/features/auth/api/auth.api';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { toast } from '@/features/notifications/toast';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
@@ -31,6 +32,7 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     setIsUserMenuOpen(false);
+    logoutApi().catch(() => {});
     dispatch(logout());
     queryClient.clear();
     toast.success(t('header.logoutSuccess'));

@@ -44,7 +44,7 @@ describe('initSocket', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('falls through silently when the token is invalid', () => {
+    it('falls through as anonymous but flags authError when the token is invalid', () => {
       const useCb = getUseCallback();
       jwt.verify.mockImplementation(() => {
         throw new Error('invalid token');
@@ -54,6 +54,7 @@ describe('initSocket', () => {
 
       expect(() => useCb(socket, next)).not.toThrow();
       expect(socket.account).toBeUndefined();
+      expect(socket.authError).toBe(true);
       expect(next).toHaveBeenCalled();
     });
 
@@ -110,6 +111,25 @@ describe('initSocket', () => {
 
       expect(() => connectionCb(socket)).not.toThrow();
       expect(socket.join).not.toHaveBeenCalled();
+    });
+
+    it('emits unauthorized when the socket was flagged with an authError', () => {
+      const connectionCb = getConnectionCallback();
+      const socket = { authError: true, join: jest.fn(), emit: jest.fn() };
+
+      connectionCb(socket);
+
+      expect(socket.emit).toHaveBeenCalledWith('unauthorized', { reason: 'invalid_token' });
+      expect(socket.join).not.toHaveBeenCalled();
+    });
+
+    it('does not emit unauthorized for a clean anonymous connection', () => {
+      const connectionCb = getConnectionCallback();
+      const socket = { join: jest.fn(), emit: jest.fn() };
+
+      connectionCb(socket);
+
+      expect(socket.emit).not.toHaveBeenCalled();
     });
   });
 });

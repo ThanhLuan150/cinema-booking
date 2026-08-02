@@ -19,7 +19,7 @@ import BookTicketPage from './BookTicketPage';
 function renderPage(entry = '/BookTicket/5') {
   const queryClient = new QueryClient();
   const store = configureStore({ reducer: { auth: authReducer, booking: bookingReducer } });
-  store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+  store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
   return render(
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>

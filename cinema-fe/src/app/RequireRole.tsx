@@ -11,8 +11,8 @@ export interface RequireRoleProps {
 }
 
 export function RequireRole({ roles, children }: RequireRoleProps) {
-  const { token, role: rawRole } = useAppSelector((state) => state.auth);
-  if (!token) {
+  const { accessToken, role: rawRole } = useAppSelector((state) => state.auth);
+  if (!accessToken) {
     toast.error(i18n.t('common:auth.loginRequired'));
     return <Navigate to={ROUTES.login} replace />;
   }

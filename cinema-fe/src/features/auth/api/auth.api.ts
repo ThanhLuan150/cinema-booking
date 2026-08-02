@@ -11,6 +11,10 @@ import type {
 export const login = (email: string, password: string) =>
   apiClient.post<LoginResponse>('/Login', { email, password });
 
+export const refreshAccessToken = () => apiClient.post<{ accessToken: string }>('/refresh-token');
+
+export const logout = () => apiClient.post('/logout');
+
 export const checkEmailExists = (email: string) =>
   apiClient.get<{ exists: boolean }>(`/check-email?email=${encodeURIComponent(email)}`);
 

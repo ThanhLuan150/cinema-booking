@@ -45,6 +45,18 @@ async function findById(accountId) {
   return Account.findOne({ id: Number(accountId) });
 }
 
+async function findByIdWithRefreshToken(accountId) {
+  return Account.findOne({ id: Number(accountId) }).select('+refreshTokenHash +refreshTokenExpiresAt');
+}
+
+async function setRefreshToken(accountId, hash, expiresAt) {
+  await Account.updateOne({ id: Number(accountId) }, { $set: { refreshTokenHash: hash, refreshTokenExpiresAt: expiresAt } });
+}
+
+async function clearRefreshToken(accountId) {
+  await Account.updateOne({ id: Number(accountId) }, { $set: { refreshTokenHash: null, refreshTokenExpiresAt: null } });
+}
+
 module.exports = {
   findByEmailForLogin,
   findByEmail,
@@ -57,4 +69,7 @@ module.exports = {
   findByEmailWithOtpAndPassword,
   findByIdWithPassword,
   findById,
+  findByIdWithRefreshToken,
+  setRefreshToken,
+  clearRefreshToken,
 };

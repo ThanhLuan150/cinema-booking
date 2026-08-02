@@ -16,13 +16,16 @@ function initSocket(httpServer, allowedOrigins) {
       try {
         socket.account = jwt.verify(token, process.env.JWT_SECRET);
       } catch {
-        // invalid/expired token: fall through as an anonymous connection
+        socket.authError = true;
       }
     }
     next();
   });
 
   io.on('connection', (socket) => {
+    if (socket.authError) {
+      socket.emit('unauthorized', { reason: 'invalid_token' });
+    }
     if (socket.account) {
       if (socket.account.role === 0) socket.join('admin');
       if (socket.account.role === 2) socket.join(`owner:${socket.account.accountId}`);

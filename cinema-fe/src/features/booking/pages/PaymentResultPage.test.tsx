@@ -57,7 +57,7 @@ describe('PaymentResultPage', () => {
   it('shows a failure message when resultCode is not 0', async () => {
     window.history.replaceState({}, '', '/PaymentResult?resultCode=1&message=Cancelled');
     const store = buildStore();
-    store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
     renderPage(store);
     expect(await screen.findByText('Payment failed')).toBeInTheDocument();
     expect(screen.getByText('Cancelled')).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe('PaymentResultPage', () => {
     window.history.replaceState({}, '', '/PaymentResult?resultCode=0&orderId=X');
     confirmMomoPaymentMutate.mockResolvedValue({});
     const store = buildStore();
-    store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
     renderPage(store);
     expect(await screen.findByText('Payment successful')).toBeInTheDocument();
     expect(confirmMomoPaymentMutate).toHaveBeenCalledWith(expect.objectContaining({ resultCode: '0', orderId: 'X' }));
@@ -77,7 +77,7 @@ describe('PaymentResultPage', () => {
     window.history.replaceState({}, '', '/PaymentResult?resultCode=0&orderId=X');
     confirmMomoPaymentMutate.mockRejectedValue({ response: { data: { code: 'GENERIC' } } });
     const store = buildStore();
-    store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
     renderPage(store);
     expect(await screen.findByText('Payment failed')).toBeInTheDocument();
   });

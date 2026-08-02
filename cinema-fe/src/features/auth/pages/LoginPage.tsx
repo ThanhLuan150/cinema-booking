@@ -29,15 +29,15 @@ const LoginForm = () => {
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const response = await loginMutation.mutateAsync(values);
-      const { token, account, user_id, role } = response.data;
+      const { accessToken, account, user_id, role } = response.data;
 
-      if (!token) {
+      if (!accessToken) {
         throw new Error(t('login.accountNotFound'));
       }
 
       queryClient.clear();
-      dispatch(loginAction({ token, userId: user_id, role, account }));
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      dispatch(loginAction({ accessToken, userId: user_id, role, account }));
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
       toast.success(t('login.loginSuccess'));
       if (role == String(ROLES.customer)) {

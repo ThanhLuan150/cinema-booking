@@ -49,7 +49,7 @@ describe('Header', () => {
   });
 
   it('shows the user menu toggle when logged in', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as any }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as any }));
     useCurrentUserMock.mockReturnValue({ data: { name: 'Alice' } });
     renderHeader();
     expect(screen.getByText('Alice')).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe('Header', () => {
   });
 
   it('shows the manage link only for management roles', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: '0', account: {} as any }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '0', account: {} as any }));
     useCurrentUserMock.mockReturnValue({ data: { name: 'Admin' } });
     renderHeader();
     fireEvent.click(screen.getByLabelText('header.toggleUserMenu'));
