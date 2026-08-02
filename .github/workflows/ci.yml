@@ -33,6 +33,9 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Build
+        run: npm run build
+
   frontend:
     name: Frontend (cinema-fe)
     runs-on: ubuntu-latest
