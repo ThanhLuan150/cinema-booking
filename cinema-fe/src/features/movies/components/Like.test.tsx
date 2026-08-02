@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -30,9 +30,19 @@ describe('Like', () => {
     unlikeMutate.mockReset();
     useLikeStatusMock.mockReturnValue({ data: 3 });
     useMyLikedMoviesMock.mockReturnValue({ data: [] });
-    // @ts-expect-error simplifying window.location for the redirect assertion
-    delete window.location;
-    window.location = { ...originalLocation, href: '' } as Location;
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      configurable: true,
+      value: { ...originalLocation, href: '' } as Location,
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      configurable: true,
+      value: originalLocation,
+    });
   });
 
   it('shows the like count', () => {
