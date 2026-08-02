@@ -18,24 +18,11 @@ cd cinema-be
 npm install
 ```
 
-Create a `.env` file from the example:
+Create a `.env` file from the example, then fill in the required values (`MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGIN`, etc.):
 
 ```bash
 cp .env.example .env
 ```
-
-Fill in the environment variables in `cinema-be/.env`:
-
-| Variable | Description |
-| --- | --- |
-| `PORT` | Port the API runs on, default `8000` |
-| `MONGODB_URI` | MongoDB connection string, e.g. `mongodb://127.0.0.1:27017/cinema_booking` |
-| `JWT_SECRET` | Secret string used to sign JWTs |
-| `JWT_EXPIRES_IN` | JWT expiration time, e.g. `7d` |
-| `CORS_ORIGIN` | Frontend domain allowed to call the API, defaults to `http://localhost:5173` (change to `http://localhost:3000` since the current Vite config runs on port 3000) |
-| `CLOUDINARY_*` | Cloudinary settings used to store movie poster images |
-| `SMTP_*`, `MAIL_FROM` | Email sending configuration |
-| `MOMO_*` | MoMo payment gateway configuration |
 
 Run the server in dev mode (auto-reload on changes):
 
@@ -70,17 +57,11 @@ cd cinema-fe
 yarn install
 ```
 
-Create a `.env` file from the example:
+Create a `.env` file from the example, then set `VITE_API_BASE_URL` to the backend API URL (e.g. `http://localhost:8000/api`):
 
 ```bash
 cp .env.example .env
 ```
-
-Fill in the environment variable in `cinema-fe/.env`:
-
-| Variable | Description |
-| --- | --- |
-| `VITE_API_BASE_URL` | Base URL of the backend API, e.g. `http://localhost:8000/api` |
 
 Run the dev server:
 
