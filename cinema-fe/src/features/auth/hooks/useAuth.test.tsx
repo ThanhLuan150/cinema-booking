@@ -19,14 +19,14 @@ describe('auth hooks', () => {
     const { result, rerender } = renderHook(() => useIsAuthenticated(), { wrapper });
     expect(result.current).toBe(false);
     act(() => {
-      store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+      store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
     });
     rerender();
     expect(result.current).toBe(true);
   });
 
   it('useAuthToken returns the current token', () => {
-    store.dispatch(login({ token: 'abc', userId: '1', role: '1', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'abc', userId: '1', role: '1', account: {} as Account }));
     const { result } = renderHook(() => useAuthToken(), { wrapper });
     expect(result.current).toBe('abc');
   });
@@ -35,7 +35,7 @@ describe('auth hooks', () => {
     const { result, rerender } = renderHook(() => useAuthRole(), { wrapper });
     expect(result.current).toBeNull();
     act(() => {
-      store.dispatch(login({ token: 'tok', userId: '1', role: '2', account: {} as Account }));
+      store.dispatch(login({ accessToken: 'tok', userId: '1', role: '2', account: {} as Account }));
     });
     rerender();
     expect(result.current).toBe(2);
@@ -45,7 +45,7 @@ describe('auth hooks', () => {
     const { result, rerender } = renderHook(() => useCurrentAccountId(), { wrapper });
     expect(result.current).toBeNull();
     act(() => {
-      store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: { id: 7 } as Account }));
+      store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: { id: 7 } as Account }));
     });
     rerender();
     expect(result.current).toBe(7);

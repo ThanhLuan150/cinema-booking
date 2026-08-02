@@ -1,9 +1,11 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
 function buildTestApp(mountPath, router) {
   const app = express();
   app.use(express.json());
+  app.use(cookieParser());
   app.use(mountPath, router);
   app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ message: err.message });

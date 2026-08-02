@@ -1,21 +1,21 @@
 import type { Account } from '@/types/entities';
 
 export interface AuthState {
-  token: string | null;
+  accessToken: string | null;
   userId: string | null;
   role: string | null;
   account: Account | null;
 }
 
 export interface LoginPayload {
-  token: string;
+  accessToken: string;
   userId: string;
   role: string;
   account: Account;
 }
 
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
   account: Account;
   user_id: string;
   role: string;

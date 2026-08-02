@@ -40,13 +40,13 @@ describe('RequireRole', () => {
   });
 
   it('redirects to home when the role is not allowed', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: '1', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '1', account: {} as Account }));
     renderProtected([0]);
     expect(screen.getByText('Home Page')).toBeInTheDocument();
   });
 
   it('renders children when the role is allowed', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: '0', account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: '0', account: {} as Account }));
     renderProtected([0]);
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });

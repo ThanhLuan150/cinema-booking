@@ -16,7 +16,7 @@ describe('useLogin', () => {
   beforeEach(() => loginMock.mockReset());
 
   it('calls the login api with email and password', async () => {
-    loginMock.mockResolvedValue({ data: { token: 'tok' } });
+    loginMock.mockResolvedValue({ data: { accessToken: 'tok' } });
     const { result } = renderHook(() => useLogin(), { wrapper });
     result.current.mutate({ email: 'a@b.com', password: 'secret' });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

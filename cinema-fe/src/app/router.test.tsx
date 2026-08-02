@@ -77,25 +77,25 @@ describe('AppRouter', () => {
   });
 
   it('renders an admin-only route when logged in as an admin', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
     renderAt(ROUTES.adminUsers);
     expect(screen.getByText('ShowUser')).toBeInTheDocument();
   });
 
   it('redirects an admin-only route to home when logged in as a non-admin', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
     renderAt(ROUTES.adminUsers);
     expect(screen.getByText('Home')).toBeInTheDocument();
   });
 
   it('renders an owner-management route when logged in as an owner', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
     renderAt(ROUTES.ownerCinemas);
     expect(screen.getByText('OwnerCinemas')).toBeInTheDocument();
   });
 
   it('renders an owner-management route when logged in as an admin (shared management role)', () => {
-    store.dispatch(login({ token: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
     renderAt(ROUTES.ownerDashboard);
     expect(screen.getByText('OwnerDashboard')).toBeInTheDocument();
   });

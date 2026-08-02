@@ -8,6 +8,12 @@ const router = express.Router();
 // POST /api/Login
 router.post('/Login', asyncHandler(authController.login));
 
+// POST /api/refresh-token (reads refreshToken httpOnly cookie)
+router.post('/refresh-token', asyncHandler(authController.refreshToken));
+
+// POST /api/logout
+router.post('/logout', asyncHandler(authController.logout));
+
 // GET /api/check-email?email=
 router.get('/check-email', asyncHandler(authController.checkEmail));
 

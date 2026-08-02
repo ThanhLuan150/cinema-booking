@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { cn } from '@/lib/cn';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { logout } from '@/features/auth/store/authSlice';
+import { logout as logoutApi } from '@/features/auth/api/auth.api';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { toast } from '@/features/notifications/toast';
 import { MANAGEMENT_ROLES } from '@/constants/roles';
@@ -20,14 +21,15 @@ export function Header() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
-  const { token, role } = useAppSelector((state) => state.auth);
-  const isLoggedIn = !!token;
+  const { accessToken, role } = useAppSelector((state) => state.auth);
+  const isLoggedIn = !!accessToken;
   const canManage = MANAGEMENT_ROLES.includes(Number(role));
   const { data: user } = useCurrentUser();
   const name = user?.name ?? '';
 
   const handleLogout = () => {
     setIsUserMenuOpen(false);
+    logoutApi().catch(() => {});
     dispatch(logout());
     queryClient.clear();
     toast.success(t('header.logoutSuccess'));

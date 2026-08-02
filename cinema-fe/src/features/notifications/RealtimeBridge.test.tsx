@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store } from '@/app/store';
@@ -7,6 +7,12 @@ import { logout } from '@/features/auth/store/authSlice';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+const refreshAccessTokenMock = vi.fn();
+vi.mock('@/services/apiClient', () => ({
+  default: vi.fn(),
+  refreshAccessToken: (...args: unknown[]) => refreshAccessTokenMock(...args),
 }));
 
 type Handler = (...args: unknown[]) => void;
@@ -60,6 +66,7 @@ describe('RealtimeBridge', () => {
     socketMock.connect.mockClear();
     socketMock.disconnect.mockClear();
     socketMock.connected = false;
+    refreshAccessTokenMock.mockReset();
     store.dispatch(logout());
   });
 
@@ -97,5 +104,21 @@ describe('RealtimeBridge', () => {
     expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 1);
     emit('cinema:blocked', { name: 'A' });
     expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 2);
+  });
+
+  it('refreshes the access token once for a burst of unauthorized events', async () => {
+    refreshAccessTokenMock.mockResolvedValue('new-tok');
+    renderBridge();
+
+    // Two events firing before the first refresh resolves should still only trigger one call.
+    act(() => {
+      emit('unauthorized');
+      emit('unauthorized');
+    });
+    expect(refreshAccessTokenMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await vi.waitFor(() => expect(store.getState().auth.accessToken).toBe('new-tok'));
+    });
   });
 });

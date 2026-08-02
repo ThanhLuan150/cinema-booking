@@ -10,6 +10,16 @@ describe('auth.routes wiring', () => {
     expect(res.status).toBe(400); // reached controller validation, not blocked by auth
   });
 
+  it('POST /api/refresh-token is public and reaches the controller', async () => {
+    const res = await request(app).post('/api/refresh-token');
+    expect(res.status).toBe(401); // reached controller, rejected for missing cookie, not blocked by requireAuth
+  });
+
+  it('POST /api/logout is public and reaches the controller', async () => {
+    const res = await request(app).post('/api/logout');
+    expect(res.status).toBe(204);
+  });
+
   it('POST /api/change-password requires auth', async () => {
     const res = await request(app).post('/api/change-password').send({});
     expect(res.status).toBe(401);

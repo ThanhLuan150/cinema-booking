@@ -15,6 +15,8 @@ const accountSchema = new mongoose.Schema(
     verified: { type: Boolean, default: false },
     otp: { type: String, default: null, select: false },
     otpExpiresAt: { type: Date, default: null, select: false },
+    refreshTokenHash: { type: String, default: null, select: false },
+    refreshTokenExpiresAt: { type: Date, default: null, select: false },
   },
   { timestamps: true },
 );
