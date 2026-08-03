@@ -83,6 +83,8 @@ const UserInfo = () => {
               />
             </div>
 
+            {errorMessage && <p className="mt-4 text-sm text-red-400">{errorMessage}</p>}
+
             <Button type="submit" loading={saveUserInfoMutation.isPending} className="mt-6 w-full">
               {t('userInfo.submit')}
             </Button>
