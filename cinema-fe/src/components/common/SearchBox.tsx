@@ -35,25 +35,27 @@ export function SearchBox() {
   }, [searchInfo]);
 
   return (
-    <div className="rounded-md bg-black/80 p-2 font-sans text-txt shadow-lg">
+    <div className="themed-scrollbar max-h-[70vh] overflow-y-auto rounded-xl border border-border-strong bg-surface-raised p-3 font-sans text-txt shadow-raised">
       <Input
         id="search"
         type="text"
         value={searchInfo}
         onChange={(e) => setSearchInfo(e.target.value)}
-        className="rounded-full py-1"
+        className="rounded-full"
       />
       {movies.map((movie) => (
-        <div key={movie.id} className="mt-2 flex items-center gap-2 border-t border-white/10 pt-2">
+        <a
+          key={movie.id}
+          href={ROUTES.movieDetail(movie.id)}
+          className="mt-2 flex items-center gap-3 rounded-lg border-t border-border p-1.5 pt-3 no-underline transition-colors hover:bg-white/5"
+        >
           <img
             alt=""
             src={getMoviePosterUrl(movie.avatar)}
-            className="h-12 w-20 rounded object-cover"
+            className="h-14 w-10 rounded-md object-cover shadow-card"
           />
-          <a href={ROUTES.movieDetail(movie.id)} className="text-txt no-underline hover:text-accent">
-            {movie.name}
-          </a>
-        </div>
+          <span className="text-sm font-medium text-txt hover:text-accent">{movie.name}</span>
+        </a>
       ))}
     </div>
   );

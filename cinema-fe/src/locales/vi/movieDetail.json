@@ -4,9 +4,11 @@
     "bookNow": "Đặt vé ngay"
   },
   "castSection": {
-    "director": "Đạo diễn:",
-    "producer": "Nhà sản xuất:",
-    "cast": "Diễn viên"
+    "director": "Đạo diễn",
+    "producer": "Nhà sản xuất",
+    "cast": "Diễn viên",
+    "leadLabel": "Vai chính",
+    "crew": "Đạo diễn & Nhà sản xuất"
   },
   "reviews": {
     "title": "Đánh giá",

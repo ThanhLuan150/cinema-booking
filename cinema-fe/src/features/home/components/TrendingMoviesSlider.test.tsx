@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
@@ -15,7 +16,11 @@ describe('TrendingMoviesSlider', () => {
     useMoviesMock.mockReturnValue({
       data: { data: [{ id: 1, name: 'Future', premiere_date: '2099-01-01', avatar: '', categories: [] }] },
     });
-    render(<Trending />);
+    render(
+      <MemoryRouter>
+        <Trending />
+      </MemoryRouter>,
+    );
     expect(screen.getByText('empty')).toBeInTheDocument();
   });
 
@@ -23,7 +28,11 @@ describe('TrendingMoviesSlider', () => {
     useMoviesMock.mockReturnValue({
       data: { data: [{ id: 1, name: 'Released', premiere_date: '2020-01-01', avatar: '', categories: [] }] },
     });
-    render(<Trending />);
+    render(
+      <MemoryRouter>
+        <Trending />
+      </MemoryRouter>,
+    );
     expect(screen.getByText('Released')).toBeInTheDocument();
   });
 });

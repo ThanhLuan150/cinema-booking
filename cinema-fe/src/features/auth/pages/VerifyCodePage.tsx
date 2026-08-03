@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Formik, Form } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/components/common/AuthCard';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -72,7 +73,7 @@ const VerifyCode = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-main px-4 pb-16 pt-24 text-center text-txt">
+    <AuthCard title={t('verifyCode.title')} subtitle={t('verifyCode.subtitle', { email })}>
       <Formik<VerifyCodeFormValues> initialValues={{ code: ['', '', '', '', '', ''] }} onSubmit={handleSubmit}>
         {(formik) => {
           const handleCodeChange = (index: number, value: string) => {
@@ -86,16 +87,13 @@ const VerifyCode = () => {
           };
 
           return (
-            <Form className="mx-auto w-full max-w-lg rounded-2xl bg-[#1A293C] p-10">
-              <h2 className="text-2xl font-semibold">{t('verifyCode.title')}</h2>
-              <p className="mt-2 text-sm text-txt/80">{t('verifyCode.subtitle', { email })}</p>
-
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Form className="text-center">
+              <div className="flex flex-wrap items-center justify-center gap-2.5">
                 {[...Array(6)].map((_, index) => (
                   <Input
                     key={index}
                     type="number"
-                    className="h-14 w-12 rounded-md border-0 bg-white/90 text-center text-xl text-main [caret-color:transparent] [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="h-14 w-12 px-0 text-center text-xl [caret-color:transparent] [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     placeholder="0"
                     min="0"
                     max="9"
@@ -129,7 +127,7 @@ const VerifyCode = () => {
           );
         }}
       </Formik>
-    </div>
+    </AuthCard>
   );
 };
 

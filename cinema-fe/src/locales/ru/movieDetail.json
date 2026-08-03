@@ -4,9 +4,11 @@
     "bookNow": "Забронировать"
   },
   "castSection": {
-    "director": "Режиссёр:",
-    "producer": "Продюсер:",
-    "cast": "В ролях"
+    "director": "Режиссёр",
+    "producer": "Продюсер",
+    "cast": "В ролях",
+    "leadLabel": "Главная роль",
+    "crew": "Режиссёр и продюсер"
   },
   "reviews": {
     "title": "Отзывы",

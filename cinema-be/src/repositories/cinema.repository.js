@@ -22,7 +22,26 @@ async function findMine({ role, accountId, skip = 0, limit = 20 }) {
     Cinema.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Cinema.countDocuments(filter),
   ]);
-  return { data, total };
+
+  if (role !== 0) return { data, total };
+
+  // Admin view: attach each cinema's owner contact info so the admin Cinemas list can show
+  // the owner's name/avatar instead of just a bare owner_id number.
+  const ownerIds = [...new Set(data.map((cinema) => cinema.owner_id))];
+  const owners = await Account.find({ id: { $in: ownerIds } });
+  const ownerById = new Map(owners.map((owner) => [owner.id, owner]));
+
+  const enriched = data.map((cinema) => {
+    const owner = ownerById.get(cinema.owner_id);
+    return {
+      ...cinema.toJSON(),
+      owner_name: owner?.name || '',
+      owner_phone: owner?.phone || '',
+      owner_avatar: owner?.avatar || '',
+    };
+  });
+
+  return { data: enriched, total };
 }
 
 async function findPending() {
@@ -123,6 +142,17 @@ async function findAccountByEmail(email) {
   return Account.findOne({ email: String(email).toLowerCase() });
 }
 
+// Onboarding only collects the cinema's business info, but the owner's Account still needs a
+// name/phone so admin screens (Users list) can identify them — reuse the cinema name as the
+// account's display name since theater accounts have no separate personal-name field.
+async function updateOwnerContactInfo(account, { name, phone, avatar }) {
+  account.name = name;
+  account.phone = phone;
+  if (avatar) account.avatar = avatar;
+  await account.save();
+  return account;
+}
+
 // Creates the owner's cinema if this is their first submission, otherwise updates it in place.
 async function upsertOnboard(account, { name, address, city, images }) {
   let cinema = await Cinema.findOne({ owner_id: account.id });
@@ -183,6 +213,7 @@ module.exports = {
   deleteFavorite,
   findById,
   findAccountByEmail,
+  updateOwnerContactInfo,
   upsertOnboard,
   create,
   updateFields,

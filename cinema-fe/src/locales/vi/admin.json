@@ -24,13 +24,16 @@
         "description": "Mô tả:",
         "trailer": "Trailer:",
         "producer": "Nhà sản xuất:",
-        "director": "Đạo diễn:"
+        "producerAvatar": "Ảnh nhà sản xuất (URL):",
+        "director": "Đạo diễn:",
+        "directorAvatar": "Ảnh đạo diễn (URL):"
       },
       "cast": {
         "label": "Diễn viên:",
         "name": "Tên",
         "role": "Vai diễn",
         "avatarUrl": "URL ảnh",
+        "isLead": "Vai chính",
         "remove": "Xóa",
         "add": "+ Thêm diễn viên"
       },
@@ -51,13 +54,16 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Tải trailer mới:",
         "producer": "Nhà sản xuất:",
-        "director": "Đạo diễn:"
+        "producerAvatar": "Ảnh nhà sản xuất (URL):",
+        "director": "Đạo diễn:",
+        "directorAvatar": "Ảnh đạo diễn (URL):"
       },
       "cast": {
         "label": "Diễn viên:",
         "name": "Tên",
         "role": "Vai diễn",
         "avatarUrl": "URL ảnh",
+        "isLead": "Vai chính",
         "remove": "Xóa",
         "add": "+ Thêm diễn viên"
       },
@@ -94,7 +100,9 @@
       "countryRequired": "Vui lòng nhập quốc gia",
       "trailerRequired": "Vui lòng thêm trailer",
       "producerRequired": "Vui lòng nhập nhà sản xuất",
+      "producerAvatarInvalid": "URL ảnh nhà sản xuất không hợp lệ",
       "directorRequired": "Vui lòng nhập đạo diễn",
+      "directorAvatarInvalid": "URL ảnh đạo diễn không hợp lệ",
       "castNameRequired": "Vui lòng nhập tên diễn viên",
       "castAvatarInvalid": "URL ảnh diễn viên không hợp lệ",
       "categoryRequired": "Vui lòng chọn ít nhất một danh mục"
@@ -189,6 +197,7 @@
     "breadcrumb": "Rạp chiếu",
     "headers": [
       "ID",
+      "Ảnh chủ rạp",
       "Tên rạp",
       "Chủ sở hữu (ID)",
       "Địa chỉ",

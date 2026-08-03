@@ -1,3 +1,4 @@
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@/assets/styles/tailwind.css';
 import { AppRouter } from '@/app/router';
 

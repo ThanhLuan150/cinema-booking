@@ -24,48 +24,56 @@ const CinemaBannerDetail = () => {
 
   if (!cinema) {
     return (
-      <div className="flex justify-center bg-gradient-to-b from-[#0B1A2A] to-main py-24">
+      <div className="flex justify-center bg-gradient-to-b from-surface-raised to-main py-24">
         <Spinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#0B1A2A] to-main">
-      <div className="w-full px-6 py-16 md:px-16">
+    <div className="relative w-full overflow-hidden bg-gradient-to-b from-surface-raised to-main">
+      {cinema.images?.[0] && (
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20 blur-2xl"
+          style={{ backgroundImage: `url(${getImageUrl(cinema.images[0])})` }}
+          aria-hidden="true"
+        />
+      )}
+      <div className="relative w-full px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row">
           {cinema.images?.[0] ? (
             <img
               src={getImageUrl(cinema.images[0])}
               alt={cinema.name}
-              className="h-[420px] w-[280px] shrink-0 self-center rounded-lg border-2 border-accent object-cover shadow-2xl shadow-black md:self-start"
+              className="h-[420px] w-[280px] shrink-0 self-center rounded-xl border-2 border-accent/60 object-cover shadow-raised md:self-start"
             />
           ) : (
-            <div className="flex h-[420px] w-[280px] shrink-0 items-center justify-center self-center rounded-lg border-2 border-accent bg-white/5 shadow-2xl shadow-black md:self-start">
-              <i className="fa-solid fa-film text-6xl text-white/20" />
+            <div className="flex h-[420px] w-[280px] shrink-0 items-center justify-center self-center rounded-xl border-2 border-accent/60 bg-surface shadow-raised md:self-start">
+              <i className="fa-solid fa-film text-6xl text-white/15" />
             </div>
           )}
           <div className="flex-1 text-white">
-            <h1 className="text-3xl font-bold md:text-4xl">{cinema.name}</h1>
+            <h1 className="text-2xl font-bold md:text-3xl">{cinema.name}</h1>
 
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/80">
-              <span className="flex items-center gap-1.5 rounded bg-white/10 px-2.5 py-1">
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-white/80">
+              <span className="flex items-center gap-1.5 rounded-full border border-border-strong bg-white/5 px-3 py-1">
                 <i className="fa-solid fa-location-dot text-accent" />
                 {[cinema.address, cinema.city].filter(Boolean).join(', ') || t('bannerDetail.addressUpdating')}
               </span>
-              <span className="flex items-center gap-1.5 rounded bg-white/10 px-2.5 py-1">
+              <span className="flex items-center gap-1.5 rounded-full border border-border-strong bg-white/5 px-3 py-1">
                 <i className="fa-solid fa-heart text-accent" /> {t('bannerDetail.favoriteCount', { count: favoriteCount })}
               </span>
-              <span className="flex items-center gap-1.5 rounded bg-white/10 px-2.5 py-1">
-                <i className="fa-solid fa-circle-check text-accent" /> {statusLabel}
+              <span className="flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 font-medium text-gold">
+                <i className="fa-solid fa-circle-check" /> {statusLabel}
               </span>
             </div>
 
-            <div className="mt-8 flex items-center gap-4">
+            <div className="mt-8 flex flex-wrap items-center gap-4">
               <a
                 href="#showtimes"
-                className="rounded-md bg-accent px-6 py-2.5 font-medium text-white no-underline transition-colors hover:bg-white hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 font-semibold text-white no-underline shadow-card transition-all hover:bg-accent-hover hover:shadow-glow"
               >
+                <i className="fa-solid fa-clapperboard" />
                 {t('bannerDetail.viewShowtimes')}
               </a>
               <FavoriteCinemaButton cinemaId={cinema.id} />

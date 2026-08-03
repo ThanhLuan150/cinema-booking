@@ -16,7 +16,13 @@ export const buildMovieSchema = (t: TFunction) =>
     country: z.string().trim().min(1, t('admin:movies.validation.countryRequired')),
     trailer: z.string().trim().min(1, t('admin:movies.validation.trailerRequired')),
     producer: z.string().trim().min(1, t('admin:movies.validation.producerRequired')),
+    producerAvatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
+      message: t('admin:movies.validation.producerAvatarInvalid'),
+    }),
     director: z.string().trim().min(1, t('admin:movies.validation.directorRequired')),
+    directorAvatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
+      message: t('admin:movies.validation.directorAvatarInvalid'),
+    }),
     cast: z.array(
       z.object({
         name: z.string().trim().min(1, t('admin:movies.validation.castNameRequired')),
@@ -24,6 +30,7 @@ export const buildMovieSchema = (t: TFunction) =>
         avatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
           message: t('admin:movies.validation.castAvatarInvalid'),
         }),
+        isLead: z.boolean(),
       }),
     ),
     categoryIds: z.array(z.number()).min(1, t('admin:movies.validation.categoryRequired')),

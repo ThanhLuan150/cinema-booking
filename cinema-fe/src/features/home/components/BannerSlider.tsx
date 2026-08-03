@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useMovies } from '@/features/movies/hooks/useMovies';
 import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
@@ -23,7 +24,7 @@ function Arrow({ className, style, onClick, direction, t }: ArrowProps) {
       type="button"
       onClick={onClick}
       style={style}
-      className={`${className} !z-10 !flex !h-10 !w-10 !items-center !justify-center !rounded-full !bg-black/40 text-white transition-colors before:!content-none hover:!bg-accent`}
+      className={`${className} !z-10 !flex !h-11 !w-11 !items-center !justify-center !rounded-full !border !border-white/15 !bg-black/40 text-white backdrop-blur-md transition-colors before:!content-none hover:!bg-accent hover:!border-accent ${direction === 'next' ? '!right-4' : '!left-4'}`}
       aria-label={direction === 'next' ? t('bannerSlider.nextSlide') : t('bannerSlider.prevSlide')}
     >
       <i className={`fa-solid fa-chevron-${direction === 'next' ? 'right' : 'left'}`} />
@@ -40,19 +41,19 @@ const Banner = () => {
     dots: true,
     infinite: bannerMovies.length > 4,
     autoplay: bannerMovies.length > 4,
-    autoplaySpeed: 5000,
-    speed: 600,
+    autoplaySpeed: 6000,
+    speed: 700,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: bannerMovies.length > 1,
     nextArrow: <Arrow direction="next" t={t} />,
     prevArrow: <Arrow direction="prev" t={t} />,
-    appendDots: (dots: ReactNode) => <ul className="!bottom-6 !flex !justify-center !gap-2">{dots}</ul>,
+    appendDots: (dots: ReactNode) => <ul className="!bottom-8 !flex !justify-center !gap-2.5">{dots}</ul>,
     customPaging: () => (
       <button
         type="button"
         aria-label={t('bannerSlider.goToSlide')}
-        className="h-2 w-2 rounded-full bg-white/40 transition-all hover:bg-white/70"
+        className="h-1.5 w-6 rounded-full bg-white/30 transition-all hover:bg-white/60"
       />
     ),
   };
@@ -60,47 +61,52 @@ const Banner = () => {
   if (bannerMovies.length === 0) return null;
 
   return (
-    <div className="banner-slider relative">
+    <div className="banner-slider relative [&_.slick-dots_li.slick-active_button]:!bg-accent [&_.slick-dots_li.slick-active_button]:!w-9">
       <Slider {...settings}>
         {bannerMovies.map((movie) => (
           <div key={movie.id}>
-            <div className="relative h-[70vh] min-h-[420px]">
+            <div className="relative h-[78vh] min-h-[480px] max-h-[820px]">
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${getMoviePosterUrl(movie.avatar)})` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-main via-main/70 to-main/20" />
-              <div className="absolute inset-0 bg-gradient-to-r from-main/95 via-main/50 to-transparent" />
-              <div className="relative z-[1] mx-auto flex h-full w-4/5 flex-col justify-center">
-                <div className="max-w-xl">
+              <div className="absolute inset-0 bg-hero-fade" />
+              <div className="absolute inset-0 bg-gradient-to-r from-main/95 via-main/40 to-transparent" />
+              <div className="relative z-[1] mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-6 md:px-10">
+                <div className="max-w-xl animate-slide-up">
                   {(movie.categories || []).length > 0 && (
-                    <div className="mb-3 flex flex-wrap gap-2">
+                    <div className="mb-4 flex flex-wrap gap-2">
                       {movie.categories!.slice(0, MAX_VISIBLE_CATEGORIES).map((cat) => (
                         <span
                           key={cat.id}
-                          className="rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent"
+                          className="rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold tracking-wide text-accent"
                         >
                           {cat.name}
                         </span>
                       ))}
                     </div>
                   )}
-                  <h1 className="text-4xl font-bold text-white sm:text-5xl">{movie.name}</h1>
-                  <p className="mt-4 line-clamp-3 text-sm text-txt/80 sm:text-base">{movie.description}</p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <a
-                      href={ROUTES.movieDetail(movie.id)}
-                      className="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-transparent hover:border-white/30 hover:text-accent"
+                  <h1 className="text-3xl font-bold leading-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+                    {movie.name}
+                  </h1>
+                  <p className="mt-5 line-clamp-3 text-sm leading-relaxed text-txt/80 sm:text-base">
+                    {movie.description}
+                  </p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <Link
+                      to={ROUTES.bookTicket(movie.id)}
+                      className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-sm font-semibold text-white no-underline shadow-card transition-all hover:bg-accent-hover hover:shadow-glow"
                     >
-                      <i className="fa-solid fa-ticket mr-2" />
+                      <i className="fa-solid fa-ticket" />
                       {t('bannerSlider.bookNow')}
-                    </a>
-                    <a
-                      href={ROUTES.movieDetail(movie.id)}
-                      className="rounded-md border border-white/30 px-6 py-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-white/10"
+                    </Link>
+                    <Link
+                      to={ROUTES.movieDetail(movie.id)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white no-underline backdrop-blur-sm transition-all hover:border-white/50 hover:bg-white/10"
                     >
+                      <i className="fa-regular fa-circle-play" />
                       {t('bannerSlider.viewDetails')}
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

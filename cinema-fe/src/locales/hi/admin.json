@@ -24,7 +24,9 @@
         "description": "विवरण:",
         "trailer": "ट्रेलर:",
         "producer": "निर्माता:",
-        "director": "निर्देशक:"
+        "director": "निर्देशक:",
+        "producerAvatar": "निर्माता की तस्वीर (URL):",
+        "directorAvatar": "निर्देशक की तस्वीर (URL):"
       },
       "cast": {
         "label": "कलाकार:",
@@ -32,7 +34,8 @@
         "role": "भूमिका",
         "avatarUrl": "इमेज URL",
         "remove": "हटाएं",
-        "add": "+ कलाकार जोड़ें"
+        "add": "+ कलाकार जोड़ें",
+        "isLead": "मुख्य भूमिका"
       },
       "category": "श्रेणी:",
       "submit": "जोड़ें",
@@ -51,7 +54,9 @@
         "trailer": "ट्रेलर:",
         "uploadNewTrailer": "नया ट्रेलर अपलोड करें:",
         "producer": "निर्माता:",
-        "director": "निर्देशक:"
+        "director": "निर्देशक:",
+        "producerAvatar": "निर्माता की तस्वीर (URL):",
+        "directorAvatar": "निर्देशक की तस्वीर (URL):"
       },
       "cast": {
         "label": "कलाकार:",
@@ -59,7 +64,8 @@
         "role": "भूमिका",
         "avatarUrl": "इमेज URL",
         "remove": "हटाएं",
-        "add": "+ कलाकार जोड़ें"
+        "add": "+ कलाकार जोड़ें",
+        "isLead": "मुख्य भूमिका"
       },
       "category": "श्रेणी:",
       "submit": "अपडेट करें",
@@ -97,7 +103,9 @@
       "directorRequired": "निर्देशक आवश्यक है",
       "castNameRequired": "कलाकार का नाम आवश्यक है",
       "castAvatarInvalid": "कलाकार की छवि URL अमान्य है",
-      "categoryRequired": "कम से कम एक श्रेणी चुनें"
+      "categoryRequired": "कम से कम एक श्रेणी चुनें",
+      "producerAvatarInvalid": "निर्माता की तस्वीर का URL अमान्य है",
+      "directorAvatarInvalid": "निर्देशक की तस्वीर का URL अमान्य है"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "सिनेमा",
     "headers": [
       "ID",
+      "मालिक की फ़ोटो",
       "सिनेमा का नाम",
       "मालिक (ID)",
       "पता",

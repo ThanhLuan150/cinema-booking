@@ -4,6 +4,7 @@ export interface CastMember {
   name: string;
   role?: string;
   avatar?: string;
+  isLead?: boolean;
 }
 
 export interface Movie {
@@ -16,7 +17,9 @@ export interface Movie {
   country: string;
   trailer: string;
   producer?: string;
+  producerAvatar?: string;
   director?: string;
+  directorAvatar?: string;
   cast?: CastMember[];
   categories?: Category[];
   createdAt?: string;
@@ -47,6 +50,9 @@ export interface Cinema {
   city: string;
   images: string[];
   status: number; // 0 = pending, 1 = approved, 2 = blocked
+  owner_name?: string;
+  owner_phone?: string;
+  owner_avatar?: string;
 }
 
 export interface Seat {

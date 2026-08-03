@@ -4,9 +4,11 @@
     "bookNow": "Réserver maintenant"
   },
   "castSection": {
-    "director": "Réalisateur :",
-    "producer": "Producteur :",
-    "cast": "Distribution"
+    "director": "Réalisateur",
+    "producer": "Producteur",
+    "cast": "Distribution",
+    "leadLabel": "Rôle principal",
+    "crew": "Réalisateur et producteur"
   },
   "reviews": {
     "title": "Avis",

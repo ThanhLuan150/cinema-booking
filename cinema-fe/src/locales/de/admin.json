@@ -24,7 +24,9 @@
         "description": "Beschreibung:",
         "trailer": "Trailer:",
         "producer": "Produzent:",
-        "director": "Regisseur:"
+        "director": "Regisseur:",
+        "producerAvatar": "Produzenten-Avatar (URL):",
+        "directorAvatar": "Regisseur-Avatar (URL):"
       },
       "cast": {
         "label": "Besetzung:",
@@ -32,7 +34,8 @@
         "role": "Rolle",
         "avatarUrl": "Bild-URL",
         "remove": "Entfernen",
-        "add": "+ Darsteller hinzufügen"
+        "add": "+ Darsteller hinzufügen",
+        "isLead": "Hauptrolle"
       },
       "category": "Kategorie:",
       "submit": "Hinzufügen",
@@ -51,7 +54,9 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Neuen Trailer hochladen:",
         "producer": "Produzent:",
-        "director": "Regisseur:"
+        "director": "Regisseur:",
+        "producerAvatar": "Produzenten-Avatar (URL):",
+        "directorAvatar": "Regisseur-Avatar (URL):"
       },
       "cast": {
         "label": "Besetzung:",
@@ -59,7 +64,8 @@
         "role": "Rolle",
         "avatarUrl": "Bild-URL",
         "remove": "Entfernen",
-        "add": "+ Darsteller hinzufügen"
+        "add": "+ Darsteller hinzufügen",
+        "isLead": "Hauptrolle"
       },
       "category": "Kategorie:",
       "submit": "Aktualisieren",
@@ -97,7 +103,9 @@
       "directorRequired": "Regisseur ist erforderlich",
       "castNameRequired": "Name des Darstellers ist erforderlich",
       "castAvatarInvalid": "Bild-URL des Darstellers ist ungültig",
-      "categoryRequired": "Bitte mindestens eine Kategorie auswählen"
+      "categoryRequired": "Bitte mindestens eine Kategorie auswählen",
+      "producerAvatarInvalid": "Produzenten-Avatar-URL ist ungültig",
+      "directorAvatarInvalid": "Regisseur-Avatar-URL ist ungültig"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "Kinos",
     "headers": [
       "ID",
+      "Foto des Betreibers",
       "Kinoname",
       "Betreiber (ID)",
       "Adresse",

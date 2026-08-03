@@ -45,11 +45,17 @@ function AdminTransactions() {
               <td>{inv.ticket?.seat_code}</td>
               <td>{inv.total_price.toLocaleString()}đ</td>
               <td>
-                <span className={`rounded px-2 py-0.5 text-xs ${status.className}`}>{t(`transactions.status.${status.key}`)}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide ${status.className}`}>
+                  {t(`transactions.status.${status.key}`)}
+                </span>
               </td>
               <td>
                 {inv.status === INVOICE_STATUS.booked && (
-                  <button type="button" className="text-accent" onClick={() => handleRefund(inv.id)}>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                    onClick={() => handleRefund(inv.id)}
+                  >
                     {t('transactions.refundButton')}
                   </button>
                 )}

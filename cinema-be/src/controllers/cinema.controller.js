@@ -2,6 +2,7 @@ const cinemaRepository = require('../repositories/cinema.repository');
 const nextId = require('../utils/nextId');
 const { emitToAdmin, emitToOwner } = require('../utils/socket');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { uploadImage } = require('../utils/uploadImage');
 
 // GET /api/cinema?page=&limit= -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
 async function list(req, res) {
@@ -80,18 +81,31 @@ async function getById(req, res) {
   res.json(cinema);
 }
 
-// POST /api/cinema/onboard { email, name, address, city, images } — lets a newly-verified theater
-// owner submit their cinema info before their first login (account.approved stays false until an
-// admin approves, same as the existing pending-cinema flow).
+// POST /api/cinema/onboard (multipart: email, name, address, city, phone, avatar file, images
 async function onboard(req, res) {
-  const { email, name, address, city, images } = req.body;
-  if (!email || !name) return res.status(400).json({ message: 'email and name are required' });
+  const { email, name, address, city, phone } = req.body;
+  if (!email || !name || !phone) {
+    return res.status(400).json({ message: 'email, name and phone are required' });
+  }
 
   const account = await cinemaRepository.findAccountByEmail(email);
   if (!account) return res.status(404).json({ message: 'Account not found' });
   if (account.role !== 2) return res.status(400).json({ message: 'Account is not a theater owner' });
 
-  const cinema = await cinemaRepository.upsertOnboard(account, { name, address, city, images });
+  const avatarFile = req.files?.avatar?.[0];
+  const imageFiles = req.files?.images || [];
+  const [avatarUrl, imageUrls] = await Promise.all([
+    avatarFile ? uploadImage(avatarFile, 'cinemas/owners') : Promise.resolve(undefined),
+    Promise.all(imageFiles.map((file) => uploadImage(file, 'cinemas'))),
+  ]);
+
+  const cinema = await cinemaRepository.upsertOnboard(account, {
+    name,
+    address,
+    city,
+    images: imageUrls.length ? imageUrls : undefined,
+  });
+  await cinemaRepository.updateOwnerContactInfo(account, { name, phone, avatar: avatarUrl });
 
   emitToAdmin('cinema:pending', cinema);
   res.status(201).json(cinema);

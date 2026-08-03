@@ -63,14 +63,14 @@ const List = () => {
           onChange={handleCinemaFilterChange}
           placeholder={t('schedules.list.filterCinemaPlaceholder')}
           options={(cinemas ?? []).map((cinema) => ({ label: cinema.name, value: cinema.id }))}
-          className="w-56 bg-white"
+          className="w-56"
         />
         <Select
           value={roomFilter}
           onChange={handleRoomFilterChange}
           placeholder={t('schedules.list.filterRoomPlaceholder')}
           options={roomOptions}
-          className="w-56 bg-white"
+          className="w-56"
         />
       </div>
 

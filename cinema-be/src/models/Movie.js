@@ -6,6 +6,7 @@ const castMemberSchema = new mongoose.Schema(
     name: { type: String, required: true },
     role: { type: String, default: '' },
     avatar: { type: String, default: '' },
+    isLead: { type: Boolean, default: false },
   },
   { _id: false },
 );
@@ -21,7 +22,9 @@ const movieSchema = new mongoose.Schema(
     country: { type: String, default: '' },
     trailer: { type: String, default: '' },
     producer: { type: String, default: '' },
+    producerAvatar: { type: String, default: '' },
     director: { type: String, default: '' },
+    directorAvatar: { type: String, default: '' },
     cast: { type: [castMemberSchema], default: [] },
   },
   { timestamps: true },

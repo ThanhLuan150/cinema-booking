@@ -30,6 +30,7 @@ export interface SaveUserInfoPayload {
 export interface SaveCinemaInfoPayload {
   email: string;
   name: string;
+  phone: string;
   address: string;
   city: string;
 }

@@ -17,7 +17,8 @@ describe('useSaveCinemaInfo', () => {
 
   it('calls saveCinemaInfo with the payload', async () => {
     saveCinemaInfoMock.mockResolvedValue({ data: {} });
-    const payload = { name: 'A', address: 'B', city: 'C', email: 'a@b.com' } as any;
+    const payload = new FormData();
+    payload.append('name', 'A');
     const { result } = renderHook(() => useSaveCinemaInfo(), { wrapper });
     result.current.mutate(payload);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

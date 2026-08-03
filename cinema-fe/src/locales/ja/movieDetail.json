@@ -4,9 +4,11 @@
     "bookNow": "今すぐ予約"
   },
   "castSection": {
-    "director": "監督:",
-    "producer": "製作:",
-    "cast": "出演者"
+    "director": "監督",
+    "producer": "製作",
+    "cast": "出演者",
+    "leadLabel": "主演",
+    "crew": "監督・製作"
   },
   "reviews": {
     "title": "レビュー",

@@ -37,9 +37,9 @@ export function FavoriteCinemaButton({ cinemaId }: FavoriteCinemaButtonProps) {
       type="button"
       onClick={onClick}
       title={isFavorite ? t('favoriteCinemaButton.removeFavorite') : t('favoriteCinemaButton.addFavorite')}
-      className="rounded-md border border-txt/30 bg-white px-3 py-2 text-main"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-surface-soft text-txt/70 transition-colors hover:border-accent hover:text-accent"
     >
-      <i className={isFavorite ? 'fa-solid fa-heart text-red-600' : 'fa-regular fa-heart'} />
+      <i className={isFavorite ? 'fa-solid fa-heart text-accent' : 'fa-regular fa-heart'} />
     </button>
   );
 }

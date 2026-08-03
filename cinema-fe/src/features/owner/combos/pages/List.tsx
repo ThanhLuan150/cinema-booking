@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -162,12 +163,24 @@ function ComboList() {
               <td>{cinemaNameById.get(combo.cinema_id) || combo.cinema_id}</td>
               <td>{combo.name}</td>
               <td>{combo.price.toLocaleString()}đ</td>
-              <td>{combo.active ? t('combos.statusActive') : t('combos.statusInactive')}</td>
+              <td>
+                <Badge variant={combo.active ? 'success' : 'default'}>
+                  {combo.active ? t('combos.statusActive') : t('combos.statusInactive')}
+                </Badge>
+              </td>
               <td className="flex gap-3">
-                <button type="button" className="text-accent" onClick={() => toggleActive(combo)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => toggleActive(combo)}
+                >
                   {combo.active ? t('combos.deactivate') : t('combos.activate')}
                 </button>
-                <button type="button" className="text-red-500" onClick={() => handleDelete(combo.id)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                  onClick={() => handleDelete(combo.id)}
+                >
                   {t('combos.delete')}
                 </button>
               </td>

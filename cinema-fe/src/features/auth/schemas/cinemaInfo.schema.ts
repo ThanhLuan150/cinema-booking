@@ -4,6 +4,7 @@ import type { TFunction } from 'i18next';
 export const buildCinemaInfoSchema = (t: TFunction) =>
   z.object({
     name: z.string().min(1, t('auth:cinemaInfo.validation.nameRequired')),
+    phone: z.string().regex(/^[0-9]{10}$/, t('auth:cinemaInfo.validation.phoneInvalid')),
     address: z.string().min(1, t('auth:cinemaInfo.validation.addressRequired')),
     city: z.string().min(1, t('auth:cinemaInfo.validation.cityRequired')),
   });

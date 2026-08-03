@@ -24,7 +24,9 @@
         "description": "概要:",
         "trailer": "予告編:",
         "producer": "製作:",
-        "director": "監督:"
+        "director": "監督:",
+        "producerAvatar": "製作の画像URL:",
+        "directorAvatar": "監督の画像URL:"
       },
       "cast": {
         "label": "出演者:",
@@ -32,7 +34,8 @@
         "role": "役柄",
         "avatarUrl": "画像URL",
         "remove": "削除",
-        "add": "+ 出演者を追加"
+        "add": "+ 出演者を追加",
+        "isLead": "主演"
       },
       "category": "ジャンル:",
       "submit": "追加",
@@ -51,7 +54,9 @@
         "trailer": "予告編:",
         "uploadNewTrailer": "新しい予告編をアップロード:",
         "producer": "製作:",
-        "director": "監督:"
+        "director": "監督:",
+        "producerAvatar": "製作の画像URL:",
+        "directorAvatar": "監督の画像URL:"
       },
       "cast": {
         "label": "出演者:",
@@ -59,7 +64,8 @@
         "role": "役柄",
         "avatarUrl": "画像URL",
         "remove": "削除",
-        "add": "+ 出演者を追加"
+        "add": "+ 出演者を追加",
+        "isLead": "主演"
       },
       "category": "ジャンル:",
       "submit": "更新",
@@ -97,7 +103,9 @@
       "directorRequired": "監督を入力してください",
       "castNameRequired": "出演者名を入力してください",
       "castAvatarInvalid": "出演者の画像URLが正しくありません",
-      "categoryRequired": "少なくとも1つのジャンルを選択してください"
+      "categoryRequired": "少なくとも1つのジャンルを選択してください",
+      "producerAvatarInvalid": "製作の画像URLが無効です",
+      "directorAvatarInvalid": "監督の画像URLが無効です"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "映画館",
     "headers": [
       "ID",
+      "オーナー写真",
       "映画館名",
       "オーナー(ID)",
       "住所",

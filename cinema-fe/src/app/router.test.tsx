@@ -104,4 +104,22 @@ describe('AppRouter', () => {
     renderAt(ROUTES.ownerVouchers);
     expect(screen.getByText('LoginForm')).toBeInTheDocument();
   });
+
+  it('redirects an admin away from home to the admin dashboard', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
+    renderAt(ROUTES.home);
+    expect(screen.getByText('AdminDashboard')).toBeInTheDocument();
+  });
+
+  it('redirects an owner away from home to the owner dashboard', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.home);
+    expect(screen.getByText('OwnerDashboard')).toBeInTheDocument();
+  });
+
+  it('renders home for a logged-in customer', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
+    renderAt(ROUTES.home);
+    expect(screen.getByText('Home')).toBeInTheDocument();
+  });
 });

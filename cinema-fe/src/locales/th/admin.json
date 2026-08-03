@@ -24,7 +24,9 @@
         "description": "รายละเอียด:",
         "trailer": "ตัวอย่างภาพยนตร์:",
         "producer": "ผู้อำนวยการสร้าง:",
-        "director": "ผู้กำกับ:"
+        "director": "ผู้กำกับ:",
+        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):",
+        "directorAvatar": "รูปผู้กำกับ (URL):"
       },
       "cast": {
         "label": "นักแสดง:",
@@ -32,7 +34,8 @@
         "role": "บทบาท",
         "avatarUrl": "URL รูปภาพ",
         "remove": "ลบ",
-        "add": "+ เพิ่มนักแสดง"
+        "add": "+ เพิ่มนักแสดง",
+        "isLead": "บทบาทนำ"
       },
       "category": "หมวดหมู่:",
       "submit": "เพิ่ม",
@@ -51,7 +54,9 @@
         "trailer": "ตัวอย่างภาพยนตร์:",
         "uploadNewTrailer": "อัปโหลดตัวอย่างภาพยนตร์ใหม่:",
         "producer": "ผู้อำนวยการสร้าง:",
-        "director": "ผู้กำกับ:"
+        "director": "ผู้กำกับ:",
+        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):",
+        "directorAvatar": "รูปผู้กำกับ (URL):"
       },
       "cast": {
         "label": "นักแสดง:",
@@ -59,7 +64,8 @@
         "role": "บทบาท",
         "avatarUrl": "URL รูปภาพ",
         "remove": "ลบ",
-        "add": "+ เพิ่มนักแสดง"
+        "add": "+ เพิ่มนักแสดง",
+        "isLead": "บทบาทนำ"
       },
       "category": "หมวดหมู่:",
       "submit": "อัปเดต",
@@ -97,7 +103,9 @@
       "directorRequired": "กรุณากรอกผู้กำกับ",
       "castNameRequired": "กรุณากรอกชื่อนักแสดง",
       "castAvatarInvalid": "URL รูปภาพนักแสดงไม่ถูกต้อง",
-      "categoryRequired": "กรุณาเลือกอย่างน้อยหนึ่งหมวดหมู่"
+      "categoryRequired": "กรุณาเลือกอย่างน้อยหนึ่งหมวดหมู่",
+      "producerAvatarInvalid": "URL รูปผู้อำนวยการสร้างไม่ถูกต้อง",
+      "directorAvatarInvalid": "URL รูปผู้กำกับไม่ถูกต้อง"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "โรงภาพยนตร์",
     "headers": [
       "รหัส",
+      "รูปเจ้าของ",
       "ชื่อโรงภาพยนตร์",
       "เจ้าของ (รหัส)",
       "ที่อยู่",

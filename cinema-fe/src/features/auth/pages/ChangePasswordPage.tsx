@@ -35,17 +35,17 @@ const ChangePasswordPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-main">
       <Header />
-      <div className="flex-1 w-full px-4 pb-16 pt-24">
+      <div className="flex flex-1 w-full items-center justify-center px-4 pb-16 pt-24">
         <Formik<ChangePasswordFormValues>
           initialValues={{ currentPassword: '', newPassword: '', c_password: '' }}
           validate={toFormikValidate<ChangePasswordFormValues>(changePasswordSchema)}
           onSubmit={handleSubmit}
         >
           {(formik) => (
-            <Form className="mx-auto w-full max-w-lg rounded-2xl bg-white p-8 text-center text-main">
-              <h1 className="text-3xl font-bold">{t('changePassword.title')}</h1>
+            <Form className="w-full max-w-lg rounded-2xl border border-border bg-surface p-8 shadow-raised">
+              <h1 className="text-center text-xl font-bold text-white">{t('changePassword.title')}</h1>
 
-              <div className="mt-6 text-left">
+              <div className="mt-6">
                 <Field
                   as={Input}
                   label={t('changePassword.currentPasswordLabel')}
@@ -55,7 +55,7 @@ const ChangePasswordPage = () => {
                   error={formik.touched.currentPassword ? formik.errors.currentPassword : undefined}
                 />
               </div>
-              <div className="mt-4 text-left">
+              <div className="mt-4">
                 <Field
                   as={Input}
                   label={t('changePassword.newPasswordLabel')}
@@ -65,7 +65,7 @@ const ChangePasswordPage = () => {
                   error={formik.touched.newPassword ? formik.errors.newPassword : undefined}
                 />
               </div>
-              <div className="mt-4 text-left">
+              <div className="mt-4">
                 <Field
                   as={Input}
                   label={t('changePassword.confirmPasswordLabel')}
@@ -76,7 +76,7 @@ const ChangePasswordPage = () => {
                 />
               </div>
 
-              {serverError && <p className="mt-4 text-sm text-red-600">{serverError}</p>}
+              {serverError && <p className="mt-4 text-sm text-red-400">{serverError}</p>}
 
               <Button type="submit" loading={changePasswordMutation.isPending} className="mt-6 w-full">
                 {t('changePassword.submit')}

@@ -129,7 +129,7 @@ export function CommentItem({
       <Avatar src={author.avatar} name={author.name} size="sm" className="mt-1" />
       <div className="min-w-0 flex-1">
         {editOpen ? (
-          <div className="rounded-2xl bg-white/5 px-4 py-3">
+          <div className="rounded-xl border border-border-strong bg-surface-soft px-4 py-3">
             {rating != null && (
               <div className="mb-2">
                 <StarRatingInput value={editRating} onChange={setEditRating} />
@@ -145,32 +145,32 @@ export function CommentItem({
                 }
               }}
               rows={2}
-              className="w-full resize-none rounded-md border border-txt/30 bg-white px-3 py-1.5 text-sm text-main"
+              className="w-full resize-none rounded-lg border border-border-strong bg-surface px-3 py-1.5 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
             />
             <div className="mt-2 flex gap-2">
               <button
                 type="button"
                 onClick={handleEditSave}
                 disabled={savingEdit || !editText.trim()}
-                className="rounded bg-accent px-3 py-1.5 text-xs text-white disabled:opacity-50"
+                className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
               >
                 {t('reviews.editSave')}
               </button>
               <button
                 type="button"
                 onClick={() => setEditOpen(false)}
-                className="rounded px-3 py-1.5 text-xs text-txt/70 hover:bg-white/10"
+                className="rounded-lg px-3 py-1.5 text-xs text-txt/70 transition-colors hover:bg-white/10"
               >
                 {t('reviews.editCancel')}
               </button>
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl bg-white/5 px-4 py-2">
+          <div className="rounded-xl border border-border bg-surface-soft px-4 py-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="font-medium text-white">{author.name || '—'}</span>
               {rating != null && (
-                <span className="shrink-0 text-accent">
+                <span className="shrink-0 text-gold">
                   {'★'.repeat(rating)}
                   {'☆'.repeat(MAX_RATING - rating)}
                 </span>
@@ -180,21 +180,21 @@ export function CommentItem({
           </div>
         )}
 
-        <div className="mt-1 flex flex-wrap items-center gap-3 px-2 text-xs text-txt/50">
+        <div className="mt-1.5 flex flex-wrap items-center gap-3 px-2 text-xs text-txt/50">
           <span>{new Date(createdAt).toLocaleDateString()}</span>
           <ReactionBar reactions={reactions} onReact={onReact} t={t} />
           {onReply && (
-            <button type="button" onClick={() => setReplyOpen((open) => !open)} className="font-medium hover:underline">
+            <button type="button" onClick={() => setReplyOpen((open) => !open)} className="font-medium transition-colors hover:text-accent">
               {t('reviews.reply')}
             </button>
           )}
           {isOwn && onEdit && !editOpen && (
-            <button type="button" onClick={openEdit} className="font-medium hover:underline">
+            <button type="button" onClick={openEdit} className="font-medium transition-colors hover:text-accent">
               {t('reviews.edit')}
             </button>
           )}
           {isOwn && onDelete && (
-            <button type="button" onClick={handleDelete} className="font-medium text-red-400 hover:underline">
+            <button type="button" onClick={handleDelete} className="font-medium text-red-400 transition-colors hover:text-red-300">
               {t('reviews.delete')}
             </button>
           )}
@@ -202,7 +202,7 @@ export function CommentItem({
             reportedByMe ? (
               <span className="text-txt/30">{t('reviews.alreadyReported')}</span>
             ) : (
-              <button type="button" onClick={() => setReportOpen((open) => !open)} className="font-medium hover:underline">
+              <button type="button" onClick={() => setReportOpen((open) => !open)} className="font-medium transition-colors hover:text-accent">
                 {t('reviews.report')}
               </button>
             )
@@ -222,13 +222,13 @@ export function CommentItem({
               }}
               placeholder={t('reviews.replyPlaceholder')}
               rows={1}
-              className="w-full resize-none rounded-md border border-txt/30 bg-white px-3 py-1.5 text-sm text-main"
+              className="w-full resize-none rounded-lg border border-border-strong bg-surface-soft px-3 py-1.5 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
             />
             <button
               type="button"
               onClick={handleReplySubmit}
               disabled={submittingReply || !replyText.trim()}
-              className="shrink-0 rounded bg-accent px-3 py-1.5 text-xs text-white disabled:opacity-50"
+              className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
             >
               {t('reviews.replySubmit')}
             </button>
@@ -248,13 +248,13 @@ export function CommentItem({
               }}
               placeholder={t('reviews.reportReasonPlaceholder')}
               rows={1}
-              className="w-full resize-none rounded-md border border-txt/30 bg-white px-3 py-1.5 text-sm text-main"
+              className="w-full resize-none rounded-lg border border-border-strong bg-surface-soft px-3 py-1.5 text-sm text-txt placeholder:text-txt/35 focus:border-red-600/60 focus:outline-none focus:ring-2 focus:ring-red-600/40"
             />
             <button
               type="button"
               onClick={handleReportSubmit}
               disabled={submittingReport || !reportReason.trim()}
-              className="shrink-0 rounded bg-red-600 px-3 py-1.5 text-xs text-white disabled:opacity-50"
+              className="shrink-0 rounded-lg bg-red-700 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-800 disabled:opacity-50"
             >
               {t('reviews.reportSubmit')}
             </button>

@@ -12,10 +12,13 @@ const DetailTrailer = () => {
   if (!movie || !kind) return null;
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10 md:px-16">
-      <h2 className="mb-4 text-2xl font-bold text-white">{t('detailTrailer.title')}</h2>
+    <div className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
+      <h2 className="mb-5 flex items-center gap-3 text-xl font-bold text-white">
+        <span className="h-5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+        {t('detailTrailer.title')}
+      </h2>
       {kind === 'youtube' && (
-        <div className="aspect-video w-full overflow-hidden rounded-lg">
+        <div className="aspect-video w-full overflow-hidden rounded-xl border border-border shadow-raised">
           <iframe
             className="h-full w-full"
             src={getYoutubeEmbedUrl(movie.trailer)}
@@ -25,9 +28,15 @@ const DetailTrailer = () => {
           />
         </div>
       )}
-      {kind === 'video' && <video className="w-full rounded-lg" controls src={movie.trailer} />}
+      {kind === 'video' && (
+        <video className="w-full rounded-xl border border-border shadow-raised" controls src={movie.trailer} />
+      )}
       {kind === 'image' && (
-        <img className="w-full rounded-lg object-cover" src={movie.trailer} alt={`${movie.name} trailer`} />
+        <img
+          className="w-full rounded-xl border border-border object-cover shadow-raised"
+          src={movie.trailer}
+          alt={`${movie.name} trailer`}
+        />
       )}
     </div>
   );

@@ -38,8 +38,11 @@ function MyBookingsPage() {
         }
       `}</style>
       <Header />
-      <div className="flex-1 mx-auto w-4/5 pb-16 pt-24">
-        <h5 className="mb-6 text-2xl text-white">{t('myBookings.pageTitle')}</h5>
+      <div className="mx-auto w-full max-w-7xl flex-1 px-6 pb-16 pt-28 md:px-10">
+        <h1 className="mb-6 flex items-center gap-3 text-xl font-bold text-white sm:text-2xl">
+          <span className="h-5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+          {t('myBookings.pageTitle')}
+        </h1>
 
         {isLoading && (
           <div className="flex justify-center py-16">
@@ -53,16 +56,16 @@ function MyBookingsPage() {
             const status = INVOICE_STATUS_META[inv.status] || INVOICE_STATUS_META[INVOICE_STATUS.booked];
             const canCancel = inv.status === INVOICE_STATUS.booked;
             return (
-              <div key={inv.id} className="booking-card flex gap-4 rounded-lg bg-white/5 p-4">
+              <div key={inv.id} className="booking-card flex gap-4 rounded-xl border border-border bg-surface p-4 shadow-card">
                 <img
                   src={getMoviePosterUrl(inv.movie?.avatar)}
                   alt={inv.movie?.name}
-                  className="h-[140px] w-[100px] shrink-0 rounded object-cover"
+                  className="h-[140px] w-[100px] shrink-0 rounded-lg object-cover shadow-card"
                 />
                 <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <h6 className="text-lg text-white">{inv.movie?.name || t('myBookings.movieFallback')}</h6>
-                    <span className={cn('rounded px-2 py-0.5 text-xs', status.className)}>{t(`myBookings.status.${status.key}`)}</span>
+                  <div className="flex items-start justify-between gap-2">
+                    <h6 className="text-lg font-semibold text-white">{inv.movie?.name || t('myBookings.movieFallback')}</h6>
+                    <span className={cn('shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium', status.className)}>{t(`myBookings.status.${status.key}`)}</span>
                   </div>
                   <p className="mt-1 text-sm text-txt/70">
                     {inv.schedule?.movie_date} · {inv.schedule?.time_begin}
@@ -86,15 +89,16 @@ function MyBookingsPage() {
                     <div className="no-print flex flex-col gap-2">
                       <button
                         type="button"
-                        className="rounded bg-accent px-3 py-1 text-xs text-white"
+                        className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white shadow-card transition-colors hover:bg-accent-hover"
                         onClick={() => window.print()}
                       >
+                        <i className="fa-solid fa-print mr-1" />
                         {t('myBookings.print')}
                       </button>
                       {canCancel && (
                         <button
                           type="button"
-                          className="rounded bg-red-600 px-3 py-1 text-xs text-white"
+                          className="rounded-lg border border-red-800/60 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10"
                           onClick={() => handleCancel(inv.id)}
                         >
                           {t('myBookings.cancel')}

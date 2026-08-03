@@ -64,11 +64,19 @@ function AdminReviews() {
             </td>
             <td className="flex gap-3">
               {!review.hidden && (
-                <button type="button" className="text-accent" onClick={() => handleHide(review.id)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => handleHide(review.id)}
+                >
                   {t('reviews.hideButton')}
                 </button>
               )}
-              <button type="button" className="text-red-500" onClick={() => handleDelete(review.id)}>
+              <button
+                type="button"
+                className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                onClick={() => handleDelete(review.id)}
+              >
                 {t('reviews.deleteButton')}
               </button>
             </td>

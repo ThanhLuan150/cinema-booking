@@ -4,9 +4,11 @@
     "bookNow": "अभी बुक करें"
   },
   "castSection": {
-    "director": "निर्देशक:",
-    "producer": "निर्माता:",
-    "cast": "कलाकार"
+    "director": "निर्देशक",
+    "producer": "निर्माता",
+    "cast": "कलाकार",
+    "leadLabel": "मुख्य भूमिका",
+    "crew": "निर्देशक और निर्माता"
   },
   "reviews": {
     "title": "समीक्षाएं",

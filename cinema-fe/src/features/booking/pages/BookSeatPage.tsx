@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -88,9 +90,9 @@ function SeatGrid({ scheduleId }: { scheduleId: number | null }) {
                 key={ticket.seat_code}
                 title={t(`bookSeat.legend.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)}
                 className={cn(
-                  'flex h-8 w-9 items-center justify-center rounded-t-lg text-[10px] font-medium text-black transition-transform',
-                  isSold ? 'cursor-not-allowed bg-white/40' : cn('cursor-pointer hover:scale-110', SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard]),
-                  isSelected && 'scale-110 bg-green-500 text-white ring-2 ring-white',
+                  'flex h-8 w-9 items-center justify-center rounded-t-lg text-[10px] font-semibold text-black transition-transform',
+                  isSold ? 'cursor-not-allowed bg-white/25' : cn('cursor-pointer hover:scale-110', SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard]),
+                  isSelected && 'scale-110 bg-emerald-500 text-white ring-2 ring-white',
                 )}
                 onClick={() => {
                   if (isSold) return;
@@ -206,11 +208,13 @@ function BookSeatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-main px-4 pb-16 pt-24 text-white">
+    <div className="flex min-h-screen flex-col bg-main">
+      <Header />
+      <div className="flex-1 px-4 pb-16 pt-24 text-white">
       <div className="mx-auto w-full max-w-4xl">
-        <h1 className="text-center text-xl font-semibold">{movie?.name || t('bookSeat.defaultTitle')}</h1>
+        <h1 className="text-center text-xl font-semibold text-white">{movie?.name || t('bookSeat.defaultTitle')}</h1>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 rounded-lg bg-white/5 px-4 py-3 text-xs text-white/80">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 rounded-xl border border-border bg-surface px-4 py-3 text-xs text-txt/80">
           <span className="flex items-center gap-2">
             <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.standard])} /> {t('bookSeat.legend.standard')}
           </span>
@@ -221,27 +225,27 @@ function BookSeatPage() {
             <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.couple])} /> {t('bookSeat.legend.couple')}
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-5 w-6 rounded-t bg-green-500" /> {t('bookSeat.legend.selecting')}
+            <span className="h-5 w-6 rounded-t bg-emerald-500" /> {t('bookSeat.legend.selecting')}
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-5 w-6 rounded-t bg-white/40" /> {t('bookSeat.legend.sold')}
+            <span className="h-5 w-6 rounded-t bg-white/25" /> {t('bookSeat.legend.sold')}
           </span>
         </div>
 
-        <div className="mt-8 rounded-xl bg-white/5 p-6">
+        <div className="mt-8 rounded-xl border border-border bg-surface p-6 shadow-card">
           <div className="mx-auto mb-8 h-3 w-4/5 rounded-full bg-white/70 [box-shadow:0_0_30px_8px_rgba(255,255,255,0.35)]" />
-          <p className="mb-6 text-center text-xs text-white/50">{t('bookSeat.screen')}</p>
+          <p className="mb-6 text-center text-xs text-txt/50">{t('bookSeat.screen')}</p>
 
           <SeatGrid scheduleId={scheduleId} />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {combos.length > 0 && (
-            <div className="rounded-xl bg-white/5 p-4">
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
               <h6 className="mb-3 font-semibold text-white">{t('bookSeat.combo.title')}</h6>
               <div className="flex flex-col gap-2">
                 {combos.map((combo) => (
-                  <label key={combo.id} className="flex items-center justify-between text-sm text-white/80">
+                  <label key={combo.id} className="flex items-center justify-between text-sm text-txt/80">
                     <span className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -257,7 +261,7 @@ function BookSeatPage() {
             </div>
           )}
 
-          <div className="rounded-xl bg-white/5 p-4">
+          <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
             <h6 className="mb-3 font-semibold text-white">{t('voucher.title')}</h6>
             <div className="flex gap-2">
               <input
@@ -265,14 +269,14 @@ function BookSeatPage() {
                 value={voucherCode}
                 onChange={(e) => dispatch(setVoucherCode(e.target.value))}
                 placeholder={t('voucher.placeholder')}
-                className="flex-1 rounded-md px-3 py-2 text-sm text-main"
+                className="flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
               />
               <Button type="button" variant="secondary" size="sm" onClick={handleApplyVoucher}>
                 {t('voucher.apply')}
               </Button>
             </div>
             {voucherResult && (
-              <p className="mt-2 text-sm text-green-400">
+              <p className="mt-2 text-sm text-emerald-400">
                 {t('voucher.applied', { amount: `${voucherResult.discount_amount.toLocaleString()}đ` })}
               </p>
             )}
@@ -280,34 +284,36 @@ function BookSeatPage() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col items-center gap-4 rounded-xl bg-white/5 p-6 sm:flex-row sm:justify-between">
+        <div className="mt-6 flex flex-col items-center gap-4 rounded-xl border border-border bg-surface p-6 shadow-card sm:flex-row sm:justify-between">
           <div>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-txt/60">
               {t('bookSeat.selectedSeatsLabel')} <span className="text-white">{selectedSeatCodes.length > 0 ? selectedSeatCodes.join(', ') : t('bookSeat.noneSelected')}</span>
             </p>
-            <p className="mt-1 text-2xl font-bold text-green-400">{totalPrice.toLocaleString()}đ</p>
+            <p className="mt-1 text-2xl font-bold text-emerald-400">{totalPrice.toLocaleString()}đ</p>
           </div>
           <Button type="button" variant="danger" onClick={handleCheckout} loading={momoPaymentMutation.isPending}>
             {t('bookSeat.checkout')}
           </Button>
         </div>
       </div>
+      </div>
+      <Footer />
 
       {momoPayUrl && (
         <Modal open onClose={() => dispatch(setMomoPayUrl(''))} title={t('bookSeat.momoModal.title')}>
-          <div className="grid grid-cols-1 gap-6 text-main sm:grid-cols-2">
-            <div className="flex flex-col items-center gap-3 rounded-lg border border-txt/20 p-4 text-center">
-              <p className="font-semibold">{t('bookSeat.momoModal.qrTitle')}</p>
+          <div className="grid grid-cols-1 gap-6 text-txt sm:grid-cols-2">
+            <div className="flex flex-col items-center gap-3 rounded-lg border border-border-strong p-4 text-center">
+              <p className="font-semibold text-white">{t('bookSeat.momoModal.qrTitle')}</p>
               <div className="rounded-md bg-white p-3">
                 <QRCodeSVG value={momoPayUrl} size={180} />
               </div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-txt/60">
                 {t('bookSeat.momoModal.qrDescription')}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-txt/20 p-4 text-center">
-              <p className="font-semibold">{t('bookSeat.momoModal.testAccountTitle')}</p>
-              <p className="text-sm text-gray-500">
+            <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-strong p-4 text-center">
+              <p className="font-semibold text-white">{t('bookSeat.momoModal.testAccountTitle')}</p>
+              <p className="text-sm text-txt/60">
                 {t('bookSeat.momoModal.testAccountDescription')}
               </p>
               <Button type="button" variant="danger" onClick={() => { window.location.href = momoPayUrl; }}>

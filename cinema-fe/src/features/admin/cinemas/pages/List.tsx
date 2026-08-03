@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
 import { Pagination } from '@/components/ui/Pagination';
+import { Avatar } from '@/components/ui/Avatar';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { useAppSelector } from '@/hooks/redux';
@@ -74,26 +75,43 @@ function AdminCinemas() {
           return (
             <tr key={cinema.id}>
               <td>{cinema.id}</td>
+              <td>
+                <Avatar src={cinema.owner_avatar} name={cinema.owner_name} size="sm" />
+              </td>
               <td>{cinema.name}</td>
               <td>{cinema.owner_id}</td>
               <td>
                 {cinema.address} {cinema.city}
               </td>
               <td>
-                <span className={`rounded px-2 py-0.5 text-xs ${status.className}`}>{t(`cinemas.status.${status.key}`)}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide ${status.className}`}>
+                  {t(`cinemas.status.${status.key}`)}
+                </span>
               </td>
               <td className="flex gap-3">
                 {cinema.status !== CINEMA_STATUS.approved && (
-                  <button type="button" className="text-accent" onClick={() => handleApprove(cinema.id)}>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                    onClick={() => handleApprove(cinema.id)}
+                  >
                     {t('cinemas.approveButton')}
                   </button>
                 )}
                 {cinema.status !== CINEMA_STATUS.blocked && (
-                  <button type="button" className="text-amber-400" onClick={() => handleBlock(cinema.id)}>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
+                    onClick={() => handleBlock(cinema.id)}
+                  >
                     {t('cinemas.blockButton')}
                   </button>
                 )}
-                <button type="button" className="text-red-500" onClick={() => handleDelete(cinema.id)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                  onClick={() => handleDelete(cinema.id)}
+                >
                   {t('cinemas.deleteButton')}
                 </button>
               </td>
