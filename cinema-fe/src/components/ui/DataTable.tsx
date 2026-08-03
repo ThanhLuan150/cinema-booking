@@ -13,12 +13,15 @@ export function DataTable({ headers, children, emptyMessage }: DataTableProps) {
   const isEmpty = Children.count(children) === 0;
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full min-w-[900px] border-collapse text-left text-white [&_td]:border-b [&_td]:border-white/10 [&_td]:px-3 [&_td]:py-2 [&_th]:px-3 [&_th]:py-2">
+    <div className="w-full overflow-x-auto rounded-xl border border-border">
+      <table className="w-full min-w-[900px] border-collapse text-left text-sm text-txt [&_td]:border-b [&_td]:border-border [&_td]:px-4 [&_td]:py-2.5 [&_th]:px-4 [&_th]:py-2.5 [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-white/[0.03]">
         <thead>
-          <tr className="border-b border-white/20">
+          <tr className="bg-surface-raised">
             {headers.map((header, index) => (
-              <th key={index} className="whitespace-nowrap text-sm font-semibold">
+              <th
+                key={index}
+                className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-txt/60"
+              >
                 {header}
               </th>
             ))}

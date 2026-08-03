@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -68,48 +69,69 @@ const List = () => {
                 value={user.role}
                 options={roleOptions}
                 onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                className="border-white/20 bg-transparent text-white"
+                className="min-w-[9rem] py-2 text-sm"
               />
             </td>
             <td>
-              {user.status ? t('users.list.statusActive') : <span className="text-gray-400">{t('users.list.statusInactive')}</span>}
-              {user.role === ROLES.owner && !user.approved && (
-                <span className="ml-2 rounded bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400">
-                  {t('users.list.pendingApproval')}
-                </span>
-              )}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {user.status ? (
+                  <Badge variant="success">{t('users.list.statusActive')}</Badge>
+                ) : (
+                  <Badge variant="default">{t('users.list.statusInactive')}</Badge>
+                )}
+                {user.role === ROLES.owner && !user.approved && (
+                  <Badge variant="warning">{t('users.list.pendingApproval')}</Badge>
+                )}
+              </div>
             </td>
             <td>
-              {user.role === ROLES.owner && !user.approved && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  loading={approveUserMutation.isPending}
-                  onClick={() => handleApprove(user.id)}
-                  className="text-accent"
-                >
-                  {t('users.list.approveButton')}
-                </Button>
-              )}
-              <Link to={ROUTES.deleteUser(user.id)}>
-                <Button type="button" variant="ghost" size="sm">
-                  <ion-icon name="trash-outline" style={{ color: '#E00813', fontSize: '1.4rem', marginLeft: '1rem' }} />
-                </Button>
-              </Link>
-              {user.status ? (
-                <Link to={ROUTES.blockUser(user.id)}>
-                  <Button type="button" variant="ghost" size="sm">
-                    <ion-icon name="lock-open-outline" style={{ color: '#E00813', fontSize: '1.4rem', marginLeft: '1rem' }} />
+              <div className="flex items-center gap-1">
+                {user.role === ROLES.owner && !user.approved && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    loading={approveUserMutation.isPending}
+                    onClick={() => handleApprove(user.id)}
+                    className="text-accent hover:text-accent-hover"
+                  >
+                    {t('users.list.approveButton')}
+                  </Button>
+                )}
+                <Link to={ROUTES.deleteUser(user.id)} title={t('users.list.deleteButton', { defaultValue: 'Delete' })}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
+                  >
+                    <ion-icon name="trash-outline" style={{ fontSize: '1.1rem' }} />
                   </Button>
                 </Link>
-              ) : (
-                <Link to={ROUTES.unblockUser(user.id)}>
-                  <Button type="button" variant="ghost" size="sm">
-                    <ion-icon name="lock-close-outline" style={{ fontSize: '1.4rem', marginLeft: '1rem' }} />
-                  </Button>
-                </Link>
-              )}
+                {user.status ? (
+                  <Link to={ROUTES.blockUser(user.id)} title={t('users.list.blockButton', { defaultValue: 'Block' })}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
+                    >
+                      <ion-icon name="lock-open-outline" style={{ fontSize: '1.1rem' }} />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to={ROUTES.unblockUser(user.id)} title={t('users.list.unblockButton', { defaultValue: 'Unblock' })}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-txt/70 hover:bg-white/10 hover:text-txt"
+                    >
+                      <ion-icon name="lock-closed-outline" style={{ fontSize: '1.1rem' }} />
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </td>
           </tr>
         ))}

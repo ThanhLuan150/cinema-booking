@@ -4,9 +4,11 @@
     "bookNow": "立即购票"
   },
   "castSection": {
-    "director": "导演：",
-    "producer": "制片人：",
-    "cast": "演员阵容"
+    "director": "导演",
+    "producer": "制片人",
+    "cast": "演员阵容",
+    "leadLabel": "主演",
+    "crew": "导演与制片人"
   },
   "reviews": {
     "title": "影评",

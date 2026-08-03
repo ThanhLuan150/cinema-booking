@@ -2,6 +2,7 @@ export interface CastMemberDraft {
   name: string;
   role: string;
   avatar: string;
+  isLead: boolean;
 }
 
 export interface MovieFormValues {
@@ -12,7 +13,9 @@ export interface MovieFormValues {
   country: string;
   trailer: string;
   producer: string;
+  producerAvatar: string;
   director: string;
+  directorAvatar: string;
   cast: CastMemberDraft[];
 }
 

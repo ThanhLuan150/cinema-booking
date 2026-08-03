@@ -3,6 +3,7 @@ import { Formik, Field, Form } from 'formik';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/components/common/AuthCard';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -32,30 +33,26 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-main px-4 pb-16 pt-24">
+    <AuthCard
+      title={t('resetPassword.title')}
+      subtitle={t('resetPassword.subtitle', { email: email || t('resetPassword.yourEmail') })}
+    >
       <Formik<ResetPasswordFormValues>
         initialValues={{ otp: '', password: '', c_password: '' }}
         validate={toFormikValidate<ResetPasswordFormValues>(resetPasswordSchema)}
         onSubmit={handleSubmit}
       >
         {(formik) => (
-          <Form className="mx-auto w-full max-w-lg rounded-2xl bg-white p-8 text-center text-main">
-            <h1 className="text-3xl font-bold">{t('resetPassword.title')}</h1>
-            <p className="mt-2 text-sm text-gray-500">
-              {t('resetPassword.subtitle', { email: email || t('resetPassword.yourEmail') })}
-            </p>
-
-            <div className="mt-6 text-left">
-              <Field
-                as={Input}
-                label={t('resetPassword.otpLabel')}
-                type="text"
-                id="otp"
-                name="otp"
-                error={formik.touched.otp ? formik.errors.otp : undefined}
-              />
-            </div>
-            <div className="mt-4 text-left">
+          <Form>
+            <Field
+              as={Input}
+              label={t('resetPassword.otpLabel')}
+              type="text"
+              id="otp"
+              name="otp"
+              error={formik.touched.otp ? formik.errors.otp : undefined}
+            />
+            <div className="mt-4">
               <Field
                 as={Input}
                 label={t('resetPassword.passwordLabel')}
@@ -65,7 +62,7 @@ const ResetPasswordPage = () => {
                 error={formik.touched.password ? formik.errors.password : undefined}
               />
             </div>
-            <div className="mt-4 text-left">
+            <div className="mt-4">
               <Field
                 as={Input}
                 label={t('resetPassword.confirmPasswordLabel')}
@@ -76,7 +73,7 @@ const ResetPasswordPage = () => {
               />
             </div>
 
-            {serverError && <p className="mt-4 text-sm text-red-600">{serverError}</p>}
+            {serverError && <p className="mt-4 text-sm text-red-400">{serverError}</p>}
 
             <Button type="submit" loading={resetPasswordMutation.isPending} className="mt-6 w-full">
               {t('resetPassword.submit')}
@@ -84,7 +81,7 @@ const ResetPasswordPage = () => {
           </Form>
         )}
       </Formik>
-    </div>
+    </AuthCard>
   );
 };
 

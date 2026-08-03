@@ -12,8 +12,10 @@ const validMovie = {
   country: 'USA',
   trailer: 'trailer.mp4',
   producer: 'Emma Thomas',
+  producerAvatar: '',
   director: 'Christopher Nolan',
-  cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '' }],
+  directorAvatar: '',
+  cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '', isLead: false }],
   categoryIds: [1],
 };
 
@@ -79,7 +81,7 @@ describe('movieSchema', () => {
   it('accepts an empty cast avatar', () => {
     const result = movieSchema.safeParse({
       ...validMovie,
-      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '' }],
+      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '', isLead: false }],
     });
     expect(result.success).toBe(true);
   });
@@ -87,7 +89,7 @@ describe('movieSchema', () => {
   it('accepts a valid cast avatar URL', () => {
     const result = movieSchema.safeParse({
       ...validMovie,
-      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: 'https://example.com/avatar.jpg' }],
+      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: 'https://example.com/avatar.jpg', isLead: true }],
     });
     expect(result.success).toBe(true);
   });

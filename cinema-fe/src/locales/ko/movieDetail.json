@@ -4,9 +4,11 @@
     "bookNow": "지금 예매하기"
   },
   "castSection": {
-    "director": "감독:",
-    "producer": "제작자:",
-    "cast": "출연진"
+    "director": "감독",
+    "producer": "제작자",
+    "cast": "출연진",
+    "leadLabel": "주연",
+    "crew": "감독 및 제작자"
   },
   "reviews": {
     "title": "리뷰",

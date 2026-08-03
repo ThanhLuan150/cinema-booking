@@ -24,7 +24,9 @@
         "description": "Description :",
         "trailer": "Bande-annonce :",
         "producer": "Producteur :",
-        "director": "Réalisateur :"
+        "director": "Réalisateur :",
+        "producerAvatar": "Avatar du producteur (URL) :",
+        "directorAvatar": "Avatar du réalisateur (URL) :"
       },
       "cast": {
         "label": "Distribution :",
@@ -32,7 +34,8 @@
         "role": "Rôle",
         "avatarUrl": "URL de l'image",
         "remove": "Retirer",
-        "add": "+ Ajouter un acteur"
+        "add": "+ Ajouter un acteur",
+        "isLead": "Rôle principal"
       },
       "category": "Catégorie :",
       "submit": "Ajouter",
@@ -51,7 +54,9 @@
         "trailer": "Bande-annonce :",
         "uploadNewTrailer": "Téléverser une nouvelle bande-annonce :",
         "producer": "Producteur :",
-        "director": "Réalisateur :"
+        "director": "Réalisateur :",
+        "producerAvatar": "Avatar du producteur (URL) :",
+        "directorAvatar": "Avatar du réalisateur (URL) :"
       },
       "cast": {
         "label": "Distribution :",
@@ -59,7 +64,8 @@
         "role": "Rôle",
         "avatarUrl": "URL de l'image",
         "remove": "Retirer",
-        "add": "+ Ajouter un acteur"
+        "add": "+ Ajouter un acteur",
+        "isLead": "Rôle principal"
       },
       "category": "Catégorie :",
       "submit": "Mettre à jour",
@@ -97,7 +103,9 @@
       "directorRequired": "Le réalisateur est requis",
       "castNameRequired": "Le nom de l'acteur est requis",
       "castAvatarInvalid": "L'URL de l'image de l'acteur est invalide",
-      "categoryRequired": "Veuillez sélectionner au moins une catégorie"
+      "categoryRequired": "Veuillez sélectionner au moins une catégorie",
+      "producerAvatarInvalid": "L'URL de l'avatar du producteur est invalide",
+      "directorAvatarInvalid": "L'URL de l'avatar du réalisateur est invalide"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "Cinémas",
     "headers": [
       "ID",
+      "Photo du propriétaire",
       "Nom du cinéma",
       "Propriétaire (ID)",
       "Adresse",

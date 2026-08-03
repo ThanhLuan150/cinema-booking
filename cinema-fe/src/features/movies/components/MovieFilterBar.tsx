@@ -19,7 +19,7 @@ export function MovieFilterBar({ filters, onChange }: MovieFilterBarProps) {
   const cinemas = cinemasPage?.data ?? [];
 
   return (
-    <div className="mb-6 flex flex-wrap items-end gap-3 rounded-lg bg-white/5 p-4">
+    <div className="mb-6 flex flex-wrap items-end gap-3 rounded-xl border border-border bg-surface p-4 shadow-card">
       <div className="min-w-[160px] flex-1">
         <Select
           label={t('filterBar.category')}

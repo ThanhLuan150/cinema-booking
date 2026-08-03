@@ -103,9 +103,9 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
     };
 
     return (
-      <div className="flex flex-col gap-1 z-10">
+      <div className="z-10 flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={id} className="text-sm font-medium">
+          <label htmlFor={id} className="text-sm font-medium text-txt/90">
             {label}
           </label>
         )}
@@ -120,26 +120,26 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
             onClick={() => setIsOpen((open) => !open)}
             onKeyDown={handleKeyDown}
             className={cn(
-              'flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-main',
-              'focus:outline-none focus:ring-2',
+              'flex w-full items-center justify-between rounded-lg border bg-surface-soft px-3 py-2.5 text-left text-txt',
+              'transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-0',
               disabled && 'cursor-not-allowed opacity-50',
               error
-                ? 'border-red-600 bg-red-50 focus:ring-red-600'
-                : 'border-txt/30 bg-white focus:ring-accent',
+                ? 'border-red-600/60 focus:ring-red-600/50'
+                : 'border-border-strong focus:border-accent focus:ring-accent/40',
               className,
             )}
             {...props}
           >
-            <span className={cn('truncate', !selectedOption?.value && selectedOption?.label === placeholder && 'text-main/40')}>
+            <span className={cn('truncate', !selectedOption?.value && selectedOption?.label === placeholder && 'text-txt/35')}>
               {selectedOption?.label || placeholder}
             </span>
-            <i className={cn('fa-solid fa-chevron-down ml-2 text-xs text-main/50 transition-transform', isOpen && 'rotate-180')} />
+            <i className={cn('fa-solid fa-chevron-down ml-2 text-xs text-txt/50 transition-transform', isOpen && 'rotate-180')} />
           </button>
 
           {isOpen && (
             <ul
               role="listbox"
-              className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md border border-txt/10 bg-white py-1 shadow-lg"
+              className="themed-scrollbar absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-border-strong bg-surface-raised py-1 shadow-raised"
             >
               {allOptions.map((option, index) => {
                 const isSelected = index === selectedIndex;
@@ -151,8 +151,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
                     onMouseEnter={() => setActiveIndex(index)}
                     onClick={() => selectOption(option)}
                     className={cn(
-                      'flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-main',
-                      index === activeIndex && 'bg-accent/10',
+                      'flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-txt',
+                      index === activeIndex && 'bg-accent/15',
                       isSelected && 'font-medium text-accent',
                     )}
                   >
@@ -165,7 +165,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
           )}
         </div>
         {error && (
-          <span className="flex items-center gap-1 text-sm text-red-600">
+          <span className="flex items-center gap-1 text-sm text-red-400">
             <i className="fa-solid fa-circle-exclamation text-xs" />
             {error}
           </span>

@@ -76,7 +76,19 @@ async function getById(req, res) {
 
 // POST /api/movie (admin or theater staff)
 async function create(req, res) {
-  const { name, avatar, premiere_date, description, country, trailer, producer, director, cast } = req.body;
+  const {
+    name,
+    avatar,
+    premiere_date,
+    description,
+    country,
+    trailer,
+    producer,
+    producerAvatar,
+    director,
+    directorAvatar,
+    cast,
+  } = req.body;
   if (!name || !premiere_date) {
     return res.status(400).json({ message: 'name and premiere_date are required' });
   }
@@ -97,7 +109,9 @@ async function create(req, res) {
     country: country || '',
     trailer: trailerUrl,
     producer: producer || '',
+    producerAvatar: producerAvatar || '',
     director: director || '',
+    directorAvatar: directorAvatar || '',
     cast: parseCast(cast),
   });
 
@@ -115,7 +129,9 @@ async function update(req, res) {
     'country',
     'trailer',
     'producer',
+    'producerAvatar',
     'director',
+    'directorAvatar',
     'cast',
   ];
   const updates = {};

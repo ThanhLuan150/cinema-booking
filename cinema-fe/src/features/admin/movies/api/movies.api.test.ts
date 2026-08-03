@@ -28,7 +28,10 @@ describe('admin movies.api', () => {
     it('appends scalar values, filtered cast members, and files', () => {
       const formData = moviesApi.buildMovieFormData(
         { name: 'Movie A', premiere_date: '2026-01-01' } as any,
-        [{ name: 'Actor', role: 'Hero', avatar: '' }, { name: '  ', role: '', avatar: '' }],
+        [
+          { name: 'Actor', role: 'Hero', avatar: '', isLead: false },
+          { name: '  ', role: '', avatar: '', isLead: false },
+        ],
         new File(['x'], 'avatar.png'),
         null,
       );

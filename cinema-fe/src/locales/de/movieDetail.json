@@ -4,9 +4,11 @@
     "bookNow": "Jetzt buchen"
   },
   "castSection": {
-    "director": "Regisseur:",
-    "producer": "Produzent:",
-    "cast": "Besetzung"
+    "director": "Regisseur",
+    "producer": "Produzent",
+    "cast": "Besetzung",
+    "leadLabel": "Hauptrolle",
+    "crew": "Regisseur & Produzent"
   },
   "reviews": {
     "title": "Bewertungen",

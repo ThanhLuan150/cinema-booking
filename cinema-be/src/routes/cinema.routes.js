@@ -2,9 +2,15 @@ const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { requireCinemaOwnership } = require('../middleware/ownership');
+const upload = require('../middleware/upload');
 const cinemaController = require('../controllers/cinema.controller');
 
 const router = express.Router();
+
+const uploadOnboardMedia = upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'images', maxCount: 5 },
+]);
 
 // GET /api/cinema -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
 router.get('/', asyncHandler(cinemaController.list));
@@ -34,8 +40,9 @@ router.post('/unfavorite', requireAuth, asyncHandler(cinemaController.unfavorite
 // GET /api/cinema/:id -> public detail
 router.get('/:id', asyncHandler(cinemaController.getById));
 
-// POST /api/cinema/onboard { email, name, address, city, images } — lets a newly-verified theater
-router.post('/onboard', asyncHandler(cinemaController.onboard));
+// POST /api/cinema/onboard (multipart: email, name, phone, address, city, avatar file, images files)
+// — lets a newly-verified theater owner submit their cinema info before their first login.
+router.post('/onboard', uploadOnboardMedia, asyncHandler(cinemaController.onboard));
 
 // POST /api/cinema (admin or theater staff)
 router.post('/', requireAuth, requireRole(0, 2), asyncHandler(cinemaController.create));

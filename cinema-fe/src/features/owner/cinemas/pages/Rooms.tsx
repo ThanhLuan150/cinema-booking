@@ -223,7 +223,6 @@ function Rooms() {
           onChange={(e) => setSelectedCinemaId(e.target.value)}
           options={cinemas.map((cinema) => ({ label: cinema.name, value: cinema.id }))}
           placeholder={t('rooms.selectCinemaPlaceholder')}
-          className="bg-white"
         />
       </div>
 
@@ -262,10 +261,18 @@ function Rooms() {
               <td>{room.id}</td>
               <td>{room.name}</td>
               <td className="flex gap-3">
-                <button type="button" className="text-accent" onClick={() => dispatch(openSeatMapModal(room.id))}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => dispatch(openSeatMapModal(room.id))}
+                >
                   {t('rooms.seatMapAction')}
                 </button>
-                <button type="button" className="text-red-500" onClick={() => handleDeleteRoom(room.id)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                  onClick={() => handleDeleteRoom(room.id)}
+                >
                   {t('rooms.delete')}
                 </button>
               </td>

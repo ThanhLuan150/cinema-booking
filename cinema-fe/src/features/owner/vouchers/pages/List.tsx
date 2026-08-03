@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -194,12 +195,24 @@ function VoucherList() {
                 {voucher.used_count}
                 {voucher.max_uses !== null ? `/${voucher.max_uses}` : ''}
               </td>
-              <td>{voucher.active ? t('vouchers.statusActive') : t('vouchers.statusInactive')}</td>
+              <td>
+                <Badge variant={voucher.active ? 'success' : 'default'}>
+                  {voucher.active ? t('vouchers.statusActive') : t('vouchers.statusInactive')}
+                </Badge>
+              </td>
               <td className="flex gap-3">
-                <button type="button" className="text-accent" onClick={() => toggleActive(voucher)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => toggleActive(voucher)}
+                >
                   {voucher.active ? t('vouchers.deactivate') : t('vouchers.activate')}
                 </button>
-                <button type="button" className="text-red-500" onClick={() => handleDelete(voucher.id)}>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                  onClick={() => handleDelete(voucher.id)}
+                >
                   {t('vouchers.delete')}
                 </button>
               </td>

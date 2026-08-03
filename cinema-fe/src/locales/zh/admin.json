@@ -24,7 +24,9 @@
         "description": "简介：",
         "trailer": "预告片：",
         "producer": "制片人：",
-        "director": "导演："
+        "director": "导演：",
+        "producerAvatar": "制片人头像(URL):",
+        "directorAvatar": "导演头像(URL):"
       },
       "cast": {
         "label": "演员：",
@@ -32,7 +34,8 @@
         "role": "角色",
         "avatarUrl": "图片链接",
         "remove": "删除",
-        "add": "+ 添加演员"
+        "add": "+ 添加演员",
+        "isLead": "主演"
       },
       "category": "类型：",
       "submit": "新增",
@@ -51,7 +54,9 @@
         "trailer": "预告片：",
         "uploadNewTrailer": "上传新预告片：",
         "producer": "制片人：",
-        "director": "导演："
+        "director": "导演：",
+        "producerAvatar": "制片人头像(URL):",
+        "directorAvatar": "导演头像(URL):"
       },
       "cast": {
         "label": "演员：",
@@ -59,7 +64,8 @@
         "role": "角色",
         "avatarUrl": "图片链接",
         "remove": "删除",
-        "add": "+ 添加演员"
+        "add": "+ 添加演员",
+        "isLead": "主演"
       },
       "category": "类型：",
       "submit": "更新",
@@ -97,7 +103,9 @@
       "directorRequired": "请输入导演",
       "castNameRequired": "请输入演员姓名",
       "castAvatarInvalid": "演员图片URL无效",
-      "categoryRequired": "请至少选择一个分类"
+      "categoryRequired": "请至少选择一个分类",
+      "producerAvatarInvalid": "制片人头像URL无效",
+      "directorAvatarInvalid": "导演头像URL无效"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "影院管理",
     "headers": [
       "ID",
+      "业主照片",
       "影院名称",
       "业主（ID）",
       "地址",

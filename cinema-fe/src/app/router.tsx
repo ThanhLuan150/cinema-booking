@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ADMIN_ONLY_ROLES, MANAGEMENT_ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
 import { RequireRole } from './RequireRole';
+import { RedirectManagementFromHome } from './RedirectManagementFromHome';
 import Home from '@/features/home/pages/HomePage';
 import Detail from '@/features/movie-detail/pages/MovieDetailPage';
 import CinemaDetail from '@/features/cinema-detail/pages/CinemaDetailPage';
@@ -41,7 +42,14 @@ import PaymentResult from '@/features/booking/pages/PaymentResultPage';
 export function AppRouter() {
   return (
     <Routes>
-      <Route path={ROUTES.home} element={<Home />} />
+      <Route
+        path={ROUTES.home}
+        element={
+          <RedirectManagementFromHome>
+            <Home />
+          </RedirectManagementFromHome>
+        }
+      />
       <Route path="/Detail/:id" element={<Detail />} />
       <Route path="/Cinema/:id" element={<CinemaDetail />} />
       <Route path={ROUTES.register} element={<Register />} />

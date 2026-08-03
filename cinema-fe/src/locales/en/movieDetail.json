@@ -4,9 +4,11 @@
     "bookNow": "Book now"
   },
   "castSection": {
-    "director": "Director:",
-    "producer": "Producer:",
-    "cast": "Cast"
+    "director": "Director",
+    "producer": "Producer",
+    "cast": "Cast",
+    "leadLabel": "Lead",
+    "crew": "Director & Producer"
   },
   "reviews": {
     "title": "Reviews",

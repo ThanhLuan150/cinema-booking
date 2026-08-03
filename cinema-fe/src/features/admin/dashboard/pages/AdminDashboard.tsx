@@ -10,49 +10,51 @@ function AdminDashboard() {
 
   return (
     <AdminLayout breadcrumb={t('dashboard.breadcrumb')}>
-      {!stats && <p className="text-white/70">{t('dashboard.loading')}</p>}
+      {!stats && <p className="text-txt/70">{t('dashboard.loading')}</p>}
 
       {stats && (
         <>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalRevenue')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalRevenue.toLocaleString()}đ</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalRevenue')}</p>
+              <p className="mt-1 text-xl font-bold text-accent">{stats.totalRevenue.toLocaleString()}đ</p>
             </div>
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalUsers')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalUsers}</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalUsers')}</p>
+              <p className="mt-1 text-xl font-bold text-white">{stats.totalUsers}</p>
             </div>
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalOwners')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalOwners}</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalOwners')}</p>
+              <p className="mt-1 text-xl font-bold text-white">{stats.totalOwners}</p>
             </div>
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalCinemas')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalCinemas}</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalCinemas')}</p>
+              <p className="mt-1 text-xl font-bold text-white">{stats.totalCinemas}</p>
             </div>
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalTicketsSold')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalTicketsSold}</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalTicketsSold')}</p>
+              <p className="mt-1 text-xl font-bold text-white">{stats.totalTicketsSold}</p>
             </div>
-            <div className="rounded-lg bg-white/5 p-4">
-              <p className="text-sm text-white/60">{t('dashboard.stats.totalTransactions')}</p>
-              <p className="text-xl font-bold text-white">{stats.totalTransactions}</p>
+            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+              <p className="text-sm text-txt/60">{t('dashboard.stats.totalTransactions')}</p>
+              <p className="mt-1 text-xl font-bold text-white">{stats.totalTransactions}</p>
             </div>
           </div>
 
-          <div className="mt-6 h-[320px] rounded-lg bg-white/5 p-4">
-            <h6 className="mb-4 text-white">{t('dashboard.chartTitle')}</h6>
+          <div className="mt-6 h-[320px] rounded-xl border border-border bg-surface p-4 shadow-card">
+            <h6 className="mb-4 font-semibold text-white">{t('dashboard.chartTitle')}</h6>
             {stats.revenueByDay.length === 0 ? (
               <EmptyState title={t('dashboard.noData')} />
             ) : (
               <ResponsiveContainer width="100%" height="90%">
                 <BarChart data={stats.revenueByDay}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff22" />
-                  <XAxis dataKey="date" stroke="#ffffff88" fontSize={12} />
-                  <YAxis stroke="#ffffff88" fontSize={12} />
-                  <Tooltip contentStyle={{ background: '#0B1A2A', border: 'none', color: '#fff' }} />
-                  <Bar dataKey="total" fill="#FFC107" radius={[4, 4, 0, 0]} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff14" />
+                  <XAxis dataKey="date" stroke="#A9B4C0" fontSize={12} />
+                  <YAxis stroke="#A9B4C0" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{ background: '#17293C', border: '1px solid rgba(245,245,220,0.16)', borderRadius: 8, color: '#F5F5DC' }}
+                  />
+                  <Bar dataKey="total" fill="#C1121F" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

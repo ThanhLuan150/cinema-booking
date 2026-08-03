@@ -8,6 +8,20 @@ import type {
   VerifyCodePayload,
 } from '../types/auth.types';
 
+export function buildCinemaInfoFormData(
+  values: SaveCinemaInfoPayload,
+  avatarFile?: File | null,
+  imageFiles?: File[],
+) {
+  const formData = new FormData();
+  Object.entries(values).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) formData.append(key, String(value));
+  });
+  if (avatarFile) formData.append('avatar', avatarFile);
+  (imageFiles || []).forEach((file) => formData.append('images', file));
+  return formData;
+}
+
 export const login = (email: string, password: string) =>
   apiClient.post<LoginResponse>('/Login', { email, password });
 
@@ -25,7 +39,7 @@ export const getAccountByEmail = (email: string) => apiClient.get(`/account/${em
 
 export const saveUserInfo = (payload: SaveUserInfoPayload) => apiClient.post('/users', payload);
 
-export const saveCinemaInfo = (payload: SaveCinemaInfoPayload) => apiClient.post('/cinema/onboard', payload);
+export const saveCinemaInfo = (payload: FormData) => apiClient.post('/cinema/onboard', payload);
 
 export const verifyCode = (payload: VerifyCodePayload) => apiClient.post('/verify', payload);
 

@@ -3,6 +3,7 @@ import { Formik, Field, Form } from 'formik';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/components/common/AuthCard';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -53,49 +54,42 @@ const UserInfo = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-main px-4 pb-16 pt-24">
-      <div className="mx-auto w-full max-w-lg">
-        <Formik<UserInfoFormValues>
-          initialValues={{ name: '', phone: '' }}
-          validate={toFormikValidate<UserInfoFormValues>(userInfoSchema)}
-          onSubmit={handleSubmit}
-        >
-          {(formik) => (
-            <Form className="rounded-2xl bg-white p-8 text-center text-main">
-              <h1 className="text-3xl font-bold">{t('userInfo.title')}</h1>
+    <AuthCard title={t('userInfo.title')}>
+      <Formik<UserInfoFormValues>
+        initialValues={{ name: '', phone: '' }}
+        validate={toFormikValidate<UserInfoFormValues>(userInfoSchema)}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <Form>
+            <Field
+              as={Input}
+              label={t('userInfo.fullNameLabel')}
+              type="text"
+              id="username"
+              name="name"
+              placeholder={t('userInfo.fullNamePlaceholder')}
+              error={formik.touched.name ? formik.errors.name : undefined}
+            />
+            <div className="mt-4">
+              <Field
+                as={Input}
+                label={t('userInfo.phoneLabel')}
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder={t('userInfo.phonePlaceholder')}
+                error={formik.touched.phone ? formik.errors.phone : undefined}
+              />
+            </div>
 
-              <div className="mt-6 text-left">
-                <Field
-                  as={Input}
-                  label={t('userInfo.fullNameLabel')}
-                  type="text"
-                  id="username"
-                  name="name"
-                  placeholder={t('userInfo.fullNamePlaceholder')}
-                  error={formik.touched.name ? formik.errors.name : undefined}
-                />
-              </div>
-              <div className="mt-4 text-left">
-                <Field
-                  as={Input}
-                  label={t('userInfo.phoneLabel')}
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  placeholder={t('userInfo.phonePlaceholder')}
-                  error={formik.touched.phone ? formik.errors.phone : undefined}
-                />
-              </div>
-
-              <Button type="submit" loading={saveUserInfoMutation.isPending} className="mt-6 w-full">
-                {t('userInfo.submit')}
-              </Button>
-            </Form>
-          )}
-        </Formik>
-        {errorMessage && <p className="mt-4 text-center text-sm text-red-400">{errorMessage}</p>}
-      </div>
-    </div>
+            <Button type="submit" loading={saveUserInfoMutation.isPending} className="mt-6 w-full">
+              {t('userInfo.submit')}
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </AuthCard>
   );
 };
 

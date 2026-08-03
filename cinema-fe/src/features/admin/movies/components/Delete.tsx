@@ -25,19 +25,18 @@ function Delete(props: DeleteProps) {
   };
 
   return (
-    <b>
-      <Button
-        data-tag="allowRowEvents"
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => {
-          deleteMovies(props.delete);
-        }}
-      >
-        <ion-icon name="trash-outline" style={{ color: '#E00813', fontSize: '1.3rem', marginLeft: '0.2rem' }} />
-      </Button>
-    </b>
+    <Button
+      data-tag="allowRowEvents"
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
+      onClick={() => {
+        deleteMovies(props.delete);
+      }}
+    >
+      <ion-icon name="trash-outline" style={{ fontSize: '1.15rem' }} />
+    </Button>
   );
 }
 export default Delete;

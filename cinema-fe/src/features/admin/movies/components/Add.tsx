@@ -26,7 +26,9 @@ const emptyValues = (): AddMovieFormValues => ({
   country: '',
   trailer: '',
   producer: '',
+  producerAvatar: '',
   director: '',
+  directorAvatar: '',
   cast: [],
   categoryIds: [],
 });
@@ -89,7 +91,14 @@ const Add = () => {
           };
 
           const addCastRow = () => {
-            formik.setFieldValue('cast', [...formik.values.cast, { name: '', role: '', avatar: '' }]);
+            formik.setFieldValue('cast', [...formik.values.cast, { name: '', role: '', avatar: '', isLead: false }]);
+          };
+
+          const toggleCastLead = (index: number) => {
+            const cast = formik.values.cast.map((member, i) =>
+              i === index ? { ...member, isLead: !member.isLead } : member,
+            );
+            formik.setFieldValue('cast', cast);
           };
 
           const removeCastRow = (index: number) => {
@@ -124,7 +133,7 @@ const Add = () => {
                 id="avatar"
                 ref={avatarInputRef}
                 onChange={handleAvatarChange}
-                className="mt-3"
+                className="mt-4"
                 error={getError('avatar')}
               />
               <Field
@@ -133,7 +142,7 @@ const Add = () => {
                 type="date"
                 name="premiere_date"
                 id="premiere_date"
-                className="mt-3"
+                className="mt-4"
                 error={getError('premiere_date')}
               />
               <Field
@@ -142,7 +151,7 @@ const Add = () => {
                 type="text"
                 name="country"
                 id="country"
-                className="mt-3"
+                className="mt-4"
                 error={getError('country')}
               />
               <Field
@@ -150,7 +159,7 @@ const Add = () => {
                 label={t('movies.add.fields.description')}
                 name="description"
                 id="description"
-                className="mt-3"
+                className="mt-4"
                 error={getError('description')}
               />
               <Input
@@ -160,7 +169,7 @@ const Add = () => {
                 accept="image/*,video/*"
                 ref={trailerInputRef}
                 onChange={handleTrailerChange}
-                className="mt-3"
+                className="mt-4"
                 error={getError('trailer')}
               />
               <Field
@@ -169,8 +178,17 @@ const Add = () => {
                 type="text"
                 name="producer"
                 id="producer"
-                className="mt-3"
+                className="mt-4"
                 error={getError('producer')}
+              />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.producerAvatar')}
+                type="text"
+                name="producerAvatar"
+                id="producerAvatar"
+                className="mt-2 border-l-2 border-border pl-3"
+                error={getError('producerAvatar')}
               />
               <Field
                 as={Input}
@@ -178,11 +196,20 @@ const Add = () => {
                 type="text"
                 name="director"
                 id="director"
-                className="mt-3"
+                className="mt-5"
                 error={getError('director')}
               />
+              <Field
+                as={Input}
+                label={t('movies.add.fields.directorAvatar')}
+                type="text"
+                name="directorAvatar"
+                id="directorAvatar"
+                className="mt-2 border-l-2 border-border pl-3"
+                error={getError('directorAvatar')}
+              />
 
-              <label className="mb-1 mt-3 block text-sm font-medium">{t('movies.add.cast.label')}</label>
+              <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.add.cast.label')}</label>
               <div className="flex flex-col gap-4">
                 {formik.values.cast.map((member, index) => (
                   <div key={index} className="flex flex-col gap-2 rounded-md border border-txt/10 p-3">
@@ -206,6 +233,10 @@ const Add = () => {
                       onChange={(e) => updateCastRow(index, 'avatar', e.target.value)}
                       error={getError(`cast.${index}.avatar`)}
                     />
+                    <label className="flex items-center gap-1.5 text-sm">
+                      <input type="checkbox" checked={member.isLead} onChange={() => toggleCastLead(index)} />
+                      <span>{t('movies.add.cast.isLead')}</span>
+                    </label>
                     <Button type="button" variant="ghost" size="sm" onClick={() => removeCastRow(index)} className="self-end">
                       {t('movies.add.cast.remove')}
                     </Button>
@@ -216,7 +247,7 @@ const Add = () => {
                 </Button>
               </div>
 
-              <label htmlFor="name" className="mb-1 mt-3 block text-sm font-medium">
+              <label htmlFor="name" className="mb-1 mt-5 block text-sm font-medium">
                 {t('movies.add.category')}
               </label>
               <div className="flex flex-wrap gap-4">

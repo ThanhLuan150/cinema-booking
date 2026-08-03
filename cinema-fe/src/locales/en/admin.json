@@ -24,13 +24,16 @@
         "description": "Describe:",
         "trailer": "Trailer:",
         "producer": "Producer:",
-        "director": "Director:"
+        "producerAvatar": "Producer avatar (URL):",
+        "director": "Director:",
+        "directorAvatar": "Director avatar (URL):"
       },
       "cast": {
         "label": "Cast:",
         "name": "Name",
         "role": "Role",
         "avatarUrl": "Image URL",
+        "isLead": "Lead role",
         "remove": "Remove",
         "add": "+ Add cast member"
       },
@@ -51,13 +54,16 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Upload new trailer:",
         "producer": "Producer:",
-        "director": "Director:"
+        "producerAvatar": "Producer avatar (URL):",
+        "director": "Director:",
+        "directorAvatar": "Director avatar (URL):"
       },
       "cast": {
         "label": "Cast:",
         "name": "Name",
         "role": "Role",
         "avatarUrl": "Image URL",
+        "isLead": "Lead role",
         "remove": "Remove",
         "add": "+ Add cast member"
       },
@@ -94,7 +100,9 @@
       "countryRequired": "Country is required",
       "trailerRequired": "Trailer is required",
       "producerRequired": "Producer is required",
+      "producerAvatarInvalid": "Producer avatar URL is invalid",
       "directorRequired": "Director is required",
+      "directorAvatarInvalid": "Director avatar URL is invalid",
       "castNameRequired": "Cast member name is required",
       "castAvatarInvalid": "Cast avatar URL is invalid",
       "categoryRequired": "Select at least one category"
@@ -189,6 +197,7 @@
     "breadcrumb": "Cinemas",
     "headers": [
       "ID",
+      "Owner photo",
       "Cinema name",
       "Owner (ID)",
       "Address",

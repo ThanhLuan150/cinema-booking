@@ -3,6 +3,7 @@ import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/components/common/AuthCard';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
@@ -43,28 +44,24 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-main px-4 pb-16 pt-24">
+    <AuthCard title={t('register.title')}>
       <Formik<RegisterFormValues>
         initialValues={{ email: emailParam, password: '', c_password: '', role: `${ROLES.customer}` }}
         validate={toFormikValidate<RegisterFormValues>(registerSchema)}
         onSubmit={handleSubmit}
       >
         {(formik) => (
-          <Form className="mx-auto w-full max-w-lg rounded-2xl bg-white p-8 text-center text-main">
-            <h1 className="text-3xl font-bold">{t('register.title')}</h1>
-
-            <div className="mt-6 text-left">
-              <Field
-                as={Input}
-                label={t('register.emailLabel')}
-                type="email"
-                id="email"
-                name="email"
-                placeholder={t('register.emailPlaceholder')}
-                error={formik.touched.email ? formik.errors.email : undefined}
-              />
-            </div>
-            <div className="mt-4 text-left">
+          <Form>
+            <Field
+              as={Input}
+              label={t('register.emailLabel')}
+              type="email"
+              id="email"
+              name="email"
+              placeholder={t('register.emailPlaceholder')}
+              error={formik.touched.email ? formik.errors.email : undefined}
+            />
+            <div className="mt-4">
               <Field
                 as={Input}
                 label={t('register.passwordLabel')}
@@ -75,7 +72,7 @@ const Register = () => {
                 error={formik.touched.password ? formik.errors.password : undefined}
               />
             </div>
-            <div className="mt-4 text-left">
+            <div className="mt-4">
               <Field
                 as={Input}
                 label={t('register.confirmPasswordLabel')}
@@ -86,7 +83,7 @@ const Register = () => {
                 error={formik.touched.c_password ? formik.errors.c_password : undefined}
               />
             </div>
-            <div className="mt-4 text-left">
+            <div className="mt-4">
               <Field
                 as={Select}
                 label={t('register.accountTypeLabel')}
@@ -100,20 +97,20 @@ const Register = () => {
               />
             </div>
 
-            <p className="mt-4 text-sm">
-              {t('register.alreadyHaveAccount')}{' '}
-              <Link to={ROUTES.login} className="text-accent hover:underline">
-                {t('register.loginLink')}
-              </Link>
-            </p>
-
             <Button type="submit" loading={registerMutation.isPending} className="mt-6 w-full">
               {t('register.submit')}
             </Button>
+
+            <p className="mt-4 text-center text-sm text-txt/60">
+              {t('register.alreadyHaveAccount')}{' '}
+              <Link to={ROUTES.login} className="text-accent no-underline hover:underline">
+                {t('register.loginLink')}
+              </Link>
+            </p>
           </Form>
         )}
       </Formik>
-    </div>
+    </AuthCard>
   );
 };
 

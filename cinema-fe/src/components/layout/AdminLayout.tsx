@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
@@ -9,6 +9,7 @@ import { logout as logoutApi } from '@/features/auth/api/auth.api';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { toast } from '@/features/notifications/toast';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { Avatar } from '@/components/ui/Avatar';
 import { ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
 
@@ -18,7 +19,12 @@ export interface AdminLayoutProps {
 }
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  cn('flex items-center gap-2 hover:text-[#FFC107]/80', isActive ? 'text-[#FFC107]' : 'text-white hover:text-white/80');
+  cn(
+    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+    isActive
+      ? 'bg-accent/15 text-accent shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
+      : 'text-txt/70 hover:bg-white/5 hover:text-txt',
+  );
 
 export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   const { t } = useTranslation('common');
@@ -32,7 +38,7 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     setIsUserMenuOpen(false);
-    logoutApi().catch(() => {});
+    logoutApi().catch(() => { });
     dispatch(logout());
     queryClient.clear();
     toast.success(t('header.logoutSuccess'));
@@ -40,99 +46,118 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col font-sans lg:flex-row">
-      <div className="w-full shrink-0 bg-[#06121E] px-6 py-6 lg:w-1/6">
-        <a href={ROUTES.home} className="flex items-center gap-2">
-          <b className="font-script text-xl text-accent">CineNova</b>
-        </a>
-        <nav className="mt-10 flex flex-col gap-6 text-lg">
+    <div className="flex min-h-screen flex-col bg-main font-sans lg:flex-row">
+      <div className="flex w-full shrink-0 flex-col border-b border-border bg-surface px-4 py-6 lg:w-64 lg:border-b-0 lg:border-r">
+        <Link
+          to={isAdmin ? ROUTES.adminDashboard : ROUTES.ownerDashboard}
+          className="flex items-center gap-2 px-2 no-underline"
+        >
+          <i className="fa-solid fa-film text-lg text-accent" aria-hidden="true" />
+          <b className="font-script text-2xl leading-none text-txt">
+            {t('brand')}
+            <span className="text-accent">.</span>
+          </b>
+        </Link>
+        <nav className="mt-8 flex flex-col gap-1 text-sm">
+          <NavLink to={isAdmin ? ROUTES.adminDashboard : ROUTES.ownerDashboard} className={navLinkClass}>
+            <ion-icon name="stats-chart" />
+            {t('adminLayout.nav.dashboard')}
+          </NavLink>
           {isAdmin && (
             <NavLink to={ROUTES.adminUsers} className={navLinkClass}>
               <ion-icon name="person" />
-              <b>{t('adminLayout.nav.user')}</b>
+              {t('adminLayout.nav.user')}
             </NavLink>
           )}
-          <NavLink to={isAdmin ? ROUTES.adminDashboard : ROUTES.ownerDashboard} className={navLinkClass}>
-            <ion-icon name="stats-chart" />
-            <b>{t('adminLayout.nav.dashboard')}</b>
-          </NavLink>
           <NavLink to={ROUTES.adminMovies} className={navLinkClass}>
             <ion-icon name="play-circle" />
-            <b>{t('adminLayout.nav.films')}</b>
+            {t('adminLayout.nav.films')}
           </NavLink>
           <NavLink to={ROUTES.adminSchedules} className={navLinkClass}>
-            <i className="fa-solid fa-calendar-days" />
-            <b>{t('adminLayout.nav.schedule')}</b>
+            <i className="fa-solid fa-calendar-days w-[1.125rem] text-center" />
+            {t('adminLayout.nav.schedule')}
           </NavLink>
           <NavLink to={isAdmin ? ROUTES.adminCinemas : ROUTES.ownerCinemas} className={navLinkClass}>
             <ion-icon name="business" />
-            <b>{t('adminLayout.nav.cinemas')}</b>
+            {t('adminLayout.nav.cinemas')}
           </NavLink>
           <NavLink to={ROUTES.ownerRooms} className={navLinkClass}>
             <ion-icon name="grid" />
-            <b>{t('adminLayout.nav.rooms')}</b>
+            {t('adminLayout.nav.rooms')}
           </NavLink>
           <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
             <ion-icon name="fast-food" />
-            <b>{t('adminLayout.nav.combos')}</b>
+            {t('adminLayout.nav.combos')}
           </NavLink>
           <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>
             <ion-icon name="pricetag" />
-            <b>{t('adminLayout.nav.vouchers')}</b>
+            {t('adminLayout.nav.vouchers')}
           </NavLink>
           <NavLink to={ROUTES.ownerBookings} className={navLinkClass}>
             <ion-icon name="qr-code" />
-            <b>{t('adminLayout.nav.bookings')}</b>
+            {t('adminLayout.nav.bookings')}
           </NavLink>
           {isAdmin && (
             <>
+              <div className="my-2 border-t border-border" />
               <NavLink to={ROUTES.adminTransactions} className={navLinkClass}>
                 <ion-icon name="card" />
-                <b>{t('adminLayout.nav.transactions')}</b>
+                {t('adminLayout.nav.transactions')}
               </NavLink>
               <NavLink to={ROUTES.adminReviews} className={navLinkClass}>
                 <ion-icon name="star" />
-                <b>{t('adminLayout.nav.reviews')}</b>
+                {t('adminLayout.nav.reviews')}
               </NavLink>
             </>
           )}
         </nav>
       </div>
-      <div className="flex-1 bg-[#0B1A2A]">
-        <div className="flex items-center justify-end gap-3 p-4">
-          <LanguageSwitcher className="border-white/20 text-white/80" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-end gap-3 border-b border-border px-6 py-3">
+          <LanguageSwitcher />
           <div className="relative">
             <button
               type="button"
-              className="flex items-center gap-2 text-white hover:text-[#FFC107]"
+              className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 text-sm font-medium text-txt transition-colors hover:bg-white/5"
               onClick={() => setIsUserMenuOpen((open) => !open)}
               aria-label={t('adminLayout.toggleMenu')}
             >
-              <ion-icon name="person-circle" className="text-3xl" />
+              <Avatar src={user?.avatar} name={displayName} size="sm" />
               {displayName}
+              <i
+                className={cn(
+                  'fa-solid fa-chevron-down text-[10px] text-txt/60 transition-transform',
+                  isUserMenuOpen && 'rotate-180',
+                )}
+              />
             </button>
             {isUserMenuOpen && (
-              <ul className="absolute right-0 top-full z-10 mt-2 w-40 bg-[#06121E]">
-                <li className="p-2 text-white">{displayName}</li>
-                <li className="p-2">
-                  <a href="#" onClick={handleLogout} className="text-white no-underline hover:text-[#FFC107]">
+              <ul className="absolute right-0 top-full z-10 mt-2 w-44 rounded-lg border border-border-strong bg-surface-raised p-1.5 shadow-raised">
+                <li className="px-3 py-2 text-sm font-medium text-txt/60">{displayName}</li>
+                <li className="border-t border-border pt-1">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full rounded-md px-3 py-2 text-left text-sm text-red-400 transition-colors hover:bg-red-500/10"
+                  >
+                    <i className="fa-solid fa-right-from-bracket mr-2 w-4" />
                     {t('header.logout')}
-                  </a>
+                  </button>
                 </li>
               </ul>
             )}
           </div>
         </div>
-        <div className="flex h-12 items-center gap-2 bg-[#858C94] px-4">
-          <span className="text-white">{t('adminLayout.breadcrumbPrefix')}</span>
-          <span className="text-white">/</span>
-          <span className="text-[#FFC107]">{breadcrumb}</span>
-          <div className="ml-auto flex items-center gap-2">
-            <span className="text-main">{t('adminLayout.hello')}</span>
-            <span className="text-[aliceblue]">{displayName}</span>
+        <div className="flex h-12 items-center gap-2 border-b border-border bg-surface/60 px-6 text-sm">
+          <span className="text-txt/50">{t('adminLayout.breadcrumbPrefix')}</span>
+          <i className="fa-solid fa-chevron-right text-[10px] text-accent" />
+          <span className="font-medium text-accent">{breadcrumb}</span>
+          <div className="ml-auto flex items-center gap-1.5 text-txt/60">
+            <span>{t('adminLayout.hello')}</span>
+            <span className="font-medium text-txt">{displayName}</span>
           </div>
         </div>
-        <div className="p-8">{children}</div>
+        <div className="p-6 md:p-8">{children}</div>
       </div>
     </div>
   );

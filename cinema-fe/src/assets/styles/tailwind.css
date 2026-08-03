@@ -7,10 +7,17 @@
 
 @layer base {
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
   }
   body {
-    @apply bg-main text-txt;
+    @apply bg-main text-txt antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(193, 18, 31, 0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(242, 183, 5, 0.05), transparent);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-accent/40 text-txt;
   }
   input[type='checkbox'],
   input[type='radio'] {
@@ -21,8 +28,10 @@
   }
 }
 
-/* react-slick centers the track when there are fewer slides than slidesToShow; keep it left-aligned */
-.slick-track {
+/* react-slick centers the track when there are fewer slides than slidesToShow; keep it left-aligned.
+   Selector is deliberately more specific than slick.css's `.slick-track` rule, since slick.css is
+   imported inside slider components (after this file) and would otherwise win on source order. */
+.slick-slider .slick-track {
   margin-left: 0;
   margin-right: 0;
 }

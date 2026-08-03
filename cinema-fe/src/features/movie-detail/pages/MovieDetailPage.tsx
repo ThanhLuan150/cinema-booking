@@ -10,7 +10,7 @@ const MovieDetailPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-main">
       <Header />
-      <div className="flex-1 pt-24">
+      <div className="flex-1 pt-20">
         <BannerDetail />
         <CastSection />
         <DetailTrailer />

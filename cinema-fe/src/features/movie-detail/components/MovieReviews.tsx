@@ -118,14 +118,14 @@ const MovieReviews = () => {
   };
 
   return (
-    <div className="mx-auto w-4/5 py-8">
-      <h5 className="mb-2 text-2xl text-white">
-        {t('reviews.title')} {count > 0 && <span className="text-base text-txt/70">({t('reviews.ratingSummary', { average, count })})</span>}
-      </h5>
+    <div className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
+      <h2 className="mb-2 text-xl font-bold text-white">
+        {t('reviews.title')} {count > 0 && <span className="text-base font-normal text-txt/60">({t('reviews.ratingSummary', { average, count })})</span>}
+      </h2>
 
       <Formik<ReviewFormValues> initialValues={{ reviewRating: MAX_RATING, reviewComment: '' }} onSubmit={handleSubmit}>
         {(formik) => (
-          <Form className="mt-4 rounded-lg bg-white/5 p-4">
+          <Form className="mt-5 rounded-xl border border-border bg-surface p-5 shadow-card">
             <div className="flex items-center gap-3">
               <span className="text-sm text-txt/70">{t('reviews.ratingLabel')}</span>
               <StarRatingInput
@@ -137,7 +137,7 @@ const MovieReviews = () => {
               as="textarea"
               name="reviewComment"
               placeholder={t('reviews.commentPlaceholder')}
-              className="mt-3 w-full rounded-md border border-txt/30 bg-white px-3 py-2 text-main"
+              className="mt-3 w-full rounded-lg border border-border-strong bg-surface-soft px-3 py-2.5 text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
               rows={3}
               onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
                 if (e.key === 'Enter' && !e.shiftKey && !postReviewMutation.isPending) {
@@ -149,7 +149,7 @@ const MovieReviews = () => {
             <button
               type="submit"
               disabled={postReviewMutation.isPending}
-              className="mt-3 rounded bg-accent px-4 py-2 text-sm text-white disabled:opacity-50"
+              className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-card transition-colors hover:bg-accent-hover disabled:opacity-50"
             >
               {t('reviews.submit')}
             </button>
@@ -157,7 +157,7 @@ const MovieReviews = () => {
         )}
       </Formik>
 
-      <div className="mt-6 flex flex-col gap-4">
+      <div className="mt-8 flex flex-col gap-4">
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Spinner size="md" />
@@ -194,7 +194,7 @@ const MovieReviews = () => {
           <button
             type="button"
             onClick={() => setVisibleCount((v) => v + PAGE_SIZE)}
-            className="self-center rounded px-4 py-2 text-sm font-medium text-txt/70 hover:bg-white/10"
+            className="self-center rounded-lg border border-border-strong px-4 py-2 text-sm font-medium text-txt/70 transition-colors hover:border-accent hover:text-accent"
           >
             {t('reviews.loadMore')}
           </button>

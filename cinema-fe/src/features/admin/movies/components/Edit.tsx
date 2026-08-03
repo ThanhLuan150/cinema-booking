@@ -30,7 +30,9 @@ const emptyValues = (): EditMovieFormValues => ({
   country: '',
   trailer: '',
   producer: '',
+  producerAvatar: '',
   director: '',
+  directorAvatar: '',
   cast: [],
   categoryIds: [],
 });
@@ -58,8 +60,16 @@ function Edit() {
         country: movie.country,
         trailer: movie.trailer,
         producer: movie.producer ?? '',
+        producerAvatar: movie.producerAvatar ?? '',
         director: movie.director ?? '',
-        cast: movie.cast?.map((member) => ({ name: member.name, role: member.role ?? '', avatar: member.avatar ?? '' })) ?? [],
+        directorAvatar: movie.directorAvatar ?? '',
+        cast:
+          movie.cast?.map((member) => ({
+            name: member.name,
+            role: member.role ?? '',
+            avatar: member.avatar ?? '',
+            isLead: member.isLead ?? false,
+          })) ?? [],
         categoryIds: movieCategoryIds ?? [],
       }
     : emptyValues();
@@ -98,7 +108,14 @@ function Edit() {
           };
 
           const addCastRow = () => {
-            formik.setFieldValue('cast', [...formik.values.cast, { name: '', role: '', avatar: '' }]);
+            formik.setFieldValue('cast', [...formik.values.cast, { name: '', role: '', avatar: '', isLead: false }]);
+          };
+
+          const toggleCastLead = (index: number) => {
+            const cast = formik.values.cast.map((member, i) =>
+              i === index ? { ...member, isLead: !member.isLead } : member,
+            );
+            formik.setFieldValue('cast', cast);
           };
 
           const removeCastRow = (index: number) => {
@@ -200,15 +217,33 @@ function Edit() {
               />
               <Field
                 as={Input}
+                label={t('movies.edit.fields.producerAvatar')}
+                type="text"
+                name="producerAvatar"
+                id="producerAvatar"
+                className="mt-2 border-l-2 border-border pl-3"
+                error={getError('producerAvatar')}
+              />
+              <Field
+                as={Input}
                 label={t('movies.edit.fields.director')}
                 type="text"
                 name="director"
                 id="director"
-                className="mt-3"
+                className="mt-5"
                 error={getError('director')}
               />
+              <Field
+                as={Input}
+                label={t('movies.edit.fields.directorAvatar')}
+                type="text"
+                name="directorAvatar"
+                id="directorAvatar"
+                className="mt-2 border-l-2 border-border pl-3"
+                error={getError('directorAvatar')}
+              />
 
-              <label className="mb-1 mt-3 block text-sm font-medium">{t('movies.edit.cast.label')}</label>
+              <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.edit.cast.label')}</label>
               <div className="flex flex-col gap-4">
                 {formik.values.cast.map((member, index) => (
                   <div key={index} className="flex flex-col gap-2 rounded-md border border-txt/10 p-3">
@@ -232,6 +267,10 @@ function Edit() {
                       onChange={(e) => updateCastRow(index, 'avatar', e.target.value)}
                       error={getError(`cast.${index}.avatar`)}
                     />
+                    <label className="flex items-center gap-1.5 text-sm">
+                      <input type="checkbox" checked={member.isLead} onChange={() => toggleCastLead(index)} />
+                      <span>{t('movies.edit.cast.isLead')}</span>
+                    </label>
                     <Button type="button" variant="ghost" size="sm" onClick={() => removeCastRow(index)} className="self-end">
                       {t('movies.edit.cast.remove')}
                     </Button>

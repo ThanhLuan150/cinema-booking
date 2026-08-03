@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
@@ -13,7 +14,11 @@ describe('BannerSlider', () => {
 
   it('renders nothing when there are no movies', () => {
     useMoviesMock.mockReturnValue({ data: { data: [] } });
-    const { container } = render(<Banner />);
+    const { container } = render(
+      <MemoryRouter>
+        <Banner />
+      </MemoryRouter>,
+    );
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -21,7 +26,11 @@ describe('BannerSlider', () => {
     useMoviesMock.mockReturnValue({
       data: { data: [{ id: 1, name: 'Movie A', description: 'Desc', avatar: '', categories: [] }] },
     });
-    render(<Banner />);
+    render(
+      <MemoryRouter>
+        <Banner />
+      </MemoryRouter>,
+    );
     expect(screen.getByText('Movie A')).toBeInTheDocument();
     expect(screen.getByText('Desc')).toBeInTheDocument();
   });

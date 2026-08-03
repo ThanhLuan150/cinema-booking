@@ -50,7 +50,7 @@ function BookingLookup() {
       {error && <p className="mt-4 text-red-400">{error}</p>}
 
       {invoice && (
-        <div className="mt-6 max-w-md rounded-lg bg-white/5 p-4 text-white">
+        <div className="mt-6 max-w-md rounded-xl border border-border bg-surface p-5 text-white shadow-card">
           <p>
             <b>{t('bookingsLookup.ticketCode')}</b> {invoice.code}
           </p>

@@ -17,18 +17,20 @@ const HomePage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-main">
       <Header />
-      <div className={cn('flex-1', !hasBanner && 'pt-24')}>
+      <div className={cn('flex-1', !hasBanner && 'pt-20')}>
         {isLoading ? (
-          <div className="flex min-h-[60vh] items-center justify-center w-100">
+          <div className="flex min-h-[70vh] w-full items-center justify-center">
             <Spinner size="lg" />
           </div>
         ) : (
           <>
             <Banner />
-            <Trend />
-            <New />
-            <Upcoming />
-            <TopCinemas />
+            <div className="divide-y divide-border">
+              <Trend />
+              <New />
+              <Upcoming />
+              <TopCinemas />
+            </div>
           </>
         )}
       </div>

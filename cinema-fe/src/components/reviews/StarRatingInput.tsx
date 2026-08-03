@@ -19,7 +19,7 @@ export function StarRatingInput({ value, onChange, max = MAX_RATING }: StarRatin
           type="button"
           onClick={() => onChange(star)}
           onMouseEnter={() => setHover(star)}
-          className="text-2xl leading-none text-accent transition-transform hover:scale-110"
+          className="text-2xl leading-none text-gold transition-transform hover:scale-110"
           aria-label={`${star} star${star > 1 ? 's' : ''}`}
         >
           {star <= display ? '★' : '☆'}

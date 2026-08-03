@@ -24,7 +24,9 @@
         "description": "Описание:",
         "trailer": "Трейлер:",
         "producer": "Продюсер:",
-        "director": "Режиссёр:"
+        "director": "Режиссёр:",
+        "producerAvatar": "Фото продюсера (URL):",
+        "directorAvatar": "Фото режиссёра (URL):"
       },
       "cast": {
         "label": "Актёрский состав:",
@@ -32,7 +34,8 @@
         "role": "Роль",
         "avatarUrl": "URL изображения",
         "remove": "Удалить",
-        "add": "+ Добавить актёра"
+        "add": "+ Добавить актёра",
+        "isLead": "Главная роль"
       },
       "category": "Категория:",
       "submit": "Добавить",
@@ -51,7 +54,9 @@
         "trailer": "Трейлер:",
         "uploadNewTrailer": "Загрузить новый трейлер:",
         "producer": "Продюсер:",
-        "director": "Режиссёр:"
+        "director": "Режиссёр:",
+        "producerAvatar": "Фото продюсера (URL):",
+        "directorAvatar": "Фото режиссёра (URL):"
       },
       "cast": {
         "label": "Актёрский состав:",
@@ -59,7 +64,8 @@
         "role": "Роль",
         "avatarUrl": "URL изображения",
         "remove": "Удалить",
-        "add": "+ Добавить актёра"
+        "add": "+ Добавить актёра",
+        "isLead": "Главная роль"
       },
       "category": "Категория:",
       "submit": "Обновить",
@@ -97,7 +103,9 @@
       "directorRequired": "Режиссёр обязателен",
       "castNameRequired": "Имя актёра обязательно",
       "castAvatarInvalid": "Некорректная ссылка на фото актёра",
-      "categoryRequired": "Выберите хотя бы одну категорию"
+      "categoryRequired": "Выберите хотя бы одну категорию",
+      "producerAvatarInvalid": "Недействительный URL фото продюсера",
+      "directorAvatarInvalid": "Недействительный URL фото режиссёра"
     }
   },
   "schedules": {
@@ -189,6 +197,7 @@
     "breadcrumb": "Кинотеатры",
     "headers": [
       "ID",
+      "Фото владельца",
       "Название кинотеатра",
       "Владелец (ID)",
       "Адрес",
