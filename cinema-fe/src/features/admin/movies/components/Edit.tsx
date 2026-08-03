@@ -150,14 +150,14 @@ function Edit() {
                 name="avatar"
                 disabled
                 value={formik.values.avatar}
-                className="mt-3"
+                className="mt-4"
                 error={getError('avatar')}
               />
               <Input
                 label={t('movies.edit.fields.uploadNewAvatar')}
                 type="file"
                 name="up_avatar"
-                className="mt-3"
+                className="mt-4"
                 onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
               />
               <Field
@@ -166,7 +166,7 @@ function Edit() {
                 type="date"
                 name="premiere_date"
                 id="premiere_date"
-                className="mt-3"
+                className="mt-4"
                 error={getError('premiere_date')}
               />
               <Field
@@ -175,7 +175,7 @@ function Edit() {
                 type="text"
                 name="country"
                 id="country"
-                className="mt-3"
+                className="mt-4"
                 error={getError('country')}
               />
               <Field
@@ -185,7 +185,7 @@ function Edit() {
                 cols={50}
                 name="description"
                 id="description"
-                className="mt-3"
+                className="mt-4"
                 error={getError('description')}
               />
               <Input
@@ -195,7 +195,7 @@ function Edit() {
                 id="trailer"
                 disabled
                 value={formik.values.trailer}
-                className="mt-3"
+                className="mt-4"
                 error={getError('trailer')}
               />
               <Input
@@ -203,7 +203,7 @@ function Edit() {
                 type="file"
                 name="up_trailer"
                 accept="image/*,video/*"
-                className="mt-3"
+                className="mt-4"
                 onChange={(e) => setTrailerFile(e.target.files?.[0] ?? null)}
               />
               <Field
@@ -212,7 +212,7 @@ function Edit() {
                 type="text"
                 name="producer"
                 id="producer"
-                className="mt-3"
+                className="mt-4"
                 error={getError('producer')}
               />
               <Field
@@ -281,7 +281,7 @@ function Edit() {
                 </Button>
               </div>
 
-              <label htmlFor="name" className="mb-1 mt-3 block text-sm font-medium">
+              <label htmlFor="name" className="mb-1 mt-5 block text-sm font-medium">
                 {t('movies.edit.category')}
               </label>
               <div className="flex flex-wrap gap-4">
