@@ -15,7 +15,7 @@ describe('TopCinemasSlider', () => {
   it('renders nothing when there are no cinemas', () => {
     useTopCinemasMock.mockReturnValue({ data: [] });
     const { container } = render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TopCinemas />
       </MemoryRouter>,
     );
@@ -27,7 +27,7 @@ describe('TopCinemasSlider', () => {
       data: [{ id: 1, name: 'Cinema A', address: 'Addr', city: 'HN', avgRating: 4.5, bookingCount: 10, images: [] }],
     });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TopCinemas />
       </MemoryRouter>,
     );

@@ -15,7 +15,7 @@ describe('BannerSlider', () => {
   it('renders nothing when there are no movies', () => {
     useMoviesMock.mockReturnValue({ data: { data: [] } });
     const { container } = render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Banner />
       </MemoryRouter>,
     );
@@ -27,7 +27,7 @@ describe('BannerSlider', () => {
       data: { data: [{ id: 1, name: 'Movie A', description: 'Desc', avatar: '', categories: [] }] },
     });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Banner />
       </MemoryRouter>,
     );

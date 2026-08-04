@@ -63,12 +63,14 @@ describe('VerifyCodePage', () => {
   });
 
   it('shows an error message when verification fails', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     verifyCodeMock.mockRejectedValue({ response: { data: { code: 'OTP_INVALID_OR_EXPIRED' } } });
     renderPage();
     const inputs = screen.getAllByPlaceholderText('0');
     '000000'.split('').forEach((digit, i) => fireEvent.change(inputs[i], { target: { value: digit } }));
     fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
     expect(await screen.findByText('Verification code is invalid or has expired')).toBeInTheDocument();
+    consoleErrorSpy.mockRestore();
   });
 
   it('resends the code when the resend button is clicked', async () => {

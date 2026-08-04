@@ -15,7 +15,7 @@ describe('NewMoviesSlider', () => {
   it('shows an empty state when there are no movies', () => {
     useMoviesMock.mockReturnValue({ data: { data: [] } });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <New />
       </MemoryRouter>,
     );
@@ -32,7 +32,7 @@ describe('NewMoviesSlider', () => {
       },
     });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <New />
       </MemoryRouter>,
     );

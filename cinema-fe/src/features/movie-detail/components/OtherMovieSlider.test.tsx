@@ -17,7 +17,7 @@ describe('OtherMovieSlider', () => {
       data: { data: [{ id: 1, name: 'Future', premiere_date: '2099-01-01', avatar: '', categories: [] }] },
     });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <OtherSlider />
       </MemoryRouter>,
     );
@@ -29,7 +29,7 @@ describe('OtherMovieSlider', () => {
       data: { data: [{ id: 1, name: 'Released', premiere_date: '2020-01-01', avatar: '', categories: [] }] },
     });
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <OtherSlider />
       </MemoryRouter>,
     );
