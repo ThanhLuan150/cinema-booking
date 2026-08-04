@@ -14,6 +14,12 @@ vi.mock('../hooks/useBookTicketSchedules', () => ({
   useBookTicketSchedules: (...args: unknown[]) => useBookTicketSchedulesMock(...args),
 }));
 
+vi.mock('@/features/movies/hooks/useMovieDetail', () => ({
+  useMovieDetail: () => ({ data: { id: 5, name: 'Movie A' } }),
+}));
+
+vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+
 import BookTicketPage from './BookTicketPage';
 
 function renderPage(entry = '/BookTicket/5') {

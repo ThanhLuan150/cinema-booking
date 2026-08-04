@@ -55,10 +55,14 @@ describe('apiClient response interceptor (401 refresh)', () => {
     store.dispatch(login({ accessToken: 'old-tok', userId: '1', role: '1', account: {} }));
     vi.spyOn(axios, 'post').mockResolvedValue({ data: { accessToken: 'new-access-token' } });
 
+    // Stub the adapter so the retried request never hits the real network.
+    const originalAdapter = apiClient.defaults.adapter;
+    apiClient.defaults.adapter = vi.fn().mockRejectedValue(new Error('network mocked'));
+
     const error = { config: { url: '/user', headers: {} }, response: { status: 401 } };
-    // The retried request itself hits the network in this test env and will reject;
-    // we only assert the refresh side-effects happened before that.
     await rejectedHandler()(error).catch(() => {});
+
+    apiClient.defaults.adapter = originalAdapter;
 
     expect(store.getState().auth.accessToken).toBe('new-access-token');
     expect(error.config._retry).toBe(true);
