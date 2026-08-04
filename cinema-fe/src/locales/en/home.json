@@ -7,17 +7,23 @@
     "bookNow": "Book Now",
     "viewDetails": "View Details"
   },
-  "trendingMoviesSlider": {
-    "title": "Trending",
-    "viewDetails": "View Details"
+  "quickBooking": {
+    "title": "Quick Booking",
+    "cinema": "Select cinema",
+    "movie": "Select movie",
+    "date": "Select date",
+    "time": "Select showtime",
+    "noMovie": "No movie available",
+    "noTime": "No showtime available",
+    "submit": "Book Now"
   },
-  "newMoviesSlider": {
-    "title": "New",
-    "viewDetails": "View Details"
-  },
-  "upcomingMoviesSlider": {
-    "title": "Upcoming",
-    "viewDetails": "View Details"
+  "movieTabs": {
+    "title": "Movies",
+    "playing": "Now Showing",
+    "new": "New Movies",
+    "upcoming": "Coming Soon",
+    "viewDetails": "View Details",
+    "viewMore": "View More"
   },
   "topCinemasSlider": {
     "title": "Top Cinemas",

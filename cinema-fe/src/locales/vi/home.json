@@ -7,17 +7,23 @@
     "bookNow": "Đặt vé ngay",
     "viewDetails": "Xem chi tiết"
   },
-  "trendingMoviesSlider": {
-    "title": "Đang thịnh hành",
-    "viewDetails": "Xem chi tiết"
+  "quickBooking": {
+    "title": "Đặt vé nhanh",
+    "cinema": "Chọn rạp",
+    "movie": "Chọn phim",
+    "date": "Chọn ngày",
+    "time": "Chọn suất",
+    "noMovie": "Không có phim phù hợp",
+    "noTime": "Chưa có suất chiếu",
+    "submit": "Đặt ngay"
   },
-  "newMoviesSlider": {
-    "title": "Mới",
-    "viewDetails": "Xem chi tiết"
-  },
-  "upcomingMoviesSlider": {
-    "title": "Sắp chiếu",
-    "viewDetails": "Xem chi tiết"
+  "movieTabs": {
+    "title": "Phim",
+    "playing": "Đang chiếu",
+    "new": "Phim mới",
+    "upcoming": "Sắp chiếu",
+    "viewDetails": "Xem chi tiết",
+    "viewMore": "Xem thêm"
   },
   "topCinemasSlider": {
     "title": "Rạp nổi bật",

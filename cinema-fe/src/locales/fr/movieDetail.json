@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "N/A",
-    "bookNow": "Réserver maintenant"
-  },
-  "castSection": {
+    "bookNow": "Réserver maintenant",
+    "breadcrumbMovies": "Films",
+    "releaseDate": "Date de sortie",
+    "genre": "Catégorie",
+    "country": "Pays",
     "director": "Réalisateur",
-    "producer": "Producteur",
     "cast": "Distribution",
-    "leadLabel": "Rôle principal",
-    "crew": "Réalisateur et producteur"
+    "content": "Synopsis",
+    "showtimes": "Séances",
+    "producer": "Producteur",
+    "watchTrailer": "Voir la bande-annonce",
+    "voteCount": "{{count}} votes"
   },
   "reviews": {
     "title": "Avis",
@@ -50,12 +54,16 @@
     "loadMore": "Voir plus d'avis",
     "viewMoreReplies": "Voir {{count}} réponses de plus"
   },
-  "otherMovieSlider": {
-    "trending": "Tendances",
-    "moreDetails": "Plus de détails",
-    "empty": "Aucun film tendance pour le moment"
-  },
   "detailTrailer": {
     "title": "Bande-annonce"
+  },
+  "showtimes": {
+    "timesLabel": "Séances",
+    "empty": "Aucune séance pour ce film pour le moment",
+    "loginPrompt": "Connectez-vous pour voir les séances et choisir vos sièges"
+  },
+  "nowShowing": {
+    "title": "À l'affiche",
+    "buyTicket": "Acheter un billet"
   }
 }

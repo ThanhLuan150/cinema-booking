@@ -1,23 +1,20 @@
-import { cn } from '@/lib/cn';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Spinner } from '@/components/ui/Spinner';
 import { useMovies } from '@/features/movies/hooks/useMovies';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import Banner from '../components/BannerSlider';
-import New from '../components/NewMoviesSlider';
-import Trend from '../components/TrendingMoviesSlider';
-import Upcoming from '../components/UpcomingMoviesSlider';
-import TopCinemas from '../components/TopCinemasSlider';
+import QuickBooking from '../components/QuickBooking';
+import MovieTabs from '../components/MovieTabsSection';
+import TopCinemas from '../components/TopCinemasSection';
 
 const HomePage = () => {
-  const { data, isLoading } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
-  const hasBanner = !isLoading && (data?.data.length ?? 0) > 0;
+  const { isLoading } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
 
   return (
     <div className="flex min-h-screen flex-col bg-main">
       <Header />
-      <div className={cn('flex-1', !hasBanner && 'pt-20')}>
+      <div className="flex-1 pt-20">
         {isLoading ? (
           <div className="flex min-h-[70vh] w-full items-center justify-center">
             <Spinner size="lg" />
@@ -25,10 +22,9 @@ const HomePage = () => {
         ) : (
           <>
             <Banner />
+            <QuickBooking />
             <div className="divide-y divide-border">
-              <Trend />
-              <New />
-              <Upcoming />
+              <MovieTabs />
               <TopCinemas />
             </div>
           </>

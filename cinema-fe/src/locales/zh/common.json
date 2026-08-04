@@ -5,7 +5,8 @@
     "movies": "电影",
     "playing": "正在热映",
     "upcoming": "即将上映",
-    "cinemas": "影院"
+    "cinemas": "影院",
+    "allCinemas": "所有影院"
   },
   "header": {
     "toggleMenu": "切换菜单",
@@ -17,7 +18,8 @@
     "manage": "管理后台",
     "logout": "退出登录",
     "login": "登录",
-    "logoutSuccess": "退出登录成功"
+    "logoutSuccess": "退出登录成功",
+    "bookNow": "立即订票"
   },
   "footer": {
     "tagline": "我们承诺为您提供高品质、放心的购票体验。",
@@ -34,7 +36,9 @@
     "contact": "联系方式",
     "newsletter": "订阅我们的新闻简报，获取最新资讯。",
     "emailPlaceholder": "请输入邮箱",
-    "send": "发送"
+    "send": "发送",
+    "followUs": "关注我们",
+    "companyInfo": "CineNova 影院系统"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "返回",
     "viewAll": "查看全部",
     "tryAgain": "重试",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "buyTicket": "购票"
   },
   "feedback": {
     "noData": "暂无数据。",
@@ -83,5 +88,8 @@
     "previous": "上一页",
     "next": "下一页",
     "pageInfo": "第 {{page}} / {{totalPages}} 页"
+  },
+  "movieCard": {
+    "releasesOn": "{{date}} 上映"
   }
 }

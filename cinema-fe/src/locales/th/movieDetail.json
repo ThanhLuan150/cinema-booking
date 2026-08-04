@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "ไม่มีข้อมูล",
-    "bookNow": "จองเลย"
-  },
-  "castSection": {
+    "bookNow": "จองเลย",
+    "breadcrumbMovies": "ภาพยนตร์",
+    "releaseDate": "วันเข้าฉาย",
+    "genre": "หมวดหมู่",
+    "country": "ประเทศ",
     "director": "ผู้กำกับ",
-    "producer": "ผู้อำนวยการสร้าง",
     "cast": "นักแสดง",
-    "leadLabel": "บทบาทนำ",
-    "crew": "ผู้กำกับและผู้อำนวยการสร้าง"
+    "content": "เรื่องย่อ",
+    "showtimes": "รอบฉาย",
+    "producer": "ผู้อำนวยการสร้าง",
+    "watchTrailer": "ดูตัวอย่าง",
+    "voteCount": "{{count}} รีวิว"
   },
   "reviews": {
     "title": "รีวิว",
@@ -50,12 +54,16 @@
     "loadMore": "ดูรีวิวเพิ่มเติม",
     "viewMoreReplies": "ดูการตอบกลับอีก {{count}} รายการ"
   },
-  "otherMovieSlider": {
-    "trending": "กำลังมาแรง",
-    "moreDetails": "ดูรายละเอียดเพิ่มเติม",
-    "empty": "ขณะนี้ยังไม่มีภาพยนตร์กำลังมาแรง"
-  },
   "detailTrailer": {
     "title": "ตัวอย่างหนัง"
+  },
+  "showtimes": {
+    "timesLabel": "รอบฉาย",
+    "empty": "ยังไม่มีรอบฉายสำหรับภาพยนตร์นี้",
+    "loginPrompt": "เข้าสู่ระบบเพื่อดูรอบฉายและเลือกที่นั่ง"
+  },
+  "nowShowing": {
+    "title": "กำลังฉายอยู่ในขณะนี้",
+    "buyTicket": "ซื้อตั๋ว"
   }
 }

@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "选择场次",
+    "seat": "选座",
+    "payment": "支付",
+    "done": "确认"
+  },
   "bookSeat": {
     "defaultTitle": "选座",
     "screen": "银幕",
@@ -29,7 +35,9 @@
       "testAccountTitle": "使用 MoMo 测试账号登录",
       "testAccountDescription": "打开 MoMo 支付页面，使用测试账号手机号登录。",
       "openButton": "打开 MoMo 支付页面"
-    }
+    },
+    "summaryTitle": "订票信息",
+    "totalLabel": "合计"
   },
   "bookTicket": {
     "pageTitle": "购票",

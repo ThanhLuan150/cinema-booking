@@ -7,17 +7,23 @@
     "bookNow": "今すぐ予約",
     "viewDetails": "詳細を見る"
   },
-  "trendingMoviesSlider": {
-    "title": "話題の映画",
-    "viewDetails": "詳細を見る"
+  "quickBooking": {
+    "title": "クイック予約",
+    "cinema": "劇場を選択",
+    "movie": "映画を選択",
+    "date": "日付を選択",
+    "time": "上映時間を選択",
+    "noMovie": "該当する映画がありません",
+    "noTime": "上映時間がありません",
+    "submit": "予約する"
   },
-  "newMoviesSlider": {
-    "title": "新着",
-    "viewDetails": "詳細を見る"
-  },
-  "upcomingMoviesSlider": {
-    "title": "公開予定",
-    "viewDetails": "詳細を見る"
+  "movieTabs": {
+    "title": "映画",
+    "playing": "上映中",
+    "new": "新作映画",
+    "upcoming": "近日公開",
+    "viewDetails": "詳細を見る",
+    "viewMore": "もっと見る"
   },
   "topCinemasSlider": {
     "title": "人気の映画館",

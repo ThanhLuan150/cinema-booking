@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "Сеанс",
+    "seat": "Места",
+    "payment": "Оплата",
+    "done": "Подтверждение"
+  },
   "bookSeat": {
     "defaultTitle": "Выбор мест",
     "screen": "Экран",
@@ -29,7 +35,9 @@
       "testAccountTitle": "Войти с помощью тестового аккаунта MoMo",
       "testAccountDescription": "Откройте страницу оплаты MoMo и войдите, указав номер телефона тестового аккаунта.",
       "openButton": "Открыть страницу оплаты MoMo"
-    }
+    },
+    "summaryTitle": "Детали заказа",
+    "totalLabel": "Итого"
   },
   "bookTicket": {
     "pageTitle": "Бронирование билета",

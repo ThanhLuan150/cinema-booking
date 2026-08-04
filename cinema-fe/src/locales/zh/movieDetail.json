@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "暂无",
-    "bookNow": "立即购票"
-  },
-  "castSection": {
+    "bookNow": "立即购票",
+    "breadcrumbMovies": "电影",
+    "releaseDate": "上映日期",
+    "genre": "类型",
+    "country": "国家",
     "director": "导演",
-    "producer": "制片人",
     "cast": "演员阵容",
-    "leadLabel": "主演",
-    "crew": "导演与制片人"
+    "content": "剧情简介",
+    "showtimes": "放映时间",
+    "producer": "制片人",
+    "watchTrailer": "观看预告片",
+    "voteCount": "{{count}} 条评分"
   },
   "reviews": {
     "title": "影评",
@@ -50,12 +54,16 @@
     "loadMore": "查看更多评价",
     "viewMoreReplies": "查看另外 {{count}} 条回复"
   },
-  "otherMovieSlider": {
-    "trending": "热门电影",
-    "moreDetails": "查看详情",
-    "empty": "暂无热门电影"
-  },
   "detailTrailer": {
     "title": "预告片"
+  },
+  "showtimes": {
+    "timesLabel": "场次",
+    "empty": "该影片暂无场次",
+    "loginPrompt": "登录后查看场次并选座"
+  },
+  "nowShowing": {
+    "title": "正在热映",
+    "buyTicket": "购票"
   }
 }

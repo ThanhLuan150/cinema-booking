@@ -6,7 +6,8 @@
     "statusPending": "Ожидает одобрения",
     "statusActive": "Работает",
     "statusPaused": "Временно закрыт",
-    "viewShowtimes": "Смотреть сеансы"
+    "viewShowtimes": "Смотреть сеансы",
+    "breadcrumbCinemas": "Кинотеатры"
   },
   "moviesSection": {
     "title": "Сейчас идут в этом кинотеатре",

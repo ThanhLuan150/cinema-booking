@@ -2,7 +2,9 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+}));
 vi.mock('@/features/movies/components/Like', () => ({ default: () => <button>Like</button> }));
 
 const useMovieDetailMock = vi.fn();
@@ -10,11 +12,18 @@ vi.mock('@/features/movies/hooks/useMovieDetail', () => ({
   useMovieDetail: (...args: unknown[]) => useMovieDetailMock(...args),
 }));
 
+vi.mock('../hooks/useMovieReviews', () => ({
+  useMovieReviews: () => ({ data: { reviews: [], average: 0, count: 0 } }),
+}));
+
 import BannerDetail from './BannerDetail';
 
 function renderWithId() {
   return render(
-    <MemoryRouter initialEntries={['/Detail/5']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      initialEntries={['/Detail/5']}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <Routes>
         <Route path="/Detail/:id" element={<BannerDetail />} />
       </Routes>
@@ -33,7 +42,15 @@ describe('BannerDetail', () => {
 
   it('renders the movie name and description once loaded', () => {
     useMovieDetailMock.mockReturnValue({
-      data: { id: 5, name: 'Movie A', description: 'Desc', premiere_date: '2026-01-01', country: 'US', avatar: '', categories: [] },
+      data: {
+        id: 5,
+        name: 'Movie A',
+        description: 'Desc',
+        premiere_date: '2026-01-01',
+        country: 'US',
+        avatar: '',
+        categories: [],
+      },
     });
     renderWithId();
     expect(screen.getByText('Movie A')).toBeInTheDocument();

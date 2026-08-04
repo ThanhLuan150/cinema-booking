@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "Chọn suất",
+    "seat": "Chọn ghế",
+    "payment": "Thanh toán",
+    "done": "Xác nhận"
+  },
   "bookSeat": {
     "defaultTitle": "Chọn ghế",
     "screen": "Màn hình",
@@ -29,7 +35,9 @@
       "testAccountTitle": "Nhập tài khoản MoMo test",
       "testAccountDescription": "Mở trang thanh toán MoMo và đăng nhập bằng số điện thoại tài khoản test.",
       "openButton": "Mở trang thanh toán MoMo"
-    }
+    },
+    "summaryTitle": "Thông tin đặt vé",
+    "totalLabel": "Tổng cộng"
   },
   "bookTicket": {
     "pageTitle": "Đặt vé",

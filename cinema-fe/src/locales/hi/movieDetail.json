@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "उपलब्ध नहीं",
-    "bookNow": "अभी बुक करें"
-  },
-  "castSection": {
+    "bookNow": "अभी बुक करें",
+    "breadcrumbMovies": "फ़िल्में",
+    "releaseDate": "रिलीज़ तिथि",
+    "genre": "श्रेणी",
+    "country": "देश",
     "director": "निर्देशक",
-    "producer": "निर्माता",
     "cast": "कलाकार",
-    "leadLabel": "मुख्य भूमिका",
-    "crew": "निर्देशक और निर्माता"
+    "content": "कहानी",
+    "showtimes": "शो समय",
+    "producer": "निर्माता",
+    "watchTrailer": "ट्रेलर देखें",
+    "voteCount": "{{count}} रेटिंग"
   },
   "reviews": {
     "title": "समीक्षाएं",
@@ -50,12 +54,16 @@
     "loadMore": "और समीक्षाएं देखें",
     "viewMoreReplies": "{{count}} और जवाब देखें"
   },
-  "otherMovieSlider": {
-    "trending": "ट्रेंडिंग",
-    "moreDetails": "अधिक विवरण",
-    "empty": "अभी कोई ट्रेंडिंग फिल्म नहीं है"
-  },
   "detailTrailer": {
     "title": "ट्रेलर"
+  },
+  "showtimes": {
+    "timesLabel": "शो समय",
+    "empty": "इस फ़िल्म के लिए अभी कोई शो नहीं है",
+    "loginPrompt": "शो देखने और सीट चुनने के लिए साइन इन करें"
+  },
+  "nowShowing": {
+    "title": "अभी चल रही हैं",
+    "buyTicket": "टिकट खरीदें"
   }
 }

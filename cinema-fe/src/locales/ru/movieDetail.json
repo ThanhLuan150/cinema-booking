@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "Н/Д",
-    "bookNow": "Забронировать"
-  },
-  "castSection": {
+    "bookNow": "Забронировать",
+    "breadcrumbMovies": "Фильмы",
+    "releaseDate": "Дата премьеры",
+    "genre": "Категория",
+    "country": "Страна",
     "director": "Режиссёр",
-    "producer": "Продюсер",
     "cast": "В ролях",
-    "leadLabel": "Главная роль",
-    "crew": "Режиссёр и продюсер"
+    "content": "Описание",
+    "showtimes": "Расписание",
+    "producer": "Продюсер",
+    "watchTrailer": "Смотреть трейлер",
+    "voteCount": "{{count}} оценок"
   },
   "reviews": {
     "title": "Отзывы",
@@ -50,12 +54,16 @@
     "loadMore": "Показать больше отзывов",
     "viewMoreReplies": "Показать ещё {{count}} ответов"
   },
-  "otherMovieSlider": {
-    "trending": "В тренде",
-    "moreDetails": "Подробнее",
-    "empty": "Сейчас нет популярных фильмов"
-  },
   "detailTrailer": {
     "title": "Трейлер"
+  },
+  "showtimes": {
+    "timesLabel": "Сеансы",
+    "empty": "Для этого фильма пока нет сеансов",
+    "loginPrompt": "Войдите, чтобы увидеть сеансы и выбрать места"
+  },
+  "nowShowing": {
+    "title": "Сейчас в прокате",
+    "buyTicket": "Купить билет"
   }
 }

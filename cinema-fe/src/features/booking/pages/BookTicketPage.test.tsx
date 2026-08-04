@@ -55,7 +55,8 @@ describe('BookTicketPage', () => {
       isLoading: false,
     });
     renderPage();
-    expect(screen.getByText('2099-01-01')).toBeInTheDocument();
+    // The date chip shows a localised weekday + day/month instead of the raw ISO date.
+    expect(screen.getByText('01/01')).toBeInTheDocument();
     expect(screen.getByText('10:00')).toBeInTheDocument();
   });
 

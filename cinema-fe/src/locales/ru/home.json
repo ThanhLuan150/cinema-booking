@@ -7,17 +7,23 @@
     "bookNow": "Забронировать",
     "viewDetails": "Подробнее"
   },
-  "trendingMoviesSlider": {
-    "title": "В тренде",
-    "viewDetails": "Подробнее"
+  "quickBooking": {
+    "title": "Быстрый заказ",
+    "cinema": "Выберите кинотеатр",
+    "movie": "Выберите фильм",
+    "date": "Выберите дату",
+    "time": "Выберите сеанс",
+    "noMovie": "Нет подходящих фильмов",
+    "noTime": "Нет сеансов",
+    "submit": "Забронировать"
   },
-  "newMoviesSlider": {
-    "title": "Новинки",
-    "viewDetails": "Подробнее"
-  },
-  "upcomingMoviesSlider": {
-    "title": "Скоро",
-    "viewDetails": "Подробнее"
+  "movieTabs": {
+    "title": "Фильмы",
+    "playing": "Сейчас в кино",
+    "new": "Новые фильмы",
+    "upcoming": "Скоро в кино",
+    "viewDetails": "Подробнее",
+    "viewMore": "Показать ещё"
   },
   "topCinemasSlider": {
     "title": "Лучшие кинотеатры",

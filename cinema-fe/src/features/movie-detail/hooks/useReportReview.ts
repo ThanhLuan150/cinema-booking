@@ -5,7 +5,8 @@ import { movieReviewsQueryKey } from './useMovieReviews';
 export function useReportReview(movieId: string | number | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ reviewId, reason }: { reviewId: number; reason: string }) => reportReview(reviewId, reason),
+    mutationFn: ({ reviewId, reason }: { reviewId: number; reason: string }) =>
+      reportReview(reviewId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: movieReviewsQueryKey(movieId) });
     },

@@ -5,7 +5,8 @@
     "movies": "Filme",
     "playing": "Im Kino",
     "upcoming": "Demnächst",
-    "cinemas": "Kinos"
+    "cinemas": "Kinos",
+    "allCinemas": "Alle Kinos"
   },
   "header": {
     "toggleMenu": "Menü umschalten",
@@ -17,7 +18,8 @@
     "manage": "Verwalten",
     "logout": "Abmelden",
     "login": "Anmelden",
-    "logoutSuccess": "Erfolgreich abgemeldet"
+    "logoutSuccess": "Erfolgreich abgemeldet",
+    "bookNow": "Jetzt buchen"
   },
   "footer": {
     "tagline": "Wir garantieren Qualität und Zufriedenheit bei der Nutzung unserer Kinoticket-Buchungsseite.",
@@ -34,7 +36,9 @@
     "contact": "Kontakt",
     "newsletter": "Abonnieren Sie unseren Newsletter für die neuesten Updates & News.",
     "emailPlaceholder": "E-Mail eingeben",
-    "send": "Senden"
+    "send": "Senden",
+    "followUs": "Folgen Sie uns",
+    "companyInfo": "CineNova Kinosystem"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "Zurück",
     "viewAll": "Alle anzeigen",
     "tryAgain": "Erneut versuchen",
-    "loading": "Wird geladen..."
+    "loading": "Wird geladen...",
+    "buyTicket": "Ticket kaufen"
   },
   "feedback": {
     "noData": "Noch keine Daten.",
@@ -83,5 +88,8 @@
     "previous": "Zurück",
     "next": "Weiter",
     "pageInfo": "Seite {{page}} von {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "Ab {{date}}"
   }
 }

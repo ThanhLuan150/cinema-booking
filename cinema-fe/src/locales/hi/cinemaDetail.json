@@ -6,7 +6,8 @@
     "statusPending": "स्वीकृति लंबित",
     "statusActive": "सक्रिय",
     "statusPaused": "अस्थायी रूप से बंद",
-    "viewShowtimes": "शो टाइम देखें"
+    "viewShowtimes": "शो टाइम देखें",
+    "breadcrumbCinemas": "सिनेमा"
   },
   "moviesSection": {
     "title": "इस सिनेमा में अभी चल रही फिल्में",

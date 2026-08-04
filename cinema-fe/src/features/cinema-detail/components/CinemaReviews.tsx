@@ -119,7 +119,8 @@ const CinemaReviews = () => {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
-      <h2 className="mb-2 text-xl font-bold text-white">
+      <h2 className="mb-2 flex flex-wrap items-center gap-3 text-xl font-bold uppercase tracking-wide text-white">
+        <span className="h-6 w-1.5 rounded-full bg-accent" aria-hidden="true" />
         {t('reviews.title')}{' '}
         {count > 0 && <span className="text-base font-normal text-txt/60">({t('reviews.ratingSummary', { average, count })})</span>}
       </h2>

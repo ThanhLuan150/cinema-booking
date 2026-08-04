@@ -3,7 +3,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const getMovieReviewsMock = vi.fn();
-vi.mock('../api/reviews.api', () => ({ getMovieReviews: (...args: unknown[]) => getMovieReviewsMock(...args) }));
+vi.mock('../api/reviews.api', () => ({
+  getMovieReviews: (...args: unknown[]) => getMovieReviewsMock(...args),
+}));
 
 import { useMovieReviews, movieReviewsQueryKey } from './useMovieReviews';
 

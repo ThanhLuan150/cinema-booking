@@ -15,7 +15,7 @@ const CinemaMoviesSection = () => {
 
   return (
     <div id="showtimes" className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10">
-      <SectionHeading title={t('moviesSection.title')} />
+      <SectionHeading title={t('moviesSection.title')} align="center" />
 
       {isLoading ? (
         <div className="flex justify-center py-16">

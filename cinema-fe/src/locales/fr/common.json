@@ -5,7 +5,8 @@
     "movies": "Films",
     "playing": "À l'affiche",
     "upcoming": "Prochainement",
-    "cinemas": "Cinémas"
+    "cinemas": "Cinémas",
+    "allCinemas": "Tous les cinémas"
   },
   "header": {
     "toggleMenu": "Afficher/masquer le menu",
@@ -17,7 +18,8 @@
     "manage": "Gérer",
     "logout": "Déconnexion",
     "login": "Connexion",
-    "logoutSuccess": "Déconnexion réussie"
+    "logoutSuccess": "Déconnexion réussie",
+    "bookNow": "Réserver"
   },
   "footer": {
     "tagline": "Nous garantissons qualité et satisfaction sur notre site de réservation de billets de cinéma.",
@@ -34,7 +36,9 @@
     "contact": "Contact",
     "newsletter": "Abonnez-vous à notre newsletter pour recevoir les dernières actualités.",
     "emailPlaceholder": "Saisissez votre email",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "followUs": "Suivez-nous",
+    "companyInfo": "Réseau de cinémas CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "Retour",
     "viewAll": "Voir tout",
     "tryAgain": "Réessayer",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "buyTicket": "Acheter un billet"
   },
   "feedback": {
     "noData": "Aucune donnée pour le moment.",
@@ -83,5 +88,8 @@
     "previous": "Précédent",
     "next": "Suivant",
     "pageInfo": "Page {{page}} sur {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "Dès le {{date}}"
   }
 }

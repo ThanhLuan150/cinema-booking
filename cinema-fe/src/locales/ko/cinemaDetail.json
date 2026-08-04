@@ -6,7 +6,8 @@
     "statusPending": "승인 대기",
     "statusActive": "운영 중",
     "statusPaused": "임시 휴업",
-    "viewShowtimes": "상영 시간 보기"
+    "viewShowtimes": "상영 시간 보기",
+    "breadcrumbCinemas": "영화관"
   },
   "moviesSection": {
     "title": "이 영화관 상영작",

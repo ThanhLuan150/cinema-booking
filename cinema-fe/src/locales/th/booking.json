@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "รอบฉาย",
+    "seat": "เลือกที่นั่ง",
+    "payment": "ชำระเงิน",
+    "done": "ยืนยัน"
+  },
   "bookSeat": {
     "defaultTitle": "เลือกที่นั่ง",
     "screen": "จอภาพยนตร์",
@@ -29,7 +35,9 @@
       "testAccountTitle": "เข้าสู่ระบบด้วยบัญชีทดสอบ MoMo",
       "testAccountDescription": "เปิดหน้าชำระเงิน MoMo และเข้าสู่ระบบด้วยหมายเลขโทรศัพท์บัญชีทดสอบ",
       "openButton": "เปิดหน้าชำระเงิน MoMo"
-    }
+    },
+    "summaryTitle": "ข้อมูลการจอง",
+    "totalLabel": "รวมทั้งหมด"
   },
   "bookTicket": {
     "pageTitle": "จองตั๋วภาพยนตร์",

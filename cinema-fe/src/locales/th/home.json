@@ -7,17 +7,23 @@
     "bookNow": "จองเลย",
     "viewDetails": "ดูรายละเอียด"
   },
-  "trendingMoviesSlider": {
-    "title": "กำลังมาแรง",
-    "viewDetails": "ดูรายละเอียด"
+  "quickBooking": {
+    "title": "จองตั๋วด่วน",
+    "cinema": "เลือกโรงภาพยนตร์",
+    "movie": "เลือกภาพยนตร์",
+    "date": "เลือกวันที่",
+    "time": "เลือกรอบฉาย",
+    "noMovie": "ไม่มีภาพยนตร์ที่ตรงกัน",
+    "noTime": "ไม่มีรอบฉาย",
+    "submit": "จองเลย"
   },
-  "newMoviesSlider": {
-    "title": "ใหม่ล่าสุด",
-    "viewDetails": "ดูรายละเอียด"
-  },
-  "upcomingMoviesSlider": {
-    "title": "เร็วๆ นี้",
-    "viewDetails": "ดูรายละเอียด"
+  "movieTabs": {
+    "title": "ภาพยนตร์",
+    "playing": "กำลังฉาย",
+    "new": "ภาพยนตร์ใหม่",
+    "upcoming": "เร็ว ๆ นี้",
+    "viewDetails": "ดูรายละเอียด",
+    "viewMore": "ดูเพิ่มเติม"
   },
   "topCinemasSlider": {
     "title": "โรงภาพยนตร์ยอดนิยม",

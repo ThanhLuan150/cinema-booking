@@ -7,17 +7,23 @@
     "bookNow": "Réserver maintenant",
     "viewDetails": "Voir les détails"
   },
-  "trendingMoviesSlider": {
-    "title": "Tendances",
-    "viewDetails": "Voir les détails"
+  "quickBooking": {
+    "title": "Réservation rapide",
+    "cinema": "Choisir un cinéma",
+    "movie": "Choisir un film",
+    "date": "Choisir une date",
+    "time": "Choisir une séance",
+    "noMovie": "Aucun film disponible",
+    "noTime": "Aucune séance disponible",
+    "submit": "Réserver"
   },
-  "newMoviesSlider": {
-    "title": "Nouveautés",
-    "viewDetails": "Voir les détails"
-  },
-  "upcomingMoviesSlider": {
-    "title": "Prochainement",
-    "viewDetails": "Voir les détails"
+  "movieTabs": {
+    "title": "Films",
+    "playing": "À l’affiche",
+    "new": "Nouveaux films",
+    "upcoming": "Prochainement",
+    "viewDetails": "Voir les détails",
+    "viewMore": "Voir plus"
   },
   "topCinemasSlider": {
     "title": "Meilleurs cinémas",
