@@ -14,6 +14,8 @@ import { useIsAuthenticated } from '@/features/auth/hooks/useAuth';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail';
+import { getMoviePosterUrl } from '@/utils';
+import { BookingSteps } from '../components/BookingSteps';
 import { useScheduleId } from '../hooks/useScheduleId';
 import { useBookedSeats } from '../hooks/useBookedSeats';
 import { useScheduleDetail } from '../hooks/useScheduleDetail';
@@ -34,7 +36,12 @@ import {
   toggleSeat,
 } from '../store/bookingSlice';
 import type { BookedSeatTicket } from '../types/booking.types';
-import { SEAT_TYPE_CLASS, SEAT_TYPE_KEY, SEAT_TYPE_MULTIPLIER, SEAT_TYPES } from '@/constants/seatType';
+import {
+  SEAT_TYPE_CLASS,
+  SEAT_TYPE_KEY,
+  SEAT_TYPE_MULTIPLIER,
+  SEAT_TYPES,
+} from '@/constants/seatType';
 import { TICKET_STATUS } from '@/constants/ticketStatus';
 import { ROUTES } from '@/constants/routes';
 
@@ -74,37 +81,47 @@ function SeatGrid({ scheduleId }: { scheduleId: number | null }) {
     rows[rowLetter].push(ticket);
   }
   for (const rowLetter of Object.keys(rows)) {
-    rows[rowLetter].sort((a, b) => Number(a.seat_code.slice(rowLetter.length)) - Number(b.seat_code.slice(rowLetter.length)));
+    rows[rowLetter].sort(
+      (a, b) =>
+        Number(a.seat_code.slice(rowLetter.length)) - Number(b.seat_code.slice(rowLetter.length)),
+    );
   }
 
   return (
     <div className="flex flex-col items-center gap-1">
-      {Object.keys(rows).sort().map((rowLetter) => (
-        <div className="flex gap-1" key={rowLetter}>
-          {rows[rowLetter].map((ticket) => {
-            const isSelected = selectedSeatCodes.includes(ticket.seat_code);
-            const isSold = ticket.status === TICKET_STATUS.sold;
-            return (
-              <button
-                type="button"
-                key={ticket.seat_code}
-                title={t(`bookSeat.legend.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)}
-                className={cn(
-                  'flex h-8 w-9 items-center justify-center rounded-t-lg text-[10px] font-semibold text-black transition-transform',
-                  isSold ? 'cursor-not-allowed bg-white/25' : cn('cursor-pointer hover:scale-110', SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard]),
-                  isSelected && 'scale-110 bg-emerald-500 text-white ring-2 ring-white',
-                )}
-                onClick={() => {
-                  if (isSold) return;
-                  dispatch(toggleSeat(ticket));
-                }}
-              >
-                {ticket.seat_code}
-              </button>
-            );
-          })}
-        </div>
-      ))}
+      {Object.keys(rows)
+        .sort()
+        .map((rowLetter) => (
+          <div className="flex gap-1" key={rowLetter}>
+            {rows[rowLetter].map((ticket) => {
+              const isSelected = selectedSeatCodes.includes(ticket.seat_code);
+              const isSold = ticket.status === TICKET_STATUS.sold;
+              return (
+                <button
+                  type="button"
+                  key={ticket.seat_code}
+                  title={t(`bookSeat.legend.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)}
+                  className={cn(
+                    'flex h-8 w-9 items-center justify-center rounded-t-lg text-[10px] font-semibold text-black transition-transform',
+                    isSold
+                      ? 'cursor-not-allowed bg-white/25'
+                      : cn(
+                          'cursor-pointer hover:scale-110',
+                          SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard],
+                        ),
+                    isSelected && 'scale-110 bg-emerald-500 text-white ring-2 ring-white',
+                  )}
+                  onClick={() => {
+                    if (isSold) return;
+                    dispatch(toggleSeat(ticket));
+                  }}
+                >
+                  {ticket.seat_code}
+                </button>
+              );
+            })}
+          </div>
+        ))}
     </div>
   );
 }
@@ -119,8 +136,17 @@ function BookSeatPage() {
   const movieDate = searchParams.get('day') ?? '';
   const timeBegin = searchParams.get('time') ?? '';
 
-  const { scheduleId, selectedSeatCodes, selectedTickets, selectedComboIds, cinemaId, voucherCode, voucherResult, voucherError, momoPayUrl } =
-    useAppSelector((state) => state.booking);
+  const {
+    scheduleId,
+    selectedSeatCodes,
+    selectedTickets,
+    selectedComboIds,
+    cinemaId,
+    voucherCode,
+    voucherResult,
+    voucherError,
+    momoPayUrl,
+  } = useAppSelector((state) => state.booking);
 
   // Each visit to this page starts a fresh selection — nothing should carry over from a previous booking attempt.
   useEffect(() => {
@@ -138,7 +164,9 @@ function BookSeatPage() {
   }, [isLoggedIn]);
 
   const { data: resolvedSchedule } = useScheduleId(
-    movieId && movieDate && timeBegin ? { movie_id: movieId, movie_date: movieDate, time_begin: timeBegin } : null,
+    movieId && movieDate && timeBegin
+      ? { movie_id: movieId, movie_date: movieDate, time_begin: timeBegin }
+      : null,
   );
   useEffect(() => {
     if (resolvedSchedule?.id) dispatch(setScheduleId(resolvedSchedule.id));
@@ -160,7 +188,10 @@ function BookSeatPage() {
 
   const seatTotal = useMemo(() => {
     if (!scheduleDetail) return 0;
-    return selectedTickets.reduce((sum, ticket) => sum + priceForSeatType(scheduleDetail.price, ticket.seat_type), 0);
+    return selectedTickets.reduce(
+      (sum, ticket) => sum + priceForSeatType(scheduleDetail.price, ticket.seat_type),
+      0,
+    );
   }, [scheduleDetail, selectedTickets]);
 
   const comboTotal = combos
@@ -210,113 +241,188 @@ function BookSeatPage() {
   return (
     <div className="flex min-h-screen flex-col bg-main">
       <Header />
-      <div className="flex-1 px-4 pb-16 pt-24 text-white">
-      <div className="mx-auto w-full max-w-4xl">
-        <h1 className="text-center text-xl font-semibold text-white">{movie?.name || t('bookSeat.defaultTitle')}</h1>
+      <div className="flex-1 pt-20 text-white">
+        <BookingSteps current={2} />
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 rounded-xl border border-border bg-surface px-4 py-3 text-xs text-txt/80">
-          <span className="flex items-center gap-2">
-            <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.standard])} /> {t('bookSeat.legend.standard')}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.vip])} /> {t('bookSeat.legend.vip')}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.couple])} /> {t('bookSeat.legend.couple')}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-5 w-6 rounded-t bg-emerald-500" /> {t('bookSeat.legend.selecting')}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-5 w-6 rounded-t bg-white/25" /> {t('bookSeat.legend.sold')}
-          </span>
-        </div>
+        <div className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-10">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="flex flex-col gap-6 lg:col-span-2">
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-card">
+                <div className="mx-auto mb-3 h-3 w-4/5 rounded-full bg-white/70 [box-shadow:0_0_30px_8px_rgba(255,255,255,0.35)]" />
+                <p className="mb-8 text-center text-xs uppercase tracking-widest text-txt/50">
+                  {t('bookSeat.screen')}
+                </p>
 
-        <div className="mt-8 rounded-xl border border-border bg-surface p-6 shadow-card">
-          <div className="mx-auto mb-8 h-3 w-4/5 rounded-full bg-white/70 [box-shadow:0_0_30px_8px_rgba(255,255,255,0.35)]" />
-          <p className="mb-6 text-center text-xs text-txt/50">{t('bookSeat.screen')}</p>
+                <SeatGrid scheduleId={scheduleId} />
 
-          <SeatGrid scheduleId={scheduleId} />
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {combos.length > 0 && (
-            <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
-              <h6 className="mb-3 font-semibold text-white">{t('bookSeat.combo.title')}</h6>
-              <div className="flex flex-col gap-2">
-                {combos.map((combo) => (
-                  <label key={combo.id} className="flex items-center justify-between text-sm text-txt/80">
-                    <span className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedComboIds.includes(combo.id)}
-                        onChange={() => dispatch(toggleCombo(combo.id))}
-                      />
-                      {combo.name}
-                    </span>
-                    <span>{combo.price.toLocaleString()}đ</span>
-                  </label>
-                ))}
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-4 border-t border-border pt-5 text-xs text-txt/80">
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.standard])}
+                    />
+                    {t('bookSeat.legend.standard')}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.vip])} />
+                    {t('bookSeat.legend.vip')}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className={cn('h-5 w-6 rounded-t', SEAT_TYPE_CLASS[SEAT_TYPES.couple])} />
+                    {t('bookSeat.legend.couple')}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-5 w-6 rounded-t bg-emerald-500" />
+                    {t('bookSeat.legend.selecting')}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-5 w-6 rounded-t bg-white/25" />
+                    {t('bookSeat.legend.sold')}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
 
-          <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
-            <h6 className="mb-3 font-semibold text-white">{t('voucher.title')}</h6>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={voucherCode}
-                onChange={(e) => dispatch(setVoucherCode(e.target.value))}
-                placeholder={t('voucher.placeholder')}
-                className="flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-              />
-              <Button type="button" variant="secondary" size="sm" onClick={handleApplyVoucher}>
-                {t('voucher.apply')}
+              {combos.length > 0 && (
+                <div className="rounded-2xl border border-border bg-surface p-6 shadow-card">
+                  <h2 className="mb-4 flex items-center gap-3 text-base font-bold uppercase tracking-wide text-white">
+                    <span className="h-5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+                    {t('bookSeat.combo.title')}
+                  </h2>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {combos.map((combo) => (
+                      <label
+                        key={combo.id}
+                        className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-border-strong px-3 py-2.5 text-sm text-txt/80 transition-colors hover:border-accent/60"
+                      >
+                        <span className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={selectedComboIds.includes(combo.id)}
+                            onChange={() => dispatch(toggleCombo(combo.id))}
+                          />
+                          {combo.name}
+                        </span>
+                        <span className="font-medium text-white">
+                          {combo.price.toLocaleString()}đ
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <aside className="h-fit rounded-2xl border border-border bg-surface p-6 shadow-raised lg:sticky lg:top-24">
+              <h2 className="mb-4 flex items-center gap-3 text-base font-bold uppercase tracking-wide text-white">
+                <span className="h-5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+                {t('bookSeat.summaryTitle')}
+              </h2>
+
+              <div className="flex gap-3 border-b border-border pb-4">
+                {movie?.avatar && (
+                  <img
+                    src={getMoviePosterUrl(movie.avatar)}
+                    alt={movie.name}
+                    className="aspect-[2/3] w-16 shrink-0 rounded-lg object-cover shadow-card"
+                  />
+                )}
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-white">
+                    {movie?.name || t('bookSeat.defaultTitle')}
+                  </p>
+                  <p className="mt-1 text-sm text-txt/60">
+                    <i className="fa-regular fa-calendar mr-1.5 text-accent" />
+                    {movieDate}
+                  </p>
+                  <p className="mt-0.5 text-sm text-txt/60">
+                    <i className="fa-regular fa-clock mr-1.5 text-accent" />
+                    {timeBegin}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-b border-border py-4 text-sm">
+                <p className="text-txt/60">{t('bookSeat.selectedSeatsLabel')}</p>
+                <p className="mt-1 font-semibold text-white">
+                  {selectedSeatCodes.length > 0
+                    ? selectedSeatCodes.join(', ')
+                    : t('bookSeat.noneSelected')}
+                </p>
+              </div>
+
+              <div className="border-b border-border py-4">
+                <p className="mb-2 text-sm text-txt/60">{t('voucher.title')}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={voucherCode}
+                    onChange={(e) => dispatch(setVoucherCode(e.target.value))}
+                    placeholder={t('voucher.placeholder')}
+                    className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  />
+                  <Button type="button" variant="secondary" size="sm" onClick={handleApplyVoucher}>
+                    {t('voucher.apply')}
+                  </Button>
+                </div>
+                {voucherResult && (
+                  <p className="mt-2 text-sm text-emerald-400">
+                    {t('voucher.applied', {
+                      amount: `${voucherResult.discount_amount.toLocaleString()}đ`,
+                    })}
+                  </p>
+                )}
+                {voucherError && <p className="mt-2 text-sm text-red-400">{voucherError}</p>}
+              </div>
+
+              <div className="flex items-end justify-between py-4">
+                <span className="text-sm uppercase tracking-wide text-txt/60">
+                  {t('bookSeat.totalLabel')}
+                </span>
+                <span className="text-2xl font-bold text-accent">
+                  {totalPrice.toLocaleString()}đ
+                </span>
+              </div>
+
+              <Button
+                type="button"
+                className="w-full uppercase"
+                size="lg"
+                onClick={handleCheckout}
+                loading={momoPaymentMutation.isPending}
+              >
+                {t('bookSeat.checkout')}
               </Button>
-            </div>
-            {voucherResult && (
-              <p className="mt-2 text-sm text-emerald-400">
-                {t('voucher.applied', { amount: `${voucherResult.discount_amount.toLocaleString()}đ` })}
-              </p>
-            )}
-            {voucherError && <p className="mt-2 text-sm text-red-400">{voucherError}</p>}
+            </aside>
           </div>
         </div>
-
-        <div className="mt-6 flex flex-col items-center gap-4 rounded-xl border border-border bg-surface p-6 shadow-card sm:flex-row sm:justify-between">
-          <div>
-            <p className="text-sm text-txt/60">
-              {t('bookSeat.selectedSeatsLabel')} <span className="text-white">{selectedSeatCodes.length > 0 ? selectedSeatCodes.join(', ') : t('bookSeat.noneSelected')}</span>
-            </p>
-            <p className="mt-1 text-2xl font-bold text-emerald-400">{totalPrice.toLocaleString()}đ</p>
-          </div>
-          <Button type="button" variant="danger" onClick={handleCheckout} loading={momoPaymentMutation.isPending}>
-            {t('bookSeat.checkout')}
-          </Button>
-        </div>
-      </div>
       </div>
       <Footer />
 
       {momoPayUrl && (
-        <Modal open onClose={() => dispatch(setMomoPayUrl(''))} title={t('bookSeat.momoModal.title')}>
+        <Modal
+          open
+          onClose={() => dispatch(setMomoPayUrl(''))}
+          title={t('bookSeat.momoModal.title')}
+        >
           <div className="grid grid-cols-1 gap-6 text-txt sm:grid-cols-2">
             <div className="flex flex-col items-center gap-3 rounded-lg border border-border-strong p-4 text-center">
               <p className="font-semibold text-white">{t('bookSeat.momoModal.qrTitle')}</p>
               <div className="rounded-md bg-white p-3">
                 <QRCodeSVG value={momoPayUrl} size={180} />
               </div>
-              <p className="text-sm text-txt/60">
-                {t('bookSeat.momoModal.qrDescription')}
-              </p>
+              <p className="text-sm text-txt/60">{t('bookSeat.momoModal.qrDescription')}</p>
             </div>
             <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-strong p-4 text-center">
               <p className="font-semibold text-white">{t('bookSeat.momoModal.testAccountTitle')}</p>
               <p className="text-sm text-txt/60">
                 {t('bookSeat.momoModal.testAccountDescription')}
               </p>
-              <Button type="button" variant="danger" onClick={() => { window.location.href = momoPayUrl; }}>
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => {
+                  window.location.href = momoPayUrl;
+                }}
+              >
                 {t('bookSeat.momoModal.openButton')}
               </Button>
             </div>

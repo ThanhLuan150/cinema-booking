@@ -5,7 +5,8 @@
     "movies": "ภาพยนตร์",
     "playing": "กำลังฉาย",
     "upcoming": "เร็วๆ นี้",
-    "cinemas": "โรงภาพยนตร์"
+    "cinemas": "โรงภาพยนตร์",
+    "allCinemas": "โรงภาพยนตร์ทั้งหมด"
   },
   "header": {
     "toggleMenu": "เปิด/ปิดเมนู",
@@ -17,7 +18,8 @@
     "manage": "จัดการ",
     "logout": "ออกจากระบบ",
     "login": "เข้าสู่ระบบ",
-    "logoutSuccess": "ออกจากระบบสำเร็จ"
+    "logoutSuccess": "ออกจากระบบสำเร็จ",
+    "bookNow": "จองตั๋วเลย"
   },
   "footer": {
     "tagline": "เรารับประกันคุณภาพและความพึงพอใจเมื่อมาใช้บริการเว็บไซต์จองตั๋วภาพยนตร์ของเรา",
@@ -34,7 +36,9 @@
     "contact": "ติดต่อ",
     "newsletter": "สมัครรับจดหมายข่าวเพื่อรับข่าวสารและอัปเดตล่าสุดจากเรา",
     "emailPlaceholder": "กรอกอีเมล",
-    "send": "ส่ง"
+    "send": "ส่ง",
+    "followUs": "ติดตามเรา",
+    "companyInfo": "ระบบโรงภาพยนตร์ CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "กลับ",
     "viewAll": "ดูทั้งหมด",
     "tryAgain": "ลองใหม่อีกครั้ง",
-    "loading": "กำลังโหลด..."
+    "loading": "กำลังโหลด...",
+    "buyTicket": "ซื้อตั๋ว"
   },
   "feedback": {
     "noData": "ยังไม่มีข้อมูล",
@@ -83,5 +88,8 @@
     "previous": "ก่อนหน้า",
     "next": "ถัดไป",
     "pageInfo": "หน้า {{page}} จาก {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "เข้าฉาย {{date}}"
   }
 }

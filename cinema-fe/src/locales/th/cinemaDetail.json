@@ -6,7 +6,8 @@
     "statusPending": "รอการอนุมัติ",
     "statusActive": "เปิดให้บริการ",
     "statusPaused": "ปิดให้บริการชั่วคราว",
-    "viewShowtimes": "ดูรอบฉาย"
+    "viewShowtimes": "ดูรอบฉาย",
+    "breadcrumbCinemas": "โรงภาพยนตร์"
   },
   "moviesSection": {
     "title": "ภาพยนตร์ที่กำลังฉายในโรงนี้",

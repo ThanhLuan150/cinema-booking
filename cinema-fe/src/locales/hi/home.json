@@ -7,17 +7,23 @@
     "bookNow": "अभी बुक करें",
     "viewDetails": "विवरण देखें"
   },
-  "trendingMoviesSlider": {
-    "title": "ट्रेंडिंग",
-    "viewDetails": "विवरण देखें"
+  "quickBooking": {
+    "title": "त्वरित बुकिंग",
+    "cinema": "सिनेमा चुनें",
+    "movie": "फ़िल्म चुनें",
+    "date": "तारीख़ चुनें",
+    "time": "शो चुनें",
+    "noMovie": "कोई फ़िल्म उपलब्ध नहीं",
+    "noTime": "कोई शो उपलब्ध नहीं",
+    "submit": "अभी बुक करें"
   },
-  "newMoviesSlider": {
-    "title": "नई",
-    "viewDetails": "विवरण देखें"
-  },
-  "upcomingMoviesSlider": {
-    "title": "जल्द आ रही हैं",
-    "viewDetails": "विवरण देखें"
+  "movieTabs": {
+    "title": "फ़िल्में",
+    "playing": "अभी चल रही",
+    "new": "नई फ़िल्में",
+    "upcoming": "जल्द आ रही",
+    "viewDetails": "विवरण देखें",
+    "viewMore": "और देखें"
   },
   "topCinemasSlider": {
     "title": "टॉप सिनेमा",

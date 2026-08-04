@@ -5,7 +5,8 @@
     "movies": "映画",
     "playing": "上映中",
     "upcoming": "公開予定",
-    "cinemas": "映画館"
+    "cinemas": "映画館",
+    "allCinemas": "すべての劇場"
   },
   "header": {
     "toggleMenu": "メニューの開閉",
@@ -17,7 +18,8 @@
     "manage": "管理",
     "logout": "ログアウト",
     "login": "ログイン",
-    "logoutSuccess": "ログアウトしました"
+    "logoutSuccess": "ログアウトしました",
+    "bookNow": "今すぐ予約"
   },
   "footer": {
     "tagline": "当映画チケット予約サイトをご利用いただく際の品質とご満足を保証します。",
@@ -34,7 +36,9 @@
     "contact": "連絡先",
     "newsletter": "最新情報やお知らせを受け取るにはニュースレターにご登録ください。",
     "emailPlaceholder": "メールアドレスを入力",
-    "send": "送信"
+    "send": "送信",
+    "followUs": "フォローする",
+    "companyInfo": "CineNova シネマシステム"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "戻る",
     "viewAll": "すべて見る",
     "tryAgain": "再試行",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "buyTicket": "チケット購入"
   },
   "feedback": {
     "noData": "データがまだありません。",
@@ -83,5 +88,8 @@
     "previous": "前へ",
     "next": "次へ",
     "pageInfo": "{{page}} / {{totalPages}} ページ"
+  },
+  "movieCard": {
+    "releasesOn": "{{date}} 公開"
   }
 }

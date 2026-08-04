@@ -6,7 +6,8 @@
     "statusPending": "Pending approval",
     "statusActive": "Active",
     "statusPaused": "Temporarily closed",
-    "viewShowtimes": "View showtimes"
+    "viewShowtimes": "View showtimes",
+    "breadcrumbCinemas": "Cinemas"
   },
   "moviesSection": {
     "title": "Now showing at this cinema",

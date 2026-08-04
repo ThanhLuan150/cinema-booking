@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "Nicht verfügbar",
-    "bookNow": "Jetzt buchen"
-  },
-  "castSection": {
+    "bookNow": "Jetzt buchen",
+    "breadcrumbMovies": "Filme",
+    "releaseDate": "Kinostart",
+    "genre": "Kategorie",
+    "country": "Land",
     "director": "Regisseur",
-    "producer": "Produzent",
     "cast": "Besetzung",
-    "leadLabel": "Hauptrolle",
-    "crew": "Regisseur & Produzent"
+    "content": "Handlung",
+    "showtimes": "Spielzeiten",
+    "producer": "Produzent",
+    "watchTrailer": "Trailer ansehen",
+    "voteCount": "{{count}} Bewertungen"
   },
   "reviews": {
     "title": "Bewertungen",
@@ -50,12 +54,16 @@
     "loadMore": "Weitere Bewertungen anzeigen",
     "viewMoreReplies": "{{count}} weitere Antworten anzeigen"
   },
-  "otherMovieSlider": {
-    "trending": "Angesagt",
-    "moreDetails": "Mehr Details",
-    "empty": "Derzeit keine angesagten Filme"
-  },
   "detailTrailer": {
     "title": "Trailer"
+  },
+  "showtimes": {
+    "timesLabel": "Vorstellungen",
+    "empty": "Für diesen Film gibt es noch keine Vorstellungen",
+    "loginPrompt": "Melden Sie sich an, um Vorstellungen zu sehen und Sitze zu wählen"
+  },
+  "nowShowing": {
+    "title": "Aktuell im Kino",
+    "buyTicket": "Ticket kaufen"
   }
 }

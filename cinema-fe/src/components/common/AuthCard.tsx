@@ -24,8 +24,11 @@ export function AuthCard({ title, subtitle, children, maxWidth = 'max-w-md' }: A
           </span>
         </Link>
         <div className="rounded-2xl border border-border bg-surface p-8 shadow-raised">
-          <h1 className="text-center text-xl font-bold text-white">{title}</h1>
-          {subtitle && <p className="mt-2 text-center text-sm text-txt/60">{subtitle}</p>}
+          <h1 className="text-center text-xl font-bold uppercase tracking-wide text-white">
+            {title}
+          </h1>
+          <span className="mx-auto mt-3 block h-1 w-14 rounded-full bg-accent" aria-hidden="true" />
+          {subtitle && <p className="mt-3 text-center text-sm text-txt/60">{subtitle}</p>}
           <div className="mt-6">{children}</div>
         </div>
       </div>

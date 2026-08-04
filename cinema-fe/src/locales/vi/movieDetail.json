@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "N/A",
-    "bookNow": "Đặt vé ngay"
-  },
-  "castSection": {
+    "bookNow": "Đặt vé ngay",
+    "breadcrumbMovies": "Phim",
+    "releaseDate": "Ngày khởi chiếu",
+    "genre": "Thể loại",
+    "country": "Quốc gia",
     "director": "Đạo diễn",
-    "producer": "Nhà sản xuất",
     "cast": "Diễn viên",
-    "leadLabel": "Vai chính",
-    "crew": "Đạo diễn & Nhà sản xuất"
+    "content": "Nội dung phim",
+    "showtimes": "Lịch chiếu",
+    "producer": "Nhà sản xuất",
+    "watchTrailer": "Xem trailer",
+    "voteCount": "{{count}} đánh giá"
   },
   "reviews": {
     "title": "Đánh giá",
@@ -50,12 +54,16 @@
     "loadMore": "Xem thêm đánh giá",
     "viewMoreReplies": "Xem thêm {{count}} câu trả lời"
   },
-  "otherMovieSlider": {
-    "trending": "Đang thịnh hành",
-    "moreDetails": "Xem chi tiết",
-    "empty": "Hiện chưa có phim thịnh hành"
-  },
   "detailTrailer": {
     "title": "Trailer"
+  },
+  "showtimes": {
+    "timesLabel": "Suất chiếu",
+    "empty": "Chưa có suất chiếu cho phim này",
+    "loginPrompt": "Đăng nhập để xem lịch chiếu và chọn ghế"
+  },
+  "nowShowing": {
+    "title": "Phim đang chiếu",
+    "buyTicket": "Mua vé"
   }
 }

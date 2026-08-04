@@ -22,10 +22,9 @@ const useMoviesMock = vi.fn();
 vi.mock('@/features/movies/hooks/useMovies', () => ({ useMovies: () => useMoviesMock() }));
 
 vi.mock('../components/BannerSlider', () => ({ default: () => <div>Banner</div> }));
-vi.mock('../components/NewMoviesSlider', () => ({ default: () => <div>New</div> }));
-vi.mock('../components/TrendingMoviesSlider', () => ({ default: () => <div>Trending</div> }));
-vi.mock('../components/UpcomingMoviesSlider', () => ({ default: () => <div>Upcoming</div> }));
-vi.mock('../components/TopCinemasSlider', () => ({ default: () => <div>TopCinemas</div> }));
+vi.mock('../components/QuickBooking', () => ({ default: () => <div>QuickBooking</div> }));
+vi.mock('../components/MovieTabsSection', () => ({ default: () => <div>MovieTabs</div> }));
+vi.mock('../components/TopCinemasSection', () => ({ default: () => <div>TopCinemas</div> }));
 
 import HomePage from './HomePage';
 
@@ -57,9 +56,8 @@ describe('HomePage', () => {
     useMoviesMock.mockReturnValue({ data: { data: [{ id: 1 }] }, isLoading: false });
     renderPage();
     expect(screen.getByText('Banner')).toBeInTheDocument();
-    expect(screen.getByText('Trending')).toBeInTheDocument();
-    expect(screen.getByText('New')).toBeInTheDocument();
-    expect(screen.getByText('Upcoming')).toBeInTheDocument();
+    expect(screen.getByText('QuickBooking')).toBeInTheDocument();
+    expect(screen.getByText('MovieTabs')).toBeInTheDocument();
     expect(screen.getByText('TopCinemas')).toBeInTheDocument();
   });
 });

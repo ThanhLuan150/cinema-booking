@@ -6,7 +6,8 @@
     "statusPending": "Genehmigung ausstehend",
     "statusActive": "Aktiv",
     "statusPaused": "Vorübergehend geschlossen",
-    "viewShowtimes": "Vorstellungen ansehen"
+    "viewShowtimes": "Vorstellungen ansehen",
+    "breadcrumbCinemas": "Kinos"
   },
   "moviesSection": {
     "title": "Aktuell in diesem Kino",

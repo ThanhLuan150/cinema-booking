@@ -52,13 +52,20 @@ const MovieReviews = () => {
     window.location.href = ROUTES.login;
   };
 
-  const handleSubmit = async (values: ReviewFormValues, { resetForm }: FormikHelpers<ReviewFormValues>) => {
+  const handleSubmit = async (
+    values: ReviewFormValues,
+    { resetForm }: FormikHelpers<ReviewFormValues>,
+  ) => {
     if (!isLoggedIn) {
       requireLogin();
       return;
     }
     try {
-      await postReviewMutation.mutateAsync({ movie_id: Number(id), rating: values.reviewRating, comment: values.reviewComment });
+      await postReviewMutation.mutateAsync({
+        movie_id: Number(id),
+        rating: values.reviewRating,
+        comment: values.reviewComment,
+      });
       toast.success(t('reviews.submitSuccess'));
       resetForm();
     } catch (error) {
@@ -118,12 +125,21 @@ const MovieReviews = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
-      <h2 className="mb-2 text-xl font-bold text-white">
-        {t('reviews.title')} {count > 0 && <span className="text-base font-normal text-txt/60">({t('reviews.ratingSummary', { average, count })})</span>}
+    <div className="w-full">
+      <h2 className="mb-2 flex flex-wrap items-center gap-3 text-xl font-bold uppercase tracking-wide text-white">
+        <span className="h-6 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+        {t('reviews.title')}{' '}
+        {count > 0 && (
+          <span className="text-base font-normal text-txt/60">
+            ({t('reviews.ratingSummary', { average, count })})
+          </span>
+        )}
       </h2>
 
-      <Formik<ReviewFormValues> initialValues={{ reviewRating: MAX_RATING, reviewComment: '' }} onSubmit={handleSubmit}>
+      <Formik<ReviewFormValues>
+        initialValues={{ reviewRating: MAX_RATING, reviewComment: '' }}
+        onSubmit={handleSubmit}
+      >
         {(formik) => (
           <Form className="mt-5 rounded-xl border border-border bg-surface p-5 shadow-card">
             <div className="flex items-center gap-3">
@@ -166,30 +182,32 @@ const MovieReviews = () => {
           <EmptyState title={t('reviews.emptyState')} />
         ) : null}
         {!isLoading &&
-          reviews.slice(0, visibleCount).map((r) => (
-            <CommentItem
-              key={r.id}
-              id={r.id}
-              author={r.author}
-              createdAt={r.createdAt}
-              comment={r.comment}
-              rating={r.rating}
-              reactions={r.reactions}
-              replies={r.replies}
-              reportedByMe={r.reportedByMe}
-              currentUserId={currentUserId}
-              onReact={(type) => handleReact(r.id, type)}
-              onReplyReact={(replyId, type) => handleReact(replyId, type)}
-              onReply={(comment) => handleReply(r.id, comment)}
-              onEdit={(payload) => handleEdit(r.id, payload)}
-              onDelete={() => handleDelete(r.id)}
-              onReport={(reason) => handleReport(r.id, reason)}
-              onReplyEdit={(replyId, payload) => handleEdit(replyId, payload)}
-              onReplyDelete={(replyId) => handleDelete(replyId)}
-              onReplyReport={(replyId, reason) => handleReport(replyId, reason)}
-              t={t}
-            />
-          ))}
+          reviews
+            .slice(0, visibleCount)
+            .map((r) => (
+              <CommentItem
+                key={r.id}
+                id={r.id}
+                author={r.author}
+                createdAt={r.createdAt}
+                comment={r.comment}
+                rating={r.rating}
+                reactions={r.reactions}
+                replies={r.replies}
+                reportedByMe={r.reportedByMe}
+                currentUserId={currentUserId}
+                onReact={(type) => handleReact(r.id, type)}
+                onReplyReact={(replyId, type) => handleReact(replyId, type)}
+                onReply={(comment) => handleReply(r.id, comment)}
+                onEdit={(payload) => handleEdit(r.id, payload)}
+                onDelete={() => handleDelete(r.id)}
+                onReport={(reason) => handleReport(r.id, reason)}
+                onReplyEdit={(replyId, payload) => handleEdit(replyId, payload)}
+                onReplyDelete={(replyId) => handleDelete(replyId)}
+                onReplyReport={(replyId, reason) => handleReport(replyId, reason)}
+                t={t}
+              />
+            ))}
         {!isLoading && reviews.length > visibleCount && (
           <button
             type="button"

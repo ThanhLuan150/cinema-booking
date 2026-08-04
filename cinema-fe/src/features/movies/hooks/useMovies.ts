@@ -5,10 +5,15 @@ import type { PaginationParams } from '@/types/pagination';
 
 export const moviesQueryKey = ['movies'] as const;
 
-export function useMovies(filters?: MovieFilters, pagination?: PaginationParams) {
+export function useMovies(
+  filters?: MovieFilters,
+  pagination?: PaginationParams,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: [...moviesQueryKey, filters ?? {}, pagination ?? {}],
     queryFn: () => getMovies(filters, pagination),
     placeholderData: keepPreviousData,
+    enabled: options?.enabled ?? true,
   });
 }

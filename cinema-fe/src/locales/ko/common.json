@@ -5,7 +5,8 @@
     "movies": "영화",
     "playing": "상영 중",
     "upcoming": "상영 예정",
-    "cinemas": "영화관"
+    "cinemas": "영화관",
+    "allCinemas": "전체 극장"
   },
   "header": {
     "toggleMenu": "메뉴 열기/닫기",
@@ -17,7 +18,8 @@
     "manage": "관리",
     "logout": "로그아웃",
     "login": "로그인",
-    "logoutSuccess": "로그아웃되었습니다"
+    "logoutSuccess": "로그아웃되었습니다",
+    "bookNow": "지금 예매"
   },
   "footer": {
     "tagline": "저희 영화 예매 사이트를 이용하실 때 품질과 만족을 보장해 드립니다.",
@@ -34,7 +36,9 @@
     "contact": "연락처",
     "newsletter": "뉴스레터를 구독하고 최신 소식을 받아보세요.",
     "emailPlaceholder": "이메일 입력",
-    "send": "전송"
+    "send": "전송",
+    "followUs": "팔로우하기",
+    "companyInfo": "CineNova 영화관 시스템"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "뒤로",
     "viewAll": "전체 보기",
     "tryAgain": "다시 시도",
-    "loading": "로딩 중..."
+    "loading": "로딩 중...",
+    "buyTicket": "티켓 구매"
   },
   "feedback": {
     "noData": "아직 데이터가 없습니다.",
@@ -83,5 +88,8 @@
     "previous": "이전",
     "next": "다음",
     "pageInfo": "{{page}} / {{totalPages}} 페이지"
+  },
+  "movieCard": {
+    "releasesOn": "{{date}} 개봉"
   }
 }

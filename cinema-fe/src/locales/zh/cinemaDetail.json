@@ -6,7 +6,8 @@
     "statusPending": "待审核",
     "statusActive": "营业中",
     "statusPaused": "暂停营业",
-    "viewShowtimes": "查看场次"
+    "viewShowtimes": "查看场次",
+    "breadcrumbCinemas": "影院"
   },
   "moviesSection": {
     "title": "该影院正在上映",

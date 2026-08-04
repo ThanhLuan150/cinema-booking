@@ -6,7 +6,8 @@
     "statusPending": "承認待ち",
     "statusActive": "営業中",
     "statusPaused": "一時休業中",
-    "viewShowtimes": "上映スケジュールを見る"
+    "viewShowtimes": "上映スケジュールを見る",
+    "breadcrumbCinemas": "映画館"
   },
   "moviesSection": {
     "title": "この映画館の上映中作品",

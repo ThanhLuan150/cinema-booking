@@ -3,14 +3,16 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const postMovieReviewMock = vi.fn();
-vi.mock('../api/reviews.api', () => ({ postMovieReview: (...args: unknown[]) => postMovieReviewMock(...args) }));
+vi.mock('../api/reviews.api', () => ({
+  postMovieReview: (...args: unknown[]) => postMovieReviewMock(...args),
+}));
 
 import { usePostMovieReview } from './usePostMovieReview';
 
 describe('usePostMovieReview', () => {
   beforeEach(() => postMovieReviewMock.mockReset());
 
-  it('posts the review and invalidates that movie\'s reviews query', async () => {
+  it("posts the review and invalidates that movie's reviews query", async () => {
     postMovieReviewMock.mockResolvedValue({ data: {} });
     const client = new QueryClient();
     const invalidateSpy = vi.spyOn(client, 'invalidateQueries');

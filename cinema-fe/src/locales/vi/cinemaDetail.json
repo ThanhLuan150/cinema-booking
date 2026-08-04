@@ -6,7 +6,8 @@
     "statusPending": "Chờ duyệt",
     "statusActive": "Đang hoạt động",
     "statusPaused": "Tạm ngừng",
-    "viewShowtimes": "Xem phim đang chiếu"
+    "viewShowtimes": "Xem phim đang chiếu",
+    "breadcrumbCinemas": "Rạp"
   },
   "moviesSection": {
     "title": "Phim đang chiếu tại rạp",

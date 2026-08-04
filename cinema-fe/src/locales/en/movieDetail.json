@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "N/A",
-    "bookNow": "Book now"
-  },
-  "castSection": {
+    "bookNow": "Book now",
+    "breadcrumbMovies": "Movies",
+    "releaseDate": "Release date",
+    "genre": "Category",
+    "country": "Country",
     "director": "Director",
-    "producer": "Producer",
     "cast": "Cast",
-    "leadLabel": "Lead",
-    "crew": "Director & Producer"
+    "content": "Synopsis",
+    "showtimes": "Showtimes",
+    "producer": "Producer",
+    "watchTrailer": "Watch trailer",
+    "voteCount": "{{count}} votes"
   },
   "reviews": {
     "title": "Reviews",
@@ -50,12 +54,16 @@
     "loadMore": "Load more reviews",
     "viewMoreReplies": "View {{count}} more replies"
   },
-  "otherMovieSlider": {
-    "trending": "Trending",
-    "moreDetails": "More Details",
-    "empty": "No trending movies right now"
-  },
   "detailTrailer": {
     "title": "Trailer"
+  },
+  "showtimes": {
+    "timesLabel": "Showtimes",
+    "empty": "No showtimes for this movie yet",
+    "loginPrompt": "Sign in to see showtimes and pick your seats"
+  },
+  "nowShowing": {
+    "title": "Now Playing",
+    "buyTicket": "Buy ticket"
   }
 }

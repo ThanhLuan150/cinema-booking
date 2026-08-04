@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "상영 시간",
+    "seat": "좌석 선택",
+    "payment": "결제",
+    "done": "확인"
+  },
   "bookSeat": {
     "defaultTitle": "좌석 선택",
     "screen": "스크린",
@@ -29,7 +35,9 @@
       "testAccountTitle": "MoMo 테스트 계정으로 로그인",
       "testAccountDescription": "MoMo 결제 페이지를 열고 테스트 계정 전화번호로 로그인하세요.",
       "openButton": "MoMo 결제 페이지 열기"
-    }
+    },
+    "summaryTitle": "예매 정보",
+    "totalLabel": "합계"
   },
   "bookTicket": {
     "pageTitle": "티켓 예매",

@@ -6,7 +6,8 @@
     "statusPending": "En attente d'approbation",
     "statusActive": "Actif",
     "statusPaused": "Temporairement fermé",
-    "viewShowtimes": "Voir les séances"
+    "viewShowtimes": "Voir les séances",
+    "breadcrumbCinemas": "Cinémas"
   },
   "moviesSection": {
     "title": "À l'affiche dans ce cinéma",

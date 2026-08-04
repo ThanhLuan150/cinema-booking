@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "Showtime",
+    "seat": "Seats",
+    "payment": "Payment",
+    "done": "Confirmation"
+  },
   "bookSeat": {
     "defaultTitle": "Select seats",
     "screen": "Screen",
@@ -29,7 +35,9 @@
       "testAccountTitle": "Sign in with a MoMo test account",
       "testAccountDescription": "Open the MoMo payment page and sign in with a test account phone number.",
       "openButton": "Open MoMo payment page"
-    }
+    },
+    "summaryTitle": "Booking summary",
+    "totalLabel": "Total"
   },
   "bookTicket": {
     "pageTitle": "Book Ticket",

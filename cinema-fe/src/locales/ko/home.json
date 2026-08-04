@@ -7,17 +7,23 @@
     "bookNow": "지금 예매하기",
     "viewDetails": "자세히 보기"
   },
-  "trendingMoviesSlider": {
-    "title": "인기 영화",
-    "viewDetails": "자세히 보기"
+  "quickBooking": {
+    "title": "빠른 예매",
+    "cinema": "극장 선택",
+    "movie": "영화 선택",
+    "date": "날짜 선택",
+    "time": "상영 시간 선택",
+    "noMovie": "상영 중인 영화 없음",
+    "noTime": "상영 시간 없음",
+    "submit": "예매하기"
   },
-  "newMoviesSlider": {
-    "title": "신작",
-    "viewDetails": "자세히 보기"
-  },
-  "upcomingMoviesSlider": {
-    "title": "상영 예정",
-    "viewDetails": "자세히 보기"
+  "movieTabs": {
+    "title": "영화",
+    "playing": "상영 중",
+    "new": "신작 영화",
+    "upcoming": "상영 예정",
+    "viewDetails": "자세히 보기",
+    "viewMore": "더 보기"
   },
   "topCinemasSlider": {
     "title": "인기 영화관",

@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "शो",
+    "seat": "सीटें",
+    "payment": "भुगतान",
+    "done": "पुष्टि"
+  },
   "bookSeat": {
     "defaultTitle": "सीटें चुनें",
     "screen": "स्क्रीन",
@@ -29,7 +35,9 @@
       "testAccountTitle": "MoMo टेस्ट खाते से साइन इन करें",
       "testAccountDescription": "MoMo भुगतान पेज खोलें और एक टेस्ट खाते के फोन नंबर से साइन इन करें।",
       "openButton": "MoMo भुगतान पेज खोलें"
-    }
+    },
+    "summaryTitle": "बुकिंग विवरण",
+    "totalLabel": "कुल"
   },
   "bookTicket": {
     "pageTitle": "टिकट बुक करें",

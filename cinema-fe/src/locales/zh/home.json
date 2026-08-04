@@ -7,17 +7,23 @@
     "bookNow": "立即购票",
     "viewDetails": "查看详情"
   },
-  "trendingMoviesSlider": {
-    "title": "热门电影",
-    "viewDetails": "查看详情"
+  "quickBooking": {
+    "title": "快速订票",
+    "cinema": "选择影院",
+    "movie": "选择电影",
+    "date": "选择日期",
+    "time": "选择场次",
+    "noMovie": "暂无影片",
+    "noTime": "暂无场次",
+    "submit": "立即订票"
   },
-  "newMoviesSlider": {
-    "title": "新片上线",
-    "viewDetails": "查看详情"
-  },
-  "upcomingMoviesSlider": {
-    "title": "即将上映",
-    "viewDetails": "查看详情"
+  "movieTabs": {
+    "title": "电影",
+    "playing": "正在上映",
+    "new": "新片上映",
+    "upcoming": "即将上映",
+    "viewDetails": "查看详情",
+    "viewMore": "查看更多"
   },
   "topCinemasSlider": {
     "title": "热门影院",

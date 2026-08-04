@@ -5,7 +5,8 @@
     "movies": "Movies",
     "playing": "Playing",
     "upcoming": "Upcoming",
-    "cinemas": "Cinemas"
+    "cinemas": "Cinemas",
+    "allCinemas": "All cinemas"
   },
   "header": {
     "toggleMenu": "Toggle menu",
@@ -17,7 +18,8 @@
     "manage": "Manage",
     "logout": "Logout",
     "login": "Login",
-    "logoutSuccess": "Logged out successfully"
+    "logoutSuccess": "Logged out successfully",
+    "bookNow": "Book Now"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
@@ -34,7 +36,9 @@
     "contact": "Contact",
     "newsletter": "Subscribe our newsletter to get latest update & news.",
     "emailPlaceholder": "Enter Email",
-    "send": "Send"
+    "send": "Send",
+    "followUs": "Follow Us",
+    "companyInfo": "CineNova cinema system"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "Back",
     "viewAll": "View All",
     "tryAgain": "Try again",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "buyTicket": "Buy Ticket"
   },
   "feedback": {
     "noData": "No data yet.",
@@ -83,5 +88,8 @@
     "previous": "Previous",
     "next": "Next",
     "pageInfo": "Page {{page}} of {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "From {{date}}"
   }
 }

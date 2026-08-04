@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "Séance",
+    "seat": "Sièges",
+    "payment": "Paiement",
+    "done": "Confirmation"
+  },
   "bookSeat": {
     "defaultTitle": "Choisissez vos sièges",
     "screen": "Écran",
@@ -29,7 +35,9 @@
       "testAccountTitle": "Se connecter avec un compte de test MoMo",
       "testAccountDescription": "Ouvrez la page de paiement MoMo et connectez-vous avec un numéro de téléphone de compte de test.",
       "openButton": "Ouvrir la page de paiement MoMo"
-    }
+    },
+    "summaryTitle": "Récapitulatif",
+    "totalLabel": "Total"
   },
   "bookTicket": {
     "pageTitle": "Réserver un billet",

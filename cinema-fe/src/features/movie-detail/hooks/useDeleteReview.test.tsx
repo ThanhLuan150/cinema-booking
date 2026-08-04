@@ -3,7 +3,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const deleteReviewMock = vi.fn();
-vi.mock('../api/reviews.api', () => ({ deleteReview: (...args: unknown[]) => deleteReviewMock(...args) }));
+vi.mock('../api/reviews.api', () => ({
+  deleteReview: (...args: unknown[]) => deleteReviewMock(...args),
+}));
 
 import { useDeleteReview } from './useDeleteReview';
 

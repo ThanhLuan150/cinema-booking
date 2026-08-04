@@ -7,9 +7,9 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 const useTopCinemasMock = vi.fn();
 vi.mock('@/features/movies/hooks/useTopCinemas', () => ({ useTopCinemas: () => useTopCinemasMock() }));
 
-import TopCinemas from './TopCinemasSlider';
+import TopCinemas from './TopCinemasSection';
 
-describe('TopCinemasSlider', () => {
+describe('TopCinemasSection', () => {
   beforeEach(() => useTopCinemasMock.mockReset());
 
   it('renders nothing when there are no cinemas', () => {

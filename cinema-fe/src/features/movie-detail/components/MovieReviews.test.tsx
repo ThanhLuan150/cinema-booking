@@ -12,13 +12,17 @@ vi.mock('@/features/auth/hooks/useAuth', () => ({
 }));
 
 const useMovieReviewsMock = vi.fn();
-vi.mock('../hooks/useMovieReviews', () => ({ useMovieReviews: (...args: unknown[]) => useMovieReviewsMock(...args) }));
+vi.mock('../hooks/useMovieReviews', () => ({
+  useMovieReviews: (...args: unknown[]) => useMovieReviewsMock(...args),
+}));
 
 const postReviewMutate = vi.fn();
 vi.mock('../hooks/usePostMovieReview', () => ({
   usePostMovieReview: () => ({ mutateAsync: postReviewMutate, isPending: false }),
 }));
-vi.mock('../hooks/usePostMovieReply', () => ({ usePostMovieReply: () => ({ mutateAsync: vi.fn() }) }));
+vi.mock('../hooks/usePostMovieReply', () => ({
+  usePostMovieReply: () => ({ mutateAsync: vi.fn() }),
+}));
 vi.mock('../hooks/useReactToReview', () => ({ useReactToReview: () => ({ mutate: vi.fn() }) }));
 vi.mock('../hooks/useUpdateReview', () => ({ useUpdateReview: () => ({ mutateAsync: vi.fn() }) }));
 vi.mock('../hooks/useDeleteReview', () => ({ useDeleteReview: () => ({ mutateAsync: vi.fn() }) }));
@@ -28,7 +32,10 @@ import MovieReviews from './MovieReviews';
 
 function renderWithId() {
   return render(
-    <MemoryRouter initialEntries={['/Detail/5']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      initialEntries={['/Detail/5']}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <Routes>
         <Route path="/Detail/:id" element={<MovieReviews />} />
       </Routes>
@@ -47,7 +54,10 @@ describe('MovieReviews', () => {
 
   it('shows an empty state when there are no reviews', () => {
     useIsAuthenticatedMock.mockReturnValue(true);
-    useMovieReviewsMock.mockReturnValue({ data: { reviews: [], average: 0, count: 0 }, isLoading: false });
+    useMovieReviewsMock.mockReturnValue({
+      data: { reviews: [], average: 0, count: 0 },
+      isLoading: false,
+    });
     renderWithId();
     expect(screen.getByText('reviews.emptyState')).toBeInTheDocument();
   });
@@ -77,7 +87,10 @@ describe('MovieReviews', () => {
 
   it('submits a review when logged in', async () => {
     useIsAuthenticatedMock.mockReturnValue(true);
-    useMovieReviewsMock.mockReturnValue({ data: { reviews: [], average: 0, count: 0 }, isLoading: false });
+    useMovieReviewsMock.mockReturnValue({
+      data: { reviews: [], average: 0, count: 0 },
+      isLoading: false,
+    });
     postReviewMutate.mockResolvedValue({});
     renderWithId();
     const textarea = screen.getByPlaceholderText('reviews.commentPlaceholder');

@@ -5,7 +5,8 @@
     "movies": "फिल्में",
     "playing": "अभी चल रही हैं",
     "upcoming": "जल्द आ रही हैं",
-    "cinemas": "सिनेमा"
+    "cinemas": "सिनेमा",
+    "allCinemas": "सभी सिनेमा"
   },
   "header": {
     "toggleMenu": "मेनू टॉगल करें",
@@ -17,7 +18,8 @@
     "manage": "प्रबंधित करें",
     "logout": "लॉगआउट",
     "login": "लॉगिन",
-    "logoutSuccess": "सफलतापूर्वक लॉगआउट हो गए"
+    "logoutSuccess": "सफलतापूर्वक लॉगआउट हो गए",
+    "bookNow": "अभी बुक करें"
   },
   "footer": {
     "tagline": "हमारी मूवी टिकट बुकिंग साइट पर आने पर हम गुणवत्ता और संतुष्टि की गारंटी देते हैं।",
@@ -34,7 +36,9 @@
     "contact": "संपर्क",
     "newsletter": "नवीनतम अपडेट और खबरें पाने के लिए हमारे न्यूज़लेटर को सब्सक्राइब करें।",
     "emailPlaceholder": "ईमेल दर्ज करें",
-    "send": "भेजें"
+    "send": "भेजें",
+    "followUs": "हमें फ़ॉलो करें",
+    "companyInfo": "CineNova सिनेमा प्रणाली"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "वापस",
     "viewAll": "सभी देखें",
     "tryAgain": "फिर से प्रयास करें",
-    "loading": "लोड हो रहा है..."
+    "loading": "लोड हो रहा है...",
+    "buyTicket": "टिकट खरीदें"
   },
   "feedback": {
     "noData": "अभी तक कोई डेटा नहीं है।",
@@ -83,5 +88,8 @@
     "previous": "पिछला",
     "next": "अगला",
     "pageInfo": "पृष्ठ {{page}} / {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "{{date}} से"
   }
 }

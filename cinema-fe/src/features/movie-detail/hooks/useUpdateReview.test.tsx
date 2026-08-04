@@ -3,7 +3,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const updateReviewMock = vi.fn();
-vi.mock('../api/reviews.api', () => ({ updateReview: (...args: unknown[]) => updateReviewMock(...args) }));
+vi.mock('../api/reviews.api', () => ({
+  updateReview: (...args: unknown[]) => updateReviewMock(...args),
+}));
 
 import { useUpdateReview } from './useUpdateReview';
 

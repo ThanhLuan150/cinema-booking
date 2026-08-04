@@ -16,12 +16,14 @@ vi.mock('react-i18next', async (importOriginal) => {
     }),
   };
 });
-vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
+  useCurrentUser: () => ({ data: undefined }),
+}));
 
+vi.mock('../components/MovieBackdrop', () => ({ default: () => <div>Backdrop</div> }));
 vi.mock('../components/BannerDetail', () => ({ default: () => <div>Banner</div> }));
-vi.mock('../components/CastSection', () => ({ default: () => <div>Cast</div> }));
-vi.mock('../components/DetailTrailer', () => ({ default: () => <div>Trailer</div> }));
-vi.mock('../components/OtherMovieSlider', () => ({ default: () => <div>Other</div> }));
+vi.mock('../components/MovieShowtimes', () => ({ default: () => <div>Showtimes</div> }));
+vi.mock('../components/NowShowingSidebar', () => ({ default: () => <div>Now Showing</div> }));
 vi.mock('../components/MovieReviews', () => ({ default: () => <div>Reviews</div> }));
 
 import MovieDetailPage from './MovieDetailPage';
@@ -39,10 +41,10 @@ describe('MovieDetailPage', () => {
         </Provider>
       </QueryClientProvider>,
     );
+    expect(screen.getByText('Backdrop')).toBeInTheDocument();
     expect(screen.getByText('Banner')).toBeInTheDocument();
-    expect(screen.getByText('Cast')).toBeInTheDocument();
-    expect(screen.getByText('Trailer')).toBeInTheDocument();
+    expect(screen.getByText('Showtimes')).toBeInTheDocument();
     expect(screen.getByText('Reviews')).toBeInTheDocument();
-    expect(screen.getByText('Other')).toBeInTheDocument();
+    expect(screen.getByText('Now Showing')).toBeInTheDocument();
   });
 });

@@ -6,6 +6,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { Pagination } from '@/components/ui/Pagination';
 import { Breadcrumb } from '@/components/common/Breadcrumb';
 import { MovieCard } from '@/components/common/MovieCard';
+import { SectionHeading } from '@/components/common/SectionHeading';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { MovieFilterBar } from '../components/MovieFilterBar';
@@ -38,10 +39,7 @@ const Upcomingg = () => {
         <Breadcrumb items={[{ label: t('upcoming.breadcrumbMovie') }, { label: t('upcoming.breadcrumbCurrent') }]} />
 
         <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10">
-          <h1 className="mb-6 flex items-center gap-3 text-xl font-bold text-white sm:text-2xl">
-            <span className="h-5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-            {t('upcoming.title')}
-          </h1>
+          <SectionHeading title={t('upcoming.title')} align="center" />
           <MovieFilterBar filters={filters} onChange={(next) => dispatch(setFilters(next))} />
           {isLoading ? (
             <div className="flex justify-center py-16">
@@ -50,7 +48,7 @@ const Upcomingg = () => {
           ) : upcomingMovies.length === 0 ? (
             <EmptyState title={t('upcoming.empty')} />
           ) : (
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
               {upcomingMovies.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} ctaLabel={t('upcoming.moreDetails')} />
               ))}

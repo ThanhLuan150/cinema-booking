@@ -1,14 +1,18 @@
 {
   "bannerDetail": {
     "notAvailable": "情報なし",
-    "bookNow": "今すぐ予約"
-  },
-  "castSection": {
+    "bookNow": "今すぐ予約",
+    "breadcrumbMovies": "映画",
+    "releaseDate": "公開日",
+    "genre": "ジャンル",
+    "country": "製作国",
     "director": "監督",
-    "producer": "製作",
     "cast": "出演者",
-    "leadLabel": "主演",
-    "crew": "監督・製作"
+    "content": "あらすじ",
+    "showtimes": "上映スケジュール",
+    "producer": "製作",
+    "watchTrailer": "予告編を見る",
+    "voteCount": "{{count}}件の評価"
   },
   "reviews": {
     "title": "レビュー",
@@ -50,12 +54,16 @@
     "loadMore": "レビューをもっと見る",
     "viewMoreReplies": "他{{count}}件の返信を見る"
   },
-  "otherMovieSlider": {
-    "trending": "話題の映画",
-    "moreDetails": "詳細を見る",
-    "empty": "現在話題の映画はありません"
-  },
   "detailTrailer": {
     "title": "予告編"
+  },
+  "showtimes": {
+    "timesLabel": "上映時間",
+    "empty": "この映画の上映予定はまだありません",
+    "loginPrompt": "ログインすると上映時間の確認と座席選択ができます"
+  },
+  "nowShowing": {
+    "title": "上映中の映画",
+    "buyTicket": "チケット購入"
   }
 }

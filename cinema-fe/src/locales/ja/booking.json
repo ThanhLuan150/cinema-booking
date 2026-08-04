@@ -1,4 +1,10 @@
 {
+  "steps": {
+    "showtime": "上映回",
+    "seat": "座席選択",
+    "payment": "支払い",
+    "done": "確認"
+  },
   "bookSeat": {
     "defaultTitle": "座席を選択",
     "screen": "スクリーン",
@@ -29,7 +35,9 @@
       "testAccountTitle": "MoMoテストアカウントでログイン",
       "testAccountDescription": "MoMo決済ページを開き、テストアカウントの電話番号でログインしてください。",
       "openButton": "MoMo決済ページを開く"
-    }
+    },
+    "summaryTitle": "予約内容",
+    "totalLabel": "合計"
   },
   "bookTicket": {
     "pageTitle": "チケットを予約",

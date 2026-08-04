@@ -5,7 +5,8 @@
     "movies": "Phim",
     "playing": "Đang chiếu",
     "upcoming": "Sắp chiếu",
-    "cinemas": "Rạp"
+    "cinemas": "Rạp",
+    "allCinemas": "Tất cả các rạp"
   },
   "header": {
     "toggleMenu": "Bật/tắt menu",
@@ -17,7 +18,8 @@
     "manage": "Quản lý",
     "logout": "Đăng xuất",
     "login": "Đăng nhập",
-    "logoutSuccess": "Đăng xuất thành công"
+    "logoutSuccess": "Đăng xuất thành công",
+    "bookNow": "Đặt vé ngay"
   },
   "footer": {
     "tagline": "Chúng tôi cam kết chất lượng và sự hài lòng khi bạn đặt vé xem phim tại đây.",
@@ -34,7 +36,9 @@
     "contact": "Liên hệ",
     "newsletter": "Đăng ký nhận bản tin để cập nhật tin tức mới nhất.",
     "emailPlaceholder": "Nhập email",
-    "send": "Gửi"
+    "send": "Gửi",
+    "followUs": "Theo dõi chúng tôi",
+    "companyInfo": "Hệ thống rạp chiếu phim CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -69,7 +73,8 @@
     "back": "Quay lại",
     "viewAll": "Xem tất cả",
     "tryAgain": "Thử lại",
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "buyTicket": "Mua vé"
   },
   "feedback": {
     "noData": "Chưa có dữ liệu.",
@@ -83,5 +88,8 @@
     "previous": "Trước",
     "next": "Sau",
     "pageInfo": "Trang {{page}} / {{totalPages}}"
+  },
+  "movieCard": {
+    "releasesOn": "Khởi chiếu {{date}}"
   }
 }
