@@ -1,0 +1,98 @@
+{
+  "about": {
+    "breadcrumb": "关于我们",
+    "title": "关于 CineNova",
+    "intro": "CineNova 是一家致力于打造完整观影体验的连锁影院：现代化影厅、沉浸式音效，以及只需几步即可完成的在线订票流程。",
+    "mission": "我们相信每一场电影都值得被铭记。因此 CineNova 持续投入影厅品质、服务与订票技术，让您总能坐到心仪的座位。",
+    "stats": {
+      "cinemas": { "value": "25+", "label": "全国影院" },
+      "seats": { "value": "12,000+", "label": "座位" },
+      "movies": { "value": "500+", "label": "已上映影片" },
+      "customers": { "value": "100万+", "label": "满意顾客" }
+    },
+    "values": {
+      "quality": {
+        "title": "画面品质",
+        "description": "4K 影厅、大幅银幕与环绕声系统，让每一帧画面都清晰锐利。"
+      },
+      "comfort": {
+        "title": "舒适空间",
+        "description": "宽敞合理的座位布局，让您从头到尾尽情享受电影。"
+      },
+      "easyBooking": {
+        "title": "轻松订票",
+        "description": "选影片、选场次、选座位，几分钟内即可完成在线支付。"
+      },
+      "support": {
+        "title": "贴心服务",
+        "description": "客服团队随时为您解答各种疑问。"
+      }
+    },
+    "ctaTitle": "准备好观看下一场了吗？",
+    "ctaDescription": "浏览 CineNova 正在热映的影片，立即预订您的座位。",
+    "ctaPrimary": "查看正在热映",
+    "ctaSecondary": "联系我们"
+  },
+  "faq": {
+    "breadcrumb": "常见问题",
+    "title": "常见问题",
+    "intro": "顾客在 CineNova 订票时最常提出的问题。",
+    "items": {
+      "booking": {
+        "question": "如何在 CineNova 订票？",
+        "answer": "选择想看的影片，选定影院与场次，挑选座位后完成支付。支付成功后，电子票会显示在「我的订票」中。"
+      },
+      "payment": {
+        "question": "CineNova 支持哪些支付方式？",
+        "answer": "您可以在订票流程的最后一步，通过系统支持的支付渠道在线付款。"
+      },
+      "cancel": {
+        "question": "已订的票可以改签或退票吗？",
+        "answer": "已支付成功的票无法在网站上自行取消。如需协助，请在放映前拨打客服热线，我们会为您提供指引。"
+      },
+      "checkTicket": {
+        "question": "在哪里查看已订的票？",
+        "answer": "登录后进入「我的订票」，即可查看所有票券以及场次、影厅和座位号信息。"
+      },
+      "voucher": {
+        "question": "优惠码怎么使用？",
+        "answer": "在支付步骤输入优惠码。每个优惠码都有各自的使用条件与有效期，订单符合条件时系统会自动抵扣。"
+      },
+      "combo": {
+        "question": "可以和电影票一起购买爆米花套餐吗？",
+        "answer": "可以。在选座步骤中即可添加套餐，并与电影票一同结算。"
+      },
+      "account": {
+        "question": "订票一定要注册账号吗？",
+        "answer": "订票需要先登录，这样票券才会被保存，您随时都可以查询。"
+      },
+      "contact": {
+        "question": "需要紧急协助时联系谁？",
+        "answer": "请拨打客服热线或发送邮件给我们，支持团队会尽快回复您。"
+      }
+    },
+    "stillNeedHelpTitle": "仍然没有找到答案？",
+    "stillNeedHelpDescription": "CineNova 团队随时乐意为您提供帮助。",
+    "stillNeedHelpLink": "联系客服"
+  },
+  "contact": {
+    "breadcrumb": "联系我们",
+    "title": "联系 CineNova",
+    "intro": "需要订票协助，或想与 CineNova 合作？欢迎通过以下渠道与我们联系。",
+    "channels": {
+      "hotline": { "label": "客服热线", "value": "1900 1234" },
+      "email": { "label": "电子邮箱", "value": "support@cinenova.vn" },
+      "office": {
+        "label": "办公地址",
+        "value": "胡志明市第一郡 CineNova 大厦 5 楼"
+      },
+      "hours": { "label": "营业时间", "value": "周一至周日 08:00 - 22:00" }
+    },
+    "faqTitle": "常见问题",
+    "faqDescription": "关于订票、支付与优惠码的大部分疑问，都能在这里找到答案。",
+    "faqLink": "查看常见问题",
+    "bookingTitle": "查询我的票券",
+    "bookingDescription": "在订票记录中查看票券、场次与座位号。",
+    "bookingLink": "前往我的订票"
+  }
+}

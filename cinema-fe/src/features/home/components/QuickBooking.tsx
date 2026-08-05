@@ -133,7 +133,9 @@ const QuickBooking = () => {
     // Sits astride the bottom edge of the hero carousel on desktop, the way Galaxy's
     // booking bar does; on small screens it drops below so it can't cover the hero CTAs.
     <section className="relative z-10 mx-auto mt-5 w-full max-w-6xl px-4 pb-8 md:px-6 lg:-mt-8">
-      <div className="overflow-hidden rounded-xl border border-border-strong bg-surface-raised shadow-raised">
+      {/* No `overflow-hidden` here: it would clip the step dropdowns. The submit button
+          rounds its own outer corners instead (11px = the bar radius minus its border). */}
+      <div className="rounded-xl border border-border-strong bg-surface-raised shadow-raised">
         <div className="flex flex-col divide-y divide-border lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0">
           {steps.map((step, index) => (
             <div key={step.key} className="flex flex-1 items-center gap-3 px-4 py-2.5">
@@ -156,7 +158,7 @@ const QuickBooking = () => {
             type="button"
             onClick={handleSubmit}
             disabled={!movie}
-            className="shrink-0 gap-2 rounded-none px-10 py-4 text-sm font-bold uppercase tracking-wide lg:w-56"
+            className="shrink-0 gap-2 rounded-t-none rounded-b-[11px] px-10 py-4 text-sm font-bold uppercase tracking-wide lg:w-56 lg:rounded-l-none lg:rounded-r-[11px]"
           >
             <i className="fa-solid fa-ticket" aria-hidden="true" />
             {t('quickBooking.submit')}

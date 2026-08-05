@@ -1,0 +1,98 @@
+{
+  "about": {
+    "breadcrumb": "Về chúng tôi",
+    "title": "Về CineNova",
+    "intro": "CineNova là hệ thống rạp chiếu phim mang đến trải nghiệm điện ảnh trọn vẹn: phòng chiếu hiện đại, âm thanh sống động và quy trình đặt vé trực tuyến chỉ trong vài bước.",
+    "mission": "Chúng tôi tin rằng mỗi buổi xem phim đều đáng nhớ. Vì vậy, CineNova không ngừng đầu tư vào chất lượng phòng chiếu, dịch vụ và công nghệ đặt vé để bạn luôn có chỗ ngồi ưng ý.",
+    "stats": {
+      "cinemas": { "value": "25+", "label": "Rạp trên toàn quốc" },
+      "seats": { "value": "12.000+", "label": "Ghế ngồi" },
+      "movies": { "value": "500+", "label": "Phim đã chiếu" },
+      "customers": { "value": "1 triệu+", "label": "Khách hàng tin dùng" }
+    },
+    "values": {
+      "quality": {
+        "title": "Chất lượng hình ảnh",
+        "description": "Phòng chiếu chuẩn 4K, màn hình lớn và hệ thống âm thanh vòm cho từng khung hình sắc nét."
+      },
+      "comfort": {
+        "title": "Không gian thoải mái",
+        "description": "Ghế ngồi rộng rãi, bố trí hợp lý để bạn tận hưởng bộ phim một cách trọn vẹn."
+      },
+      "easyBooking": {
+        "title": "Đặt vé dễ dàng",
+        "description": "Chọn phim, chọn suất, chọn ghế và thanh toán trực tuyến chỉ trong vài phút."
+      },
+      "support": {
+        "title": "Hỗ trợ tận tâm",
+        "description": "Đội ngũ chăm sóc khách hàng luôn sẵn sàng giải đáp mọi thắc mắc của bạn."
+      }
+    },
+    "ctaTitle": "Sẵn sàng cho suất chiếu tiếp theo?",
+    "ctaDescription": "Khám phá các phim đang chiếu tại CineNova và giữ chỗ ngay hôm nay.",
+    "ctaPrimary": "Xem phim đang chiếu",
+    "ctaSecondary": "Liên hệ với chúng tôi"
+  },
+  "faq": {
+    "breadcrumb": "Câu hỏi thường gặp",
+    "title": "Câu hỏi thường gặp",
+    "intro": "Những câu hỏi được khách hàng quan tâm nhất khi đặt vé tại CineNova.",
+    "items": {
+      "booking": {
+        "question": "Làm sao để đặt vé trên CineNova?",
+        "answer": "Chọn phim bạn muốn xem, chọn rạp và suất chiếu, chọn ghế rồi tiến hành thanh toán. Vé điện tử sẽ hiển thị trong mục Lịch sử đặt vé sau khi thanh toán thành công."
+      },
+      "payment": {
+        "question": "CineNova hỗ trợ những hình thức thanh toán nào?",
+        "answer": "Bạn có thể thanh toán trực tuyến qua các cổng thanh toán được hỗ trợ ở bước cuối cùng của quá trình đặt vé."
+      },
+      "cancel": {
+        "question": "Tôi có thể đổi hoặc hủy vé đã đặt không?",
+        "answer": "Vé đã thanh toán thành công không thể tự hủy trên hệ thống. Nếu cần hỗ trợ, vui lòng liên hệ hotline trước giờ chiếu để được hướng dẫn."
+      },
+      "checkTicket": {
+        "question": "Tôi kiểm tra vé đã đặt ở đâu?",
+        "answer": "Đăng nhập và vào mục Lịch sử đặt vé để xem lại toàn bộ vé cùng thông tin suất chiếu, phòng chiếu và số ghế."
+      },
+      "voucher": {
+        "question": "Cách sử dụng mã giảm giá?",
+        "answer": "Nhập mã giảm giá ở bước thanh toán. Mỗi mã có điều kiện và thời hạn riêng, hệ thống sẽ tự động áp dụng nếu đơn hàng hợp lệ."
+      },
+      "combo": {
+        "question": "Tôi có thể đặt combo bắp nước cùng vé không?",
+        "answer": "Có. Trong bước chọn ghế, bạn có thể thêm combo bắp nước và thanh toán chung với vé."
+      },
+      "account": {
+        "question": "Tôi có bắt buộc tạo tài khoản để đặt vé không?",
+        "answer": "Bạn cần đăng nhập để đặt vé, nhờ đó vé được lưu lại và bạn có thể tra cứu bất cứ lúc nào."
+      },
+      "contact": {
+        "question": "Tôi cần hỗ trợ gấp thì liên hệ ai?",
+        "answer": "Vui lòng gọi hotline hoặc gửi email cho chúng tôi, đội ngũ hỗ trợ sẽ phản hồi trong thời gian sớm nhất."
+      }
+    },
+    "stillNeedHelpTitle": "Vẫn chưa tìm thấy câu trả lời?",
+    "stillNeedHelpDescription": "Đội ngũ CineNova luôn sẵn sàng hỗ trợ bạn.",
+    "stillNeedHelpLink": "Liên hệ hỗ trợ"
+  },
+  "contact": {
+    "breadcrumb": "Liên hệ",
+    "title": "Liên hệ với CineNova",
+    "intro": "Bạn cần hỗ trợ đặt vé hoặc muốn hợp tác cùng CineNova? Hãy liên hệ với chúng tôi qua các kênh dưới đây.",
+    "channels": {
+      "hotline": { "label": "Hotline", "value": "1900 1234" },
+      "email": { "label": "Email", "value": "support@cinenova.vn" },
+      "office": {
+        "label": "Văn phòng",
+        "value": "Tầng 5, Toà nhà CineNova, Quận 1, TP. Hồ Chí Minh"
+      },
+      "hours": { "label": "Giờ làm việc", "value": "Thứ 2 - Chủ nhật, 08:00 - 22:00" }
+    },
+    "faqTitle": "Câu hỏi thường gặp",
+    "faqDescription": "Phần lớn thắc mắc về đặt vé, thanh toán và mã giảm giá đã có sẵn câu trả lời.",
+    "faqLink": "Xem câu hỏi thường gặp",
+    "bookingTitle": "Kiểm tra vé đã đặt",
+    "bookingDescription": "Xem lại vé, suất chiếu và số ghế trong lịch sử đặt vé của bạn.",
+    "bookingLink": "Đi tới lịch sử đặt vé"
+  }
+}

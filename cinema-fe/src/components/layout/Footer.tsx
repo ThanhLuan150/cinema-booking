@@ -50,7 +50,7 @@ export function Footer() {
             <h5 className={columnTitleClass}>{t('footer.quickLink')}</h5>
             <ul className="flex flex-col gap-2.5 text-sm text-txt/60">
               <li>
-                <Link to={ROUTES.home} className={columnLinkClass}>
+                <Link to={ROUTES.about} className={columnLinkClass}>
                   {t('footer.aboutUs')}
                 </Link>
               </li>
@@ -65,9 +65,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className={columnLinkClass}>
+                <Link to={ROUTES.faq} className={columnLinkClass}>
                   {t('footer.help')}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -76,24 +76,24 @@ export function Footer() {
             <h5 className={columnTitleClass}>{t('footer.important')}</h5>
             <ul className="flex flex-col gap-2.5 text-sm text-txt/60">
               <li>
-                <a href="#" className={columnLinkClass}>
+                <Link to={ROUTES.contact} className={columnLinkClass}>
                   {t('footer.support')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={columnLinkClass}>
+                <Link to={ROUTES.faq} className={columnLinkClass}>
                   {t('footer.faq')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={columnLinkClass}>
+                <Link to={ROUTES.myBookings} className={columnLinkClass}>
                   {t('footer.check')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={columnLinkClass}>
+                <Link to={ROUTES.contact} className={columnLinkClass}>
                   {t('footer.contactUs')}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

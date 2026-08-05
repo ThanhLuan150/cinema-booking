@@ -1,0 +1,98 @@
+{
+  "about": {
+    "breadcrumb": "About Us",
+    "title": "About CineNova",
+    "intro": "CineNova is a cinema network built around a complete movie experience: modern auditoriums, immersive sound and online booking that takes only a few steps.",
+    "mission": "We believe every screening should be memorable. That is why CineNova keeps investing in screen quality, service and booking technology so you always get the seat you want.",
+    "stats": {
+      "cinemas": { "value": "25+", "label": "Cinemas nationwide" },
+      "seats": { "value": "12,000+", "label": "Seats" },
+      "movies": { "value": "500+", "label": "Movies screened" },
+      "customers": { "value": "1M+", "label": "Happy customers" }
+    },
+    "values": {
+      "quality": {
+        "title": "Picture quality",
+        "description": "4K-ready auditoriums, large screens and surround sound keep every frame sharp."
+      },
+      "comfort": {
+        "title": "Comfortable space",
+        "description": "Spacious, well-arranged seating so you can enjoy the movie from start to finish."
+      },
+      "easyBooking": {
+        "title": "Easy booking",
+        "description": "Pick a movie, a showtime and your seats, then pay online in just a few minutes."
+      },
+      "support": {
+        "title": "Dedicated support",
+        "description": "Our customer care team is always ready to answer your questions."
+      }
+    },
+    "ctaTitle": "Ready for your next screening?",
+    "ctaDescription": "Browse the movies now playing at CineNova and reserve your seats today.",
+    "ctaPrimary": "See now playing",
+    "ctaSecondary": "Contact us"
+  },
+  "faq": {
+    "breadcrumb": "FAQ",
+    "title": "Frequently Asked Questions",
+    "intro": "The questions our customers ask most often when booking with CineNova.",
+    "items": {
+      "booking": {
+        "question": "How do I book tickets on CineNova?",
+        "answer": "Pick the movie you want to watch, choose a cinema and showtime, select your seats and complete the payment. Your e-ticket appears under My Bookings once the payment succeeds."
+      },
+      "payment": {
+        "question": "Which payment methods does CineNova accept?",
+        "answer": "You can pay online through the supported payment gateways offered in the final step of the booking flow."
+      },
+      "cancel": {
+        "question": "Can I change or cancel a booked ticket?",
+        "answer": "Paid tickets cannot be cancelled from the website. If you need help, please call our hotline before the showtime and we will guide you."
+      },
+      "checkTicket": {
+        "question": "Where can I check my booked tickets?",
+        "answer": "Sign in and open My Bookings to review every ticket along with its showtime, auditorium and seat numbers."
+      },
+      "voucher": {
+        "question": "How do I use a discount code?",
+        "answer": "Enter the code at the payment step. Each code has its own conditions and expiry date, and it is applied automatically when your order qualifies."
+      },
+      "combo": {
+        "question": "Can I add a popcorn and drink combo to my tickets?",
+        "answer": "Yes. During seat selection you can add a combo and pay for it together with your tickets."
+      },
+      "account": {
+        "question": "Do I need an account to book tickets?",
+        "answer": "You need to sign in to book, which lets us save your tickets so you can look them up at any time."
+      },
+      "contact": {
+        "question": "Who do I contact for urgent help?",
+        "answer": "Please call our hotline or send us an email and our support team will get back to you as soon as possible."
+      }
+    },
+    "stillNeedHelpTitle": "Still cannot find your answer?",
+    "stillNeedHelpDescription": "The CineNova team is always here to help.",
+    "stillNeedHelpLink": "Contact support"
+  },
+  "contact": {
+    "breadcrumb": "Contact",
+    "title": "Contact CineNova",
+    "intro": "Need help with a booking or interested in partnering with CineNova? Reach us through any of the channels below.",
+    "channels": {
+      "hotline": { "label": "Hotline", "value": "1900 1234" },
+      "email": { "label": "Email", "value": "support@cinenova.vn" },
+      "office": {
+        "label": "Office",
+        "value": "5th floor, CineNova Building, District 1, Ho Chi Minh City"
+      },
+      "hours": { "label": "Opening hours", "value": "Monday - Sunday, 08:00 - 22:00" }
+    },
+    "faqTitle": "Frequently asked questions",
+    "faqDescription": "Most questions about booking, payment and discount codes are already answered there.",
+    "faqLink": "Read the FAQ",
+    "bookingTitle": "Check your tickets",
+    "bookingDescription": "Review your tickets, showtimes and seat numbers in your booking history.",
+    "bookingLink": "Go to my bookings"
+  }
+}
