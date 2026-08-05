@@ -130,8 +130,9 @@ const QuickBooking = () => {
   };
 
   return (
-    // Sits astride the bottom edge of the hero carousel, the way Galaxy's booking bar does.
-    <section className="relative z-10 mx-auto -mt-8 w-full max-w-6xl px-4 pb-8 md:px-6">
+    // Sits astride the bottom edge of the hero carousel on desktop, the way Galaxy's
+    // booking bar does; on small screens it drops below so it can't cover the hero CTAs.
+    <section className="relative z-10 mx-auto mt-5 w-full max-w-6xl px-4 pb-8 md:px-6 lg:-mt-8">
       <div className="overflow-hidden rounded-xl border border-border-strong bg-surface-raised shadow-raised">
         <div className="flex flex-col divide-y divide-border lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0">
           {steps.map((step, index) => (

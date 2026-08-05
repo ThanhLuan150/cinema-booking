@@ -52,8 +52,12 @@ const Banner = () => {
     arrows: bannerMovies.length > 1,
     nextArrow: <Arrow direction="next" t={t} />,
     prevArrow: <Arrow direction="prev" t={t} />,
-    responsive: [{ breakpoint: 768, settings: { centerMode: false, centerPadding: '0px' } }],
-    dotsClass: 'slick-dots !absolute !bottom-14 !flex !justify-center !gap-2.5',
+    // Arrows sit on top of the copy below desktop widths, so swipe is the only control there.
+    responsive: [
+      { breakpoint: 1024, settings: { arrows: false, centerMode: true, centerPadding: '4%' } },
+      { breakpoint: 768, settings: { arrows: false, centerMode: false, centerPadding: '0px' } },
+    ],
+    dotsClass: 'slick-dots !absolute !bottom-3 !flex !justify-center !gap-2.5 md:!bottom-14',
     appendDots: (dots: ReactNode) => <ul>{dots}</ul>,
     customPaging: () => (
       <button
@@ -74,7 +78,7 @@ const Banner = () => {
             {bannerMovies.map((movie) => (
               <div key={movie.id}>
                 <div className="px-1.5 md:px-3">
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border sm:aspect-[21/9]">
+                  <div className="relative aspect-[4/3] min-h-[360px] overflow-hidden rounded-2xl border border-border sm:aspect-[16/9] lg:aspect-[21/9]">
                     <div
                       className="absolute inset-0 scale-110 bg-cover bg-center blur-xl"
                       style={{ backgroundImage: `url(${getMoviePosterUrl(movie.avatar)})` }}
@@ -82,7 +86,7 @@ const Banner = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-main via-main/85 to-main/40" />
 
-                    <div className="relative z-[1] flex h-full items-center gap-6 px-6 py-6 sm:px-10 md:gap-10">
+                    <div className="relative z-[1] flex h-full items-center gap-6 px-5 py-6 pb-12 sm:px-10 md:gap-10 md:pb-6">
                       <div className="max-w-xl flex-1 animate-slide-up">
                         {(movie.categories || []).length > 0 && (
                           <div className="mb-3 flex flex-wrap gap-2">
@@ -122,7 +126,7 @@ const Banner = () => {
 
                       <Link
                         to={ROUTES.movieDetail(movie.id)}
-                        className="hidden aspect-[2/3] h-full shrink-0 overflow-hidden rounded-xl shadow-raised ring-1 ring-white/10 transition-transform duration-300 hover:scale-[1.03] sm:block"
+                        className="hidden aspect-[2/3] h-full shrink-0 overflow-hidden rounded-xl shadow-raised ring-1 ring-white/10 transition-transform duration-300 hover:scale-[1.03] md:block"
                       >
                         <img
                           src={getMoviePosterUrl(movie.avatar)}

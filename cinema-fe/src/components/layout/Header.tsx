@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { SearchBox } from '@/components/common/SearchBox';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { MovieMegaMenu } from '@/components/layout/MovieMegaMenu';
 import { CinemaMenu } from '@/components/layout/CinemaMenu';
@@ -25,7 +24,6 @@ const dropdownLinkClass =
 export function Header() {
   const { t } = useTranslation('common');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<'movies' | 'cinemas' | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,6 +42,16 @@ export function Header() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // The mobile menu covers the viewport, so the page behind it must not scroll away.
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isMobileMenuOpen]);
 
   const handleLogout = () => {
     setIsUserMenuOpen(false);
@@ -89,8 +97,8 @@ export function Header() {
 
         <ul
           className={cn(
-            'flex-col items-stretch gap-1 border-t border-border bg-main/95 backdrop-blur-md md:static md:ml-auto md:flex md:w-auto md:flex-row md:items-center md:gap-1 md:border-none md:bg-transparent md:backdrop-blur-none',
-            'fixed inset-x-0 top-20 z-20 max-h-[calc(100vh-5rem)] overflow-y-auto md:inset-auto md:max-h-none md:overflow-visible',
+            'flex-col items-stretch gap-1 border-t border-border bg-main md:static md:ml-auto md:flex md:w-auto md:flex-row md:items-center md:gap-1 md:border-none md:bg-transparent',
+            'fixed inset-x-0 top-20 z-20 h-[calc(100vh-5rem)] overflow-y-auto pb-6 md:inset-auto md:h-auto md:overflow-visible md:pb-0',
             isMobileMenuOpen ? 'flex' : 'hidden md:flex',
           )}
         >
@@ -156,21 +164,6 @@ export function Header() {
               <i className="fa-solid fa-ticket" aria-hidden="true" />
               {t('header.bookNow')}
             </Link>
-          </li>
-          <li className="relative px-4 py-3 text-center md:ml-2 md:px-1 md:py-0">
-            <button
-              type="button"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-txt/80 transition-colors hover:bg-white/10 hover:text-txt"
-              onClick={() => setIsSearchOpen((open) => !open)}
-              aria-label={t('header.toggleSearch')}
-            >
-              <i className="fas fa-search" />
-            </button>
-            {isSearchOpen && (
-              <div className="absolute right-0 top-full z-30 mt-2 w-80 animate-slide-up">
-                <SearchBox />
-              </div>
-            )}
           </li>
           <li className="flex items-center justify-center px-4 py-3 md:px-1 md:py-0">
             <LanguageSwitcher />

@@ -56,12 +56,6 @@ describe('Header', () => {
     expect(screen.queryByText('header.login')).not.toBeInTheDocument();
   });
 
-  it('toggles the search box open', () => {
-    renderHeader();
-    fireEvent.click(screen.getByLabelText('header.toggleSearch'));
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
-  });
-
   it('shows the manage link only for management roles', () => {
     store.dispatch(login({ accessToken: 'tok', userId: '1', role: '0', account: {} as any }));
     useCurrentUserMock.mockReturnValue({ data: { name: 'Admin' } });
