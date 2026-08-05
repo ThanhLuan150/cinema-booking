@@ -24,7 +24,6 @@ const dropdownLinkClass =
 export function Header() {
   const { t } = useTranslation('common');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<'movies' | 'cinemas' | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
