@@ -38,6 +38,9 @@ import Cinemas from '@/features/movies/pages/Cinemas';
 import BookTicket from '@/features/booking/pages/BookTicketPage';
 import BookSeat from '@/features/booking/pages/BookSeatPage';
 import PaymentResult from '@/features/booking/pages/PaymentResultPage';
+import About from '@/features/static/pages/AboutPage';
+import Faq from '@/features/static/pages/FaqPage';
+import Contact from '@/features/static/pages/ContactPage';
 
 export function AppRouter() {
   return (
@@ -201,6 +204,9 @@ export function AppRouter() {
       <Route path={ROUTES.upcoming} element={<Upcoming />} />
       <Route path={ROUTES.playing} element={<Playing />} />
       <Route path={ROUTES.cinemas} element={<Cinemas />} />
+      <Route path={ROUTES.about} element={<About />} />
+      <Route path={ROUTES.faq} element={<Faq />} />
+      <Route path={ROUTES.contact} element={<Contact />} />
       <Route path={ROUTES.bookSeat} element={<BookSeat />} />
       <Route path="/BookTicket/:id" element={<BookTicket />} />
       <Route path={ROUTES.paymentResult} element={<PaymentResult />} />

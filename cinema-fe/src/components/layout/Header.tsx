@@ -98,7 +98,7 @@ export function Header() {
         <ul
           className={cn(
             'flex-col items-stretch gap-1 border-t border-border bg-main md:static md:ml-auto md:flex md:w-auto md:flex-row md:items-center md:gap-1 md:border-none md:bg-transparent',
-            'fixed inset-x-0 top-20 z-20 h-[calc(100vh-5rem)] overflow-y-auto pb-6 md:inset-auto md:h-auto md:overflow-visible md:pb-0',
+            'fixed inset-x-0 top-20 z-20 h-[calc(100vh-5rem)] overflow-y-auto pb-6 md:inset-auto md:h-full md:overflow-visible md:pb-0',
             isMobileMenuOpen ? 'flex' : 'hidden md:flex',
           )}
         >
@@ -107,8 +107,10 @@ export function Header() {
               {t('nav.home')}
             </Link>
           </li>
+          {/* No `relative` here: the mega menu below anchors to the header container so it can
+              span the full width, while staying a descendant of this item for hover purposes. */}
           <li
-            className="relative px-4 py-3 text-center md:px-3 md:py-0"
+            className="px-4 py-3 text-center md:flex md:h-full md:items-center md:px-3 md:py-0"
             onMouseEnter={() => setOpenMenu('movies')}
             onMouseLeave={() => setOpenMenu(null)}
           >
@@ -134,6 +136,11 @@ export function Header() {
                 </Link>
               </li>
             </ul>
+            {openMenu === 'movies' && (
+              <div className="absolute left-6 top-full z-30 hidden md:left-10 md:block">
+                <MovieMegaMenu open onNavigate={() => setOpenMenu(null)} />
+              </div>
+            )}
           </li>
           <li
             className="relative px-4 py-3 text-center md:px-3 md:py-0"
@@ -254,16 +261,6 @@ export function Header() {
             </li>
           )}
         </ul>
-
-        {openMenu === 'movies' && (
-          <div
-            className="absolute left-6 top-full z-30 hidden md:left-10 md:block"
-            onMouseEnter={() => setOpenMenu('movies')}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <MovieMegaMenu open onNavigate={() => setOpenMenu(null)} />
-          </div>
-        )}
       </div>
     </nav>
   );

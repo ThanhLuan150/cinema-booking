@@ -102,8 +102,10 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
       }
     };
 
+    // `relative` is what makes the z-index apply at all; an open select also has to outrank
+    // the sibling fields after it in the DOM, or its listbox renders behind them.
     return (
-      <div className="z-10 flex flex-col gap-1.5">
+      <div className={cn('relative flex flex-col gap-1.5', isOpen ? 'z-30' : 'z-10')}>
         {label && (
           <label htmlFor={id} className="text-sm font-medium text-txt/90">
             {label}

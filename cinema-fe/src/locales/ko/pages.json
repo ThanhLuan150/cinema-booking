@@ -1,0 +1,98 @@
+{
+  "about": {
+    "breadcrumb": "회사 소개",
+    "title": "CineNova 소개",
+    "intro": "CineNova는 완벽한 영화 경험을 위한 극장 네트워크입니다. 최신 상영관과 생생한 사운드, 그리고 몇 단계면 끝나는 온라인 예매를 제공합니다.",
+    "mission": "모든 상영이 기억에 남아야 한다고 믿습니다. 그래서 CineNova는 상영관 품질과 서비스, 예매 기술에 꾸준히 투자하여 원하는 좌석을 언제나 확보할 수 있도록 합니다.",
+    "stats": {
+      "cinemas": { "value": "25+", "label": "전국 극장" },
+      "seats": { "value": "12,000+", "label": "좌석" },
+      "movies": { "value": "500+", "label": "상영한 영화" },
+      "customers": { "value": "100만+", "label": "만족한 고객" }
+    },
+    "values": {
+      "quality": {
+        "title": "화질",
+        "description": "4K 상영관과 대형 스크린, 서라운드 사운드로 모든 장면을 선명하게 즐기세요."
+      },
+      "comfort": {
+        "title": "편안한 공간",
+        "description": "넓고 배치가 잘 된 좌석에서 영화를 처음부터 끝까지 편안하게 감상하세요."
+      },
+      "easyBooking": {
+        "title": "간편한 예매",
+        "description": "영화와 상영 시간, 좌석을 고르고 몇 분 안에 온라인으로 결제하세요."
+      },
+      "support": {
+        "title": "친절한 지원",
+        "description": "고객 지원팀이 언제나 궁금한 점에 답해 드립니다."
+      }
+    },
+    "ctaTitle": "다음 상영을 준비하셨나요?",
+    "ctaDescription": "CineNova에서 상영 중인 영화를 확인하고 오늘 바로 좌석을 예약하세요.",
+    "ctaPrimary": "상영 중인 영화 보기",
+    "ctaSecondary": "문의하기"
+  },
+  "faq": {
+    "breadcrumb": "자주 묻는 질문",
+    "title": "자주 묻는 질문",
+    "intro": "CineNova에서 예매할 때 고객들이 가장 많이 묻는 질문입니다.",
+    "items": {
+      "booking": {
+        "question": "CineNova에서 어떻게 예매하나요?",
+        "answer": "보고 싶은 영화를 고른 뒤 극장과 상영 시간을 선택하고, 좌석을 지정한 다음 결제를 완료하세요. 결제가 완료되면 전자 티켓이 예매 내역에 표시됩니다."
+      },
+      "payment": {
+        "question": "어떤 결제 수단을 지원하나요?",
+        "answer": "예매 마지막 단계에서 제공되는 결제 수단을 통해 온라인으로 결제할 수 있습니다."
+      },
+      "cancel": {
+        "question": "예매한 티켓을 변경하거나 취소할 수 있나요?",
+        "answer": "결제가 완료된 티켓은 사이트에서 직접 취소할 수 없습니다. 도움이 필요하시면 상영 전에 고객센터로 연락해 주세요."
+      },
+      "checkTicket": {
+        "question": "예매한 티켓은 어디에서 확인하나요?",
+        "answer": "로그인 후 예매 내역에서 모든 티켓과 상영 시간, 상영관, 좌석 번호를 확인할 수 있습니다."
+      },
+      "voucher": {
+        "question": "할인 코드는 어떻게 사용하나요?",
+        "answer": "결제 단계에서 코드를 입력하세요. 코드마다 사용 조건과 유효 기간이 다르며, 조건을 충족하면 자동으로 적용됩니다."
+      },
+      "combo": {
+        "question": "팝콘 콤보도 함께 주문할 수 있나요?",
+        "answer": "네. 좌석 선택 단계에서 콤보를 추가하여 티켓과 함께 결제할 수 있습니다."
+      },
+      "account": {
+        "question": "예매하려면 계정이 꼭 필요한가요?",
+        "answer": "예매하려면 로그인이 필요합니다. 그래야 티켓이 저장되어 언제든지 조회할 수 있습니다."
+      },
+      "contact": {
+        "question": "급한 도움이 필요하면 어디로 연락하나요?",
+        "answer": "고객센터로 전화하시거나 이메일을 보내 주시면 지원팀이 최대한 빠르게 답변드립니다."
+      }
+    },
+    "stillNeedHelpTitle": "원하는 답을 찾지 못하셨나요?",
+    "stillNeedHelpDescription": "CineNova 팀이 언제나 도와드리겠습니다.",
+    "stillNeedHelpLink": "고객 지원 문의"
+  },
+  "contact": {
+    "breadcrumb": "문의",
+    "title": "CineNova 문의하기",
+    "intro": "예매에 도움이 필요하시거나 CineNova와의 제휴에 관심이 있으신가요? 아래 채널로 연락해 주세요.",
+    "channels": {
+      "hotline": { "label": "고객센터", "value": "1900 1234" },
+      "email": { "label": "이메일", "value": "support@cinenova.vn" },
+      "office": {
+        "label": "사무실",
+        "value": "호치민시 1군 CineNova 빌딩 5층"
+      },
+      "hours": { "label": "운영 시간", "value": "월요일 - 일요일, 08:00 - 22:00" }
+    },
+    "faqTitle": "자주 묻는 질문",
+    "faqDescription": "예매, 결제, 할인 코드에 대한 대부분의 궁금증은 이곳에서 해결할 수 있습니다.",
+    "faqLink": "FAQ 보기",
+    "bookingTitle": "예매 티켓 확인",
+    "bookingDescription": "예매 내역에서 티켓과 상영 시간, 좌석 번호를 확인하세요.",
+    "bookingLink": "예매 내역으로 이동"
+  }
+}
