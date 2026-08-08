@@ -13,8 +13,10 @@ export function buildMovieFormData(values: MovieFormValues, avatarFile?: File | 
   return formData;
 }
 
-// Management listing: admin sees every movie, a theater owner only sees the ones they added.
-export const getMyMovies = (params?: PaginationParams) =>
+// Management listing of the company-wide Movie Catalog (same for every internal role).
+// `status` optionally narrows to ACTIVE/INACTIVE — e.g. the Create Showtime movie picker
+// only wants ACTIVE movies.
+export const getMyMovies = (params?: PaginationParams & { status?: 'ACTIVE' | 'INACTIVE' }) =>
   apiClient.get<PaginatedResponse<Movie>>('/movie/mine', { params }).then((res) => res.data);
 
 export const getMovieCategoriesByMovieId = (id: number | string) =>

@@ -27,8 +27,8 @@ describe('movie.repository', () => {
         { id: 2, cinema_id: 2, name: 'R2' },
       ]);
       await Schedule.create([
-        { id: 1, movie_id: 100, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
-        { id: 2, movie_id: 200, room_id: 2, movie_date: '2026-01-02', time_begin: '10:00', time_end: '12:00', price: 1 },
+        { id: 1, movie_id: 100, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+        { id: 2, movie_id: 200, room_id: 2, cinema_id: 2, movie_date: '2026-01-02', time_begin: '10:00', time_end: '12:00', price: 1 },
       ]);
     }
 
@@ -49,6 +49,13 @@ describe('movie.repository', () => {
       const ids = await movieRepository.findScheduleMovieIds({});
       expect(ids.sort()).toEqual([100, 200]);
     });
+
+    it('excludes movies whose only showtime is cancelled', async () => {
+      await seed();
+      await Schedule.updateOne({ id: 2 }, { $set: { status: 'CANCELLED' } });
+      const ids = await movieRepository.findScheduleMovieIds({});
+      expect(ids).toEqual([100]);
+    });
   });
 
   it('findFiltered paginates on an arbitrary filter', async () => {
@@ -65,17 +72,27 @@ describe('movie.repository', () => {
     expect((await movieRepository.findById('1')).name).toBe('A');
   });
 
-  it('findMine scopes to owner for role 2 but shows all for other roles', async () => {
+  it('findMine returns the whole company-wide catalog regardless of who created each movie', async () => {
     await Movie.create([
       { id: 1, owner_id: 42, name: 'Mine', premiere_date: '2026-01-01' },
       { id: 2, owner_id: 99, name: 'Not mine', premiere_date: '2026-01-01' },
     ]);
-    const owned = await movieRepository.findMine({ role: 2, accountId: 42 });
-    expect(owned.total).toBe(1);
-    expect(owned.data[0].name).toBe('Mine');
-
-    const all = await movieRepository.findMine({ role: 0, accountId: 42 });
+    const all = await movieRepository.findMine({});
     expect(all.total).toBe(2);
+  });
+
+  it('findMine filters by status when provided', async () => {
+    await Movie.create([
+      { id: 1, name: 'Active One', premiere_date: '2026-01-01', status: 'ACTIVE' },
+      { id: 2, name: 'Disabled One', premiere_date: '2026-01-01', status: 'INACTIVE' },
+    ]);
+    const active = await movieRepository.findMine({ status: 'ACTIVE' });
+    expect(active.total).toBe(1);
+    expect(active.data[0].name).toBe('Active One');
+
+    const inactive = await movieRepository.findMine({ status: 'INACTIVE' });
+    expect(inactive.total).toBe(1);
+    expect(inactive.data[0].name).toBe('Disabled One');
   });
 
   it('create/updateFields/remove manage a movie document', async () => {

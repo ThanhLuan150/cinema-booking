@@ -31,19 +31,19 @@ describe('movieCategory.routes wiring', () => {
     expect(res.status).toBe(403);
   });
 
-  it('DELETE /api/movieCat/:movieId forbids a branch admin clearing tags on a movie they did not create', async () => {
-    await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+  it('DELETE /api/movieCat/:movieId forbids a branch admin (no movie.update permission)', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = await request(app)
       .delete('/api/movieCat/1')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }));
     expect(res.status).toBe(403);
   });
 
-  it('DELETE /api/movieCat/:movieId allows a branch admin who created the movie', async () => {
-    await Movie.create({ id: 1, owner_id: 42, name: 'A', premiere_date: '2026-01-01' });
+  it('DELETE /api/movieCat/:movieId allows super admin', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = await request(app)
       .delete('/api/movieCat/1')
-      .set('Authorization', authHeader({ role: 2, accountId: 42 }));
+      .set('Authorization', authHeader({ role: 0, accountId: 1 }));
     expect(res.status).toBe(200);
   });
 });

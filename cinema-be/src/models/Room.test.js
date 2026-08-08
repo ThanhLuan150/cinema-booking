@@ -13,6 +13,7 @@ describe('Room model', () => {
     const room = await Room.create({ id: 1, cinema_id: 1, name: 'Room 1' });
     expect(room.cinema_id).toBe(1);
     expect(room.name).toBe('Room 1');
+    expect(room.status).toBe('ACTIVE');
     expect(room.createdAt).toBeInstanceOf(Date);
   });
 

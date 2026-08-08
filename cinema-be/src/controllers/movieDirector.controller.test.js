@@ -1,7 +1,6 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const movieDirectorController = require('./movieDirector.controller');
 const MovieDirector = require('../models/MovieDirector');
-const Movie = require('../models/Movie');
 
 function mockRes() {
   const res = {};
@@ -47,17 +46,6 @@ describe('movieDirector.controller', () => {
       );
       expect(res.status).toHaveBeenCalledWith(201);
       expect(await MovieDirector.findOne({ movie_id: 1 })).not.toBeNull();
-    });
-
-    it('rejects a theater owner tagging a movie they did not create', async () => {
-      await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
-      const res = mockRes();
-      await movieDirectorController.create(
-        { body: { movie_id: 1, director_id: 1 }, account: { role: 2, accountId: 42 } },
-        res,
-      );
-      expect(res.status).toHaveBeenCalledWith(403);
-      expect(await MovieDirector.countDocuments()).toBe(0);
     });
   });
 

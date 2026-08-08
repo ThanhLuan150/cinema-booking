@@ -37,6 +37,21 @@ describe('Schedule model', () => {
     expect(err.errors.price).toBeDefined();
   });
 
+  it('defaults status to ACTIVE and accepts cinema_id', async () => {
+    const schedule = await Schedule.create({
+      id: 1,
+      movie_id: 1,
+      room_id: 1,
+      cinema_id: 5,
+      movie_date: '2026-01-01',
+      time_begin: '10:00',
+      time_end: '12:00',
+      price: 100000,
+    });
+    expect(schedule.status).toBe('ACTIVE');
+    expect(schedule.cinema_id).toBe(5);
+  });
+
   it('enforces unique id', async () => {
     await Schedule.create({
       id: 1,

@@ -45,6 +45,8 @@ const LoginForm = () => {
         navigate(ROUTES.home);
       } else if (role == String(ROLES.admin)) {
         navigate(ROUTES.adminDashboard);
+      } else if (role == String(ROLES.employee)) {
+        navigate(ROUTES.employeeDashboard);
       } else {
         navigate(ROUTES.ownerDashboard);
       }

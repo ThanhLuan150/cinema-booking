@@ -3,6 +3,7 @@ import { Formik, Field, Form } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/features/notifications/toast';
@@ -37,6 +38,7 @@ const emptyValues = (): EditMovieFormValues => ({
   trailer: '',
   producer: '',
   producerAvatar: '',
+  status: 'ACTIVE',
   categoryIds: [],
   directorIds: [],
   actors: [],
@@ -72,6 +74,7 @@ function Edit() {
         trailer: movie.trailer,
         producer: movie.producer ?? '',
         producerAvatar: movie.producerAvatar ?? '',
+        status: movie.status ?? 'ACTIVE',
         categoryIds: movieCategoryIds ?? [],
         directorIds: movieDirectorLinks?.map((link) => link.director_id) ?? [],
         actors:
@@ -235,6 +238,18 @@ function Edit() {
                 id="producerAvatar"
                 className="mt-2 border-l-2 border-border pl-3"
                 error={getError('producerAvatar')}
+              />
+              <Select
+                label={t('movies.edit.fields.status')}
+                name="status"
+                id="status"
+                className="mt-4"
+                value={formik.values.status}
+                onChange={(e) => formik.setFieldValue('status', e.target.value)}
+                options={[
+                  { label: t('movies.status.active'), value: 'ACTIVE' },
+                  { label: t('movies.status.inactive'), value: 'INACTIVE' },
+                ]}
               />
 
               <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.edit.directors.label')}</label>

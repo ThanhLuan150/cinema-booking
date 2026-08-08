@@ -9,22 +9,27 @@ import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useMyCinemas } from '@/features/owner/hooks/useMyCinemas';
 import { useRoomsByCinema } from '@/features/owner/hooks/useRoomsByCinema';
-import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
+import { useMyMovies } from '../../movies/hooks/useMyMovies';
 import { SHOWTIME_SLOTS } from '../constants';
 import { useCreateSchedule } from '../hooks/useCreateSchedule';
 import type { ScheduleFormValues } from '../types/adminSchedule.types';
 import { ROUTES } from '@/constants/routes';
 
 export interface AddScheduleProps {
+  // A preset movie (opened from a specific movie's row) or null (opened from the Showtime
+  // page's own "Add Showtime" button, which then requires picking an ACTIVE movie below).
   id: number | string | null;
   handleCloseAddSchedule: () => void;
 }
 
 interface AddScheduleFormValues extends ScheduleFormValues {
+  movie_id: string;
   cinema_id: string;
 }
 
-const emptyValues = (): AddScheduleFormValues => ({
+const emptyValues = (presetMovieId: number | string | null): AddScheduleFormValues => ({
+  movie_id: presetMovieId != null ? String(presetMovieId) : '',
   cinema_id: '',
   room_id: '',
   movie_date: '',
@@ -36,14 +41,19 @@ const emptyValues = (): AddScheduleFormValues => ({
 function ScheduleFields({
   formik,
   cinemas,
+  showMoviePicker,
   createScheduleLoading,
   t,
 }: {
   formik: FormikProps<AddScheduleFormValues>;
   cinemas: { id: number | string; name: string }[];
+  showMoviePicker: boolean;
   createScheduleLoading: boolean;
   t: (key: string) => string;
 }) {
+  const { data: activeMoviesPage } = useMyMovies(1, FULL_LIST_FETCH_LIMIT, 'ACTIVE');
+  const activeMovies = activeMoviesPage?.data ?? [];
+
   const {
     data: roomsPage,
     isFetching: roomsFetching,
@@ -73,6 +83,18 @@ function ScheduleFields({
 
   return (
     <Form>
+      {showMoviePicker && (
+        <Select
+          label={t('schedules.add.movie.label')}
+          name="movie_id"
+          value={formik.values.movie_id}
+          onChange={formik.handleChange}
+          options={activeMovies.map((movie) => ({ label: movie.name, value: movie.id }))}
+          placeholder={t('schedules.add.movie.placeholder')}
+          error={showErrors && formik.errors.movie_id ? t('schedules.add.movie.required') : undefined}
+          className="mb-3"
+        />
+      )}
       <Select
         label={t('schedules.add.cinema.label')}
         name="cinema_id"
@@ -150,19 +172,16 @@ function ScheduleFields({
 
 const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
   const { t } = useTranslation('admin');
+  // The Movie is company-wide (no branch affinity), so every branch the caller can act on
+  // is a valid choice — useMyCinemas already scopes this to "all" for super admin or the
+  // branch admin's own branch(es).
   const { data: allCinemasPage } = useMyCinemas();
-  const allCinemas = allCinemasPage?.data ?? [];
-  const { data: movie, isFetched: movieFetched } = useMovieDetail(id ?? undefined);
+  const cinemas = allCinemasPage?.data ?? [];
   const createScheduleMutation = useCreateSchedule();
-
-  // Movies added by a cinema owner should only be schedulable at that owner's own branches.
-  // Movies with no owner (owner_id null — seeded/legacy, or added directly by admin without
-  // an owning branch) fall back to showing every branch.
-  const cinemas =
-    !movieFetched || movie?.owner_id == null ? allCinemas : allCinemas.filter((cinema) => cinema.owner_id === movie.owner_id);
 
   const validate = (values: AddScheduleFormValues) => {
     const errors: Partial<Record<keyof AddScheduleFormValues, string>> = {};
+    if (!values.movie_id) errors.movie_id = 'required';
     if (!values.cinema_id) errors.cinema_id = 'required';
     if (!values.room_id) errors.room_id = 'required';
     if (!values.movie_date) errors.movie_date = 'required';
@@ -175,10 +194,11 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
     values: AddScheduleFormValues,
     { resetForm }: FormikHelpers<AddScheduleFormValues>,
   ) => {
-    if (!id) return;
-    const { cinema_id: _cinema_id, ...form } = values;
+    const movieId = id ?? values.movie_id;
+    if (!movieId) return;
+    const { cinema_id: _cinema_id, movie_id: _movie_id, ...form } = values;
     try {
-      await createScheduleMutation.mutateAsync({ movieId: id, values: form });
+      await createScheduleMutation.mutateAsync({ movieId, values: form });
       toast.success(t('schedules.add.toastSuccess'));
       resetForm();
       setTimeout(() => {
@@ -192,9 +212,19 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
 
   return (
     <Modal open onClose={handleCloseAddSchedule} title={t('schedules.add.title')}>
-      <Formik<AddScheduleFormValues> initialValues={emptyValues()} validate={validate} onSubmit={handleSubmit}>
+      <Formik<AddScheduleFormValues>
+        initialValues={emptyValues(id)}
+        validate={validate}
+        onSubmit={handleSubmit}
+      >
         {(formik) => (
-          <ScheduleFields formik={formik} cinemas={cinemas} createScheduleLoading={createScheduleMutation.isPending} t={t} />
+          <ScheduleFields
+            formik={formik}
+            cinemas={cinemas}
+            showMoviePicker={id == null}
+            createScheduleLoading={createScheduleMutation.isPending}
+            t={t}
+          />
         )}
       </Formik>
     </Modal>

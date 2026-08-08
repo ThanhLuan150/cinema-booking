@@ -3,6 +3,7 @@ import type { DISCOUNT_TYPE } from '@/constants/discountType';
 export interface Movie {
   id: number;
   owner_id?: number | null;
+  status?: 'ACTIVE' | 'INACTIVE';
   name: string;
   avatar: string;
   premiere_date: string;
@@ -49,6 +50,7 @@ export interface Room {
   id: number;
   cinema_id: number;
   name: string;
+  status?: 'ACTIVE' | 'INACTIVE';
 }
 
 export interface Cinema {

@@ -16,6 +16,9 @@ async function create(req, res) {
 
   const schedule = await ticketRepository.findScheduleById(schedule_id);
   if (!schedule) return res.status(404).json({ message: 'Schedule not found' });
+  if (schedule.status === 'CANCELLED') {
+    return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
+  }
 
   const seatMap = await ticketRepository.findSeatMapByRoomId(schedule.room_id);
   if (seatMap.length === 0) {

@@ -85,6 +85,24 @@ describe('admin movies Edit', () => {
     expect(screen.getByDisplayValue('Movie A')).toBeInTheDocument();
   });
 
+  it('pre-fills the status select with the movie\'s current status', () => {
+    useMovieDetailMock.mockReturnValue({
+      data: {
+        id: 5,
+        name: 'Movie A',
+        avatar: 'a.jpg',
+        premiere_date: '2026-01-01',
+        description: 'Desc',
+        country: 'US',
+        trailer: 't.mp4',
+        producer: 'P',
+        status: 'INACTIVE',
+      },
+    });
+    renderModal();
+    expect(screen.getByText('movies.status.inactive')).toBeInTheDocument();
+  });
+
   it('pre-checks the movie\'s current director and actor, with the actor\'s character name filled in', () => {
     useMovieDetailMock.mockReturnValue({
       data: {

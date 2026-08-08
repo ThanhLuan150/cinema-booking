@@ -59,6 +59,35 @@ describe('booking.repository', () => {
     expect(result[0].id).toBe(1);
   });
 
+  it('findUpcomingSchedulesForMovie excludes cancelled showtimes', async () => {
+    await Schedule.create([
+      { id: 1, movie_id: 5, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1, status: 'ACTIVE' },
+      { id: 2, movie_id: 5, room_id: 1, movie_date: '2026-01-02', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' },
+    ]);
+    const result = await bookingRepository.findUpcomingSchedulesForMovie(5, '2026-01-01');
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(1);
+  });
+
+  it('findScheduleByMovieDateTime ignores a cancelled showtime', async () => {
+    await Schedule.create({
+      id: 1,
+      movie_id: 5,
+      room_id: 1,
+      movie_date: '2026-01-01',
+      time_begin: '10:00',
+      time_end: '12:00',
+      price: 1,
+      status: 'CANCELLED',
+    });
+    const found = await bookingRepository.findScheduleByMovieDateTime({
+      movie_id: '5',
+      movie_date: '2026-01-01',
+      time_begin: '10:00',
+    });
+    expect(found).toBeNull();
+  });
+
   describe('finalizeMomoOrder', () => {
     async function seedOrder() {
       await Cinema.create({ id: 1, owner_id: 77, name: 'Cinema' });

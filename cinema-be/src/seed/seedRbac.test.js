@@ -70,6 +70,38 @@ describe('seedRbac', () => {
     expect(link.scope).toBe('BRANCH');
   });
 
+  it('does not grant branch admin movie.create, movie.update or movie.delete', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    for (const code of ['movie.create', 'movie.update', 'movie.delete']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(link).toBeNull();
+    }
+  });
+
+  it('grants movie.read (ALL scope) to every role including employee and customer', async () => {
+    await seedRbac();
+    const permission = await Permission.findOne({ code: 'movie.read' });
+    for (const roleCode of ['SUPER_ADMIN', 'BRANCH_ADMIN', 'EMPLOYEE', 'CUSTOMER']) {
+      const role = await Role.findOne({ code: roleCode });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      expect(link).not.toBeNull();
+      expect(link.scope).toBe('ALL');
+    }
+  });
+
+  it('grants branch admin schedule.create/update/delete/cancel scoped to BRANCH', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    for (const code of ['schedule.create', 'schedule.update', 'schedule.delete', 'schedule.cancel']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(link).not.toBeNull();
+      expect(link.scope).toBe('BRANCH');
+    }
+  });
+
   it('prunes a role-permission link that is no longer in the map on the next run', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });

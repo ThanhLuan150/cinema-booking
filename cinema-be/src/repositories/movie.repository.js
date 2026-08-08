@@ -1,7 +1,6 @@
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
 const Schedule = require('../models/Schedule');
-const Room = require('../models/Room');
 
 async function findCategoryMovieIds(categoryId) {
   const mappings = await MovieCategory.find({ cat_id: Number(categoryId) });
@@ -9,12 +8,9 @@ async function findCategoryMovieIds(categoryId) {
 }
 
 async function findScheduleMovieIds({ date, cinema }) {
-  const scheduleFilter = {};
+  const scheduleFilter = { status: { $ne: 'CANCELLED' } };
   if (date) scheduleFilter.movie_date = date;
-  if (cinema) {
-    const rooms = await Room.find({ cinema_id: Number(cinema) });
-    scheduleFilter.room_id = { $in: rooms.map((r) => r.id) };
-  }
+  if (cinema) scheduleFilter.cinema_id = Number(cinema);
   const schedules = await Schedule.find(scheduleFilter);
   return [...new Set(schedules.map((s) => s.movie_id))];
 }
@@ -31,8 +27,11 @@ async function findById(id) {
   return Movie.findOne({ id: Number(id) });
 }
 
-async function findMine({ role, accountId, skip = 0, limit = 20 }) {
-  const filter = role === 2 ? { owner_id: accountId } : {};
+async function findMine({ status, skip = 0, limit = 20 }) {
+  // The Movie Catalog is company-wide: every internal role reaching this route (super admin,
+  // branch admin, employee) sees the same full catalog, optionally narrowed by status.
+  const filter = {};
+  if (status === 'ACTIVE' || status === 'INACTIVE') filter.status = status;
   const [data, total] = await Promise.all([
     Movie.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Movie.countDocuments(filter),

@@ -17,7 +17,13 @@ describe('Movie model', () => {
     expect(movie.country).toBe('');
     expect(movie.trailer).toBe('');
     expect(movie.producer).toBe('');
+    expect(movie.status).toBe('ACTIVE');
     expect(movie.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('rejects a status outside ACTIVE/INACTIVE', () => {
+    const err = new Movie({ id: 1, name: 'A', premiere_date: '2020-01-01', status: 'DRAFT' }).validateSync();
+    expect(err.errors.status).toBeDefined();
   });
 
   it('fails validation when required fields are missing', () => {

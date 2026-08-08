@@ -1,6 +1,5 @@
 const movieDirectorRepository = require('../repositories/movieDirector.repository');
 const nextId = require('../utils/nextId');
-const { assertMovieOwnership } = require('../utils/movieOwnership');
 
 async function list(req, res) {
   const mappings = await movieDirectorRepository.findAll();
@@ -12,13 +11,12 @@ async function getForMovie(req, res) {
   res.json(mappings);
 }
 
+// Tagging a movie's director(s) is part of editing the movie itself, so movie.update
+// (Super Admin only) is the entire authorization check — see movie.routes.js.
 async function create(req, res) {
   const { movie_id, director_id } = req.body;
   if (movie_id === undefined || director_id === undefined) {
     return res.status(400).json({ message: 'movie_id and director_id are required' });
-  }
-  if (!(await assertMovieOwnership(req, movie_id))) {
-    return res.status(403).json({ message: 'Forbidden' });
   }
 
   const id = await nextId('movieDirector');
@@ -27,10 +25,6 @@ async function create(req, res) {
 }
 
 async function removeForMovie(req, res) {
-  if (!(await assertMovieOwnership(req, req.params.movieId))) {
-    return res.status(403).json({ message: 'Forbidden' });
-  }
-
   await movieDirectorRepository.deleteByMovieId(req.params.movieId);
   res.json({ message: 'Deleted' });
 }

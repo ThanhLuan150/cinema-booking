@@ -11,15 +11,20 @@ const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
 
 async function findScheduleByMovieDateTime({ movie_id, movie_date, time_begin }) {
-  return Schedule.findOne({ movie_id: Number(movie_id), movie_date, time_begin });
+  return Schedule.findOne({ movie_id: Number(movie_id), movie_date, time_begin, status: { $ne: 'CANCELLED' } });
 }
 
 async function findTicketsByScheduleId(scheduleId) {
   return Ticket.find({ schedule_id: Number(scheduleId) }).sort({ seat_index: 1 });
 }
 
+// Customer-facing: only showtimes that are still active are bookable.
 async function findUpcomingSchedulesForMovie(movieId, fromDate) {
-  return Schedule.find({ movie_id: Number(movieId), movie_date: { $gte: fromDate } }).sort({
+  return Schedule.find({
+    movie_id: Number(movieId),
+    movie_date: { $gte: fromDate },
+    status: { $ne: 'CANCELLED' },
+  }).sort({
     movie_date: 1,
     time_begin: 1,
   });
