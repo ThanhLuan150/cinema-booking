@@ -111,17 +111,22 @@
     "nameLabel": "Họ tên",
     "phoneLabel": "Số điện thoại",
     "positionLabel": "Vị trí",
+    "positionPlaceholder": "Chọn vị trí",
     "submit": "Thêm",
     "createSuccess": "Đã thêm nhân viên.",
     "deactivateConfirm": "Vô hiệu hóa nhân viên này?",
     "deactivateSuccess": "Đã vô hiệu hóa nhân viên.",
     "reactivateSuccess": "Đã kích hoạt lại nhân viên.",
+    "resetPassword": "Đặt lại mật khẩu",
+    "resetPasswordConfirm": "Đặt lại mật khẩu của nhân viên này? Mật khẩu tạm thời mới sẽ được gửi qua email.",
+    "resetPasswordSuccess": "Đã đặt lại mật khẩu. Mật khẩu tạm thời đã được gửi qua email cho nhân viên.",
     "statusActive": "Đang làm việc",
     "statusInactive": "Đã vô hiệu hóa",
     "deactivate": "Vô hiệu hóa",
     "reactivate": "Kích hoạt lại",
     "headers": {
       "id": "ID",
+      "employeeCode": "Mã nhân viên",
       "name": "Họ tên",
       "email": "Email",
       "position": "Vị trí",
@@ -131,7 +136,8 @@
     "validation": {
       "cinemaRequired": "Vui lòng chọn rạp.",
       "emailRequired": "Vui lòng nhập email.",
-      "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự."
+      "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự.",
+      "positionRequired": "Vui lòng chọn vị trí."
     }
   },
   "combos": {

@@ -17,12 +17,8 @@ router.get('/bookseat/:scheduleId', requireAuth, asyncHandler(bookingController.
 router.get('/bookticket/:movieId', requireAuth, asyncHandler(bookingController.bookticket));
 
 // POST /api/MomoPayment { ticketIds, comboIds, voucherCode, discountAmount, totalPrice }
-// -> returns the MoMo payment redirect URL as a raw string (auth required). The booking
-// details ride along in MoMo's extraData so the callback can finalize the exact order.
-router.post('/MomoPayment', requireAuth, asyncHandler(bookingController.createMomoPayment));
+router.post('/MomoPayment', requireAuth, requirePermission('payment.create'), asyncHandler(bookingController.createMomoPayment));
 
-// POST /api/MomoPayment/ipn -> MoMo's server-to-server payment confirmation (public;
-// authenticated via MoMo's HMAC signature instead of our own JWT since MoMo can't hold one).
 router.post('/MomoPayment/ipn', asyncHandler(bookingController.momoIpn));
 
 // POST /api/MomoPayment/confirm -> browser-redirect fallback for local dev, where MoMo's
@@ -65,12 +61,11 @@ router.post(
   asyncHandler(bookingController.checkInInvoice),
 );
 
-// POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, cinema_id }
-// -> in-person cash/POS sale (booking.create permission, cinema-scoped)
 router.post(
   '/invoice/counter-sale',
   requireAuth,
   requirePermission('booking.create'),
+  requirePermission('payment.create'),
   requireCinemaAccess((req) => Number(req.body.cinema_id)),
   asyncHandler(bookingController.createCounterSale),
 );

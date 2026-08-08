@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { useMovies } from '@/features/movies/hooks/useMovies';
 import { useRoomsList } from '@/features/booking/hooks/useRoomsList';
+import { usePermissions } from '@/hooks/usePermissions';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { ROUTES } from '@/constants/routes';
 import { useMySchedules } from '../hooks/useMySchedules';
@@ -21,6 +22,9 @@ function EmployeeDashboard() {
   const { data: schedulesPage } = useMySchedules();
   const { data: moviesPage } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
   const { data: rooms } = useRoomsList();
+  const { hasPermission } = usePermissions();
+  const canSellTickets = hasPermission('booking.create');
+  const canCheckIn = hasPermission('ticket.checkin');
 
   const movieNameById = useMemo(
     () => new Map((moviesPage?.data ?? []).map((movie) => [movie.id, movie.name])),
@@ -38,12 +42,16 @@ function EmployeeDashboard() {
   return (
     <AdminLayout breadcrumb={t('dashboard.breadcrumb')}>
       <div className="mb-4 flex flex-wrap gap-3">
-        <Button type="button" variant="danger" onClick={() => navigate(ROUTES.employeeCounterSale)}>
-          {t('dashboard.sellTickets')}
-        </Button>
-        <Button type="button" variant="secondary" onClick={() => navigate(ROUTES.employeeCheckIn)}>
-          {t('dashboard.checkIn')}
-        </Button>
+        {canSellTickets && (
+          <Button type="button" variant="danger" onClick={() => navigate(ROUTES.employeeCounterSale)}>
+            {t('dashboard.sellTickets')}
+          </Button>
+        )}
+        {canCheckIn && (
+          <Button type="button" variant="secondary" onClick={() => navigate(ROUTES.employeeCheckIn)}>
+            {t('dashboard.checkIn')}
+          </Button>
+        )}
       </div>
 
       {todaySchedules.length === 0 ? (
@@ -67,13 +75,15 @@ function EmployeeDashboard() {
               </td>
               <td>{schedule.price.toLocaleString()}đ</td>
               <td>
-                <button
-                  type="button"
-                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                  onClick={() => navigate(`${ROUTES.employeeCounterSale}?scheduleId=${schedule.id}`)}
-                >
-                  {t('dashboard.sellTickets')}
-                </button>
+                {canSellTickets && (
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                    onClick={() => navigate(`${ROUTES.employeeCounterSale}?scheduleId=${schedule.id}`)}
+                  >
+                    {t('dashboard.sellTickets')}
+                  </button>
+                )}
               </td>
             </tr>
           ))}

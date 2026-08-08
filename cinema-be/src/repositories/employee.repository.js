@@ -20,8 +20,8 @@ async function findAll(filter, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function create({ id, account_id, cinema_id, position, hire_date }) {
-  return Employee.create({ id, account_id, cinema_id, position, hire_date });
+async function create({ id, account_id, cinema_id, employee_code, position_id, hire_date }) {
+  return Employee.create({ id, account_id, cinema_id, employee_code, position_id, hire_date });
 }
 
 async function updateFields(id, updates) {

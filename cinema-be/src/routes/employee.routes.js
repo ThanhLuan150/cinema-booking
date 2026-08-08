@@ -43,4 +43,13 @@ router.delete(
   asyncHandler(employeeController.remove),
 );
 
+// POST /api/employee/:id/reset-password (employee.update permission, cinema-scoped) — emails the
+router.post(
+  '/:id/reset-password',
+  requireAuth,
+  requirePermission('employee.update'),
+  requireCinemaAccess((req) => employeeRepository.findCinemaIdByEmployeeId(req.params.id)),
+  asyncHandler(employeeController.resetPassword),
+);
+
 module.exports = router;

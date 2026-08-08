@@ -8,6 +8,7 @@ const Cinema = require('../models/Cinema');
 const Room = require('../models/Room');
 const nextId = require('../utils/nextId');
 const seedRbac = require('./seedRbac');
+const seedPositions = require('./seedPositions');
 
 const ADMIN_EMAIL = 'admin@cinema.local';
 const ADMIN_PASSWORD = 'admin123';
@@ -39,6 +40,7 @@ async function seed() {
   }
 
   await seedRbac();
+  await seedPositions();
 
   // Categories
   for (const name of CATEGORIES) {

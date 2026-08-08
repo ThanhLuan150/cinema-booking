@@ -57,7 +57,7 @@ export interface EmployeeFormValues {
   password: string;
   name: string;
   phone: string;
-  position: string;
+  position_id: string;
 }
 
 export interface SeatMapFormValues {

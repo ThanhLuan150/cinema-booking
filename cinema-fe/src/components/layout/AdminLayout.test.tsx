@@ -22,6 +22,10 @@ vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
   useCurrentUser: () => useCurrentUserMock(),
 }));
 
+vi.mock('@/hooks/usePermissions', () => ({
+  usePermissions: () => ({ hasPermission: () => true }),
+}));
+
 import { AdminLayout } from './AdminLayout';
 
 function renderLayout() {

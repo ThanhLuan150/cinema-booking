@@ -118,7 +118,7 @@ const CinemaReviews = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
+    <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10">
       <h2 className="mb-2 flex flex-wrap items-center gap-3 text-xl font-bold uppercase tracking-wide text-white">
         <span className="h-6 w-1.5 rounded-full bg-accent" aria-hidden="true" />
         {t('reviews.title')}{' '}

@@ -29,7 +29,7 @@ describe('schedule.repository', () => {
 
     it('includes the cinema the account is actively staffed at', async () => {
       await seedShowtimes();
-      await Employee.create({ id: 1, account_id: 7, cinema_id: 2, status: 1 });
+      await Employee.create({ id: 1, account_id: 7, cinema_id: 2, employee_code: 'EMP-000001', position_id: 1, status: 1 });
       const ids = await scheduleRepository.resolveAccessibleCinemaIds(7);
       expect(ids).toEqual([2]);
     });

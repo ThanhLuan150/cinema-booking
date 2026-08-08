@@ -7,6 +7,7 @@ import { useAppDispatch } from '@/hooks/redux';
 import { logout } from '@/features/auth/store/authSlice';
 import { logout as logoutApi } from '@/features/auth/api/auth.api';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { usePermissions } from '@/hooks/usePermissions';
 import { toast } from '@/features/notifications/toast';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { Avatar } from '@/components/ui/Avatar';
@@ -32,6 +33,7 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const { data: user } = useCurrentUser();
+  const { hasPermission } = usePermissions();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const isAdmin = user?.role === ROLES.admin;
   const isEmployee = user?.role === ROLES.employee;
@@ -64,14 +66,18 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
           </NavLink>
           {isEmployee ? (
             <>
-              <NavLink to={ROUTES.employeeCounterSale} className={navLinkClass}>
-                <ion-icon name="cart" />
-                {t('adminLayout.nav.counterSale')}
-              </NavLink>
-              <NavLink to={ROUTES.employeeCheckIn} className={navLinkClass}>
-                <ion-icon name="qr-code" />
-                {t('adminLayout.nav.checkIn')}
-              </NavLink>
+              {hasPermission('booking.create') && (
+                <NavLink to={ROUTES.employeeCounterSale} className={navLinkClass}>
+                  <ion-icon name="cart" />
+                  {t('adminLayout.nav.counterSale')}
+                </NavLink>
+              )}
+              {hasPermission('ticket.checkin') && (
+                <NavLink to={ROUTES.employeeCheckIn} className={navLinkClass}>
+                  <ion-icon name="qr-code" />
+                  {t('adminLayout.nav.checkIn')}
+                </NavLink>
+              )}
             </>
           ) : (
             <>

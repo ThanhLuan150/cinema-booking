@@ -2,6 +2,8 @@ const roleRepository = require('../repositories/role.repository');
 const rolePermissionRepository = require('../repositories/rolePermission.repository');
 const cinemaRepository = require('../repositories/cinema.repository');
 const employeeRepository = require('../repositories/employee.repository');
+const positionPermissionRepository = require('../repositories/positionPermission.repository');
+
 function requirePermission(code) {
   return async (req, res, next) => {
     try {
@@ -10,7 +12,15 @@ function requirePermission(code) {
       const role = await roleRepository.findByLegacyNumber(req.account.role);
       if (!role) return res.status(403).json({ message: 'Forbidden' });
 
-      const scope = await rolePermissionRepository.findScopeForRolePermission(role.id, code);
+      let scope = await rolePermissionRepository.findScopeForRolePermission(role.id, code);
+
+      if (!scope && role.code === 'EMPLOYEE') {
+        const employee = await employeeRepository.findByAccountId(req.account.accountId);
+        if (employee && employee.status === 1 && employee.position_id) {
+          scope = await positionPermissionRepository.findScopeForPositionPermission(employee.position_id, code);
+        }
+      }
+
       if (!scope) return res.status(403).json({ message: 'Forbidden' });
 
       req.permissionScope = scope;

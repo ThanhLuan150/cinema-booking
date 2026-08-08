@@ -16,7 +16,13 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useMyEmployees } from '../../hooks/useMyEmployees';
-import { useCreateEmployee, useDeactivateEmployee, useUpdateEmployee } from '../../hooks/useEmployeeMutations';
+import { usePositions } from '../../hooks/usePositions';
+import {
+  useCreateEmployee,
+  useDeactivateEmployee,
+  useResetEmployeePassword,
+  useUpdateEmployee,
+} from '../../hooks/useEmployeeMutations';
 import { closeAddModal, openAddModal, setSelectedCinemaId } from '../../store/ownerEmployeesSlice';
 import type { EmployeeFormValues } from '../../types/owner.types';
 
@@ -26,7 +32,7 @@ const emptyForm = (cinemaId: string): EmployeeFormValues => ({
   password: '',
   name: '',
   phone: '',
-  position: '',
+  position_id: '',
 });
 
 function EmployeeList() {
@@ -35,6 +41,7 @@ function EmployeeList() {
   const [page, setPage] = useState(1);
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
+  const { data: positions } = usePositions();
   const selectedCinemaId = useAppSelector((state) => state.ownerEmployees.selectedCinemaId);
   const { showAddModal } = useAppSelector((state) => state.ownerEmployees);
 
@@ -49,6 +56,7 @@ function EmployeeList() {
   const createEmployeeMutation = useCreateEmployee();
   const updateEmployeeMutation = useUpdateEmployee();
   const deactivateEmployeeMutation = useDeactivateEmployee();
+  const resetPasswordMutation = useResetEmployeePassword();
 
   const handleReactivate = useCallback(
     async (id: number) => {
@@ -75,6 +83,19 @@ function EmployeeList() {
     [deactivateEmployeeMutation, t],
   );
 
+  const handleResetPassword = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('employees.resetPasswordConfirm')))) return;
+      try {
+        await resetPasswordMutation.mutateAsync(id);
+        toast.success(t('employees.resetPasswordSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [resetPasswordMutation, t],
+  );
+
   const handleSubmit = useCallback(
     async (values: EmployeeFormValues, { resetForm }: FormikHelpers<EmployeeFormValues>) => {
       try {
@@ -95,6 +116,7 @@ function EmployeeList() {
       if (!values.cinema_id) errors.cinema_id = t('employees.validation.cinemaRequired');
       if (!values.email) errors.email = t('employees.validation.emailRequired');
       if (!values.password || values.password.length < 6) errors.password = t('employees.validation.passwordInvalid');
+      if (!values.position_id) errors.position_id = t('employees.validation.positionRequired');
       return errors;
     },
     [t],
@@ -154,7 +176,15 @@ function EmployeeList() {
                   />
                   <Field as={Input} label={t('employees.nameLabel')} name="name" className="mt-3" />
                   <Field as={Input} label={t('employees.phoneLabel')} name="phone" className="mt-3" />
-                  <Field as={Input} label={t('employees.positionLabel')} name="position" className="mt-3" />
+                  <Field
+                    as={Select}
+                    label={t('employees.positionLabel')}
+                    name="position_id"
+                    className="mt-3"
+                    options={(positions ?? []).map((p) => ({ label: p.name, value: p.id }))}
+                    placeholder={t('employees.positionPlaceholder')}
+                    error={showErrors ? formik.errors.position_id : undefined}
+                  />
                   <div className="mt-6 flex justify-end">
                     <Button type="submit" variant="danger" loading={createEmployeeMutation.isPending}>
                       {t('employees.submit')}
@@ -171,6 +201,7 @@ function EmployeeList() {
         <DataTable
           headers={[
             t('employees.headers.id'),
+            t('employees.headers.employeeCode'),
             t('employees.headers.name'),
             t('employees.headers.email'),
             t('employees.headers.position'),
@@ -181,32 +212,42 @@ function EmployeeList() {
           {employees.map((employee) => (
             <tr key={employee.id}>
               <td>{employee.id}</td>
+              <td>{employee.employee_code}</td>
               <td>{employee.name}</td>
               <td>{employee.email}</td>
-              <td>{employee.position}</td>
+              <td>{employee.position?.name}</td>
               <td>
                 <Badge variant={employee.status === 1 ? 'success' : 'default'}>
                   {employee.status === 1 ? t('employees.statusActive') : t('employees.statusInactive')}
                 </Badge>
               </td>
               <td>
-                {employee.status === 1 ? (
+                <div className="flex flex-wrap gap-3">
+                  {employee.status === 1 ? (
+                    <button
+                      type="button"
+                      className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                      onClick={() => handleDeactivate(employee.id)}
+                    >
+                      {t('employees.deactivate')}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                      onClick={() => handleReactivate(employee.id)}
+                    >
+                      {t('employees.reactivate')}
+                    </button>
+                  )}
                   <button
                     type="button"
-                    className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                    onClick={() => handleDeactivate(employee.id)}
+                    className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
+                    onClick={() => handleResetPassword(employee.id)}
                   >
-                    {t('employees.deactivate')}
+                    {t('employees.resetPassword')}
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                    onClick={() => handleReactivate(employee.id)}
-                  >
-                    {t('employees.reactivate')}
-                  </button>
-                )}
+                </div>
               </td>
             </tr>
           ))}

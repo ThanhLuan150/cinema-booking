@@ -2,9 +2,11 @@ const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
+const seedPositions = require('../seed/seedPositions');
 const bookingRoutes = require('./booking.routes');
 const Cinema = require('../models/Cinema');
 const Employee = require('../models/Employee');
+const Position = require('../models/Position');
 
 const app = buildTestApp('/api', bookingRoutes);
 
@@ -13,6 +15,7 @@ let logSpy;
 beforeEach(async () => {
   logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
   await seedRbac();
+  await seedPositions();
 });
 afterEach(async () => {
   await clearDatabase();
@@ -59,7 +62,15 @@ describe('booking.routes wiring', () => {
 
   it('POST /api/invoice/counter-sale allows an employee staffed at the target cinema', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
-    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, status: 1 });
+    const ticketStaff = await Position.findOne({ code: 'TICKET_STAFF' });
+    await Employee.create({
+      id: 1,
+      account_id: 7,
+      cinema_id: 1,
+      employee_code: 'EMP-000001',
+      position_id: ticketStaff.id,
+      status: 1,
+    });
     const res = await request(app)
       .post('/api/invoice/counter-sale')
       .set('Authorization', authHeader({ role: 3, accountId: 7 }))

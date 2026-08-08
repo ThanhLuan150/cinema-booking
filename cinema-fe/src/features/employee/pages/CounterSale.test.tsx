@@ -18,6 +18,7 @@ vi.mock('react-i18next', async (importOriginal) => {
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
   useCurrentUser: () => ({ data: { role: 3, cinema_id: 5 } }),
 }));
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
 const useMySchedulesMock = vi.fn();
 vi.mock('../hooks/useMySchedules', () => ({ useMySchedules: (...args: unknown[]) => useMySchedulesMock(...args) }));

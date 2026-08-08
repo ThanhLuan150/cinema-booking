@@ -43,6 +43,10 @@ const PERMISSIONS = [
   ['director.create', 'director'], ['director.read', 'director'],
   ['director.update', 'director'], ['director.delete', 'director'],
   ['dashboard.view', 'dashboard'], ['dashboard.viewSystem', 'dashboard'],
+  ['position.read', 'position'],
+  ['payment.create', 'payment'],
+  ['booking.cancel', 'booking'],
+  ['combo.sell', 'combo'], ['combo.order.view', 'combo'], ['combo.order.update', 'combo'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -66,13 +70,15 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'employee.create': 'BRANCH', 'employee.read': 'BRANCH', 'employee.update': 'BRANCH', 'employee.delete': 'BRANCH',
   'actor.read': 'ALL', 'director.read': 'ALL',
   'dashboard.view': 'BRANCH',
+  'position.read': 'ALL',
+  'payment.create': 'BRANCH',
 };
+
 const EMPLOYEE_PERMISSIONS = {
   'movie.read': 'ALL',
-  'seat.read': 'BRANCH', 'category.read': 'ALL', 'schedule.read': 'BRANCH',
-  'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
-  'booking.create': 'BRANCH', 'booking.read': 'BRANCH',
-  'combo.read': 'ALL', 'review.read': 'ALL',
+  'category.read': 'ALL',
+  'combo.read': 'ALL',
+  'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
 };
 
@@ -82,6 +88,7 @@ const CUSTOMER_PERMISSIONS = {
   'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN',
   'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
+  'payment.create': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

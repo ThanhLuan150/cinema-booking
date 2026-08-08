@@ -111,17 +111,22 @@
     "nameLabel": "Full name",
     "phoneLabel": "Phone",
     "positionLabel": "Position",
+    "positionPlaceholder": "Select position",
     "submit": "Add",
     "createSuccess": "Employee added.",
     "deactivateConfirm": "Deactivate this employee?",
     "deactivateSuccess": "Employee deactivated.",
     "reactivateSuccess": "Employee reactivated.",
+    "resetPassword": "Reset password",
+    "resetPasswordConfirm": "Reset this employee's password? A new temporary password will be emailed to them.",
+    "resetPasswordSuccess": "Password reset. A temporary password has been emailed to the employee.",
     "statusActive": "Active",
     "statusInactive": "Deactivated",
     "deactivate": "Deactivate",
     "reactivate": "Reactivate",
     "headers": {
       "id": "ID",
+      "employeeCode": "Employee code",
       "name": "Full name",
       "email": "Email",
       "position": "Position",
@@ -131,7 +136,8 @@
     "validation": {
       "cinemaRequired": "Please select a cinema.",
       "emailRequired": "Please enter an email.",
-      "passwordInvalid": "Password must be at least 6 characters."
+      "passwordInvalid": "Password must be at least 6 characters.",
+      "positionRequired": "Please select a position."
     }
   },
   "combos": {

@@ -1,5 +1,9 @@
 const userRepository = require('../repositories/user.repository');
 const employeeRepository = require('../repositories/employee.repository');
+const roleRepository = require('../repositories/role.repository');
+const rolePermissionRepository = require('../repositories/rolePermission.repository');
+const positionRepository = require('../repositories/position.repository');
+const positionPermissionRepository = require('../repositories/positionPermission.repository');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // Employees additionally need to know which cinema they're staffed at, since every
@@ -37,6 +41,27 @@ async function updateMe(req, res) {
   const account = await userRepository.updateOwnProfile(req.account.accountId, updates);
   if (!account) return res.status(404).json({ message: 'Account not found' });
   res.json(await toProfileJson(account));
+}
+async function myPermissions(req, res) {
+  const role = await roleRepository.findByLegacyNumber(req.account.role);
+  if (!role) return res.status(403).json({ message: 'Forbidden' });
+
+  const permissionCodes = new Set(await rolePermissionRepository.findPermissionCodesForRole(role.id));
+
+  let positionCode = null;
+  if (role.code === 'EMPLOYEE') {
+    const employee = await employeeRepository.findByAccountId(req.account.accountId);
+    if (employee && employee.status === 1 && employee.position_id) {
+      const position = await positionRepository.findById(employee.position_id);
+      if (position) {
+        positionCode = position.code;
+        const positionCodes = await positionPermissionRepository.findPermissionCodesForPosition(position.id);
+        for (const code of positionCodes) permissionCodes.add(code);
+      }
+    }
+  }
+
+  res.json({ roleCode: role.code, positionCode, permissions: [...permissionCodes] });
 }
 
 // GET /api/users?page=&limit= (admin only)
@@ -100,4 +125,4 @@ async function updateRole(req, res) {
   res.json(account);
 }
 
-module.exports = { me, updateMe, list, getById, remove, block, unblock, approve, updateRole };
+module.exports = { me, updateMe, myPermissions, list, getById, remove, block, unblock, approve, updateRole };

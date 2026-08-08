@@ -32,6 +32,9 @@ export const resendCode = (accountId: string | number) => apiClient.post(`/resen
 
 export const getCurrentUser = () => apiClient.get<CurrentUser>('/user');
 
+export const getMyPermissions = () =>
+  apiClient.get<{ roleCode: string; positionCode: string | null; permissions: string[] }>('/user/permissions');
+
 export const updateProfile = (payload: UpdateProfilePayload) => apiClient.put<CurrentUser>('/user', payload);
 
 export const forgotPassword = (email: string) => apiClient.post('/forgot-password', { email });

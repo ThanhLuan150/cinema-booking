@@ -17,6 +17,7 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
 const useDirectorsMock = vi.fn();
 vi.mock('../hooks/useDirectors', () => ({ useDirectors: (...args: unknown[]) => useDirectorsMock(...args) }));

@@ -2,16 +2,22 @@ const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
+const seedPositions = require('../seed/seedPositions');
 const scheduleRoutes = require('./schedule.routes');
 const Cinema = require('../models/Cinema');
 const Room = require('../models/Room');
 const Movie = require('../models/Movie');
 const Schedule = require('../models/Schedule');
+const Employee = require('../models/Employee');
+const Position = require('../models/Position');
 
 const app = buildTestApp('/api/schedule', scheduleRoutes);
 
 beforeAll(async () => connect());
-beforeEach(async () => seedRbac());
+beforeEach(async () => {
+  await seedRbac();
+  await seedPositions();
+});
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
@@ -48,7 +54,32 @@ describe('schedule.routes wiring', () => {
     expect(res.status).toBe(404); // reached controller
   });
 
-  it('GET /api/schedule allows an employee (role 3)', async () => {
+  it('GET /api/schedule forbids an employee whose position has no schedule.read (e.g. Security)', async () => {
+    await seedBranches();
+    const security = await Position.findOne({ code: 'SECURITY' });
+    await Employee.create({
+      id: 1,
+      account_id: 7,
+      cinema_id: 1,
+      employee_code: 'EMP-000001',
+      position_id: security.id,
+      status: 1,
+    });
+    const res = await request(app).get('/api/schedule').set('Authorization', authHeader({ role: 3, accountId: 7 }));
+    expect(res.status).toBe(403);
+  });
+
+  it('GET /api/schedule allows an employee whose position grants schedule.read (e.g. Ticket Staff)', async () => {
+    await seedBranches();
+    const ticketStaff = await Position.findOne({ code: 'TICKET_STAFF' });
+    await Employee.create({
+      id: 1,
+      account_id: 7,
+      cinema_id: 1,
+      employee_code: 'EMP-000001',
+      position_id: ticketStaff.id,
+      status: 1,
+    });
     const res = await request(app).get('/api/schedule').set('Authorization', authHeader({ role: 3, accountId: 7 }));
     expect(res.status).toBe(200);
   });

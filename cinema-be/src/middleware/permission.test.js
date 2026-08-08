@@ -5,6 +5,8 @@ const Permission = require('../models/Permission');
 const RolePermission = require('../models/RolePermission');
 const Cinema = require('../models/Cinema');
 const Employee = require('../models/Employee');
+const Position = require('../models/Position');
+const PositionPermission = require('../models/PositionPermission');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
@@ -120,7 +122,7 @@ describe('requireCinemaAccess', () => {
 
   it('allows an employee actively staffed at the cinema', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
-    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, status: 1 });
+    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 1 });
     const res = mockRes();
     const next = jest.fn();
     const req = { account: { role: 3, accountId: 7 } };
@@ -131,7 +133,7 @@ describe('requireCinemaAccess', () => {
 
   it('forbids an employee deactivated at the cinema', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
-    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, status: 0 });
+    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 0 });
     const res = mockRes();
     const next = jest.fn();
     await requireCinemaAccess(() => 1)({ account: { role: 3, accountId: 7 } }, res, next);
@@ -143,6 +145,54 @@ describe('requireCinemaAccess', () => {
     const res = mockRes();
     const next = jest.fn();
     await requireCinemaAccess(() => 1)({ account: { role: 9, accountId: 1 } }, res, next);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+});
+
+describe('requirePermission — Position fallback for EMPLOYEE role', () => {
+  async function seedEmployeeRole() {
+    return Role.create({ id: 1, code: 'EMPLOYEE', legacy_role_number: 3, name: 'Employee' });
+  }
+
+  it('grants access via the employee\'s Position when the EMPLOYEE role itself has no RolePermission', async () => {
+    await seedEmployeeRole();
+    const permission = await Permission.create({ id: 1, code: 'booking.create', module: 'booking' });
+    const position = await Position.create({ id: 1, code: 'TICKET_STAFF', name: 'Ticket Staff', status: 1 });
+    await PositionPermission.create({ id: 1, position_id: position.id, permission_id: permission.id, scope: 'BRANCH' });
+    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: position.id, status: 1 });
+
+    const res = mockRes();
+    const next = jest.fn();
+    const req = { account: { role: 3, accountId: 7 } };
+    await requirePermission('booking.create')(req, res, next);
+    expect(next).toHaveBeenCalledWith();
+    expect(req.permissionScope).toBe('BRANCH');
+  });
+
+  it('denies access when the employee\'s Position does not grant the permission (e.g. Security)', async () => {
+    await seedEmployeeRole();
+    await Permission.create({ id: 1, code: 'booking.create', module: 'booking' });
+    const position = await Position.create({ id: 1, code: 'SECURITY', name: 'Security', status: 1 });
+    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: position.id, status: 1 });
+
+    const res = mockRes();
+    const next = jest.fn();
+    const req = { account: { role: 3, accountId: 7 } };
+    await requirePermission('booking.create')(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('denies access when the employee has no Employee profile at all', async () => {
+    await seedEmployeeRole();
+    await Permission.create({ id: 1, code: 'booking.create', module: 'booking' });
+    // Employee record intentionally omitted — an EMPLOYEE-role account with no Employee
+    // profile at all must still be denied rather than throwing.
+
+    const res = mockRes();
+    const next = jest.fn();
+    const req = { account: { role: 3, accountId: 7 } };
+    await requirePermission('booking.create')(req, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 });
