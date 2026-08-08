@@ -34,8 +34,8 @@ export const getMyLikedMovies = () =>
 export const getMyFavoriteCinemas = () =>
   apiClient.get('/cinema/favorites/mine').then((res) => res.data as Cinema[]);
 
-export const favoriteCinema = (cinemaId: number) => apiClient.post('/cinema/favorite', { cinema_id: cinemaId });
+export const favoriteCinema = (branchId: number) => apiClient.post('/cinema/favorite', { cinema_id: branchId });
 
-export const unfavoriteCinema = (cinemaId: number) => apiClient.post('/cinema/unfavorite', { cinema_id: cinemaId });
+export const unfavoriteCinema = (branchId: number) => apiClient.post('/cinema/unfavorite', { cinema_id: branchId });
 
 export const getTopCinemas = () => apiClient.get('/cinema/top').then((res) => res.data as TopCinema[]);

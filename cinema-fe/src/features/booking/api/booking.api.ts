@@ -39,9 +39,9 @@ export const cancelInvoice = (invoiceId: number | string) => apiClient.post(`/in
 export const validateVoucher = (payload: VoucherValidationPayload) =>
   apiClient.post<VoucherValidationResult>('/voucher/validate', payload).then((res) => res.data);
 
-export const getCombos = (cinemaId?: number | null) =>
+export const getCombos = (branchId?: number | null) =>
   apiClient
-    .get<PaginatedResponse<Combo>>('/combo', { params: { cinemaId, limit: FULL_LIST_FETCH_LIMIT } })
+    .get<PaginatedResponse<Combo>>('/combo', { params: { branchId, limit: FULL_LIST_FETCH_LIMIT } })
     .then((res) => res.data.data);
 
 export const getRoomsList = () =>

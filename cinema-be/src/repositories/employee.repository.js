@@ -1,9 +1,9 @@
 const Employee = require('../models/Employee');
 
-async function findActiveByAccountAndCinema(accountId, cinemaId) {
+async function findActiveByAccountAndBranch(accountId, branchId) {
   return Employee.findOne({
     user_id: Number(accountId),
-    branch_id: Number(cinemaId),
+    branch_id: Number(branchId),
     status: 1,
   });
 }
@@ -38,7 +38,7 @@ async function findBranchIdByEmployeeId(employeeId) {
 }
 
 module.exports = {
-  findActiveByAccountAndCinema,
+  findActiveByAccountAndBranch,
   findByAccountId,
   findAll,
   create,

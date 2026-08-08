@@ -22,7 +22,7 @@ describe('useOwnerDashboardStats', () => {
     expect(getOwnerDashboardMock).toHaveBeenCalledWith('5');
   });
 
-  it('passes undefined when no cinemaId is provided', async () => {
+  it('passes undefined when no branchId is provided', async () => {
     getOwnerDashboardMock.mockResolvedValue({ revenue: 1000 });
     const { result } = renderHook(() => useOwnerDashboardStats(undefined), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

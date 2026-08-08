@@ -68,7 +68,7 @@ export interface SeatMapFormValues {
 }
 
 export interface OwnerDashboardState {
-  selectedCinemaId: string;
+  selectedbranchId: string;
 }
 
 export interface OwnerCinemasState {
@@ -85,6 +85,6 @@ export interface OwnerVouchersState {
 }
 
 export interface OwnerEmployeesState {
-  selectedCinemaId: string;
+  selectedbranchId: string;
   showAddModal: boolean;
 }

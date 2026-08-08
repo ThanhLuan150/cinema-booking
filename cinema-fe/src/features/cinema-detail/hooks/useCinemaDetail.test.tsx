@@ -15,12 +15,12 @@ function wrapper({ children }: { children: React.ReactNode }) {
 describe('useCinemaDetail', () => {
   beforeEach(() => getCinemaByIdMock.mockReset());
 
-  it('is disabled when cinemaId is undefined', () => {
+  it('is disabled when branchId is undefined', () => {
     const { result } = renderHook(() => useCinemaDetail(undefined), { wrapper });
     expect(result.current.fetchStatus).toBe('idle');
   });
 
-  it('fetches the cinema when cinemaId is provided', async () => {
+  it('fetches the cinema when branchId is provided', async () => {
     getCinemaByIdMock.mockResolvedValue({ id: 1, name: 'Cinema A' });
     const { result } = renderHook(() => useCinemaDetail(1), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

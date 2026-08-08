@@ -36,7 +36,7 @@ const List = () => {
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  const { data } = useSchedules({ cinemaId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
+  const { data } = useSchedules({ branchId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
   const schedules = data?.data ?? [];
   const cancelScheduleMutation = useCancelSchedule();
 

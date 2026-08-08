@@ -26,18 +26,18 @@ describe('GET /api/voucher (list)', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 
-  it('filters an owner to -1 (no results) when requesting a cinemaId they don\'t own', async () => {
+  it('filters an owner to -1 (no results) when requesting a branchId they don\'t own', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
     await Voucher.create({ id: 1, cinema_id: 1, code: 'MINE', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
     await voucherController.list(
-      { query: { cinemaId: '999' }, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' },
+      { query: { branchId: '999' }, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' },
       res,
     );
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 0 }));
   });
 
-  it('returns all vouchers for admin with no cinemaId filter', async () => {
+  it('returns all vouchers for admin with no branchId filter', async () => {
     await Voucher.create([
       { id: 1, cinema_id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000 },
       { id: 2, code: 'B', discount_type: 'fixed', discount_value: 1000 },

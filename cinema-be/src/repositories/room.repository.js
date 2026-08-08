@@ -1,6 +1,6 @@
 const Room = require('../models/Room');
 
-async function findCinemaIdByRoomId(roomId) {
+async function findbranchIdByRoomId(roomId) {
   const room = await Room.findOne({ id: Number(roomId) });
   return room ? room.cinema_id : null;
 }
@@ -29,4 +29,4 @@ async function remove(id) {
   return Room.deleteOne({ id: Number(id) });
 }
 
-module.exports = { findCinemaIdByRoomId, findById, findAll, create, updateFields, remove };
+module.exports = { findbranchIdByRoomId, findById, findAll, create, updateFields, remove };

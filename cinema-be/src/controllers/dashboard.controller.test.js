@@ -17,11 +17,11 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('ownerDashboard', () => {
-  it('rejects a cinemaId the caller does not own', async () => {
+  it('rejects a branchId the caller does not own', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
     const res = mockRes();
     await dashboardController.ownerDashboard(
-      { query: { cinemaId: '999' }, account: { role: 2, accountId: 42 } },
+      { query: { branchId: '999' }, account: { role: 2, accountId: 42 } },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(403);

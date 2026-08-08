@@ -1,5 +1,5 @@
 const Account = require('../models/Account');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 async function findById(id) {
   return Account.findOne({ id: Number(id) });
@@ -24,9 +24,8 @@ async function remove(id) {
 async function updateFields(id, updates) {
   return Account.findOneAndUpdate({ id: Number(id) }, { $set: updates }, { new: true });
 }
-
 async function approveOwnedPendingCinemas(ownerId) {
-  return Cinema.updateMany({ owner_id: ownerId, status: 0 }, { $set: { status: 1 } });
+  return Branch.updateMany({ owner_id: ownerId, status: 'INACTIVE' }, { $set: { status: 'ACTIVE' } });
 }
 
 module.exports = { findById, updateOwnProfile, findAll, remove, updateFields, approveOwnedPendingCinemas };

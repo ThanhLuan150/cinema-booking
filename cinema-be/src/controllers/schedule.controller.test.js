@@ -2,7 +2,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const scheduleController = require('./schedule.controller');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 
 function mockRes() {
@@ -17,16 +17,16 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 async function seedMovieAndRoom({ movieStatus = 'ACTIVE', roomStatus = 'ACTIVE', premiere_date = '2026-01-01' } = {}) {
-  await Cinema.create({ id: 1, owner_id: 42, name: 'Cinema A' });
+  await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
   await Movie.create({ id: 1, name: 'A', premiere_date, status: movieStatus });
   await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', status: roomStatus });
 }
 
 describe('schedule.controller list', () => {
   it('scopes to the accessible cinemas for BRANCH scope', async () => {
-    await Cinema.create([
-      { id: 1, owner_id: 42, name: 'Mine' },
-      { id: 2, owner_id: 99, name: 'Not mine' },
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'Mine', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 99, name: 'Not mine', code: 'B' },
     ]);
     await Schedule.create([
       { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
@@ -38,7 +38,7 @@ describe('schedule.controller list', () => {
   });
 
   it('returns everything for ALL scope', async () => {
-    await Cinema.create([{ id: 1, owner_id: 42, name: 'A' }]);
+    await Branch.create([{ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' }]);
     await Schedule.create([
       { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
     ]);
@@ -67,7 +67,7 @@ describe('schedule.controller create', () => {
   const baseReq = (overrides = {}) => ({
     account: { accountId: 42 },
     permissionScope: 'ALL',
-    cinemaId: 1,
+    branchId: 1,
     ...overrides,
     body: {
       movie_id: 1,
@@ -134,7 +134,7 @@ describe('schedule.controller create', () => {
   it('rejects a room outside the caller\'s BRANCH scope', async () => {
     await seedMovieAndRoom();
     const res = mockRes();
-    await scheduleController.create(baseReq({ permissionScope: 'BRANCH', cinemaId: 999 }), res);
+    await scheduleController.create(baseReq({ permissionScope: 'BRANCH', branchId: 999 }), res);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
@@ -172,7 +172,7 @@ describe('schedule.controller update', () => {
     await seedMovieAndRoom();
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
     const res = mockRes();
-    await scheduleController.update({ params: { id: 1 }, body: { price: 2000 }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    await scheduleController.update({ params: { id: 1 }, body: { price: 2000 }, permissionScope: 'ALL', branchId: 1 }, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
   });
@@ -184,7 +184,7 @@ describe('schedule.controller update', () => {
       { id: 2, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00', price: 1 },
     ]);
     const res = mockRes();
-    await scheduleController.update({ params: { id: 2 }, body: { time_begin: '11:00', time_end: '13:00' }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    await scheduleController.update({ params: { id: 2 }, body: { time_begin: '11:00', time_end: '13:00' }, permissionScope: 'ALL', branchId: 1 }, res);
     expect(res.status).toHaveBeenCalledWith(409);
   });
 
@@ -192,7 +192,7 @@ describe('schedule.controller update', () => {
     await seedMovieAndRoom();
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1000 });
     const res = mockRes();
-    await scheduleController.update({ params: { id: 1 }, body: { price: 2500 }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    await scheduleController.update({ params: { id: 1 }, body: { price: 2500 }, permissionScope: 'ALL', branchId: 1 }, res);
     const updated = await Schedule.findOne({ id: 1 });
     expect(updated.price).toBe(2500);
     expect(updated.time_begin).toBe('10:00');

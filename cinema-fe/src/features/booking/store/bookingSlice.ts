@@ -6,7 +6,7 @@ const initialState: BookingState = {
   movieDate: null,
   timeBegin: null,
   scheduleId: null,
-  cinemaId: null,
+  branchId: null,
   selectedDay: '',
   selectedTime: '',
   selectedSeatCodes: [],
@@ -40,8 +40,8 @@ const bookingSlice = createSlice({
     setSelectedTime(state, action: PayloadAction<string>) {
       state.selectedTime = action.payload;
     },
-    setCinemaId(state, action: PayloadAction<number | null>) {
-      state.cinemaId = action.payload;
+    setbranchId(state, action: PayloadAction<number | null>) {
+      state.branchId = action.payload;
     },
     toggleSeat(state, action: PayloadAction<BookedSeatTicket>) {
       const ticket = action.payload;
@@ -90,7 +90,7 @@ const bookingSlice = createSlice({
 export const {
   setShowtime,
   setScheduleId,
-  setCinemaId,
+  setbranchId,
   setSelectedDay,
   setSelectedTime,
   toggleSeat,

@@ -5,7 +5,7 @@ import { favoriteCinemasQueryKey } from './useFavoriteCinemas';
 export function useUnfavoriteCinemaMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (cinemaId: number) => unfavoriteCinema(cinemaId),
+    mutationFn: (branchId: number) => unfavoriteCinema(branchId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: favoriteCinemasQueryKey });
     },

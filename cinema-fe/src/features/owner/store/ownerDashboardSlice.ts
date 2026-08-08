@@ -2,18 +2,18 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { OwnerDashboardState } from '../types/owner.types';
 
 const initialState: OwnerDashboardState = {
-  selectedCinemaId: '',
+  selectedbranchId: '',
 };
 
 const ownerDashboardSlice = createSlice({
   name: 'ownerDashboard',
   initialState,
   reducers: {
-    setSelectedCinemaId(state, action: PayloadAction<string>) {
-      state.selectedCinemaId = action.payload;
+    setSelectedbranchId(state, action: PayloadAction<string>) {
+      state.selectedbranchId = action.payload;
     },
   },
 });
 
-export const { setSelectedCinemaId } = ownerDashboardSlice.actions;
+export const { setSelectedbranchId } = ownerDashboardSlice.actions;
 export default ownerDashboardSlice.reducer;

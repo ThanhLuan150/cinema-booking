@@ -2,10 +2,10 @@ const roomRepository = require('../repositories/room.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// GET /api/room?cinemaId=&page=&limit=
+// GET /api/room?branchId=&page=&limit=
 async function list(req, res) {
   const filter = {};
-  if (req.query.cinemaId) filter.cinema_id = Number(req.query.cinemaId);
+  if (req.query.branchId) filter.cinema_id = Number(req.query.branchId);
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await roomRepository.findAll(filter, { skip, limit });
   res.json(buildPaginatedResult({ data, total, page, limit }));

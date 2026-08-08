@@ -27,7 +27,7 @@ import {
   applyVoucherFailure,
   applyVoucherSuccess,
   resetBookingSelection,
-  setCinemaId,
+  setbranchId,
   setMomoPayUrl,
   setScheduleId,
   setShowtime,
@@ -141,7 +141,7 @@ function BookSeatPage() {
     selectedSeatCodes,
     selectedTickets,
     selectedComboIds,
-    cinemaId,
+    branchId,
     voucherCode,
     voucherResult,
     voucherError,
@@ -177,7 +177,7 @@ function BookSeatPage() {
   useEffect(() => {
     if (!scheduleDetail?.room_id || rooms.length === 0) return;
     const room = rooms.find((r) => r.id === scheduleDetail.room_id);
-    if (room) dispatch(setCinemaId(room.cinema_id));
+    if (room) dispatch(setbranchId(room.cinema_id));
   }, [scheduleDetail, rooms, dispatch]);
 
   const { data: movie } = useMovieDetail(movieId);
@@ -205,7 +205,7 @@ function BookSeatPage() {
     try {
       const result = await validateVoucherMutation.mutateAsync({
         code: voucherCode.trim(),
-        cinema_id: cinemaId,
+        cinema_id: branchId,
         order_value: seatTotal + comboTotal,
       });
       dispatch(applyVoucherSuccess(result));

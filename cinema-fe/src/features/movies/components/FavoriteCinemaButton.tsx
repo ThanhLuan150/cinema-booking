@@ -7,15 +7,15 @@ import { useUnfavoriteCinemaMutation } from '../hooks/useUnfavoriteCinemaMutatio
 import { ROUTES } from '@/constants/routes';
 
 export interface FavoriteCinemaButtonProps {
-  cinemaId: number;
+  branchId: number;
 }
 
-export function FavoriteCinemaButton({ cinemaId }: FavoriteCinemaButtonProps) {
+export function FavoriteCinemaButton({ branchId }: FavoriteCinemaButtonProps) {
   const { t } = useTranslation('movies');
   const isLoggedIn = useIsAuthenticated();
 
   const { data: favoriteCinemas = [] } = useFavoriteCinemas();
-  const isFavorite = favoriteCinemas.some((cinema) => cinema.id === cinemaId);
+  const isFavorite = favoriteCinemas.some((cinema) => cinema.id === branchId);
   const favoriteMutation = useFavoriteCinemaMutation();
   const unfavoriteMutation = useUnfavoriteCinemaMutation();
 
@@ -26,9 +26,9 @@ export function FavoriteCinemaButton({ cinemaId }: FavoriteCinemaButtonProps) {
       return;
     }
     if (isFavorite) {
-      unfavoriteMutation.mutate(cinemaId, { onError: (error) => console.error(error) });
+      unfavoriteMutation.mutate(branchId, { onError: (error) => console.error(error) });
     } else {
-      favoriteMutation.mutate(cinemaId, { onError: (error) => console.error(error) });
+      favoriteMutation.mutate(branchId, { onError: (error) => console.error(error) });
     }
   };
 

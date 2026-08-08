@@ -7,13 +7,13 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('room.repository', () => {
-  it('findCinemaIdByRoomId returns the owning cinema id', async () => {
+  it('findbranchIdByRoomId returns the owning cinema id', async () => {
     await Room.create({ id: 1, cinema_id: 7, name: 'Room 1' });
-    expect(await roomRepository.findCinemaIdByRoomId(1)).toBe(7);
+    expect(await roomRepository.findbranchIdByRoomId(1)).toBe(7);
   });
 
-  it('findCinemaIdByRoomId returns null for an unknown room', async () => {
-    expect(await roomRepository.findCinemaIdByRoomId(999)).toBeNull();
+  it('findbranchIdByRoomId returns null for an unknown room', async () => {
+    expect(await roomRepository.findbranchIdByRoomId(999)).toBeNull();
   });
 
   it('findAll paginates and filters', async () => {

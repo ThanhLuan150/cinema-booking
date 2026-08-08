@@ -9,9 +9,9 @@ const router = express.Router();
 // GET /api/review -> all reviews including hidden ones, joined with movie/cinema name (review.moderate permission)
 router.get('/', requireAuth, requirePermission('review.moderate'), asyncHandler(reviewController.listForModeration));
 
-// GET /api/review/cinema/:cinemaId -> visible reviews (with replies) for a cinema + average rating;
+// GET /api/review/cinema/:branchId -> visible reviews (with replies) for a cinema + average rating;
 // optionalAuth so a logged-in viewer's own reaction is flagged without requiring login to view
-router.get('/cinema/:cinemaId', optionalAuth, asyncHandler(reviewController.listForCinema));
+router.get('/cinema/:branchId', optionalAuth, asyncHandler(reviewController.listForCinema));
 
 // GET /api/review/:movieId -> visible reviews (with replies) for a movie + average rating
 router.get('/:movieId', optionalAuth, asyncHandler(reviewController.listForMovie));

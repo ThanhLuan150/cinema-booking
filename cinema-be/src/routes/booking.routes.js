@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
-const { requirePermission, requireCinemaAccess } = require('../middleware/permission');
+const { requirePermission, requireBranchAccess } = require('../middleware/permission');
 const bookingRepository = require('../repositories/booking.repository');
 const bookingController = require('../controllers/booking.controller');
 
@@ -57,7 +57,7 @@ router.post(
   '/invoice/:id/checkin',
   requireAuth,
   requirePermission('ticket.checkin'),
-  requireCinemaAccess((req) => bookingRepository.findCinemaIdByInvoiceId(req.params.id)),
+  requireBranchAccess((req) => bookingRepository.findbranchIdByInvoiceId(req.params.id)),
   asyncHandler(bookingController.checkInInvoice),
 );
 
@@ -66,7 +66,7 @@ router.post(
   requireAuth,
   requirePermission('booking.create'),
   requirePermission('payment.create'),
-  requireCinemaAccess((req) => Number(req.body.cinema_id)),
+  requireBranchAccess((req) => Number(req.body.cinema_id)),
   asyncHandler(bookingController.createCounterSale),
 );
 

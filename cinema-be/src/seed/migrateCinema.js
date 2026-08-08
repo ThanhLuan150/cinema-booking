@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const connectDB = require('../config/db');
 const Account = require('../models/Account');
-const Cinema = require('../models/Cinema');
+const Company = require('../models/Company');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Seat = require('../models/Seat');
 const nextId = require('../utils/nextId');
@@ -36,18 +37,27 @@ async function run() {
       process.exit(1);
     }
 
-    let cinema = await Cinema.findOne({ owner_id: admin.id, name: 'Default Cinema' });
+    let company = await Company.findOne({ code: 'DEFAULT' });
+    if (!company) {
+      const id = await nextId('company');
+      company = await Company.create({ id, name: 'Default Company', code: 'DEFAULT', status: 'ACTIVE' });
+      console.log(`Created default company (id=${company.id})`);
+    }
+
+    let cinema = await Branch.findOne({ owner_id: admin.id, name: 'Default Cinema' });
     if (!cinema) {
       const id = await nextId('cinema');
-      cinema = await Cinema.create({
+      cinema = await Branch.create({
         id,
+        company_id: company.id,
         owner_id: admin.id,
         name: 'Default Cinema',
+        code: 'DEFAULT-01',
         address: '',
         city: '',
-        status: 1,
+        status: 'ACTIVE',
       });
-      console.log(`Created default cinema (id=${cinema.id}) owned by admin account ${admin.id}`);
+      console.log(`Created default branch (id=${cinema.id}) owned by admin account ${admin.id}`);
     }
 
     const result = await Room.updateMany(

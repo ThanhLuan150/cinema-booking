@@ -23,7 +23,7 @@ describe('roomsByCinemaQueryKey', () => {
 describe('useRoomsByCinema', () => {
   beforeEach(() => getRoomsByCinemaMock.mockReset());
 
-  it('is disabled when cinemaId is undefined', () => {
+  it('is disabled when branchId is undefined', () => {
     const { result } = renderHook(() => useRoomsByCinema(undefined), { wrapper });
     expect(result.current.fetchStatus).toBe('idle');
   });

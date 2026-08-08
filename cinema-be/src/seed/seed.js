@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const connectDB = require('../config/db');
 const Account = require('../models/Account');
 const Category = require('../models/Category');
-const Cinema = require('../models/Cinema');
+const Company = require('../models/Company');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const nextId = require('../utils/nextId');
 const seedRbac = require('./seedRbac');
@@ -52,12 +53,27 @@ async function seed() {
     }
   }
 
-  // Default cinema (rooms require a cinema_id) — owned by the admin account.
-  let defaultCinema = await Cinema.findOne({ owner_id: admin.id, name: 'Default Cinema' });
+  // Default company (branches require a company_id).
+  let defaultCompany = await Company.findOne({ code: 'DEFAULT' });
+  if (!defaultCompany) {
+    const id = await nextId('company');
+    defaultCompany = await Company.create({ id, name: 'Default Company', code: 'DEFAULT', status: 'ACTIVE' });
+    console.log(`Created default company (id=${defaultCompany.id})`);
+  }
+
+  // Default branch (rooms require a cinema_id) — owned by the admin account.
+  let defaultCinema = await Branch.findOne({ owner_id: admin.id, name: 'Default Cinema' });
   if (!defaultCinema) {
     const id = await nextId('cinema');
-    defaultCinema = await Cinema.create({ id, owner_id: admin.id, name: 'Default Cinema', status: 1 });
-    console.log(`Created default cinema (id=${defaultCinema.id})`);
+    defaultCinema = await Branch.create({
+      id,
+      company_id: defaultCompany.id,
+      owner_id: admin.id,
+      name: 'Default Cinema',
+      code: 'DEFAULT-01',
+      status: 'ACTIVE',
+    });
+    console.log(`Created default branch (id=${defaultCinema.id})`);
   }
 
   // Rooms

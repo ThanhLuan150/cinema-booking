@@ -3,26 +3,26 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const ticketRoutes = require('./ticket.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 
 const app = buildTestApp('/api/ticket', ticketRoutes);
 
-async function seedTicketAtCinema({ cinemaId, ownerId, ticketId = 1, status = 1 }) {
-  await Cinema.create({ id: cinemaId, owner_id: ownerId, name: `Cinema ${cinemaId}` });
-  await Room.create({ id: cinemaId, cinema_id: cinemaId, name: `Room ${cinemaId}` });
+async function seedTicketAtCinema({ branchId, ownerId, ticketId = 1, status = 1 }) {
+  await Branch.create({ id: branchId, company_id: 1, owner_id: ownerId, name: `Cinema ${branchId}`, code: `C${branchId}` });
+  await Room.create({ id: branchId, cinema_id: branchId, name: `Room ${branchId}` });
   await Schedule.create({
-    id: cinemaId,
+    id: branchId,
     movie_id: 1,
-    room_id: cinemaId,
+    room_id: branchId,
     movie_date: '2026-01-01',
     time_begin: '10:00',
     time_end: '12:00',
     price: 1,
   });
-  await Ticket.create({ id: ticketId, schedule_id: cinemaId, seat_index: 0, seat_code: 'A1', status });
+  await Ticket.create({ id: ticketId, schedule_id: branchId, seat_index: 0, seat_code: 'A1', status });
 }
 
 beforeAll(async () => connect());
@@ -50,7 +50,7 @@ describe('ticket.routes wiring', () => {
   });
 
   it('PUT /api/ticket/:id rejects a customer (no ticket.checkin permission)', async () => {
-    await seedTicketAtCinema({ cinemaId: 1, ownerId: 42 });
+    await seedTicketAtCinema({ branchId: 1, ownerId: 42 });
     const res = await request(app)
       .put('/api/ticket/1')
       .set('Authorization', authHeader({ role: 1, accountId: 1 }));
@@ -58,7 +58,7 @@ describe('ticket.routes wiring', () => {
   });
 
   it('PUT /api/ticket/:id rejects a branch admin who does not own the ticket\'s cinema', async () => {
-    await seedTicketAtCinema({ cinemaId: 1, ownerId: 42 });
+    await seedTicketAtCinema({ branchId: 1, ownerId: 42 });
     const res = await request(app)
       .put('/api/ticket/1')
       .set('Authorization', authHeader({ role: 2, accountId: 99 }));
@@ -67,7 +67,7 @@ describe('ticket.routes wiring', () => {
   });
 
   it('PUT /api/ticket/:id allows the owning branch admin to mark the ticket sold', async () => {
-    await seedTicketAtCinema({ cinemaId: 1, ownerId: 42 });
+    await seedTicketAtCinema({ branchId: 1, ownerId: 42 });
     const res = await request(app)
       .put('/api/ticket/1')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }));
@@ -76,7 +76,7 @@ describe('ticket.routes wiring', () => {
   });
 
   it('PUT /api/ticket/:id allows super admin regardless of cinema ownership', async () => {
-    await seedTicketAtCinema({ cinemaId: 1, ownerId: 42 });
+    await seedTicketAtCinema({ branchId: 1, ownerId: 42 });
     const res = await request(app)
       .put('/api/ticket/1')
       .set('Authorization', authHeader({ role: 0, accountId: 1 }));

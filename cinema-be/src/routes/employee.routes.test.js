@@ -26,7 +26,7 @@ afterAll(async () => closeDatabase());
 
 describe('employee.routes wiring', () => {
   it('GET /api/employee requires auth', async () => {
-    const res = await request(app).get('/api/employee').query({ cinemaId: 1 });
+    const res = await request(app).get('/api/employee').query({ branchId: 1 });
     expect(res.status).toBe(401);
   });
 

@@ -3,25 +3,25 @@ const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // A BRANCH-scope caller may only touch vouchers on a cinema they own; ALL scope always passes.
-async function assertCinemaOwnership(req, cinemaId) {
+async function assertCinemaOwnership(req, branchId) {
   if (req.permissionScope === 'ALL') return true;
-  if (!cinemaId) return false;
-  const cinema = await voucherRepository.findCinemaById(cinemaId);
+  if (!branchId) return false;
+  const cinema = await voucherRepository.findCinemaById(branchId);
   return Boolean(cinema && cinema.owner_id === req.account.accountId);
 }
 
-// GET /api/voucher?cinemaId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
+// GET /api/voucher?branchId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
 async function list(req, res) {
   const filter = {};
   if (req.permissionScope === 'BRANCH') {
-    const ownedIds = await voucherRepository.findOwnedCinemaIds(req.account.accountId);
-    filter.cinema_id = req.query.cinemaId
-      ? ownedIds.includes(Number(req.query.cinemaId))
-        ? Number(req.query.cinemaId)
+    const ownedIds = await voucherRepository.findOwnedbranchIds(req.account.accountId);
+    filter.cinema_id = req.query.branchId
+      ? ownedIds.includes(Number(req.query.branchId))
+        ? Number(req.query.branchId)
         : -1
       : { $in: ownedIds };
-  } else if (req.query.cinemaId) {
-    filter.cinema_id = Number(req.query.cinemaId);
+  } else if (req.query.branchId) {
+    filter.cinema_id = Number(req.query.branchId);
   }
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await voucherRepository.findFiltered(filter, { skip, limit });
@@ -80,18 +80,18 @@ async function create(req, res) {
     return res.status(400).json({ message: 'code, discount_type and discount_value are required' });
   }
 
-  const normalizedCinemaId = cinema_id === undefined || cinema_id === null ? null : Number(cinema_id);
-  if (normalizedCinemaId === null && req.permissionScope !== 'ALL') {
+  const normalizedbranchId = cinema_id === undefined || cinema_id === null ? null : Number(cinema_id);
+  if (normalizedbranchId === null && req.permissionScope !== 'ALL') {
     return res.status(403).json({ message: 'Only admin can create system-wide vouchers' });
   }
-  if (normalizedCinemaId !== null && !(await assertCinemaOwnership(req, normalizedCinemaId))) {
+  if (normalizedbranchId !== null && !(await assertCinemaOwnership(req, normalizedbranchId))) {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
   const id = await nextId('voucher');
   const voucher = await voucherRepository.create({
     id,
-    cinema_id: normalizedCinemaId,
+    cinema_id: normalizedbranchId,
     code: String(code).toUpperCase(),
     discount_type,
     discount_value: Number(discount_value),

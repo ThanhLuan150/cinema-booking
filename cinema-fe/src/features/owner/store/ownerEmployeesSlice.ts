@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { OwnerEmployeesState } from '../types/owner.types';
 
 const initialState: OwnerEmployeesState = {
-  selectedCinemaId: '',
+  selectedbranchId: '',
   showAddModal: false,
 };
 
@@ -10,8 +10,8 @@ const ownerEmployeesSlice = createSlice({
   name: 'ownerEmployees',
   initialState,
   reducers: {
-    setSelectedCinemaId(state, action: PayloadAction<string>) {
-      state.selectedCinemaId = action.payload;
+    setSelectedbranchId(state, action: PayloadAction<string>) {
+      state.selectedbranchId = action.payload;
     },
     openAddModal(state) {
       state.showAddModal = true;
@@ -22,5 +22,5 @@ const ownerEmployeesSlice = createSlice({
   },
 });
 
-export const { setSelectedCinemaId, openAddModal, closeAddModal } = ownerEmployeesSlice.actions;
+export const { setSelectedbranchId, openAddModal, closeAddModal } = ownerEmployeesSlice.actions;
 export default ownerEmployeesSlice.reducer;

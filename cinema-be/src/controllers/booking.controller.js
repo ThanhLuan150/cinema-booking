@@ -4,13 +4,13 @@ const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// True if the caller may act on bookings for `cinema`: ALL scope (super admin) bypasses;
-// otherwise the caller must own the cinema or be an active employee staffed there.
-async function canAccessCinema(req, cinema) {
+// True if the caller may act on bookings for `branch`: ALL scope (super admin) bypasses;
+// otherwise the caller must own the branch or be an active employee staffed there.
+async function canAccessCinema(req, branch) {
   if (req.permissionScope === 'ALL') return true;
-  if (!cinema) return false;
-  if (cinema.owner_id === req.account.accountId) return true;
-  const employee = await employeeRepository.findActiveByAccountAndCinema(req.account.accountId, cinema.id);
+  if (!branch) return false;
+  if (branch.owner_id === req.account.accountId) return true;
+  const employee = await employeeRepository.findActiveByAccountAndBranch(req.account.accountId, branch.id);
   return Boolean(employee);
 }
 
@@ -276,8 +276,8 @@ async function createCounterSale(req, res) {
   }
 
   for (const ticketId of ticketIds) {
-    const cinemaId = await bookingRepository.findCinemaIdByTicketId(ticketId);
-    if (cinemaId !== req.cinemaId) {
+    const branchId = await bookingRepository.findbranchIdByTicketId(ticketId);
+    if (branchId !== req.branchId) {
       return res.status(400).json({ message: 'All tickets must belong to the target cinema', code: 'TICKET_CINEMA_MISMATCH' });
     }
   }

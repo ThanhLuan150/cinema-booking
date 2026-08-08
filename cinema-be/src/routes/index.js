@@ -14,7 +14,8 @@ const ticketRoutes = require('./ticket.routes');
 const bookingRoutes = require('./booking.routes');
 const userRoutes = require('./user.routes');
 const likeRoutes = require('./like.routes');
-const cinemaRoutes = require('./cinema.routes');
+const branchRoutes = require('./branch.routes');
+const companyRoutes = require('./company.routes');
 const seatRoutes = require('./seat.routes');
 const comboRoutes = require('./combo.routes');
 const voucherRoutes = require('./voucher.routes');
@@ -39,7 +40,12 @@ router.use('/movieDirector', movieDirectorRoutes);
 router.use('/room', roomRoutes);
 router.use('/schedule', scheduleRoutes);
 router.use('/ticket', ticketRoutes);
-router.use('/cinema', cinemaRoutes);
+// Branch management (formerly "Cinema"). Mounted at both paths: /cinema keeps the existing
+// frontend (bookings, reviews, room/schedule management, etc.) working unchanged, /branch is
+// the canonical path for the new Company/Branch admin surface introduced by this ticket.
+router.use('/cinema', branchRoutes);
+router.use('/branch', branchRoutes);
+router.use('/company', companyRoutes);
 router.use('/seat', seatRoutes);
 router.use('/combo', comboRoutes);
 router.use('/voucher', voucherRoutes);

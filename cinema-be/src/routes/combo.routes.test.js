@@ -3,7 +3,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const comboRoutes = require('./combo.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 const app = buildTestApp('/api/combo', comboRoutes);
 
@@ -24,7 +24,7 @@ describe('combo.routes wiring', () => {
   });
 
   it('POST /api/combo forbids a non-owning theater staff', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/combo')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -33,7 +33,7 @@ describe('combo.routes wiring', () => {
   });
 
   it('POST /api/combo allows the owning theater staff', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/combo')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))

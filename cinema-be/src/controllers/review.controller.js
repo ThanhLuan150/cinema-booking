@@ -11,9 +11,9 @@ async function listForModeration(req, res) {
   res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 
-// GET /api/review/cinema/:cinemaId -> visible reviews (threaded with replies) for a cinema + average rating
+// GET /api/review/cinema/:branchId -> visible reviews (threaded with replies) for a cinema + average rating
 async function listForCinema(req, res) {
-  const result = await reviewRepository.findVisibleByCinemaId(req.params.cinemaId, req.account?.accountId);
+  const result = await reviewRepository.findVisibleBybranchId(req.params.branchId, req.account?.accountId);
   res.json(result);
 }
 
