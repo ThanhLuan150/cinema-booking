@@ -6,7 +6,7 @@
       "totalRevenue": "รายได้รวม",
       "totalUsers": "ผู้ใช้งาน",
       "totalOwners": "เจ้าของโรงภาพยนตร์",
-      "totalCinemas": "โรงภาพยนตร์",
+      "totalCinemas": "สาขา",
       "totalTicketsSold": "ตั๋วที่ขายได้",
       "totalTransactions": "ธุรกรรม"
     },
@@ -24,23 +24,20 @@
         "description": "รายละเอียด:",
         "trailer": "ตัวอย่างภาพยนตร์:",
         "producer": "ผู้อำนวยการสร้าง:",
-        "director": "ผู้กำกับ:",
-        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):",
-        "directorAvatar": "รูปผู้กำกับ (URL):"
+        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):"
       },
       "cast": {
         "label": "นักแสดง:",
-        "name": "ชื่อ",
-        "role": "บทบาท",
-        "avatarUrl": "URL รูปภาพ",
-        "remove": "ลบ",
-        "add": "+ เพิ่มนักแสดง",
+        "role": "Character name",
         "isLead": "บทบาทนำ"
       },
       "category": "หมวดหมู่:",
       "submit": "เพิ่ม",
       "toastSuccess": "เพิ่มสำเร็จ",
-      "toastError": "เพิ่มไม่สำเร็จ"
+      "toastError": "เพิ่มไม่สำเร็จ",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "แก้ไขภาพยนตร์",
@@ -54,22 +51,19 @@
         "trailer": "ตัวอย่างภาพยนตร์:",
         "uploadNewTrailer": "อัปโหลดตัวอย่างภาพยนตร์ใหม่:",
         "producer": "ผู้อำนวยการสร้าง:",
-        "director": "ผู้กำกับ:",
-        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):",
-        "directorAvatar": "รูปผู้กำกับ (URL):"
+        "producerAvatar": "รูปผู้อำนวยการสร้าง (URL):"
       },
       "cast": {
         "label": "นักแสดง:",
-        "name": "ชื่อ",
-        "role": "บทบาท",
-        "avatarUrl": "URL รูปภาพ",
-        "remove": "ลบ",
-        "add": "+ เพิ่มนักแสดง",
+        "role": "Character name",
         "isLead": "บทบาทนำ"
       },
       "category": "หมวดหมู่:",
       "submit": "อัปเดต",
-      "toastSuccess": "อัปเดตภาพยนตร์สำเร็จ!"
+      "toastSuccess": "อัปเดตภาพยนตร์สำเร็จ!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "ต้องการลบภาพยนตร์ที่มีรหัส {{id}} หรือไม่?",
@@ -100,12 +94,57 @@
       "countryRequired": "กรุณากรอกประเทศ",
       "trailerRequired": "กรุณาเพิ่มตัวอย่างภาพยนตร์",
       "producerRequired": "กรุณากรอกผู้อำนวยการสร้าง",
-      "directorRequired": "กรุณากรอกผู้กำกับ",
-      "castNameRequired": "กรุณากรอกชื่อนักแสดง",
-      "castAvatarInvalid": "URL รูปภาพนักแสดงไม่ถูกต้อง",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "กรุณาเลือกอย่างน้อยหนึ่งหมวดหมู่",
-      "producerAvatarInvalid": "URL รูปผู้อำนวยการสร้างไม่ถูกต้อง",
-      "directorAvatarInvalid": "URL รูปผู้กำกับไม่ถูกต้อง"
+      "producerAvatarInvalid": "URL รูปผู้อำนวยการสร้างไม่ถูกต้อง"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "สถานะ",
       "การดำเนินการ"
     ],
-    "cinemaSuffix": "{{name}} (โรงภาพยนตร์)",
+    "cinemaSuffix": "{{name}} (สาขา)",
     "hiddenStatus": "ซ่อนอยู่",
     "visibleStatus": "แสดงอยู่",
     "hideButton": "ซ่อน",
@@ -194,12 +233,12 @@
     "refundSuccess": "คืนเงินสำหรับธุรกรรมเรียบร้อยแล้ว"
   },
   "cinemas": {
-    "breadcrumb": "โรงภาพยนตร์",
+    "breadcrumb": "สาขา",
     "headers": [
       "รหัส",
-      "รูปเจ้าของ",
-      "ชื่อโรงภาพยนตร์",
-      "เจ้าของ (รหัส)",
+      "รูปผู้จัดการสาขา",
+      "ชื่อสาขา",
+      "ผู้จัดการสาขา (รหัส)",
       "ที่อยู่",
       "สถานะ",
       "การดำเนินการ"
@@ -212,11 +251,29 @@
     "approveButton": "อนุมัติ",
     "blockButton": "ระงับ",
     "deleteButton": "ลบ",
-    "blockConfirm": "ต้องการระงับโรงภาพยนตร์นี้หรือไม่?",
-    "deleteConfirm": "ต้องการลบโรงภาพยนตร์นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
-    "approveSuccess": "อนุมัติโรงภาพยนตร์เรียบร้อยแล้ว",
-    "blockSuccess": "ระงับโรงภาพยนตร์เรียบร้อยแล้ว",
-    "deleteSuccess": "ลบโรงภาพยนตร์เรียบร้อยแล้ว"
+    "blockConfirm": "ต้องการระงับสาขานี้หรือไม่?",
+    "deleteConfirm": "ต้องการลบสาขานี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+    "approveSuccess": "อนุมัติสาขาเรียบร้อยแล้ว",
+    "blockSuccess": "ระงับสาขาเรียบร้อยแล้ว",
+    "deleteSuccess": "ลบสาขาเรียบร้อยแล้ว",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

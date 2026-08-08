@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "クイック予約",
-    "cinema": "劇場を選択",
+    "cinema": "支店を選択",
     "movie": "映画を選択",
     "date": "日付を選択",
     "time": "上映時間を選択",
@@ -26,7 +26,7 @@
     "viewMore": "もっと見る"
   },
   "topCinemasSlider": {
-    "title": "人気の映画館",
+    "title": "人気の支店",
     "addressUpdating": "住所情報を更新中",
     "newRating": "新規",
     "ticketsBooked": "件予約済み"

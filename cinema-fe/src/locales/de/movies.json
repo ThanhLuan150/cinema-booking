@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "Kinos",
-    "title": "Kinosystem",
-    "empty": "Noch keine Kinos verfügbar",
+    "breadcrumb": "Filialen",
+    "title": "Unsere Filialen",
+    "empty": "Noch keine Filialen verfügbar",
     "addressUpdating": "Adresse wird aktualisiert",
     "viewDetails": "Details ansehen"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "Mehr Details"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "Kino zu Favoriten hinzufügen",
-    "removeFavorite": "Kino aus Favoriten entfernen",
+    "addFavorite": "Filiale zu Favoriten hinzufügen",
+    "removeFavorite": "Filiale aus Favoriten entfernen",
     "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen."
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "Kategorie",
     "country": "Land",
-    "cinema": "Kino",
+    "cinema": "Filiale",
     "date": "Vorstellungsdatum",
     "search": "Suche",
     "searchPlaceholder": "Filmtitel...",

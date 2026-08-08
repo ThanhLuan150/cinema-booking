@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { requireAuth, requireRole, optionalAuth } = require('./auth');
+const { requireAuth, optionalAuth } = require('./auth');
 
 function mockRes() {
   const res = {};
@@ -54,42 +54,6 @@ describe('requireAuth', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(req.account).toMatchObject({ accountId: 1, email: 'a@b.com', role: 1 });
-  });
-});
-
-describe('requireRole', () => {
-  it('allows the request through when the role matches', () => {
-    const req = { account: { role: 0 } };
-    const res = mockRes();
-    const next = jest.fn();
-
-    requireRole(0, 2)(req, res, next);
-
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(res.status).not.toHaveBeenCalled();
-  });
-
-  it('rejects with 403 when the role does not match', () => {
-    const req = { account: { role: 1 } };
-    const res = mockRes();
-    const next = jest.fn();
-
-    requireRole(0, 2)(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Forbidden' });
-    expect(next).not.toHaveBeenCalled();
-  });
-
-  it('rejects with 403 when there is no account on the request', () => {
-    const req = {};
-    const res = mockRes();
-    const next = jest.fn();
-
-    requireRole(0)(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(next).not.toHaveBeenCalled();
   });
 });
 

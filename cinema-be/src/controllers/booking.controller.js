@@ -1,7 +1,18 @@
 const bookingRepository = require('../repositories/booking.repository');
+const employeeRepository = require('../repositories/employee.repository');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+
+// True if the caller may act on bookings for `cinema`: ALL scope (super admin) bypasses;
+// otherwise the caller must own the cinema or be an active employee staffed there.
+async function canAccessCinema(req, cinema) {
+  if (req.permissionScope === 'ALL') return true;
+  if (!cinema) return false;
+  if (cinema.owner_id === req.account.accountId) return true;
+  const employee = await employeeRepository.findActiveByAccountAndCinema(req.account.accountId, cinema.id);
+  return Boolean(employee);
+}
 
 // POST /api/scheduleId { movie_id, movie_date, time_begin } -> { id } (auth required)
 async function resolveScheduleId(req, res) {
@@ -124,7 +135,7 @@ async function myInvoices(req, res) {
 async function cancelInvoice(req, res) {
   const invoice = await bookingRepository.findInvoiceById(req.params.id);
   if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
-  if (invoice.account_id !== req.account.accountId && req.account.role !== 0) {
+  if (invoice.account_id !== req.account.accountId && req.permissionScope !== 'ALL') {
     return res.status(403).json({ message: 'Forbidden' });
   }
   if (invoice.status === 0) {
@@ -220,7 +231,7 @@ async function lookupInvoice(req, res) {
   const cinema = room ? await bookingRepository.findCinemaById(room.cinema_id) : null;
   const movie = schedule ? await bookingRepository.findMovieById(schedule.movie_id) : null;
 
-  if (req.account.role !== 0 && (!cinema || cinema.owner_id !== req.account.accountId)) {
+  if (!(await canAccessCinema(req, cinema))) {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
@@ -231,6 +242,58 @@ async function lookupInvoice(req, res) {
     movie: movie ? { name: movie.name } : null,
     cinema: cinema ? { name: cinema.name } : null,
   });
+}
+
+// POST /api/invoice/:id/checkin -> door check-in, marks the booking as admitted
+// (super admin, or branch admin/employee scoped to the invoice's own cinema).
+async function checkInInvoice(req, res) {
+  const invoice = await bookingRepository.findInvoiceById(req.params.id);
+  if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
+  if (invoice.status !== 1) {
+    return res.status(400).json({ message: 'Only paid bookings can be checked in', code: 'INVOICE_NOT_PAID' });
+  }
+  if (invoice.checked_in) {
+    return res.status(400).json({ message: 'This ticket has already been checked in', code: 'ALREADY_CHECKED_IN' });
+  }
+
+  invoice.checked_in = true;
+  await bookingRepository.saveInvoice(invoice);
+
+  res.json(invoice);
+}
+
+// POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, cinema_id }
+// -> immediate, paid booking sold in person (cash/POS); requireCinemaAccess already
+// confirmed the caller may act for cinema_id — this cross-checks the tickets actually
+// belong to that cinema before writing anything.
+async function createCounterSale(req, res) {
+  const { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId } = req.body;
+  if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
+    return res.status(400).json({ message: 'ticketIds is required' });
+  }
+  if (!accountId) {
+    return res.status(400).json({ message: 'accountId is required' });
+  }
+
+  for (const ticketId of ticketIds) {
+    const cinemaId = await bookingRepository.findCinemaIdByTicketId(ticketId);
+    if (cinemaId !== req.cinemaId) {
+      return res.status(400).json({ message: 'All tickets must belong to the target cinema', code: 'TICKET_CINEMA_MISMATCH' });
+    }
+  }
+
+  const result = await bookingRepository.createCounterSale({
+    ticketIds,
+    comboIds: comboIds || [],
+    voucherCode: voucherCode || null,
+    discountAmount: discountAmount || 0,
+    totalPrice: Number(totalPrice) || 0,
+    accountId: Number(accountId),
+    createdBy: req.account.accountId,
+  });
+
+  if (result.skipped) return res.status(400).json({ message: 'Invalid counter sale payload' });
+  res.status(201).json(result);
 }
 
 module.exports = {
@@ -245,4 +308,6 @@ module.exports = {
   adminInvoices,
   refundInvoice,
   lookupInvoice,
+  checkInInvoice,
+  createCounterSale,
 };

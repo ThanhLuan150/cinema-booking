@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Rạp chiếu",
-    "addButton": "Thêm rạp +",
-    "addTitle": "Thêm rạp",
-    "nameLabel": "Tên rạp",
-    "addressLabel": "Địa chỉ",
-    "cityLabel": "Thành phố",
-    "submit": "Thêm",
-    "createSuccess": "Đã gửi yêu cầu tạo rạp, chờ Admin duyệt.",
-    "createError": "Không thể tạo rạp.",
+    "breadcrumb": "Chi nhánh của tôi",
     "manageRooms": "Quản lý phòng",
     "statusLabels": {
       "0": "Chờ duyệt",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Tên rạp",
+      "name": "Tên chi nhánh",
       "address": "Địa chỉ",
       "city": "Thành phố",
       "status": "Trạng thái",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "Chọn chi nhánh"
+  },
+  "employees": {
+    "breadcrumb": "Nhân viên",
+    "addButton": "Thêm nhân viên +",
+    "addTitle": "Thêm nhân viên",
+    "cinemaLabel": "Rạp",
+    "cinemaPlaceholder": "Chọn rạp",
+    "emailLabel": "Email",
+    "passwordLabel": "Mật khẩu",
+    "nameLabel": "Họ tên",
+    "phoneLabel": "Số điện thoại",
+    "positionLabel": "Vị trí",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm nhân viên.",
+    "deactivateConfirm": "Vô hiệu hóa nhân viên này?",
+    "deactivateSuccess": "Đã vô hiệu hóa nhân viên.",
+    "reactivateSuccess": "Đã kích hoạt lại nhân viên.",
+    "statusActive": "Đang làm việc",
+    "statusInactive": "Đã vô hiệu hóa",
+    "deactivate": "Vô hiệu hóa",
+    "reactivate": "Kích hoạt lại",
+    "headers": {
+      "id": "ID",
+      "name": "Họ tên",
+      "email": "Email",
+      "position": "Vị trí",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "cinemaRequired": "Vui lòng chọn rạp.",
+      "emailRequired": "Vui lòng nhập email.",
+      "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự."
+    }
   },
   "combos": {
     "breadcrumb": "Combo",

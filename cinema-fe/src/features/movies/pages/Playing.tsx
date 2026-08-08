@@ -49,7 +49,7 @@ const Playing = () => {
               <Spinner size="lg" />
             </div>
           ) : playingMovies.length === 0 ? (
-            <EmptyState title={t('playing.empty')} />
+            <EmptyState title={t('playing.empty')} icon="fa-solid fa-clapperboard" />
           ) : (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
               {playingMovies.map((movie) => (

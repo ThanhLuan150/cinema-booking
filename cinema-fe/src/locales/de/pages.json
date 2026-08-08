@@ -2,10 +2,10 @@
   "about": {
     "breadcrumb": "Über uns",
     "title": "Über CineNova",
-    "intro": "CineNova ist ein Kinonetzwerk für das komplette Filmerlebnis: moderne Säle, mitreißender Sound und eine Online-Buchung, die nur wenige Schritte dauert.",
+    "intro": "CineNova ist ein Filialnetzwerk für das komplette Filmerlebnis: moderne Säle, mitreißender Sound und eine Online-Buchung, die nur wenige Schritte dauert.",
     "mission": "Wir sind überzeugt, dass jede Vorstellung in Erinnerung bleiben sollte. Deshalb investiert CineNova laufend in Saalqualität, Service und Buchungstechnik, damit Sie immer den gewünschten Platz bekommen.",
     "stats": {
-      "cinemas": { "value": "25+", "label": "Kinos landesweit" },
+      "cinemas": { "value": "25+", "label": "Filialen landesweit" },
       "seats": { "value": "12.000+", "label": "Sitzplätze" },
       "movies": { "value": "500+", "label": "Gezeigte Filme" },
       "customers": { "value": "1 Mio.+", "label": "Zufriedene Gäste" }
@@ -40,7 +40,7 @@
     "items": {
       "booking": {
         "question": "Wie buche ich Tickets bei CineNova?",
-        "answer": "Wählen Sie den gewünschten Film, dann Kino und Vorstellung, anschließend die Plätze und schließen Sie die Zahlung ab. Nach erfolgreicher Zahlung erscheint das E-Ticket unter Meine Buchungen."
+        "answer": "Wählen Sie den gewünschten Film, dann Filiale und Vorstellung, anschließend die Plätze und schließen Sie die Zahlung ab. Nach erfolgreicher Zahlung erscheint das E-Ticket unter Meine Buchungen."
       },
       "payment": {
         "question": "Welche Zahlungsarten akzeptiert CineNova?",

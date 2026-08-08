@@ -15,11 +15,11 @@ function wrapper({ children }: { children: React.ReactNode }) {
 describe('useRegister', () => {
   beforeEach(() => registerMock.mockReset());
 
-  it('calls the register api with a numeric role', async () => {
+  it('calls the register api with email/password/c_password', async () => {
     registerMock.mockResolvedValue({ data: {} });
     const { result } = renderHook(() => useRegister(), { wrapper });
-    result.current.mutate({ email: 'a@b.com', password: 'pw', c_password: 'pw', role: '2' } as any);
+    result.current.mutate({ email: 'a@b.com', password: 'pw', c_password: 'pw' });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(registerMock).toHaveBeenCalledWith('a@b.com', 'pw', 'pw', 2);
+    expect(registerMock).toHaveBeenCalledWith('a@b.com', 'pw', 'pw');
   });
 });

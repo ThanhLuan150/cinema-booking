@@ -5,7 +5,6 @@ const Room = require('../models/Room');
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 const Review = require('../models/Review');
-const nextId = require('../utils/nextId');
 
 async function findApproved({ skip = 0, limit = 20 } = {}) {
   const filter = { status: 1 };
@@ -113,7 +112,7 @@ async function getTopRanked() {
 async function findFavoriteCinemasByAccountId(accountId) {
   const favorites = await FavoriteCinema.find({ account_id: accountId }).sort({ id: -1 });
   const cinemaIds = favorites.map((f) => f.cinema_id);
-  const cinemas = await Cinema.find({ id: { $in: cinemaIds } });
+  const cinemas = await Cinema.find({ id: { $in: cinemaIds }, status: 1 });
   const cinemaById = new Map(cinemas.map((c) => [c.id, c]));
   return favorites.map((f) => cinemaById.get(f.cinema_id)).filter(Boolean);
 }
@@ -138,43 +137,28 @@ async function findById(id) {
   return Cinema.findOne({ id: Number(id) });
 }
 
+async function findApprovedById(id) {
+  return Cinema.findOne({ id: Number(id), status: 1 });
+}
+
 async function findAccountByEmail(email) {
   return Account.findOne({ email: String(email).toLowerCase() });
 }
 
-// Onboarding only collects the cinema's business info, but the owner's Account still needs a
-// name/phone so admin screens (Users list) can identify them — reuse the cinema name as the
-// account's display name since theater accounts have no separate personal-name field.
-async function updateOwnerContactInfo(account, { name, phone, avatar }) {
-  account.name = name;
-  account.phone = phone;
-  if (avatar) account.avatar = avatar;
-  await account.save();
-  return account;
-}
-
-// Creates the owner's cinema if this is their first submission, otherwise updates it in place.
-async function upsertOnboard(account, { name, address, city, images }) {
-  let cinema = await Cinema.findOne({ owner_id: account.id });
-  if (cinema) {
-    cinema.name = name;
-    cinema.address = address || '';
-    cinema.city = city || '';
-    if (Array.isArray(images)) cinema.images = images;
-    await cinema.save();
-  } else {
-    const id = await nextId('cinema');
-    cinema = await Cinema.create({
-      id,
-      owner_id: account.id,
-      name,
-      address: address || '',
-      city: city || '',
-      images: Array.isArray(images) ? images : [],
-      status: 0,
-    });
-  }
-  return cinema;
+// Provisions a Branch Admin account directly (super admin action) — pre-approved and
+// pre-verified, unlike the old self-registration + OTP + admin-approval flow.
+async function createOwnerAccount({ id, email, password, name, phone }) {
+  return Account.create({
+    id,
+    email,
+    password,
+    name: name || '',
+    phone: phone || '',
+    role: 2,
+    status: 1,
+    approved: true,
+    verified: true,
+  });
 }
 
 async function create(data) {
@@ -212,9 +196,9 @@ module.exports = {
   createFavorite,
   deleteFavorite,
   findById,
+  findApprovedById,
   findAccountByEmail,
-  updateOwnerContactInfo,
-  upsertOnboard,
+  createOwnerAccount,
   create,
   updateFields,
   approve,

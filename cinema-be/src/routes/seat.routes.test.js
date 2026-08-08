@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
+const seedRbac = require('../seed/seedRbac');
 const seatRoutes = require('./seat.routes');
 const Cinema = require('../models/Cinema');
 const Room = require('../models/Room');
@@ -8,6 +9,7 @@ const Room = require('../models/Room');
 const app = buildTestApp('/api/seat', seatRoutes);
 
 beforeAll(async () => connect());
+beforeEach(async () => seedRbac());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 

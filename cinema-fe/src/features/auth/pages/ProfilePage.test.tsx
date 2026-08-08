@@ -66,7 +66,7 @@ describe('ProfilePage', () => {
     expect(screen.getAllByText('Alice').length).toBeGreaterThan(0);
     expect(screen.getByText("You haven't booked any movies yet")).toBeInTheDocument();
     expect(screen.getByText("You haven't liked any movies yet")).toBeInTheDocument();
-    expect(screen.getByText("You haven't favorited any cinemas yet")).toBeInTheDocument();
+    expect(screen.getByText("You haven't favorited any branches yet")).toBeInTheDocument();
   });
 
   it('renders booked movies and favorite cinemas when present', () => {

@@ -1,12 +1,8 @@
 jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitPublic: jest.fn() }));
-jest.mock('../utils/uploadImage', () => ({
-  uploadImage: jest.fn().mockResolvedValue('https://cdn.example.com/cinema.jpg'),
-}));
 
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const cinemaController = require('./cinema.controller');
 const socket = require('../utils/socket');
-const uploadImage = require('../utils/uploadImage');
 const Cinema = require('../models/Cinema');
 const Account = require('../models/Account');
 const FavoriteCinema = require('../models/FavoriteCinema');
@@ -87,7 +83,7 @@ describe('cinema.controller favorites', () => {
   });
 
   it('favoritesMine returns the caller\'s favorited cinemas', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'Fav' });
+    await Cinema.create({ id: 1, owner_id: 1, name: 'Fav', status: 1 });
     await FavoriteCinema.create({ id: 1, cinema_id: 1, account_id: 42 });
     const res = mockRes();
     await cinemaController.favoritesMine({ account: { accountId: 42 } }, res);
@@ -108,132 +104,88 @@ describe('cinema.controller getById', () => {
     await cinemaController.getById({ params: { id: 999 } }, res);
     expect(res.status).toHaveBeenCalledWith(404);
   });
-});
 
-describe('cinema.controller onboard', () => {
-  it('rejects missing email or name', async () => {
+  it('returns 404 for a pending (not yet approved) cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 0 });
     const res = mockRes();
-    await cinemaController.onboard({ body: {} }, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-  });
-
-  it('returns 404 for an unknown account', async () => {
-    const res = mockRes();
-    await cinemaController.onboard({ body: { email: 'nobody@example.com', name: 'A', phone: '0123456789' } }, res);
+    await cinemaController.getById({ params: { id: 1 } }, res);
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it('rejects an account that is not a theater owner', async () => {
-    await Account.create({ id: 1, email: 'user@example.com', password: 'x', role: 1 });
+  it('returns 404 for a blocked cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 2 });
     const res = mockRes();
-    await cinemaController.onboard({ body: { email: 'user@example.com', name: 'A', phone: '0123456789' } }, res);
+    await cinemaController.getById({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('returns an approved cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 1 });
+    const res = mockRes();
+    await cinemaController.getById({ params: { id: 1 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ name: 'A' }));
+  });
+});
+
+describe('cinema.controller createBranchAdmin', () => {
+  it('rejects missing email, password or cinema_name', async () => {
+    const res = mockRes();
+    await cinemaController.createBranchAdmin({ body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('creates the cinema and notifies admins', async () => {
-    await Account.create({ id: 1, email: 'owner@example.com', password: 'x', role: 2 });
+  it('rejects a duplicate email', async () => {
+    await Account.create({ id: 1, email: 'owner@example.com', password: 'x' });
     const res = mockRes();
-    await cinemaController.onboard(
-      { body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' } },
+    await cinemaController.createBranchAdmin(
+      { body: { email: 'owner@example.com', password: 'pw', cinema_name: 'My Cinema' } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('creates a pre-approved, pre-verified branch admin account and cinema', async () => {
+    const res = mockRes();
+    await cinemaController.createBranchAdmin(
+      { body: { email: 'owner@example.com', password: 'pw', name: 'Owner', phone: '0123456789', cinema_name: 'My Cinema', city: 'HN' } },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(socket.emitToAdmin).toHaveBeenCalledWith('cinema:pending', expect.objectContaining({ name: 'My Cinema' }));
-  });
 
-  it('saves the owner name and phone onto the account', async () => {
-    await Account.create({ id: 1, email: 'owner@example.com', password: 'x', role: 2 });
-    const res = mockRes();
-    await cinemaController.onboard(
-      { body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' } },
-      res,
-    );
     const account = await Account.findOne({ email: 'owner@example.com' });
-    expect(account.name).toBe('My Cinema');
-    expect(account.phone).toBe('0123456789');
-  });
+    expect(account.role).toBe(2);
+    expect(account.approved).toBe(true);
+    expect(account.verified).toBe(true);
 
-  it('uploads and saves the owner avatar onto the account when a file is provided', async () => {
-    await Account.create({ id: 1, email: 'owner@example.com', password: 'x', role: 2 });
-    const res = mockRes();
-    await cinemaController.onboard(
-      {
-        body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' },
-        files: { avatar: [{ buffer: Buffer.from('x') }] },
-      },
-      res,
-    );
-    expect(uploadImage.uploadImage).toHaveBeenCalledWith(expect.objectContaining({ buffer: expect.any(Buffer) }), 'cinemas/owners');
-    const account = await Account.findOne({ email: 'owner@example.com' });
-    expect(account.avatar).toBe('https://cdn.example.com/cinema.jpg');
-  });
-
-  it('leaves the existing avatar untouched when no file is submitted', async () => {
-    await Account.create({
-      id: 1,
-      email: 'owner@example.com',
-      password: 'x',
-      role: 2,
-      avatar: 'https://cdn.example.com/existing.jpg',
-    });
-    const res = mockRes();
-    await cinemaController.onboard(
-      { body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' } },
-      res,
-    );
-    const account = await Account.findOne({ email: 'owner@example.com' });
-    expect(account.avatar).toBe('https://cdn.example.com/existing.jpg');
-  });
-
-  it('uploads cinema venue photos and saves their URLs', async () => {
-    await Account.create({ id: 1, email: 'owner@example.com', password: 'x', role: 2 });
-    const res = mockRes();
-    await cinemaController.onboard(
-      {
-        body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' },
-        files: { images: [{ buffer: Buffer.from('a') }, { buffer: Buffer.from('b') }] },
-      },
-      res,
-    );
-    const cinema = await Cinema.findOne({ name: 'My Cinema' });
-    expect(cinema.images).toEqual(['https://cdn.example.com/cinema.jpg', 'https://cdn.example.com/cinema.jpg']);
-  });
-
-  it('leaves existing venue photos untouched when none are submitted', async () => {
-    await Account.create({ id: 1, email: 'owner@example.com', password: 'x', role: 2 });
-    await Cinema.create({ id: 1, owner_id: 1, name: 'My Cinema', images: ['https://cdn.example.com/old.jpg'] });
-    const res = mockRes();
-    await cinemaController.onboard(
-      { body: { email: 'owner@example.com', name: 'My Cinema', phone: '0123456789' } },
-      res,
-    );
-    const cinema = await Cinema.findOne({ name: 'My Cinema' });
-    expect(cinema.images).toEqual(['https://cdn.example.com/old.jpg']);
+    const cinema = await Cinema.findOne({ owner_id: account.id });
+    expect(cinema.name).toBe('My Cinema');
+    expect(cinema.status).toBe(1);
   });
 });
 
 describe('cinema.controller create', () => {
   it('rejects a missing name', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: {}, account: { role: 2, accountId: 1 } }, res);
+    await cinemaController.create({ body: {}, account: { role: 0, accountId: 1 } }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('auto-approves cinemas created by an admin', async () => {
+  it('always creates a pre-approved branch (single company, no pending workflow)', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: { name: 'Admin Cinema' }, account: { role: 0, accountId: 1 } }, res);
-    const created = await Cinema.findOne({ name: 'Admin Cinema' });
+    await cinemaController.create({ body: { name: 'New Branch' }, account: { role: 0, accountId: 1 } }, res);
+    const created = await Cinema.findOne({ name: 'New Branch' });
     expect(created.status).toBe(1);
-    expect(socket.emitToAdmin).not.toHaveBeenCalled();
+    expect(created.owner_id).toBe(1);
   });
 
-  it('leaves an owner-created cinema pending and notifies admins', async () => {
+  it('assigns the given owner_id to the new branch when provided', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: { name: 'Owner Cinema' }, account: { role: 2, accountId: 42 } }, res);
-    const created = await Cinema.findOne({ name: 'Owner Cinema' });
-    expect(created.status).toBe(0);
+    await cinemaController.create(
+      { body: { name: 'New Branch', owner_id: 42 }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    const created = await Cinema.findOne({ name: 'New Branch' });
     expect(created.owner_id).toBe(42);
-    expect(socket.emitToAdmin).toHaveBeenCalledWith('cinema:pending', expect.objectContaining({ name: 'Owner Cinema' }));
   });
 });
 

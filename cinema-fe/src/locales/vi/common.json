@@ -5,8 +5,8 @@
     "movies": "Phim",
     "playing": "Đang chiếu",
     "upcoming": "Sắp chiếu",
-    "cinemas": "Rạp",
-    "allCinemas": "Tất cả các rạp"
+    "cinemas": "Chi nhánh",
+    "allCinemas": "Tất cả chi nhánh"
   },
   "header": {
     "toggleMenu": "Bật/tắt menu",
@@ -26,7 +26,7 @@
     "quickLink": "Liên kết nhanh",
     "aboutUs": "Về chúng tôi",
     "movies": "Phim",
-    "partner": "Đối tác",
+    "partner": "Chi nhánh",
     "help": "Trợ giúp",
     "important": "Quan trọng",
     "support": "Hỗ trợ",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "Nhập email",
     "send": "Gửi",
     "followUs": "Theo dõi chúng tôi",
-    "companyInfo": "Hệ thống rạp chiếu phim CineNova"
+    "companyInfo": "Hệ thống chi nhánh CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -46,13 +46,18 @@
       "dashboard": "Bảng điều khiển",
       "films": "Phim",
       "schedule": "Lịch chiếu",
-      "cinemas": "Rạp",
+      "cinemas": "Chi nhánh",
       "combos": "Combo",
       "vouchers": "Mã giảm giá",
       "bookings": "Đặt vé",
       "transactions": "Giao dịch",
       "reviews": "Đánh giá",
-      "rooms": "Phòng chiếu"
+      "rooms": "Phòng chiếu",
+      "employees": "Nhân viên",
+      "actors": "Diễn viên",
+      "directors": "Đạo diễn",
+      "counterSale": "Bán vé tại quầy",
+      "checkIn": "Soát vé"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

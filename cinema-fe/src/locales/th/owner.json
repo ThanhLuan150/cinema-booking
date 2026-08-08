@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "โรงภาพยนตร์",
-    "addButton": "เพิ่มโรงภาพยนตร์ +",
-    "addTitle": "เพิ่มโรงภาพยนตร์",
-    "nameLabel": "ชื่อโรงภาพยนตร์",
-    "addressLabel": "ที่อยู่",
-    "cityLabel": "เมือง",
-    "submit": "เพิ่ม",
-    "createSuccess": "ส่งคำขอสร้างโรงภาพยนตร์แล้ว กำลังรอการอนุมัติจากผู้ดูแลระบบ",
-    "createError": "ไม่สามารถสร้างโรงภาพยนตร์ได้",
+    "breadcrumb": "สาขาของฉัน",
     "manageRooms": "จัดการห้องฉาย",
     "statusLabels": {
       "0": "รอการอนุมัติ",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "รหัส",
-      "name": "ชื่อโรงภาพยนตร์",
+      "name": "ชื่อสาขา",
       "address": "ที่อยู่",
       "city": "เมือง",
       "status": "สถานะ",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "เลือกสาขา"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "คอมโบ",

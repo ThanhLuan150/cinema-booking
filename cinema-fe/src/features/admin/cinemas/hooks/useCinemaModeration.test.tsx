@@ -5,13 +5,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const approveCinemaMock = vi.fn();
 const blockCinemaMock = vi.fn();
 const deleteCinemaMock = vi.fn();
+const createBranchAdminMock = vi.fn();
 vi.mock('../api/cinemas.api', () => ({
   approveCinema: (...args: unknown[]) => approveCinemaMock(...args),
   blockCinema: (...args: unknown[]) => blockCinemaMock(...args),
   deleteCinema: (...args: unknown[]) => deleteCinemaMock(...args),
+  createBranchAdmin: (...args: unknown[]) => createBranchAdminMock(...args),
 }));
 
-import { useApproveCinema, useBlockCinema, useDeleteCinema } from './useCinemaModeration';
+import { useApproveCinema, useBlockCinema, useDeleteCinema, useCreateBranchAdmin } from './useCinemaModeration';
 
 function makeWrapper() {
   const client = new QueryClient();
@@ -27,6 +29,7 @@ describe('cinema moderation hooks', () => {
     approveCinemaMock.mockReset();
     blockCinemaMock.mockReset();
     deleteCinemaMock.mockReset();
+    createBranchAdminMock.mockReset();
   });
 
   it('useApproveCinema calls approveCinema and invalidates adminCinemas', async () => {
@@ -56,6 +59,25 @@ describe('cinema moderation hooks', () => {
     result.current.mutate(1);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(deleteCinemaMock).toHaveBeenCalledWith(1);
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminCinemas'] });
+  });
+
+  it('useCreateBranchAdmin calls createBranchAdmin and invalidates adminCinemas', async () => {
+    createBranchAdminMock.mockResolvedValue({});
+    const { wrapper, invalidateSpy } = makeWrapper();
+    const { result } = renderHook(() => useCreateBranchAdmin(), { wrapper });
+    const payload = {
+      email: 'a@b.com',
+      password: 'pw',
+      name: '',
+      phone: '',
+      cinema_name: 'A',
+      address: '',
+      city: '',
+    };
+    result.current.mutate(payload);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(createBranchAdminMock).toHaveBeenCalledWith(payload);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminCinemas'] });
   });
 });

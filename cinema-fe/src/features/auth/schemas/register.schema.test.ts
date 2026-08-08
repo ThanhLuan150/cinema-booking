@@ -10,7 +10,6 @@ describe('registerSchema', () => {
       email: 'user@example.com',
       password: 'Secret1!',
       c_password: 'Secret1!',
-      role: '1',
     });
     expect(result.success).toBe(true);
   });

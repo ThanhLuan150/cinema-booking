@@ -19,21 +19,15 @@ export const buildMovieSchema = (t: TFunction) =>
     producerAvatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
       message: t('admin:movies.validation.producerAvatarInvalid'),
     }),
-    director: z.string().trim().min(1, t('admin:movies.validation.directorRequired')),
-    directorAvatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
-      message: t('admin:movies.validation.directorAvatarInvalid'),
-    }),
-    cast: z.array(
+    categoryIds: z.array(z.number()).min(1, t('admin:movies.validation.categoryRequired')),
+    directorIds: z.array(z.number()).min(1, t('admin:movies.validation.directorRequired')),
+    actors: z.array(
       z.object({
-        name: z.string().trim().min(1, t('admin:movies.validation.castNameRequired')),
-        role: z.string(),
-        avatar: z.string().refine((value) => !value.trim() || URL_REGEX.test(value.trim()), {
-          message: t('admin:movies.validation.castAvatarInvalid'),
-        }),
-        isLead: z.boolean(),
+        actor_id: z.number(),
+        character_name: z.string(),
+        is_lead: z.boolean(),
       }),
     ),
-    categoryIds: z.array(z.number()).min(1, t('admin:movies.validation.categoryRequired')),
   });
 
 export type MovieSchemaValues = z.infer<ReturnType<typeof buildMovieSchema>>;

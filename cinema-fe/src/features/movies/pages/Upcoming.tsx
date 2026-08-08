@@ -46,7 +46,7 @@ const Upcomingg = () => {
               <Spinner size="lg" />
             </div>
           ) : upcomingMovies.length === 0 ? (
-            <EmptyState title={t('upcoming.empty')} />
+            <EmptyState title={t('upcoming.empty')} icon="fa-solid fa-clapperboard" />
           ) : (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
               {upcomingMovies.map((movie) => (

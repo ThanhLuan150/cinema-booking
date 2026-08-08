@@ -7,19 +7,19 @@
     "statusActive": "営業中",
     "statusPaused": "一時休業中",
     "viewShowtimes": "上映スケジュールを見る",
-    "breadcrumbCinemas": "映画館"
+    "breadcrumbCinemas": "支店"
   },
   "moviesSection": {
-    "title": "この映画館の上映中作品",
-    "emptyState": "この映画館にはまだ上映スケジュールがありません",
+    "title": "この支店の上映中作品",
+    "emptyState": "この支店にはまだ上映スケジュールがありません",
     "moreDetails": "詳細を見る"
   },
   "reviews": {
-    "title": "映画館の口コミ・レビュー",
+    "title": "支店の口コミ・レビュー",
     "ratingSummary": "{{average}}/5 ・ {{count}}件のレビュー",
     "ratingLabel": "評価:",
     "starOption": "星{{count}}つ",
-    "commentPlaceholder": "この映画館での体験(座席、音響、スタッフ対応、清潔さなど)を教えてください...",
+    "commentPlaceholder": "この支店での体験(座席、音響、スタッフ対応、清潔さなど)を教えてください...",
     "submit": "レビューを投稿",
     "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。",
     "submitSuccess": "レビューを投稿しました。",

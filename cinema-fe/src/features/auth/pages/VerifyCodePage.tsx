@@ -10,7 +10,6 @@ import { useVerifyCode } from '../hooks/useVerifyCode';
 import { useResendCode } from '../hooks/useResendCode';
 import { toast } from '@/features/notifications/toast';
 import { ROUTES } from '@/constants/routes';
-import { ROLES } from '@/constants/roles';
 
 interface VerifyCodeFormValues {
   code: string[];
@@ -19,7 +18,6 @@ interface VerifyCodeFormValues {
 const VerifyCode = () => {
   const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +30,6 @@ const VerifyCode = () => {
     const searchParams = new URLSearchParams(location.search);
     const emailParam = searchParams.get('email');
     setEmail(emailParam ?? '');
-    setRole(searchParams.get('role') ?? '');
   }, [location.search]);
 
   const handleResend = async () => {
@@ -61,8 +58,7 @@ const VerifyCode = () => {
 
       if (response.status === 200) {
         toast.success(t('verifyCode.verifySuccess'));
-        const nextRoute = Number(role) === ROLES.owner ? ROUTES.cinemaInfo : ROUTES.userInfo;
-        navigate(`${nextRoute}?email=${encodeURIComponent(email)}`);
+        navigate(`${ROUTES.userInfo}?email=${encodeURIComponent(email)}`);
       } else {
         setErrorMessage(t('verifyCode.codeIncorrect'));
       }

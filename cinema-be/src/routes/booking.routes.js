@@ -1,6 +1,8 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
-const { requireAuth, requireRole } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
+const { requirePermission, requireCinemaAccess } = require('../middleware/permission');
+const bookingRepository = require('../repositories/booking.repository');
 const bookingController = require('../controllers/booking.controller');
 
 const router = express.Router();
@@ -29,18 +31,48 @@ router.post('/MomoPayment/ipn', asyncHandler(bookingController.momoIpn));
 router.post('/MomoPayment/confirm', requireAuth, asyncHandler(bookingController.momoConfirm));
 
 // GET /api/my-invoices -> booking history for the caller, joined with ticket/schedule/movie details
-router.get('/my-invoices', requireAuth, asyncHandler(bookingController.myInvoices));
+router.get('/my-invoices', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.myInvoices));
 
-// POST /api/invoice/:id/cancel -> cancels a booking if the showtime is more than 2h away (auth required)
-router.post('/invoice/:id/cancel', requireAuth, asyncHandler(bookingController.cancelInvoice));
+// POST /api/invoice/:id/cancel -> cancels a booking if the showtime is more than 2h away
+router.post(
+  '/invoice/:id/cancel',
+  requireAuth,
+  requirePermission('booking.read'),
+  asyncHandler(bookingController.cancelInvoice),
+);
 
-// GET /api/admin/invoices -> all transactions, newest first (admin only)
-router.get('/admin/invoices', requireAuth, requireRole(0), asyncHandler(bookingController.adminInvoices));
+// GET /api/admin/invoices -> all transactions system-wide, newest first (booking.admin permission — super admin only)
+router.get('/admin/invoices', requireAuth, requirePermission('booking.admin'), asyncHandler(bookingController.adminInvoices));
 
-// POST /api/invoice/:id/refund -> admin marks a transaction refunded and reopens the seat
-router.post('/invoice/:id/refund', requireAuth, requireRole(0), asyncHandler(bookingController.refundInvoice));
+// POST /api/invoice/:id/refund -> marks a transaction refunded and reopens the seat (booking.admin permission)
+router.post('/invoice/:id/refund', requireAuth, requirePermission('booking.admin'), asyncHandler(bookingController.refundInvoice));
 
-// GET /api/invoice/lookup/:code -> booking detail for check-in (admin or theater staff, owner-scoped)
-router.get('/invoice/lookup/:code', requireAuth, requireRole(0, 2), asyncHandler(bookingController.lookupInvoice));
+// GET /api/invoice/lookup/:code -> booking detail for check-in (ticket.checkin permission, cinema-scoped
+// via the controller's own canAccessCinema check)
+router.get(
+  '/invoice/lookup/:code',
+  requireAuth,
+  requirePermission('ticket.checkin'),
+  asyncHandler(bookingController.lookupInvoice),
+);
+
+// POST /api/invoice/:id/checkin -> door check-in (ticket.checkin permission, cinema-scoped)
+router.post(
+  '/invoice/:id/checkin',
+  requireAuth,
+  requirePermission('ticket.checkin'),
+  requireCinemaAccess((req) => bookingRepository.findCinemaIdByInvoiceId(req.params.id)),
+  asyncHandler(bookingController.checkInInvoice),
+);
+
+// POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, cinema_id }
+// -> in-person cash/POS sale (booking.create permission, cinema-scoped)
+router.post(
+  '/invoice/counter-sale',
+  requireAuth,
+  requirePermission('booking.create'),
+  requireCinemaAccess((req) => Number(req.body.cinema_id)),
+  asyncHandler(bookingController.createCounterSale),
+);
 
 module.exports = router;

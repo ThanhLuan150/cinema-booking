@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "快速订票",
-    "cinema": "选择影院",
+    "cinema": "选择分店",
     "movie": "选择电影",
     "date": "选择日期",
     "time": "选择场次",
@@ -26,7 +26,7 @@
     "viewMore": "查看更多"
   },
   "topCinemasSlider": {
-    "title": "热门影院",
+    "title": "热门分店",
     "addressUpdating": "地址更新中",
     "newRating": "新",
     "ticketsBooked": "张已售"

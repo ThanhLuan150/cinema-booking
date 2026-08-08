@@ -35,7 +35,7 @@ const Cinemas = () => {
               <Spinner size="lg" />
             </div>
           ) : cinemas.length === 0 ? (
-            <EmptyState title={t('cinemas.empty')} />
+            <EmptyState title={t('cinemas.empty')} icon="fa-solid fa-building" />
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {cinemas.map((cinema) => (

@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "नई फिल्म: {{name}}",
-    "cinemaPending": "नया सिनेमा पंजीकृत हुआ, स्वीकृति लंबित: {{name}}",
-    "cinemaApproved": "सिनेमा \"{{name}}\" स्वीकृत कर दिया गया है।",
-    "cinemaBlocked": "सिनेमा \"{{name}}\" अवरुद्ध कर दिया गया है।",
+    "cinemaPending": "नई शाखा पंजीकृत हुई, स्वीकृति लंबित: {{name}}",
+    "cinemaApproved": "शाखा \"{{name}}\" स्वीकृत कर दी गई है।",
+    "cinemaBlocked": "शाखा \"{{name}}\" अवरुद्ध कर दी गई है।",
     "newBooking": "नई बुकिंग प्राप्त हुई: +{{amount}}đ"
   },
   "toastContainer": {

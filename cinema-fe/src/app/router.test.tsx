@@ -15,7 +15,6 @@ vi.mock('@/features/auth/pages/RegisterPage', () => ({ default: () => <div>Regis
 vi.mock('@/features/auth/pages/LoginPage', () => ({ default: () => <div>LoginForm</div> }));
 vi.mock('@/features/auth/pages/VerifyCodePage', () => ({ default: () => <div>VerifyCode</div> }));
 vi.mock('@/features/auth/pages/UserInfoPage', () => ({ default: () => <div>UserInfo</div> }));
-vi.mock('@/features/auth/pages/CinemaInfoPage', () => ({ default: () => <div>CinemaInfo</div> }));
 vi.mock('@/features/auth/pages/ProfilePage', () => ({ default: () => <div>Profile</div> }));
 vi.mock('@/features/auth/pages/ForgotPasswordPage', () => ({ default: () => <div>ForgotPassword</div> }));
 vi.mock('@/features/auth/pages/ResetPasswordPage', () => ({ default: () => <div>ResetPassword</div> }));
@@ -33,6 +32,12 @@ vi.mock('@/features/owner/cinemas/pages/Rooms', () => ({ default: () => <div>Own
 vi.mock('@/features/owner/combos/pages/List', () => ({ default: () => <div>OwnerCombos</div> }));
 vi.mock('@/features/owner/vouchers/pages/List', () => ({ default: () => <div>OwnerVouchers</div> }));
 vi.mock('@/features/owner/pages/Lookup', () => ({ default: () => <div>OwnerBookingLookup</div> }));
+vi.mock('@/features/owner/employees/pages/List', () => ({ default: () => <div>OwnerEmployees</div> }));
+vi.mock('@/features/employee/pages/EmployeeDashboard', () => ({ default: () => <div>EmployeeDashboard</div> }));
+vi.mock('@/features/employee/pages/CounterSale', () => ({ default: () => <div>EmployeeCounterSale</div> }));
+vi.mock('@/features/employee/pages/CheckIn', () => ({ default: () => <div>EmployeeCheckIn</div> }));
+vi.mock('@/features/admin/actors/pages/List', () => ({ default: () => <div>AdminActors</div> }));
+vi.mock('@/features/admin/directors/pages/List', () => ({ default: () => <div>AdminDirectors</div> }));
 vi.mock('@/features/admin/dashboard/pages/AdminDashboard', () => ({ default: () => <div>AdminDashboard</div> }));
 vi.mock('@/features/admin/cinemas/pages/List', () => ({ default: () => <div>AdminCinemas</div> }));
 vi.mock('@/features/admin/transactions/pages/List', () => ({ default: () => <div>AdminTransactions</div> }));
@@ -105,6 +110,12 @@ describe('AppRouter', () => {
     expect(screen.getByText('LoginForm')).toBeInTheDocument();
   });
 
+  it('renders the owner employees route when logged in as an owner', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.ownerEmployees);
+    expect(screen.getByText('OwnerEmployees')).toBeInTheDocument();
+  });
+
   it('redirects an admin away from home to the admin dashboard', () => {
     store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
     renderAt(ROUTES.home);
@@ -121,5 +132,41 @@ describe('AppRouter', () => {
     store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
     renderAt(ROUTES.home);
     expect(screen.getByText('Home')).toBeInTheDocument();
+  });
+
+  it('redirects an employee away from home to the employee dashboard', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.employee), account: {} as Account }));
+    renderAt(ROUTES.home);
+    expect(screen.getByText('EmployeeDashboard')).toBeInTheDocument();
+  });
+
+  it('renders the employee dashboard route for an employee but not for a customer', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.employee), account: {} as Account }));
+    renderAt(ROUTES.employeeDashboard);
+    expect(screen.getByText('EmployeeDashboard')).toBeInTheDocument();
+  });
+
+  it('redirects a customer away from the employee dashboard route', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
+    renderAt(ROUTES.employeeDashboard);
+    expect(screen.getByText('Home')).toBeInTheDocument();
+  });
+
+  it('renders the admin actors route for an admin', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.admin), account: {} as Account }));
+    renderAt(ROUTES.adminActors);
+    expect(screen.getByText('AdminActors')).toBeInTheDocument();
+  });
+
+  it('redirects a non-admin away from the admin directors route', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.adminDirectors);
+    expect(screen.getByText('OwnerDashboard')).toBeInTheDocument();
+  });
+
+  it('allows an owner (staff role) onto the counter-sale route', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.employeeCounterSale);
+    expect(screen.getByText('EmployeeCounterSale')).toBeInTheDocument();
   });
 });

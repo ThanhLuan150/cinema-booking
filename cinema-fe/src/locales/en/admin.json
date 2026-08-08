@@ -6,7 +6,7 @@
       "totalRevenue": "Total revenue",
       "totalUsers": "Users",
       "totalOwners": "Theater owners",
-      "totalCinemas": "Cinemas",
+      "totalCinemas": "Branches",
       "totalTicketsSold": "Tickets sold",
       "totalTransactions": "Transactions"
     },
@@ -24,18 +24,15 @@
         "description": "Describe:",
         "trailer": "Trailer:",
         "producer": "Producer:",
-        "producerAvatar": "Producer avatar (URL):",
-        "director": "Director:",
-        "directorAvatar": "Director avatar (URL):"
+        "producerAvatar": "Producer avatar (URL):"
+      },
+      "directors": {
+        "label": "Director(s):"
       },
       "cast": {
         "label": "Cast:",
-        "name": "Name",
-        "role": "Role",
-        "avatarUrl": "Image URL",
-        "isLead": "Lead role",
-        "remove": "Remove",
-        "add": "+ Add cast member"
+        "role": "Character name",
+        "isLead": "Lead role"
       },
       "category": "Category:",
       "submit": "Add",
@@ -54,18 +51,15 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Upload new trailer:",
         "producer": "Producer:",
-        "producerAvatar": "Producer avatar (URL):",
-        "director": "Director:",
-        "directorAvatar": "Director avatar (URL):"
+        "producerAvatar": "Producer avatar (URL):"
+      },
+      "directors": {
+        "label": "Director(s):"
       },
       "cast": {
         "label": "Cast:",
-        "name": "Name",
-        "role": "Role",
-        "avatarUrl": "Image URL",
-        "isLead": "Lead role",
-        "remove": "Remove",
-        "add": "+ Add cast member"
+        "role": "Character name",
+        "isLead": "Lead role"
       },
       "category": "Category:",
       "submit": "Update",
@@ -101,11 +95,56 @@
       "trailerRequired": "Trailer is required",
       "producerRequired": "Producer is required",
       "producerAvatarInvalid": "Producer avatar URL is invalid",
-      "directorRequired": "Director is required",
-      "directorAvatarInvalid": "Director avatar URL is invalid",
-      "castNameRequired": "Cast member name is required",
-      "castAvatarInvalid": "Cast avatar URL is invalid",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "Select at least one category"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "Status",
       "Action"
     ],
-    "cinemaSuffix": "{{name}} (cinema)",
+    "cinemaSuffix": "{{name}} (branch)",
     "hiddenStatus": "Hidden",
     "visibleStatus": "Visible",
     "hideButton": "Hide",
@@ -194,12 +233,12 @@
     "refundSuccess": "Transaction refunded."
   },
   "cinemas": {
-    "breadcrumb": "Cinemas",
+    "breadcrumb": "Branches",
     "headers": [
       "ID",
-      "Owner photo",
-      "Cinema name",
-      "Owner (ID)",
+      "Branch Admin photo",
+      "Branch name",
+      "Branch Admin (ID)",
       "Address",
       "Status",
       "Action"
@@ -212,11 +251,29 @@
     "approveButton": "Approve",
     "blockButton": "Block",
     "deleteButton": "Delete",
-    "blockConfirm": "Block this cinema?",
-    "deleteConfirm": "Delete this cinema? This action cannot be undone.",
-    "approveSuccess": "Cinema approved.",
-    "blockSuccess": "Cinema blocked.",
-    "deleteSuccess": "Cinema deleted."
+    "blockConfirm": "Block this branch?",
+    "deleteConfirm": "Delete this branch? This action cannot be undone.",
+    "approveSuccess": "Branch approved.",
+    "blockSuccess": "Branch blocked.",
+    "deleteSuccess": "Branch deleted.",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

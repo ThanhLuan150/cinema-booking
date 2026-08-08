@@ -1,8 +1,11 @@
 const userRepository = require('../repositories/user.repository');
+const employeeRepository = require('../repositories/employee.repository');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-function toProfileJson(account) {
-  return {
+// Employees additionally need to know which cinema they're staffed at, since every
+// employee-scoped endpoint (schedules, counter-sale, check-in) is filtered by it.
+async function toProfileJson(account) {
+  const profile = {
     user_id: account.id,
     email: account.email,
     name: account.name,
@@ -10,13 +13,18 @@ function toProfileJson(account) {
     avatar: account.avatar,
     role: account.role,
   };
+  if (account.role === 3) {
+    const employee = await employeeRepository.findByAccountId(account.id);
+    if (employee) profile.cinema_id = employee.cinema_id;
+  }
+  return profile;
 }
 
 // GET /api/user  (current authenticated account, resolved from the JWT)
 async function me(req, res) {
   const account = await userRepository.findById(req.account.accountId);
   if (!account) return res.status(404).json({ message: 'Account not found' });
-  res.json(toProfileJson(account));
+  res.json(await toProfileJson(account));
 }
 
 // PUT /api/user  (update the caller's own profile: name, phone, avatar)
@@ -28,7 +36,7 @@ async function updateMe(req, res) {
   }
   const account = await userRepository.updateOwnProfile(req.account.accountId, updates);
   if (!account) return res.status(404).json({ message: 'Account not found' });
-  res.json(toProfileJson(account));
+  res.json(await toProfileJson(account));
 }
 
 // GET /api/users?page=&limit= (admin only)

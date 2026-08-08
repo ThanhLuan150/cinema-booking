@@ -29,10 +29,12 @@ vi.mock('../hooks/useAdminCinemas', () => ({
 const approveMutate = vi.fn();
 const blockMutate = vi.fn();
 const deleteMutate = vi.fn();
+const createBranchAdminMutate = vi.fn();
 vi.mock('../hooks/useCinemaModeration', () => ({
   useApproveCinema: () => ({ mutateAsync: approveMutate }),
   useBlockCinema: () => ({ mutateAsync: blockMutate }),
   useDeleteCinema: () => ({ mutateAsync: deleteMutate }),
+  useCreateBranchAdmin: () => ({ mutateAsync: createBranchAdminMutate, isPending: false }),
 }));
 
 const confirmDialogMock = vi.fn();
@@ -60,6 +62,7 @@ describe('Admin Cinemas List', () => {
     approveMutate.mockReset();
     blockMutate.mockReset();
     deleteMutate.mockReset();
+    createBranchAdminMutate.mockReset();
     confirmDialogMock.mockReset();
   });
 
@@ -91,5 +94,21 @@ describe('Admin Cinemas List', () => {
     renderPage();
     fireEvent.click(screen.getByText('cinemas.blockButton'));
     await vi.waitFor(() => expect(blockMutate).toHaveBeenCalledWith(1));
+  });
+
+  it('opens the add-branch-admin modal from the add button', () => {
+    useAdminCinemasMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    fireEvent.click(screen.getByText('cinemas.addBranchAdmin.addButton'));
+    expect(screen.getByText('cinemas.addBranchAdmin.title')).toBeInTheDocument();
+  });
+
+  it('blocks submitting the add-branch-admin form when required fields are empty', async () => {
+    useAdminCinemasMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    createBranchAdminMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('cinemas.addBranchAdmin.addButton'));
+    fireEvent.click(screen.getByText('cinemas.addBranchAdmin.submit'));
+    await vi.waitFor(() => expect(createBranchAdminMutate).not.toHaveBeenCalled());
   });
 });

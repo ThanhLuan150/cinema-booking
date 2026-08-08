@@ -5,8 +5,8 @@
     "movies": "फिल्में",
     "playing": "अभी चल रही हैं",
     "upcoming": "जल्द आ रही हैं",
-    "cinemas": "सिनेमा",
-    "allCinemas": "सभी सिनेमा"
+    "cinemas": "शाखाएं",
+    "allCinemas": "सभी शाखाएं"
   },
   "header": {
     "toggleMenu": "मेनू टॉगल करें",
@@ -26,7 +26,7 @@
     "quickLink": "क्विक लिंक",
     "aboutUs": "हमारे बारे में",
     "movies": "फिल्में",
-    "partner": "पार्टनर",
+    "partner": "शाखाएं",
     "help": "सहायता",
     "important": "महत्वपूर्ण",
     "support": "सपोर्ट",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "ईमेल दर्ज करें",
     "send": "भेजें",
     "followUs": "हमें फ़ॉलो करें",
-    "companyInfo": "CineNova सिनेमा प्रणाली"
+    "companyInfo": "CineNova शाखा प्रणाली"
   },
   "adminLayout": {
     "nav": {
@@ -46,13 +46,18 @@
       "dashboard": "डैशबोर्ड",
       "films": "फिल्में",
       "schedule": "शेड्यूल",
-      "cinemas": "सिनेमा",
+      "cinemas": "शाखाएं",
       "combos": "कॉम्बो",
       "vouchers": "वाउचर",
       "bookings": "बुकिंग",
       "transactions": "लेन-देन",
       "reviews": "समीक्षाएं",
-      "rooms": "स्क्रीन"
+      "rooms": "स्क्रीन",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

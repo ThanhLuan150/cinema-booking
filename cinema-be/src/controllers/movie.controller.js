@@ -2,24 +2,18 @@ const movieRepository = require('../repositories/movie.repository');
 const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
 const { withCategories } = require('../utils/withCategories');
+const { withActorsAndDirectors } = require('../utils/withActorsAndDirectors');
 const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { assertMovieOwnership } = require('../utils/movieOwnership');
 
 function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function parseCast(raw) {
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string' && raw.trim()) {
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
+// Attaches categories + actors + directors in one pass (used by every read path below).
+async function withRelations(movies) {
+  return withActorsAndDirectors(await withCategories(movies));
 }
 
 // GET /api/movie?search=&category=&country=&date=&cinema=&status=&page=&limit=
@@ -48,7 +42,7 @@ async function list(req, res) {
 
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await movieRepository.findFiltered(filter, { skip, limit });
-  res.json(buildPaginatedResult({ data: await withCategories(data), total, page, limit }));
+  res.json(buildPaginatedResult({ data: await withRelations(data), total, page, limit }));
 }
 
 // GET /api/movie/mine -> management list (admin or theater staff). Admin sees every movie;
@@ -62,7 +56,7 @@ async function mine(req, res) {
     skip,
     limit,
   });
-  res.json(buildPaginatedResult({ data: await withCategories(data), total, page, limit }));
+  res.json(buildPaginatedResult({ data: await withRelations(data), total, page, limit }));
 }
 
 // GET /api/movie/:id
@@ -70,25 +64,13 @@ async function getById(req, res) {
   const movie = await movieRepository.findById(req.params.id);
   if (!movie) return res.status(404).json({ message: 'Movie not found' });
 
-  const [movieWithCategories] = await withCategories([movie]);
-  res.json(movieWithCategories);
+  const [enriched] = await withRelations([movie]);
+  res.json(enriched);
 }
 
 // POST /api/movie (admin or theater staff)
 async function create(req, res) {
-  const {
-    name,
-    avatar,
-    premiere_date,
-    description,
-    country,
-    trailer,
-    producer,
-    producerAvatar,
-    director,
-    directorAvatar,
-    cast,
-  } = req.body;
+  const { name, avatar, premiere_date, description, country, trailer, producer, producerAvatar } = req.body;
   if (!name || !premiere_date) {
     return res.status(400).json({ message: 'name and premiere_date are required' });
   }
@@ -110,17 +92,20 @@ async function create(req, res) {
     trailer: trailerUrl,
     producer: producer || '',
     producerAvatar: producerAvatar || '',
-    director: director || '',
-    directorAvatar: directorAvatar || '',
-    cast: parseCast(cast),
   });
 
   emitPublic('movie:new', movie);
   res.status(201).json(movie);
 }
 
-// PUT /api/movie/:id (admin or theater staff)
+// PUT /api/movie/:id (movie.update permission; a theater owner may only edit movies they added)
 async function update(req, res) {
+  const existing = await movieRepository.findById(req.params.id);
+  if (!existing) return res.status(404).json({ message: 'Movie not found' });
+  if (!(await assertMovieOwnership(req, existing.id))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
   const fields = [
     'name',
     'avatar',
@@ -130,28 +115,29 @@ async function update(req, res) {
     'trailer',
     'producer',
     'producerAvatar',
-    'director',
-    'directorAvatar',
-    'cast',
   ];
   const updates = {};
   for (const field of fields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
-  if (updates.cast !== undefined) updates.cast = parseCast(updates.cast);
   const avatarFile = req.files?.avatar?.[0];
   const trailerFile = req.files?.trailer?.[0];
   if (avatarFile) updates.avatar = await uploadImage(avatarFile);
   if (trailerFile) updates.trailer = await uploadTrailer(trailerFile);
 
   const movie = await movieRepository.updateFields(req.params.id, updates);
-  if (!movie) return res.status(404).json({ message: 'Movie not found' });
   res.json(movie);
 }
 
-// DELETE /api/movie/:id (admin or theater staff)
+// DELETE /api/movie/:id (movie.delete permission; a theater owner may only delete movies they added)
 async function remove(req, res) {
-  await movieRepository.remove(req.params.id);
+  const existing = await movieRepository.findById(req.params.id);
+  if (!existing) return res.status(404).json({ message: 'Movie not found' });
+  if (!(await assertMovieOwnership(req, existing.id))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  await movieRepository.remove(existing.id);
   res.json({ message: 'Deleted' });
 }
 

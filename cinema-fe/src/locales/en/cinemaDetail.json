@@ -7,19 +7,19 @@
     "statusActive": "Active",
     "statusPaused": "Temporarily closed",
     "viewShowtimes": "View showtimes",
-    "breadcrumbCinemas": "Cinemas"
+    "breadcrumbCinemas": "Branches"
   },
   "moviesSection": {
-    "title": "Now showing at this cinema",
-    "emptyState": "This cinema has no showtimes yet",
+    "title": "Now showing at this branch",
+    "emptyState": "This branch has no showtimes yet",
     "moreDetails": "More Details"
   },
   "reviews": {
-    "title": "Cinema experience reviews",
+    "title": "Branch experience reviews",
     "ratingSummary": "{{average}}/5 · {{count}} reviews",
     "ratingLabel": "Rating:",
     "starOption": "{{count}} stars",
-    "commentPlaceholder": "Share your experience at this cinema (seats, sound, staff, cleanliness...)...",
+    "commentPlaceholder": "Share your experience at this branch (seats, sound, staff, cleanliness...)...",
     "submit": "Submit review",
     "loginRequired": "You are not logged in. Please log in or sign up to use this feature.",
     "submitSuccess": "Review submitted.",

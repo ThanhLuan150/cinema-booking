@@ -6,7 +6,7 @@
       "totalRevenue": "総売上",
       "totalUsers": "会員数",
       "totalOwners": "劇場オーナー数",
-      "totalCinemas": "映画館数",
+      "totalCinemas": "支店数",
       "totalTicketsSold": "販売済みチケット数",
       "totalTransactions": "取引件数"
     },
@@ -24,23 +24,20 @@
         "description": "概要:",
         "trailer": "予告編:",
         "producer": "製作:",
-        "director": "監督:",
-        "producerAvatar": "製作の画像URL:",
-        "directorAvatar": "監督の画像URL:"
+        "producerAvatar": "製作の画像URL:"
       },
       "cast": {
         "label": "出演者:",
-        "name": "名前",
-        "role": "役柄",
-        "avatarUrl": "画像URL",
-        "remove": "削除",
-        "add": "+ 出演者を追加",
+        "role": "Character name",
         "isLead": "主演"
       },
       "category": "ジャンル:",
       "submit": "追加",
       "toastSuccess": "追加しました",
-      "toastError": "追加に失敗しました"
+      "toastError": "追加に失敗しました",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "映画を編集",
@@ -54,22 +51,19 @@
         "trailer": "予告編:",
         "uploadNewTrailer": "新しい予告編をアップロード:",
         "producer": "製作:",
-        "director": "監督:",
-        "producerAvatar": "製作の画像URL:",
-        "directorAvatar": "監督の画像URL:"
+        "producerAvatar": "製作の画像URL:"
       },
       "cast": {
         "label": "出演者:",
-        "name": "名前",
-        "role": "役柄",
-        "avatarUrl": "画像URL",
-        "remove": "削除",
-        "add": "+ 出演者を追加",
+        "role": "Character name",
         "isLead": "主演"
       },
       "category": "ジャンル:",
       "submit": "更新",
-      "toastSuccess": "映画情報を更新しました!"
+      "toastSuccess": "映画情報を更新しました!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "ID {{id}} の映画を削除しますか?",
@@ -100,12 +94,57 @@
       "countryRequired": "製作国を入力してください",
       "trailerRequired": "予告編を追加してください",
       "producerRequired": "製作者を入力してください",
-      "directorRequired": "監督を入力してください",
-      "castNameRequired": "出演者名を入力してください",
-      "castAvatarInvalid": "出演者の画像URLが正しくありません",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "少なくとも1つのジャンルを選択してください",
-      "producerAvatarInvalid": "製作の画像URLが無効です",
-      "directorAvatarInvalid": "監督の画像URLが無効です"
+      "producerAvatarInvalid": "製作の画像URLが無効です"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "状態",
       "操作"
     ],
-    "cinemaSuffix": "{{name}}(映画館)",
+    "cinemaSuffix": "{{name}}(支店)",
     "hiddenStatus": "非表示",
     "visibleStatus": "表示",
     "hideButton": "非表示にする",
@@ -194,12 +233,12 @@
     "refundSuccess": "取引を返金しました。"
   },
   "cinemas": {
-    "breadcrumb": "映画館",
+    "breadcrumb": "支店",
     "headers": [
       "ID",
-      "オーナー写真",
-      "映画館名",
-      "オーナー(ID)",
+      "支店長の写真",
+      "支店名",
+      "支店長(ID)",
       "住所",
       "状態",
       "操作"
@@ -212,11 +251,29 @@
     "approveButton": "承認",
     "blockButton": "ブロック",
     "deleteButton": "削除",
-    "blockConfirm": "この映画館をブロックしますか?",
-    "deleteConfirm": "この映画館を削除しますか?この操作は取り消せません。",
-    "approveSuccess": "映画館を承認しました。",
-    "blockSuccess": "映画館をブロックしました。",
-    "deleteSuccess": "映画館を削除しました。"
+    "blockConfirm": "この支店をブロックしますか?",
+    "deleteConfirm": "この支店を削除しますか?この操作は取り消せません。",
+    "approveSuccess": "支店を承認しました。",
+    "blockSuccess": "支店をブロックしました。",
+    "deleteSuccess": "支店を削除しました。",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

@@ -10,7 +10,6 @@ export const ROUTES = {
   resetPassword: '/ResetPassword',
   changePassword: '/ChangePassword',
   userInfo: '/UserInfo',
-  cinemaInfo: '/CinemaInfo',
   myBookings: '/MyBookings',
   playing: '/Playing',
   upcoming: '/Upcoming',
@@ -39,4 +38,10 @@ export const ROUTES = {
   ownerCombos: '/OwnerCombos',
   ownerVouchers: '/OwnerVouchers',
   ownerBookings: '/OwnerBookings',
+  ownerEmployees: '/OwnerEmployees',
+  adminActors: '/AdminActors',
+  adminDirectors: '/AdminDirectors',
+  employeeDashboard: '/EmployeeDashboard',
+  employeeCounterSale: '/EmployeeCounterSale',
+  employeeCheckIn: '/EmployeeCheckIn',
 } as const;

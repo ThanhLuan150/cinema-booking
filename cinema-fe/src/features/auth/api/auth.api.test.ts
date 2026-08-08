@@ -30,9 +30,9 @@ describe('auth.api', () => {
     expect(getMock).toHaveBeenCalledWith('/check-email?email=a%20b%40c.com');
   });
 
-  it('register posts to /register with a numeric role', () => {
-    authApi.register('a@b.com', 'pw', 'pw', 1);
-    expect(postMock).toHaveBeenCalledWith('/register', { email: 'a@b.com', password: 'pw', c_password: 'pw', role: 1 });
+  it('register posts to /register', () => {
+    authApi.register('a@b.com', 'pw', 'pw');
+    expect(postMock).toHaveBeenCalledWith('/register', { email: 'a@b.com', password: 'pw', c_password: 'pw' });
   });
 
   it('getAccountByEmail gets /account/:email', () => {
@@ -44,12 +44,6 @@ describe('auth.api', () => {
     const payload = { name: 'A', phone: '123', email: 'a@b.com' };
     authApi.saveUserInfo(payload);
     expect(postMock).toHaveBeenCalledWith('/users', payload);
-  });
-
-  it('saveCinemaInfo posts to /cinema/onboard', () => {
-    const payload = { name: 'A', address: 'B', city: 'C', email: 'a@b.com' } as any;
-    authApi.saveCinemaInfo(payload);
-    expect(postMock).toHaveBeenCalledWith('/cinema/onboard', payload);
   });
 
   it('verifyCode posts to /verify', () => {

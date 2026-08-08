@@ -13,10 +13,9 @@ const validMovie = {
   trailer: 'trailer.mp4',
   producer: 'Emma Thomas',
   producerAvatar: '',
-  director: 'Christopher Nolan',
-  directorAvatar: '',
-  cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '', isLead: false }],
   categoryIds: [1],
+  directorIds: [1],
+  actors: [{ actor_id: 1, character_name: 'Cobb', is_lead: true }],
 };
 
 describe('movieSchema', () => {
@@ -60,42 +59,28 @@ describe('movieSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('rejects a missing director', () => {
-    const result = movieSchema.safeParse({ ...validMovie, director: '' });
+  it('rejects an invalid producerAvatar URL', () => {
+    const result = movieSchema.safeParse({ ...validMovie, producerAvatar: 'not-a-url' });
     expect(result.success).toBe(false);
   });
 
-  it('rejects a cast member with no name', () => {
-    const result = movieSchema.safeParse({ ...validMovie, cast: [{ name: '', role: 'Cobb', avatar: '' }] });
-    expect(result.success).toBe(false);
-  });
-
-  it('rejects a cast member with an invalid avatar URL', () => {
-    const result = movieSchema.safeParse({
-      ...validMovie,
-      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: 'not-a-url' }],
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it('accepts an empty cast avatar', () => {
-    const result = movieSchema.safeParse({
-      ...validMovie,
-      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: '', isLead: false }],
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts a valid cast avatar URL', () => {
-    const result = movieSchema.safeParse({
-      ...validMovie,
-      cast: [{ name: 'Leonardo DiCaprio', role: 'Cobb', avatar: 'https://example.com/avatar.jpg', isLead: true }],
-    });
+  it('accepts a valid producerAvatar URL', () => {
+    const result = movieSchema.safeParse({ ...validMovie, producerAvatar: 'https://example.com/a.jpg' });
     expect(result.success).toBe(true);
   });
 
   it('rejects when no category is selected', () => {
     const result = movieSchema.safeParse({ ...validMovie, categoryIds: [] });
     expect(result.success).toBe(false);
+  });
+
+  it('rejects when no director is selected', () => {
+    const result = movieSchema.safeParse({ ...validMovie, directorIds: [] });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts an empty actors list', () => {
+    const result = movieSchema.safeParse({ ...validMovie, actors: [] });
+    expect(result.success).toBe(true);
   });
 });

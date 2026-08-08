@@ -227,10 +227,13 @@ describe('POST /api/invoice/:id/cancel', () => {
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  it('allows an admin to cancel any invoice', async () => {
+  it('allows an ALL-scope caller (admin) to cancel any invoice', async () => {
     await Invoice.create({ id: 1, ticket_id: 1, account_id: 2, code: 'ABC', total_price: 100000, status: 1 });
     const res = mockRes();
-    await bookingController.cancelInvoice({ params: { id: 1 }, account: { accountId: 99, role: 0 } }, res);
+    await bookingController.cancelInvoice(
+      { params: { id: 1 }, account: { accountId: 99, role: 0 }, permissionScope: 'ALL' },
+      res,
+    );
     expect(res.status).not.toHaveBeenCalledWith(403);
   });
 
@@ -317,5 +320,86 @@ describe('POST /api/invoice/:id/refund', () => {
     expect(invoice.status).toBe(2);
     const ticket = await Ticket.findOne({ id: 1 });
     expect(ticket.status).toBe(1);
+  });
+});
+
+describe('POST /api/invoice/:id/checkin', () => {
+  it('returns 404 when the invoice does not exist', async () => {
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 999 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects checking in an unpaid invoice', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 0 });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'INVOICE_NOT_PAID' }));
+  });
+
+  it('rejects checking in twice', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 1, checked_in: true });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ALREADY_CHECKED_IN' }));
+  });
+
+  it('marks a paid, not-yet-checked-in invoice as checked in', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 1 });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    const invoice = await Invoice.findOne({ id: 1 });
+    expect(invoice.checked_in).toBe(true);
+  });
+});
+
+describe('POST /api/invoice/counter-sale', () => {
+  it('rejects a missing ticketIds', async () => {
+    const res = mockRes();
+    await bookingController.createCounterSale({ body: { accountId: 1 }, account: { accountId: 7 }, cinemaId: 1 }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('rejects a missing accountId', async () => {
+    const res = mockRes();
+    await bookingController.createCounterSale({ body: { ticketIds: [1] }, account: { accountId: 7 }, cinemaId: 1 }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('rejects tickets that belong to a different cinema than the target', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+    await Cinema.create({ id: 2, owner_id: 1, name: 'C2' });
+    await Room.create({ id: 1, cinema_id: 2, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+
+    const res = mockRes();
+    await bookingController.createCounterSale(
+      { body: { ticketIds: [1], accountId: 1, totalPrice: 1000 }, account: { accountId: 7 }, cinemaId: 1 },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_CINEMA_MISMATCH' }));
+  });
+
+  it('creates a paid counter-sale invoice tagged with the seller account id', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+
+    const res = mockRes();
+    await bookingController.createCounterSale(
+      { body: { ticketIds: [1], accountId: 1, totalPrice: 100000 }, account: { accountId: 7 }, cinemaId: 1 },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(201);
+    const invoice = await Invoice.findOne({ ticket_id: 1 });
+    expect(invoice.created_by).toBe(7);
+    expect(invoice.status).toBe(1);
   });
 });

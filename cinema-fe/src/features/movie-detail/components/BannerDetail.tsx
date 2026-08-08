@@ -45,7 +45,8 @@ const BannerDetail = () => {
         year: 'numeric',
       }).format(new Date(movie.premiere_date))
     : t('bannerDetail.notAvailable');
-  const cast = movie.cast || [];
+  const actors = movie.actors || [];
+  const directors = movie.directors || [];
   const categories = movie.categories || [];
 
   return (
@@ -111,16 +112,21 @@ const BannerDetail = () => {
                 ))}
               </FactRow>
             )}
-            {movie.director && (
+            {directors.length > 0 && (
               <FactRow label={t('bannerDetail.director')}>
-                <span className={chipClass}>{movie.director}</span>
+                {directors.map((director) => (
+                  <span key={director.id} className={chipClass}>
+                    {director.full_name}
+                  </span>
+                ))}
               </FactRow>
             )}
-            {cast.length > 0 && (
+            {actors.length > 0 && (
               <FactRow label={t('bannerDetail.cast')}>
-                {cast.map((member, index) => (
-                  <span key={`${member.name}-${index}`} className={chipClass}>
-                    {member.name}
+                {actors.map((actor) => (
+                  <span key={actor.id} className={chipClass}>
+                    {actor.full_name}
+                    {actor.character_name ? ` (${actor.character_name})` : ''}
                   </span>
                 ))}
               </FactRow>

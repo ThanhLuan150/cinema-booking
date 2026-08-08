@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
-const { requireAuth, requireRole } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
+const { requirePermission } = require('../middleware/permission');
 const { requireCinemaOwnership } = require('../middleware/ownership');
 const roomRepository = require('../repositories/room.repository');
 const seatRepository = require('../repositories/seat.repository');
@@ -15,16 +16,16 @@ router.get('/room/:roomId', asyncHandler(seatController.listByRoom));
 router.post(
   '/room/:roomId/generate',
   requireAuth,
-  requireRole(0, 2),
+  requirePermission('seat.create'),
   requireCinemaOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.roomId)),
   asyncHandler(seatController.generate),
 );
 
-// PUT /api/seat/:id { seat_type, is_locked } (owner/admin)
+// PUT /api/seat/:id { seat_type, is_locked } (seat.update permission, owner-scoped)
 router.put(
   '/:id',
   requireAuth,
-  requireRole(0, 2),
+  requirePermission('seat.update'),
   requireCinemaOwnership(async (req) => {
     const seat = await seatRepository.findById(req.params.id);
     if (!seat) return null;

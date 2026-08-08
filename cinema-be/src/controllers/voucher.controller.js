@@ -2,9 +2,9 @@ const voucherRepository = require('../repositories/voucher.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// A role-2 caller may only touch vouchers on a cinema they own; admin (role 0) always passes.
+// A BRANCH-scope caller may only touch vouchers on a cinema they own; ALL scope always passes.
 async function assertCinemaOwnership(req, cinemaId) {
-  if (req.account.role === 0) return true;
+  if (req.permissionScope === 'ALL') return true;
   if (!cinemaId) return false;
   const cinema = await voucherRepository.findCinemaById(cinemaId);
   return Boolean(cinema && cinema.owner_id === req.account.accountId);
@@ -13,7 +13,7 @@ async function assertCinemaOwnership(req, cinemaId) {
 // GET /api/voucher?cinemaId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
 async function list(req, res) {
   const filter = {};
-  if (req.account.role === 2) {
+  if (req.permissionScope === 'BRANCH') {
     const ownedIds = await voucherRepository.findOwnedCinemaIds(req.account.accountId);
     filter.cinema_id = req.query.cinemaId
       ? ownedIds.includes(Number(req.query.cinemaId))
@@ -81,7 +81,7 @@ async function create(req, res) {
   }
 
   const normalizedCinemaId = cinema_id === undefined || cinema_id === null ? null : Number(cinema_id);
-  if (normalizedCinemaId === null && req.account.role !== 0) {
+  if (normalizedCinemaId === null && req.permissionScope !== 'ALL') {
     return res.status(403).json({ message: 'Only admin can create system-wide vouchers' });
   }
   if (normalizedCinemaId !== null && !(await assertCinemaOwnership(req, normalizedCinemaId))) {

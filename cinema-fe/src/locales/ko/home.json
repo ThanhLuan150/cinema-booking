@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "빠른 예매",
-    "cinema": "극장 선택",
+    "cinema": "지점 선택",
     "movie": "영화 선택",
     "date": "날짜 선택",
     "time": "상영 시간 선택",
@@ -26,7 +26,7 @@
     "viewMore": "더 보기"
   },
   "topCinemasSlider": {
-    "title": "인기 영화관",
+    "title": "인기 지점",
     "addressUpdating": "주소 업데이트 중",
     "newRating": "신규",
     "ticketsBooked": "장 예매됨"

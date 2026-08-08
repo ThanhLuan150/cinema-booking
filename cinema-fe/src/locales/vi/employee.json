@@ -1,0 +1,41 @@
+{
+  "dashboard": {
+    "breadcrumb": "Bảng điều khiển",
+    "sellTickets": "Bán vé",
+    "checkIn": "Soát vé",
+    "noShowtimesToday": "Hôm nay không có suất chiếu",
+    "headers": {
+      "movie": "Phim",
+      "room": "Phòng",
+      "time": "Giờ chiếu",
+      "price": "Giá vé",
+      "actions": "Hành động"
+    }
+  },
+  "counterSale": {
+    "breadcrumb": "Bán vé tại quầy",
+    "scheduleLabel": "Suất chiếu",
+    "schedulePlaceholder": "Chọn suất chiếu",
+    "seatsTitle": "Chọn ghế",
+    "noSeats": "Suất chiếu này chưa có ghế",
+    "customerTitle": "Khách hàng",
+    "customerEmailPlaceholder": "Email khách hàng",
+    "findCustomer": "Tìm",
+    "customerFound": "Đã tìm thấy khách hàng",
+    "customerNotFound": "Không tìm thấy tài khoản với email này",
+    "total": "Tổng tiền",
+    "submit": "Xác nhận bán vé",
+    "saleSuccess": "Đã bán vé thành công."
+  },
+  "checkIn": {
+    "breadcrumb": "Soát vé",
+    "codePlaceholder": "Nhập mã vé",
+    "lookup": "Tra cứu",
+    "notFound": "Không tìm thấy đơn đặt vé với mã này.",
+    "statusCheckedIn": "Đã soát vé",
+    "statusPaid": "Đã thanh toán",
+    "statusNotPaid": "Chưa thanh toán",
+    "confirmCheckIn": "Xác nhận soát vé",
+    "checkInSuccess": "Soát vé thành công."
+  }
+}

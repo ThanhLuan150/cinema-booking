@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "Quick Booking",
-    "cinema": "Select cinema",
+    "cinema": "Select branch",
     "movie": "Select movie",
     "date": "Select date",
     "time": "Select showtime",
@@ -26,7 +26,7 @@
     "viewMore": "View More"
   },
   "topCinemasSlider": {
-    "title": "Top Cinemas",
+    "title": "Top Branches",
     "addressUpdating": "Address updating",
     "newRating": "New",
     "ticketsBooked": "tickets booked"

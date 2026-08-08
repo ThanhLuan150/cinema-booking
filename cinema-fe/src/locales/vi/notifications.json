@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "Phim mới: {{name}}",
-    "cinemaPending": "Rạp mới đăng ký chờ duyệt: {{name}}",
-    "cinemaApproved": "Rạp \"{{name}}\" đã được duyệt.",
-    "cinemaBlocked": "Rạp \"{{name}}\" đã bị khóa.",
+    "cinemaPending": "Chi nhánh mới đăng ký chờ duyệt: {{name}}",
+    "cinemaApproved": "Chi nhánh \"{{name}}\" đã được duyệt.",
+    "cinemaBlocked": "Chi nhánh \"{{name}}\" đã bị khóa.",
     "newBooking": "Có đơn đặt vé mới: +{{amount}}đ"
   },
   "toastContainer": {

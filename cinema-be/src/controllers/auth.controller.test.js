@@ -238,14 +238,14 @@ describe('POST /api/register', () => {
     expect(mailer.sendOtpEmail).toHaveBeenCalledWith('new@example.com', expect.any(String));
   });
 
-  it('marks a theater-staff (role 2) registration as unapproved', async () => {
+  it('always registers as a customer, ignoring any role sent in the request', async () => {
     await request(app)
       .post('/api/register')
       .send({ email: 'owner@example.com', password: 'Password1!', c_password: 'Password1!', role: '2' });
 
     const account = await Account.findOne({ email: 'owner@example.com' });
-    expect(account.role).toBe(2);
-    expect(account.approved).toBe(false);
+    expect(account.role).toBe(1);
+    expect(account.approved).toBe(true);
   });
 
   it('re-registers over an existing unverified account instead of creating a duplicate', async () => {

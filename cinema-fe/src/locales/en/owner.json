@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Cinemas",
-    "addButton": "Add cinema +",
-    "addTitle": "Add cinema",
-    "nameLabel": "Cinema name",
-    "addressLabel": "Address",
-    "cityLabel": "City",
-    "submit": "Add",
-    "createSuccess": "Cinema creation request sent, pending Admin approval.",
-    "createError": "Unable to create cinema.",
+    "breadcrumb": "My Branch",
     "manageRooms": "Manage rooms",
     "statusLabels": {
       "0": "Pending approval",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Cinema name",
+      "name": "Branch name",
       "address": "Address",
       "city": "City",
       "status": "Status",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "Select a branch"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "Combos",

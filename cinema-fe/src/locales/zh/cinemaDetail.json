@@ -7,19 +7,19 @@
     "statusActive": "营业中",
     "statusPaused": "暂停营业",
     "viewShowtimes": "查看场次",
-    "breadcrumbCinemas": "影院"
+    "breadcrumbCinemas": "分店"
   },
   "moviesSection": {
-    "title": "该影院正在上映",
-    "emptyState": "该影院暂无场次安排",
+    "title": "该分店正在上映",
+    "emptyState": "该分店暂无场次安排",
     "moreDetails": "查看详情"
   },
   "reviews": {
-    "title": "影院体验评价",
+    "title": "分店体验评价",
     "ratingSummary": "{{average}}/5 · {{count}} 条评价",
     "ratingLabel": "评分：",
     "starOption": "{{count}} 星",
-    "commentPlaceholder": "分享您在这家影院的体验（座位、音效、服务、卫生等）...",
+    "commentPlaceholder": "分享您在这家分店的体验（座位、音效、服务、卫生等）...",
     "submit": "提交评价",
     "loginRequired": "您尚未登录，请登录或注册后使用此功能。",
     "submitSuccess": "评价已提交。",

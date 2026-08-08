@@ -11,6 +11,10 @@ const uploadImage = require('../utils/uploadImage');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
 const Category = require('../models/Category');
+const MovieActor = require('../models/MovieActor');
+const Actor = require('../models/Actor');
+const MovieDirector = require('../models/MovieDirector');
+const Director = require('../models/Director');
 
 function mockRes() {
   const res = {};
@@ -52,6 +56,22 @@ describe('movie.controller list', () => {
     expect(payload.total).toBe(1);
     expect(payload.data[0].categories.map((c) => c.name)).toEqual(['Action']);
   });
+
+  it('attaches actors and directors to each movie', async () => {
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2026-01-01' });
+    await Actor.create({ id: 1, full_name: 'Actor One' });
+    await MovieActor.create({ id: 1, movie_id: 1, actor_id: 1, character_name: 'Hero', is_lead: true });
+    await Director.create({ id: 1, full_name: 'Director One' });
+    await MovieDirector.create({ id: 1, movie_id: 1, director_id: 1 });
+
+    const res = mockRes();
+    await movieController.list({ query: {} }, res);
+    const payload = res.json.mock.calls[0][0];
+    expect(payload.data[0].actors).toEqual([
+      expect.objectContaining({ full_name: 'Actor One', character_name: 'Hero', is_lead: true }),
+    ]);
+    expect(payload.data[0].directors).toEqual([expect.objectContaining({ full_name: 'Director One' })]);
+  });
 });
 
 describe('movie.controller getById', () => {
@@ -65,7 +85,9 @@ describe('movie.controller getById', () => {
     await Movie.create({ id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = mockRes();
     await movieController.getById({ params: { id: 1 } }, res);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ id: 1, categories: [] }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 1, categories: [], actors: [], directors: [] }),
+    );
   });
 });
 
@@ -102,24 +124,6 @@ describe('movie.controller create', () => {
     const created = await Movie.findOne({ name: 'With File' });
     expect(created.avatar).toBe('https://cdn.example.com/avatar.jpg');
   });
-
-  it('parses a JSON-string cast field', async () => {
-    const res = mockRes();
-    await movieController.create(
-      {
-        body: {
-          name: 'With Cast',
-          premiere_date: '2026-01-01',
-          cast: JSON.stringify([{ name: 'Actor A' }]),
-        },
-        account: { accountId: 1 },
-      },
-      res,
-    );
-    const created = await Movie.findOne({ name: 'With Cast' });
-    expect(created.cast).toHaveLength(1);
-    expect(created.cast[0].name).toBe('Actor A');
-  });
 });
 
 describe('movie.controller update/remove', () => {
@@ -132,16 +136,37 @@ describe('movie.controller update/remove', () => {
   it('applies only whitelisted fields', async () => {
     await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01' });
     const res = mockRes();
-    await movieController.update({ params: { id: 1 }, body: { name: 'New', owner_id: 999 } }, res);
+    await movieController.update(
+      { params: { id: 1 }, body: { name: 'New', owner_id: 999 }, account: { role: 0, accountId: 1 } },
+      res,
+    );
     const updated = await Movie.findOne({ id: 1 });
     expect(updated.name).toBe('New');
     expect(updated.owner_id).toBeNull();
   });
 
+  it('rejects a theater owner updating a movie they did not create', async () => {
+    await Movie.create({ id: 1, owner_id: 99, name: 'Old', premiere_date: '2026-01-01' });
+    const res = mockRes();
+    await movieController.update(
+      { params: { id: 1 }, body: { name: 'New' }, account: { role: 2, accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
   it('remove deletes the movie', async () => {
     await Movie.create({ id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = mockRes();
-    await movieController.remove({ params: { id: 1 } }, res);
+    await movieController.remove({ params: { id: 1 }, account: { role: 0, accountId: 1 } }, res);
     expect(await Movie.countDocuments()).toBe(0);
+  });
+
+  it('rejects a theater owner removing a movie they did not create', async () => {
+    await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+    const res = mockRes();
+    await movieController.remove({ params: { id: 1 }, account: { role: 2, accountId: 42 } }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(await Movie.countDocuments()).toBe(1);
   });
 });

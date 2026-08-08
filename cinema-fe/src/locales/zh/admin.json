@@ -6,7 +6,7 @@
       "totalRevenue": "总收入",
       "totalUsers": "用户数",
       "totalOwners": "影院业主",
-      "totalCinemas": "影院数",
+      "totalCinemas": "分店数",
       "totalTicketsSold": "已售票数",
       "totalTransactions": "交易数"
     },
@@ -24,23 +24,20 @@
         "description": "简介：",
         "trailer": "预告片：",
         "producer": "制片人：",
-        "director": "导演：",
-        "producerAvatar": "制片人头像(URL):",
-        "directorAvatar": "导演头像(URL):"
+        "producerAvatar": "制片人头像(URL):"
       },
       "cast": {
         "label": "演员：",
-        "name": "姓名",
-        "role": "角色",
-        "avatarUrl": "图片链接",
-        "remove": "删除",
-        "add": "+ 添加演员",
+        "role": "Character name",
         "isLead": "主演"
       },
       "category": "类型：",
       "submit": "新增",
       "toastSuccess": "添加成功",
-      "toastError": "添加失败"
+      "toastError": "添加失败",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "编辑电影",
@@ -54,22 +51,19 @@
         "trailer": "预告片：",
         "uploadNewTrailer": "上传新预告片：",
         "producer": "制片人：",
-        "director": "导演：",
-        "producerAvatar": "制片人头像(URL):",
-        "directorAvatar": "导演头像(URL):"
+        "producerAvatar": "制片人头像(URL):"
       },
       "cast": {
         "label": "演员：",
-        "name": "姓名",
-        "role": "角色",
-        "avatarUrl": "图片链接",
-        "remove": "删除",
-        "add": "+ 添加演员",
+        "role": "Character name",
         "isLead": "主演"
       },
       "category": "类型：",
       "submit": "更新",
-      "toastSuccess": "电影更新成功！"
+      "toastSuccess": "电影更新成功！",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "确定要删除 ID 为 {{id}} 的电影吗？",
@@ -100,12 +94,57 @@
       "countryRequired": "请输入国家",
       "trailerRequired": "请上传预告片",
       "producerRequired": "请输入制片人",
-      "directorRequired": "请输入导演",
-      "castNameRequired": "请输入演员姓名",
-      "castAvatarInvalid": "演员图片URL无效",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "请至少选择一个分类",
-      "producerAvatarInvalid": "制片人头像URL无效",
-      "directorAvatarInvalid": "导演头像URL无效"
+      "producerAvatarInvalid": "制片人头像URL无效"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "状态",
       "操作"
     ],
-    "cinemaSuffix": "{{name}}（影院）",
+    "cinemaSuffix": "{{name}}（分店）",
     "hiddenStatus": "已隐藏",
     "visibleStatus": "显示中",
     "hideButton": "隐藏",
@@ -194,12 +233,12 @@
     "refundSuccess": "交易已退款。"
   },
   "cinemas": {
-    "breadcrumb": "影院管理",
+    "breadcrumb": "分店管理",
     "headers": [
       "ID",
-      "业主照片",
-      "影院名称",
-      "业主（ID）",
+      "店长照片",
+      "分店名称",
+      "店长（ID）",
       "地址",
       "状态",
       "操作"
@@ -212,11 +251,29 @@
     "approveButton": "通过",
     "blockButton": "封禁",
     "deleteButton": "删除",
-    "blockConfirm": "确定要封禁该影院吗？",
-    "deleteConfirm": "确定要删除该影院吗？此操作不可撤销。",
-    "approveSuccess": "影院已通过审核。",
-    "blockSuccess": "影院已封禁。",
-    "deleteSuccess": "影院已删除。"
+    "blockConfirm": "确定要封禁该分店吗？",
+    "deleteConfirm": "确定要删除该分店吗？此操作不可撤销。",
+    "approveSuccess": "分店已通过审核。",
+    "blockSuccess": "分店已封禁。",
+    "deleteSuccess": "分店已删除。",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

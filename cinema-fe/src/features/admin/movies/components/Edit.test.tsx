@@ -9,12 +9,30 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 const useCategoriesMock = vi.fn();
 vi.mock('@/features/movies/hooks/useCategories', () => ({ useCategories: () => useCategoriesMock() }));
 
+const useDirectorsCatalogMock = vi.fn();
+vi.mock('@/features/admin/directors/hooks/useDirectors', () => ({
+  useDirectorsCatalog: () => useDirectorsCatalogMock(),
+}));
+
+const useActorsCatalogMock = vi.fn();
+vi.mock('@/features/admin/actors/hooks/useActors', () => ({ useActorsCatalog: () => useActorsCatalogMock() }));
+
 const useMovieDetailMock = vi.fn();
 vi.mock('@/features/movies/hooks/useMovieDetail', () => ({ useMovieDetail: (...args: unknown[]) => useMovieDetailMock(...args) }));
 
 const useMovieCategoriesByMovieIdMock = vi.fn();
 vi.mock('../hooks/useMovieCategoriesByMovieId', () => ({
   useMovieCategoriesByMovieId: (...args: unknown[]) => useMovieCategoriesByMovieIdMock(...args),
+}));
+
+const useMovieDirectorsByMovieIdMock = vi.fn();
+vi.mock('../hooks/useMovieDirectorsByMovieId', () => ({
+  useMovieDirectorsByMovieId: (...args: unknown[]) => useMovieDirectorsByMovieIdMock(...args),
+}));
+
+const useMovieActorsByMovieIdMock = vi.fn();
+vi.mock('../hooks/useMovieActorsByMovieId', () => ({
+  useMovieActorsByMovieId: (...args: unknown[]) => useMovieActorsByMovieIdMock(...args),
 }));
 
 const updateMovieMutate = vi.fn();
@@ -33,11 +51,21 @@ function renderModal() {
 describe('admin movies Edit', () => {
   beforeEach(() => {
     useCategoriesMock.mockReset();
+    useDirectorsCatalogMock.mockReset();
+    useActorsCatalogMock.mockReset();
     useMovieDetailMock.mockReset();
     useMovieCategoriesByMovieIdMock.mockReset();
+    useMovieDirectorsByMovieIdMock.mockReset();
+    useMovieActorsByMovieIdMock.mockReset();
     updateMovieMutate.mockReset();
     useCategoriesMock.mockReturnValue({ data: [{ id: 1, name: 'Action' }] });
+    useDirectorsCatalogMock.mockReturnValue({ data: { data: [{ id: 1, full_name: 'Director A' }] } });
+    useActorsCatalogMock.mockReturnValue({ data: { data: [{ id: 1, full_name: 'Actor A' }] } });
     useMovieCategoriesByMovieIdMock.mockReturnValue({ data: [1] });
+    useMovieDirectorsByMovieIdMock.mockReturnValue({ data: [{ id: 1, movie_id: 5, director_id: 1 }] });
+    useMovieActorsByMovieIdMock.mockReturnValue({
+      data: [{ id: 1, movie_id: 5, actor_id: 1, character_name: 'Hero', is_lead: true }],
+    });
   });
 
   it('pre-fills the form with the movie\'s current values', () => {
@@ -51,12 +79,29 @@ describe('admin movies Edit', () => {
         country: 'US',
         trailer: 't.mp4',
         producer: 'P',
-        director: 'D',
-        cast: [],
       },
     });
     renderModal();
     expect(screen.getByDisplayValue('Movie A')).toBeInTheDocument();
+  });
+
+  it('pre-checks the movie\'s current director and actor, with the actor\'s character name filled in', () => {
+    useMovieDetailMock.mockReturnValue({
+      data: {
+        id: 5,
+        name: 'Movie A',
+        avatar: 'a.jpg',
+        premiere_date: '2026-01-01',
+        description: 'Desc',
+        country: 'US',
+        trailer: 't.mp4',
+        producer: 'P',
+      },
+    });
+    renderModal();
+    const directorCheckbox = screen.getByText('Director A').closest('label')?.querySelector('input');
+    expect(directorCheckbox).toBeChecked();
+    expect(screen.getByDisplayValue('Hero')).toBeInTheDocument();
   });
 
   it('closes the modal via dispatch when cancelled', () => {

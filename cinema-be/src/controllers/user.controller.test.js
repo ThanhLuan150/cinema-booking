@@ -2,6 +2,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const userController = require('./user.controller');
 const Account = require('../models/Account');
 const Cinema = require('../models/Cinema');
+const Employee = require('../models/Employee');
 
 function mockRes() {
   const res = {};
@@ -33,6 +34,14 @@ describe('me / updateMe', () => {
       avatar: '',
       role: 1,
     });
+  });
+
+  it('me includes cinema_id for an employee account', async () => {
+    await Account.create({ id: 1, email: 'staff@b.com', password: 'x', role: 3 });
+    await Employee.create({ id: 1, account_id: 1, cinema_id: 5 });
+    const res = mockRes();
+    await userController.me({ account: { accountId: 1 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ cinema_id: 5 }));
   });
 
   it('updateMe only updates whitelisted fields', async () => {

@@ -13,6 +13,7 @@ const invoiceSchema = new mongoose.Schema(
     discount_amount: { type: Number, default: 0 },
     status: { type: Number, default: 1 }, // 1 = paid, 0 = cancelled, 2 = refunded
     checked_in: { type: Boolean, default: false },
+    created_by: { type: Number, default: null }, // account_id of the employee/branch admin who sold this at the counter (null = self-service online purchase)
   },
   { timestamps: true },
 );

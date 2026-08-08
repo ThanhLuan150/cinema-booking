@@ -7,6 +7,9 @@ import ownerDashboardReducer from '@/features/owner/store/ownerDashboardSlice';
 import ownerCinemasReducer from '@/features/owner/store/ownerCinemasSlice';
 import ownerCombosReducer from '@/features/owner/store/ownerCombosSlice';
 import ownerVouchersReducer from '@/features/owner/store/ownerVouchersSlice';
+import ownerEmployeesReducer from '@/features/owner/store/ownerEmployeesSlice';
+import adminActorsReducer from '@/features/admin/actors/store/adminActorsSlice';
+import adminDirectorsReducer from '@/features/admin/directors/store/adminDirectorsSlice';
 import notificationsReducer from '@/features/notifications/notificationSlice';
 import realtimeReducer from '@/features/notifications/realtimeSlice';
 import confirmReducer from '@/features/notifications/confirmSlice';
@@ -21,6 +24,9 @@ export const store = configureStore({
     ownerCinemas: ownerCinemasReducer,
     ownerCombos: ownerCombosReducer,
     ownerVouchers: ownerVouchersReducer,
+    ownerEmployees: ownerEmployeesReducer,
+    adminActors: adminActorsReducer,
+    adminDirectors: adminDirectorsReducer,
     notifications: notificationsReducer,
     realtime: realtimeReducer,
     confirm: confirmReducer,

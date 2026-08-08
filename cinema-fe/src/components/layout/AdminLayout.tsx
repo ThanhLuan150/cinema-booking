@@ -34,6 +34,8 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   const { data: user } = useCurrentUser();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const isAdmin = user?.role === ROLES.admin;
+  const isEmployee = user?.role === ROLES.employee;
+  const dashboardRoute = isAdmin ? ROUTES.adminDashboard : isEmployee ? ROUTES.employeeDashboard : ROUTES.ownerDashboard;
   const displayName = user?.name || t('adminLayout.adminFallback');
 
   const handleLogout = () => {
@@ -48,10 +50,7 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-main font-sans lg:flex-row">
       <div className="flex w-full shrink-0 flex-col border-b border-border bg-surface px-4 py-6 lg:w-64 lg:border-b-0 lg:border-r">
-        <Link
-          to={isAdmin ? ROUTES.adminDashboard : ROUTES.ownerDashboard}
-          className="flex items-center gap-2 px-2 no-underline"
-        >
+        <Link to={dashboardRoute} className="flex items-center gap-2 px-2 no-underline">
           <i className="fa-solid fa-film text-lg text-accent" aria-hidden="true" />
           <b className="font-script text-2xl leading-none text-txt">
             {t('brand')}
@@ -59,55 +58,82 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
           </b>
         </Link>
         <nav className="mt-8 flex flex-col gap-1 text-sm">
-          <NavLink to={isAdmin ? ROUTES.adminDashboard : ROUTES.ownerDashboard} className={navLinkClass}>
+          <NavLink to={dashboardRoute} className={navLinkClass}>
             <ion-icon name="stats-chart" />
             {t('adminLayout.nav.dashboard')}
           </NavLink>
-          {isAdmin && (
-            <NavLink to={ROUTES.adminUsers} className={navLinkClass}>
-              <ion-icon name="person" />
-              {t('adminLayout.nav.user')}
-            </NavLink>
-          )}
-          <NavLink to={ROUTES.adminMovies} className={navLinkClass}>
-            <ion-icon name="play-circle" />
-            {t('adminLayout.nav.films')}
-          </NavLink>
-          <NavLink to={ROUTES.adminSchedules} className={navLinkClass}>
-            <i className="fa-solid fa-calendar-days w-[1.125rem] text-center" />
-            {t('adminLayout.nav.schedule')}
-          </NavLink>
-          <NavLink to={isAdmin ? ROUTES.adminCinemas : ROUTES.ownerCinemas} className={navLinkClass}>
-            <ion-icon name="business" />
-            {t('adminLayout.nav.cinemas')}
-          </NavLink>
-          <NavLink to={ROUTES.ownerRooms} className={navLinkClass}>
-            <ion-icon name="grid" />
-            {t('adminLayout.nav.rooms')}
-          </NavLink>
-          <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
-            <ion-icon name="fast-food" />
-            {t('adminLayout.nav.combos')}
-          </NavLink>
-          <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>
-            <ion-icon name="pricetag" />
-            {t('adminLayout.nav.vouchers')}
-          </NavLink>
-          <NavLink to={ROUTES.ownerBookings} className={navLinkClass}>
-            <ion-icon name="qr-code" />
-            {t('adminLayout.nav.bookings')}
-          </NavLink>
-          {isAdmin && (
+          {isEmployee ? (
             <>
-              <div className="my-2 border-t border-border" />
-              <NavLink to={ROUTES.adminTransactions} className={navLinkClass}>
-                <ion-icon name="card" />
-                {t('adminLayout.nav.transactions')}
+              <NavLink to={ROUTES.employeeCounterSale} className={navLinkClass}>
+                <ion-icon name="cart" />
+                {t('adminLayout.nav.counterSale')}
               </NavLink>
-              <NavLink to={ROUTES.adminReviews} className={navLinkClass}>
-                <ion-icon name="star" />
-                {t('adminLayout.nav.reviews')}
+              <NavLink to={ROUTES.employeeCheckIn} className={navLinkClass}>
+                <ion-icon name="qr-code" />
+                {t('adminLayout.nav.checkIn')}
               </NavLink>
+            </>
+          ) : (
+            <>
+              {isAdmin && (
+                <NavLink to={ROUTES.adminUsers} className={navLinkClass}>
+                  <ion-icon name="person" />
+                  {t('adminLayout.nav.user')}
+                </NavLink>
+              )}
+              <NavLink to={ROUTES.adminMovies} className={navLinkClass}>
+                <ion-icon name="play-circle" />
+                {t('adminLayout.nav.films')}
+              </NavLink>
+              <NavLink to={ROUTES.adminSchedules} className={navLinkClass}>
+                <i className="fa-solid fa-calendar-days w-[1.125rem] text-center" />
+                {t('adminLayout.nav.schedule')}
+              </NavLink>
+              <NavLink to={isAdmin ? ROUTES.adminCinemas : ROUTES.ownerCinemas} className={navLinkClass}>
+                <ion-icon name="business" />
+                {t('adminLayout.nav.cinemas')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerRooms} className={navLinkClass}>
+                <ion-icon name="grid" />
+                {t('adminLayout.nav.rooms')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
+                <ion-icon name="fast-food" />
+                {t('adminLayout.nav.combos')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>
+                <ion-icon name="pricetag" />
+                {t('adminLayout.nav.vouchers')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerBookings} className={navLinkClass}>
+                <ion-icon name="qr-code" />
+                {t('adminLayout.nav.bookings')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerEmployees} className={navLinkClass}>
+                <ion-icon name="people" />
+                {t('adminLayout.nav.employees')}
+              </NavLink>
+              {isAdmin && (
+                <>
+                  <div className="my-2 border-t border-border" />
+                  <NavLink to={ROUTES.adminActors} className={navLinkClass}>
+                    <ion-icon name="person-circle" />
+                    {t('adminLayout.nav.actors')}
+                  </NavLink>
+                  <NavLink to={ROUTES.adminDirectors} className={navLinkClass}>
+                    <ion-icon name="videocam" />
+                    {t('adminLayout.nav.directors')}
+                  </NavLink>
+                  <NavLink to={ROUTES.adminTransactions} className={navLinkClass}>
+                    <ion-icon name="card" />
+                    {t('adminLayout.nav.transactions')}
+                  </NavLink>
+                  <NavLink to={ROUTES.adminReviews} className={navLinkClass}>
+                    <ion-icon name="star" />
+                    {t('adminLayout.nav.reviews')}
+                  </NavLink>
+                </>
+              )}
             </>
           )}
         </nav>

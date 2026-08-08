@@ -22,7 +22,7 @@ describe('GET /api/voucher (list)', () => {
       { id: 2, cinema_id: 2, code: 'NOTMINE', discount_type: 'fixed', discount_value: 1000 },
     ]);
     const res = mockRes();
-    await voucherController.list({ query: {}, account: { role: 2, accountId: 42 } }, res);
+    await voucherController.list({ query: {}, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 
@@ -30,7 +30,10 @@ describe('GET /api/voucher (list)', () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
     await Voucher.create({ id: 1, cinema_id: 1, code: 'MINE', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
-    await voucherController.list({ query: { cinemaId: '999' }, account: { role: 2, accountId: 42 } }, res);
+    await voucherController.list(
+      { query: { cinemaId: '999' }, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' },
+      res,
+    );
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 0 }));
   });
 
@@ -86,7 +89,11 @@ describe('POST /api/voucher (create)', () => {
   it('admin creates a system-wide voucher', async () => {
     const res = mockRes();
     await voucherController.create(
-      { body: { code: 'SYS', discount_type: 'percent', discount_value: 10 }, account: { role: 0, accountId: 1 } },
+      {
+        body: { code: 'SYS', discount_type: 'percent', discount_value: 10 },
+        account: { role: 0, accountId: 1 },
+        permissionScope: 'ALL',
+      },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(201);
@@ -117,7 +124,7 @@ describe('PUT /api/voucher/:id (update)', () => {
     await Voucher.create({ id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000, active: true });
     const res = mockRes();
     await voucherController.update(
-      { params: { id: 1 }, body: { active: false, code: 'HACKED' }, account: { role: 0 } },
+      { params: { id: 1 }, body: { active: false, code: 'HACKED' }, account: { role: 0 }, permissionScope: 'ALL' },
       res,
     );
     const updated = await Voucher.findOne({ id: 1 });
@@ -144,7 +151,7 @@ describe('DELETE /api/voucher/:id (remove)', () => {
   it('removes the voucher', async () => {
     await Voucher.create({ id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
-    await voucherController.remove({ params: { id: 1 }, account: { role: 0 } }, res);
+    await voucherController.remove({ params: { id: 1 }, account: { role: 0 }, permissionScope: 'ALL' }, res);
     expect(await Voucher.countDocuments()).toBe(0);
   });
 });

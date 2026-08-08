@@ -2,25 +2,10 @@ import apiClient from 'services/apiClient';
 import type {
   CurrentUser,
   LoginResponse,
-  SaveCinemaInfoPayload,
   SaveUserInfoPayload,
   UpdateProfilePayload,
   VerifyCodePayload,
 } from '../types/auth.types';
-
-export function buildCinemaInfoFormData(
-  values: SaveCinemaInfoPayload,
-  avatarFile?: File | null,
-  imageFiles?: File[],
-) {
-  const formData = new FormData();
-  Object.entries(values).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) formData.append(key, String(value));
-  });
-  if (avatarFile) formData.append('avatar', avatarFile);
-  (imageFiles || []).forEach((file) => formData.append('images', file));
-  return formData;
-}
 
 export const login = (email: string, password: string) =>
   apiClient.post<LoginResponse>('/Login', { email, password });
@@ -32,14 +17,12 @@ export const logout = () => apiClient.post('/logout');
 export const checkEmailExists = (email: string) =>
   apiClient.get<{ exists: boolean }>(`/check-email?email=${encodeURIComponent(email)}`);
 
-export const register = (email: string, password: string, c_password: string, role: number) =>
-  apiClient.post('/register', { email, password, c_password, role });
+export const register = (email: string, password: string, c_password: string) =>
+  apiClient.post('/register', { email, password, c_password });
 
 export const getAccountByEmail = (email: string) => apiClient.get(`/account/${email}`);
 
 export const saveUserInfo = (payload: SaveUserInfoPayload) => apiClient.post('/users', payload);
-
-export const saveCinemaInfo = (payload: FormData) => apiClient.post('/cinema/onboard', payload);
 
 export const verifyCode = (payload: VerifyCodePayload) => apiClient.post('/verify', payload);
 

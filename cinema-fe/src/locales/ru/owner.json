@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Кинотеатры",
-    "addButton": "Добавить кинотеатр +",
-    "addTitle": "Добавить кинотеатр",
-    "nameLabel": "Название кинотеатра",
-    "addressLabel": "Адрес",
-    "cityLabel": "Город",
-    "submit": "Добавить",
-    "createSuccess": "Запрос на создание кинотеатра отправлен и ожидает одобрения администратора.",
-    "createError": "Не удалось создать кинотеатр.",
+    "breadcrumb": "Мой филиал",
     "manageRooms": "Управление залами",
     "statusLabels": {
       "0": "Ожидает одобрения",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Название кинотеатра",
+      "name": "Название филиала",
       "address": "Адрес",
       "city": "Город",
       "status": "Статус",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "Выберите филиал"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "Комбо-наборы",

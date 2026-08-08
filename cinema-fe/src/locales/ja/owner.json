@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "映画館",
-    "addButton": "映画館を追加 +",
-    "addTitle": "映画館を追加",
-    "nameLabel": "映画館名",
-    "addressLabel": "住所",
-    "cityLabel": "都市",
-    "submit": "追加",
-    "createSuccess": "映画館の作成リクエストを送信しました。管理者の承認をお待ちください。",
-    "createError": "映画館を作成できませんでした。",
+    "breadcrumb": "自分の支店",
     "manageRooms": "上映室を管理",
     "statusLabels": {
       "0": "承認待ち",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "映画館名",
+      "name": "支店名",
       "address": "住所",
       "city": "都市",
       "status": "状態",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "劇場を選択"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "コンボセット",

@@ -30,12 +30,6 @@ describe('owner.api', () => {
     expect(getMock).toHaveBeenCalledWith('/cinema/mine', { params: { limit: 100 } });
   });
 
-  it('createCinema posts to /cinema', async () => {
-    const payload = { name: 'A', address: 'B', city: 'C' } as any;
-    await ownerApi.createCinema(payload);
-    expect(postMock).toHaveBeenCalledWith('/cinema', payload);
-  });
-
   it('updateCinema puts /cinema/:id', async () => {
     await ownerApi.updateCinema(1, { name: 'New' });
     expect(putMock).toHaveBeenCalledWith('/cinema/1', { name: 'New' });
@@ -128,5 +122,26 @@ describe('owner.api', () => {
   it('lookupInvoiceByCode gets /invoice/lookup/:code', async () => {
     await ownerApi.lookupInvoiceByCode('ABC');
     expect(getMock).toHaveBeenCalledWith('/invoice/lookup/ABC');
+  });
+
+  it('getMyEmployees gets /employee with cinemaId param', async () => {
+    await ownerApi.getMyEmployees(1, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/employee', { params: { cinemaId: 1, page: 1 } });
+  });
+
+  it('createEmployee posts to /employee', async () => {
+    const payload = { cinema_id: 1, email: 'a@b.com', password: 'pw', name: 'A', phone: '', position: '' } as any;
+    await ownerApi.createEmployee(payload);
+    expect(postMock).toHaveBeenCalledWith('/employee', payload);
+  });
+
+  it('updateEmployee puts /employee/:id', async () => {
+    await ownerApi.updateEmployee(1, { status: 0 });
+    expect(putMock).toHaveBeenCalledWith('/employee/1', { status: 0 });
+  });
+
+  it('deactivateEmployee deletes /employee/:id', async () => {
+    await ownerApi.deactivateEmployee(1);
+    expect(deleteMock).toHaveBeenCalledWith('/employee/1');
   });
 });

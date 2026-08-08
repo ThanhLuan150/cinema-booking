@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "Cinémas",
-    "title": "Réseau de cinémas",
-    "empty": "Aucun cinéma disponible pour le moment",
+    "breadcrumb": "Succursales",
+    "title": "Nos succursales",
+    "empty": "Aucune succursale disponible pour le moment",
     "addressUpdating": "Adresse en cours de mise à jour",
     "viewDetails": "Voir les détails"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "Plus de détails"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "Ajouter le cinéma aux favoris",
-    "removeFavorite": "Retirer le cinéma des favoris",
+    "addFavorite": "Ajouter la succursale aux favoris",
+    "removeFavorite": "Retirer la succursale des favoris",
     "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité."
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "Catégorie",
     "country": "Pays",
-    "cinema": "Cinéma",
+    "cinema": "Succursale",
     "date": "Date de séance",
     "search": "Rechercher",
     "searchPlaceholder": "Nom du film...",

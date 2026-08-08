@@ -201,4 +201,39 @@ describe('booking.repository', () => {
     expect(await bookingRepository.findCinemaById(1)).not.toBeNull();
     expect(await bookingRepository.findMovieById(1)).not.toBeNull();
   });
+
+  it('findCinemaIdByInvoiceId / findCinemaIdByTicketId walk the invoice/ticket chain to a cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1 });
+
+    expect(await bookingRepository.findCinemaIdByInvoiceId(1)).toBe(1);
+    expect(await bookingRepository.findCinemaIdByTicketId(1)).toBe(1);
+  });
+
+  it('findCinemaIdByInvoiceId returns null for an unknown invoice', async () => {
+    expect(await bookingRepository.findCinemaIdByInvoiceId(999)).toBeNull();
+  });
+
+  it('createCounterSale records a paid invoice with created_by set', async () => {
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+
+    await bookingRepository.createCounterSale({
+      ticketIds: [1],
+      comboIds: [],
+      voucherCode: null,
+      discountAmount: 0,
+      totalPrice: 100000,
+      accountId: 1,
+      createdBy: 42,
+    });
+
+    const invoice = await Invoice.findOne({ ticket_id: 1 });
+    expect(invoice.created_by).toBe(42);
+    expect(invoice.status).toBe(1);
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(0);
+  });
 });

@@ -17,15 +17,6 @@ function requireAuth(req, res, next) {
   }
 }
 
-function requireRole(...roles) {
-  return (req, res, next) => {
-    if (!req.account || !roles.includes(req.account.role)) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-    next();
-  };
-}
-
 function optionalAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -40,4 +31,4 @@ function optionalAuth(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireRole, optionalAuth };
+module.exports = { requireAuth, optionalAuth };

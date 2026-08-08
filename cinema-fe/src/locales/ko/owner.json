@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "영화관",
-    "addButton": "영화관 추가 +",
-    "addTitle": "영화관 추가",
-    "nameLabel": "영화관 이름",
-    "addressLabel": "주소",
-    "cityLabel": "도시",
-    "submit": "추가",
-    "createSuccess": "영화관 등록 요청이 전송되었습니다. 관리자 승인을 기다려 주세요.",
-    "createError": "영화관을 등록할 수 없습니다.",
+    "breadcrumb": "내 지점",
     "manageRooms": "상영관 관리",
     "statusLabels": {
       "0": "승인 대기",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "영화관 이름",
+      "name": "지점 이름",
       "address": "주소",
       "city": "도시",
       "status": "상태",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "지점 선택"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "콤보",

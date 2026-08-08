@@ -6,7 +6,7 @@
       "totalRevenue": "Gesamtumsatz",
       "totalUsers": "Benutzer",
       "totalOwners": "Kinobetreiber",
-      "totalCinemas": "Kinos",
+      "totalCinemas": "Filialen",
       "totalTicketsSold": "Verkaufte Tickets",
       "totalTransactions": "Transaktionen"
     },
@@ -24,23 +24,20 @@
         "description": "Beschreibung:",
         "trailer": "Trailer:",
         "producer": "Produzent:",
-        "director": "Regisseur:",
-        "producerAvatar": "Produzenten-Avatar (URL):",
-        "directorAvatar": "Regisseur-Avatar (URL):"
+        "producerAvatar": "Produzenten-Avatar (URL):"
       },
       "cast": {
         "label": "Besetzung:",
-        "name": "Name",
-        "role": "Rolle",
-        "avatarUrl": "Bild-URL",
-        "remove": "Entfernen",
-        "add": "+ Darsteller hinzufügen",
+        "role": "Character name",
         "isLead": "Hauptrolle"
       },
       "category": "Kategorie:",
       "submit": "Hinzufügen",
       "toastSuccess": "Erfolgreich hinzugefügt",
-      "toastError": "Hinzufügen fehlgeschlagen"
+      "toastError": "Hinzufügen fehlgeschlagen",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "Film bearbeiten",
@@ -54,22 +51,19 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Neuen Trailer hochladen:",
         "producer": "Produzent:",
-        "director": "Regisseur:",
-        "producerAvatar": "Produzenten-Avatar (URL):",
-        "directorAvatar": "Regisseur-Avatar (URL):"
+        "producerAvatar": "Produzenten-Avatar (URL):"
       },
       "cast": {
         "label": "Besetzung:",
-        "name": "Name",
-        "role": "Rolle",
-        "avatarUrl": "Bild-URL",
-        "remove": "Entfernen",
-        "add": "+ Darsteller hinzufügen",
+        "role": "Character name",
         "isLead": "Hauptrolle"
       },
       "category": "Kategorie:",
       "submit": "Aktualisieren",
-      "toastSuccess": "Film erfolgreich aktualisiert!"
+      "toastSuccess": "Film erfolgreich aktualisiert!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "Möchten Sie den Film mit der ID {{id}} löschen?",
@@ -100,12 +94,57 @@
       "countryRequired": "Land ist erforderlich",
       "trailerRequired": "Trailer ist erforderlich",
       "producerRequired": "Produzent ist erforderlich",
-      "directorRequired": "Regisseur ist erforderlich",
-      "castNameRequired": "Name des Darstellers ist erforderlich",
-      "castAvatarInvalid": "Bild-URL des Darstellers ist ungültig",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "Bitte mindestens eine Kategorie auswählen",
-      "producerAvatarInvalid": "Produzenten-Avatar-URL ist ungültig",
-      "directorAvatarInvalid": "Regisseur-Avatar-URL ist ungültig"
+      "producerAvatarInvalid": "Produzenten-Avatar-URL ist ungültig"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "Status",
       "Aktion"
     ],
-    "cinemaSuffix": "{{name}} (Kino)",
+    "cinemaSuffix": "{{name}} (Filiale)",
     "hiddenStatus": "Ausgeblendet",
     "visibleStatus": "Sichtbar",
     "hideButton": "Ausblenden",
@@ -194,12 +233,12 @@
     "refundSuccess": "Transaktion erstattet."
   },
   "cinemas": {
-    "breadcrumb": "Kinos",
+    "breadcrumb": "Filialen",
     "headers": [
       "ID",
-      "Foto des Betreibers",
-      "Kinoname",
-      "Betreiber (ID)",
+      "Foto des Filialleiters",
+      "Filialname",
+      "Filialleiter (ID)",
       "Adresse",
       "Status",
       "Aktion"
@@ -212,11 +251,29 @@
     "approveButton": "Genehmigen",
     "blockButton": "Sperren",
     "deleteButton": "Löschen",
-    "blockConfirm": "Dieses Kino sperren?",
-    "deleteConfirm": "Dieses Kino löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "approveSuccess": "Kino genehmigt.",
-    "blockSuccess": "Kino gesperrt.",
-    "deleteSuccess": "Kino gelöscht."
+    "blockConfirm": "Diese Filiale sperren?",
+    "deleteConfirm": "Diese Filiale löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "approveSuccess": "Filiale genehmigt.",
+    "blockSuccess": "Filiale gesperrt.",
+    "deleteSuccess": "Filiale gelöscht.",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "影院",
-    "title": "影院系统",
-    "empty": "暂无影院信息",
+    "breadcrumb": "分店",
+    "title": "我们的分店",
+    "empty": "暂无分店信息",
     "addressUpdating": "地址更新中",
     "viewDetails": "查看详情"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "查看详情"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "收藏该影院",
-    "removeFavorite": "取消收藏该影院",
+    "addFavorite": "收藏该分店",
+    "removeFavorite": "取消收藏该分店",
     "loginRequired": "您尚未登录，请登录或注册后使用此功能。"
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "类型",
     "country": "国家",
-    "cinema": "影院",
+    "cinema": "分店",
     "date": "放映日期",
     "search": "搜索",
     "searchPlaceholder": "电影名称...",

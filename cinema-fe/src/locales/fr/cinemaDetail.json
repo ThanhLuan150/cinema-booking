@@ -7,19 +7,19 @@
     "statusActive": "Actif",
     "statusPaused": "Temporairement fermé",
     "viewShowtimes": "Voir les séances",
-    "breadcrumbCinemas": "Cinémas"
+    "breadcrumbCinemas": "Succursales"
   },
   "moviesSection": {
-    "title": "À l'affiche dans ce cinéma",
-    "emptyState": "Ce cinéma n'a pas encore de séances",
+    "title": "À l'affiche dans cette succursale",
+    "emptyState": "Cette succursale n'a pas encore de séances",
     "moreDetails": "Plus de détails"
   },
   "reviews": {
-    "title": "Avis sur l'expérience en salle",
+    "title": "Avis sur l'expérience en succursale",
     "ratingSummary": "{{average}}/5 · {{count}} avis",
     "ratingLabel": "Note :",
     "starOption": "{{count}} étoiles",
-    "commentPlaceholder": "Partagez votre expérience dans ce cinéma (sièges, son, personnel, propreté...)...",
+    "commentPlaceholder": "Partagez votre expérience dans cette succursale (sièges, son, personnel, propreté...)...",
     "submit": "Envoyer l'avis",
     "loginRequired": "Vous n'êtes pas connecté. Veuillez vous connecter ou vous inscrire pour utiliser cette fonctionnalité.",
     "submitSuccess": "Avis envoyé.",

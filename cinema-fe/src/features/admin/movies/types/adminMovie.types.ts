@@ -1,8 +1,7 @@
-export interface CastMemberDraft {
-  name: string;
-  role: string;
-  avatar: string;
-  isLead: boolean;
+export interface MovieActorDraft {
+  actor_id: number;
+  character_name: string;
+  is_lead: boolean;
 }
 
 export interface MovieFormValues {
@@ -14,14 +13,12 @@ export interface MovieFormValues {
   trailer: string;
   producer: string;
   producerAvatar: string;
-  director: string;
-  directorAvatar: string;
-  cast: CastMemberDraft[];
 }
 
-export interface CreateMoviePayload extends Omit<MovieFormValues, 'cast'> {
-  cast: CastMemberDraft[];
+export interface CreateMoviePayload extends MovieFormValues {
   categoryIds: number[];
+  directorIds: number[];
+  actors: MovieActorDraft[];
   avatarFile?: File | null;
   trailerFile?: File | null;
 }
@@ -30,6 +27,8 @@ export interface UpdateMoviePayload {
   id: number | string;
   values: MovieFormValues;
   categoryIds: number[];
+  directorIds: number[];
+  actors: MovieActorDraft[];
   avatarFile?: File | null;
   trailerFile?: File | null;
 }

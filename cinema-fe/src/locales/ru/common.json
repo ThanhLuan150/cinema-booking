@@ -5,8 +5,8 @@
     "movies": "Фильмы",
     "playing": "В прокате",
     "upcoming": "Скоро",
-    "cinemas": "Кинотеатры",
-    "allCinemas": "Все кинотеатры"
+    "cinemas": "Филиалы",
+    "allCinemas": "Все филиалы"
   },
   "header": {
     "toggleMenu": "Открыть/закрыть меню",
@@ -26,7 +26,7 @@
     "quickLink": "Быстрые ссылки",
     "aboutUs": "О нас",
     "movies": "Фильмы",
-    "partner": "Партнёрам",
+    "partner": "Филиалы",
     "help": "Помощь",
     "important": "Важно",
     "support": "Поддержка",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "Введите email",
     "send": "Отправить",
     "followUs": "Мы в соцсетях",
-    "companyInfo": "Сеть кинотеатров CineNova"
+    "companyInfo": "Сеть филиалов CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -46,13 +46,18 @@
       "dashboard": "Панель управления",
       "films": "Фильмы",
       "schedule": "Расписание",
-      "cinemas": "Кинотеатры",
+      "cinemas": "Филиалы",
       "combos": "Комбо-наборы",
       "vouchers": "Промокоды",
       "bookings": "Бронирования",
       "transactions": "Транзакции",
       "reviews": "Отзывы",
-      "rooms": "Залы"
+      "rooms": "Залы",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

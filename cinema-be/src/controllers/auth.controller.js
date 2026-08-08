@@ -7,11 +7,6 @@ const { sendOtpEmail, sendPasswordResetEmail } = require('../utils/mailer');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, hashToken } = require('../utils/tokens');
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
-// The frontend and backend are separate origins (different ports/hosts in dev,
-// typically different subdomains in production), so the cookie must survive
-// cross-site XHR — that requires SameSite=None, which in turn requires Secure.
-// Chromium treats http://localhost and http://127.0.0.1 as secure contexts, so
-// this still works without TLS in local dev.
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: true,
@@ -23,8 +18,6 @@ function isOtpValid(account, otp) {
   return Boolean(account.otp && account.otp === otp && account.otpExpiresAt && account.otpExpiresAt.getTime() > Date.now());
 }
 
-// Signs a fresh access+refresh pair, persists the refresh token's hash for
-// rotation/revocation, and sets the httpOnly refresh cookie on the response.
 async function issueTokens(res, account) {
   const accessToken = signAccessToken(account);
   const refreshToken = signRefreshToken(account);
@@ -139,7 +132,7 @@ async function checkEmail(req, res) {
 
 // POST /api/register
 async function register(req, res) {
-  const { email, password, c_password, role } = req.body;
+  const { email, password, c_password } = req.body;
   if (!email || !password || !c_password) {
     return res.status(400).json({ message: 'email, password and c_password are required' });
   }
@@ -147,9 +140,10 @@ async function register(req, res) {
     return res.status(400).json({ message: 'Password confirmation does not match', code: 'PASSWORD_MISMATCH' });
   }
 
-  // Public registration may only self-assign "user" (1) or "theater staff" (2); admin (0) is provisioned separately.
-  const requestedRole = Number(role);
-  const normalizedRole = [1, 2].includes(requestedRole) ? requestedRole : 1;
+  // Public self-registration only ever creates a customer account (1). Branch Admin (2) and
+  // Employee (3) accounts are provisioned directly by Super Admin/Branch Admin; admin (0) is
+  // provisioned separately still.
+  const normalizedRole = 1;
 
   const normalizedEmail = email.toLowerCase();
   let account = await authRepository.findByEmailWithPassword(normalizedEmail);
@@ -162,12 +156,10 @@ async function register(req, res) {
   const otp = generateOtp();
   const otpExpiresAt = otpExpiryDate();
 
-  const approved = normalizedRole !== 2;
-
   if (account) {
     account.password = hashed;
     account.role = normalizedRole;
-    account.approved = approved;
+    account.approved = true;
     account.otp = otp;
     account.otpExpiresAt = otpExpiresAt;
     await authRepository.saveAccount(account);
@@ -178,7 +170,7 @@ async function register(req, res) {
       email: normalizedEmail,
       password: hashed,
       role: normalizedRole,
-      approved,
+      approved: true,
       verified: false,
       otp,
       otpExpiresAt,

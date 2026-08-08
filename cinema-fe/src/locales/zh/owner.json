@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "影院管理",
-    "addButton": "新增影院 +",
-    "addTitle": "新增影院",
-    "nameLabel": "影院名称",
-    "addressLabel": "地址",
-    "cityLabel": "城市",
-    "submit": "新增",
-    "createSuccess": "创建影院申请已提交，等待管理员审核。",
-    "createError": "无法创建影院。",
+    "breadcrumb": "我的分店",
     "manageRooms": "管理影厅",
     "statusLabels": {
       "0": "待审核",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "影院名称",
+      "name": "分店名称",
       "address": "地址",
       "city": "城市",
       "status": "状态",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "选择分店"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "套餐管理",

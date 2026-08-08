@@ -4,6 +4,10 @@ const authRoutes = require('./auth.routes');
 const movieRoutes = require('./movie.routes');
 const categoryRoutes = require('./category.routes');
 const movieCategoryRoutes = require('./movieCategory.routes');
+const actorRoutes = require('./actor.routes');
+const directorRoutes = require('./director.routes');
+const movieActorRoutes = require('./movieActor.routes');
+const movieDirectorRoutes = require('./movieDirector.routes');
 const roomRoutes = require('./room.routes');
 const scheduleRoutes = require('./schedule.routes');
 const ticketRoutes = require('./ticket.routes');
@@ -16,6 +20,7 @@ const comboRoutes = require('./combo.routes');
 const voucherRoutes = require('./voucher.routes');
 const reviewRoutes = require('./review.routes');
 const dashboardRoutes = require('./dashboard.routes');
+const employeeRoutes = require('./employee.routes');
 
 const router = express.Router();
 
@@ -26,6 +31,10 @@ router.use('/', authRoutes);
 router.use('/movie', movieRoutes);
 router.use('/cat', categoryRoutes);
 router.use('/movieCat', movieCategoryRoutes);
+router.use('/actor', actorRoutes);
+router.use('/director', directorRoutes);
+router.use('/movieActor', movieActorRoutes);
+router.use('/movieDirector', movieDirectorRoutes);
 router.use('/room', roomRoutes);
 router.use('/schedule', scheduleRoutes);
 router.use('/ticket', ticketRoutes);
@@ -34,6 +43,7 @@ router.use('/seat', seatRoutes);
 router.use('/combo', comboRoutes);
 router.use('/voucher', voucherRoutes);
 router.use('/review', reviewRoutes);
+router.use('/employee', employeeRoutes);
 router.use('/', dashboardRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice

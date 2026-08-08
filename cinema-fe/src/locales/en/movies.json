@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "Cinemas",
-    "title": "Cinema System",
-    "empty": "No cinemas available yet",
+    "breadcrumb": "Branches",
+    "title": "Our Branches",
+    "empty": "No branches available yet",
     "addressUpdating": "Address updating",
     "viewDetails": "View Details"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "More Details"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "Add cinema to favorites",
-    "removeFavorite": "Remove cinema from favorites",
+    "addFavorite": "Add branch to favorites",
+    "removeFavorite": "Remove branch from favorites",
     "loginRequired": "You are not logged in. Please log in or sign up to use this feature."
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "Category",
     "country": "Country",
-    "cinema": "Cinema",
+    "cinema": "Branch",
     "date": "Show Date",
     "search": "Search",
     "searchPlaceholder": "Movie name...",

@@ -5,8 +5,8 @@
     "movies": "ภาพยนตร์",
     "playing": "กำลังฉาย",
     "upcoming": "เร็วๆ นี้",
-    "cinemas": "โรงภาพยนตร์",
-    "allCinemas": "โรงภาพยนตร์ทั้งหมด"
+    "cinemas": "สาขา",
+    "allCinemas": "สาขาทั้งหมด"
   },
   "header": {
     "toggleMenu": "เปิด/ปิดเมนู",
@@ -26,7 +26,7 @@
     "quickLink": "ลิงก์ด่วน",
     "aboutUs": "เกี่ยวกับเรา",
     "movies": "ภาพยนตร์",
-    "partner": "พันธมิตร",
+    "partner": "สาขา",
     "help": "ช่วยเหลือ",
     "important": "สำคัญ",
     "support": "สนับสนุน",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "กรอกอีเมล",
     "send": "ส่ง",
     "followUs": "ติดตามเรา",
-    "companyInfo": "ระบบโรงภาพยนตร์ CineNova"
+    "companyInfo": "ระบบสาขา CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -46,13 +46,18 @@
       "dashboard": "แดชบอร์ด",
       "films": "ภาพยนตร์",
       "schedule": "ตารางฉาย",
-      "cinemas": "โรงภาพยนตร์",
+      "cinemas": "สาขา",
       "combos": "คอมโบ",
       "vouchers": "คูปองส่วนลด",
       "bookings": "การจอง",
       "transactions": "ธุรกรรม",
       "reviews": "รีวิว",
-      "rooms": "ห้องฉาย"
+      "rooms": "ห้องฉาย",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

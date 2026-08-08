@@ -162,7 +162,7 @@ const ProfilePage = () => {
             </div>
             {bookingsQuery.isLoading && <Spinner size="sm" className="mt-3" />}
             {!bookingsQuery.isLoading && bookedMovies.length === 0 && (
-              <EmptyState title={t('profile.noBookedMovies')} />
+              <EmptyState title={t('profile.noBookedMovies')} icon="fa-solid fa-ticket" />
             )}
             <div className="mt-3 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {bookedMovies.map((movie) => (
@@ -175,7 +175,7 @@ const ProfilePage = () => {
             <h2 className="text-xl font-semibold">{t('profile.likedMovies')}</h2>
             {likedMoviesQuery.isLoading && <Spinner size="sm" className="mt-3" />}
             {!likedMoviesQuery.isLoading && (likedMoviesQuery.data?.length ?? 0) === 0 && (
-              <EmptyState title={t('profile.noLikedMovies')} />
+              <EmptyState title={t('profile.noLikedMovies')} icon="fa-solid fa-heart" />
             )}
             <div className="mt-3 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {likedMoviesQuery.data?.map((movie) => (
@@ -188,7 +188,7 @@ const ProfilePage = () => {
             <h2 className="text-xl font-semibold">{t('profile.favoriteCinemas')}</h2>
             {favoriteCinemasQuery.isLoading && <Spinner size="sm" className="mt-3" />}
             {!favoriteCinemasQuery.isLoading && (favoriteCinemasQuery.data?.length ?? 0) === 0 && (
-              <EmptyState title={t('profile.noFavoriteCinemas')} />
+              <EmptyState title={t('profile.noFavoriteCinemas')} icon="fa-solid fa-building" />
             )}
             <div className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {favoriteCinemasQuery.data?.map((cinema) => (

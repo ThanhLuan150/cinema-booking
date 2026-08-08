@@ -97,11 +97,24 @@ describe('cinema.repository', () => {
 
   describe('favorites', () => {
     it('findFavoriteCinemasByAccountId returns cinemas for the account\'s favorites', async () => {
-      await Cinema.create([{ id: 1, owner_id: 1, name: 'Fav' }]);
+      await Cinema.create([{ id: 1, owner_id: 1, name: 'Fav', status: 1 }]);
       await FavoriteCinema.create({ id: 1, cinema_id: 1, account_id: 42 });
       const result = await cinemaRepository.findFavoriteCinemasByAccountId(42);
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('Fav');
+    });
+
+    it('findFavoriteCinemasByAccountId hides a favorite once its cinema is no longer approved', async () => {
+      await Cinema.create([
+        { id: 1, owner_id: 1, name: 'Pending', status: 0 },
+        { id: 2, owner_id: 1, name: 'Blocked', status: 2 },
+      ]);
+      await FavoriteCinema.create([
+        { id: 1, cinema_id: 1, account_id: 42 },
+        { id: 2, cinema_id: 2, account_id: 42 },
+      ]);
+      const result = await cinemaRepository.findFavoriteCinemasByAccountId(42);
+      expect(result).toHaveLength(0);
     });
 
     it('countFavorites counts favorites for a cinema', async () => {
@@ -121,9 +134,26 @@ describe('cinema.repository', () => {
     });
   });
 
-  it('findById finds a cinema by numeric id', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'A' });
+  it('findById finds a cinema by numeric id regardless of status', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 0 });
     expect((await cinemaRepository.findById('1')).name).toBe('A');
+  });
+
+  describe('findApprovedById', () => {
+    it('returns an approved cinema', async () => {
+      await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 1 });
+      expect((await cinemaRepository.findApprovedById('1')).name).toBe('A');
+    });
+
+    it('returns null for a pending cinema', async () => {
+      await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 0 });
+      expect(await cinemaRepository.findApprovedById('1')).toBeNull();
+    });
+
+    it('returns null for a blocked cinema', async () => {
+      await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 2 });
+      expect(await cinemaRepository.findApprovedById('1')).toBeNull();
+    });
   });
 
   it('findAccountByEmail is case-insensitive', async () => {
@@ -131,22 +161,17 @@ describe('cinema.repository', () => {
     expect(await cinemaRepository.findAccountByEmail('OWNER@example.com')).not.toBeNull();
   });
 
-  describe('upsertOnboard', () => {
-    it('creates a new pending cinema for the owner\'s first submission', async () => {
-      const account = { id: 42 };
-      const cinema = await cinemaRepository.upsertOnboard(account, { name: 'New Cinema', address: 'Addr', city: 'HN' });
-      expect(cinema.status).toBe(0);
-      expect(cinema.owner_id).toBe(42);
+  it('createOwnerAccount creates a pre-approved, pre-verified branch admin account', async () => {
+    const account = await cinemaRepository.createOwnerAccount({
+      id: 1,
+      email: 'owner@example.com',
+      password: 'hashed',
+      name: 'Owner',
+      phone: '0123456789',
     });
-
-    it('updates the existing cinema in place on a second submission', async () => {
-      const account = { id: 42 };
-      await cinemaRepository.upsertOnboard(account, { name: 'First', address: 'A', city: 'HN' });
-      await cinemaRepository.upsertOnboard(account, { name: 'Second', address: 'B', city: 'HCM' });
-      expect(await Cinema.countDocuments({ owner_id: 42 })).toBe(1);
-      const cinema = await Cinema.findOne({ owner_id: 42 });
-      expect(cinema.name).toBe('Second');
-    });
+    expect(account.role).toBe(2);
+    expect(account.approved).toBe(true);
+    expect(account.verified).toBe(true);
   });
 
   it('create/updateFields/approve/block/remove manage a cinema document', async () => {

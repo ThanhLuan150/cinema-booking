@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "सिनेमा",
-    "addButton": "सिनेमा जोड़ें +",
-    "addTitle": "सिनेमा जोड़ें",
-    "nameLabel": "सिनेमा का नाम",
-    "addressLabel": "पता",
-    "cityLabel": "शहर",
-    "submit": "जोड़ें",
-    "createSuccess": "सिनेमा बनाने का अनुरोध भेज दिया गया है, एडमिन की स्वीकृति लंबित है।",
-    "createError": "सिनेमा नहीं बनाया जा सका।",
+    "breadcrumb": "मेरी शाखा",
     "manageRooms": "स्क्रीन प्रबंधित करें",
     "statusLabels": {
       "0": "स्वीकृति लंबित",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "सिनेमा का नाम",
+      "name": "शाखा का नाम",
       "address": "पता",
       "city": "शहर",
       "status": "स्थिति",
@@ -107,6 +99,40 @@
       }
     },
     "selectCinemaPlaceholder": "शाखा चुनें"
+  },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
   },
   "combos": {
     "breadcrumb": "कॉम्बो",

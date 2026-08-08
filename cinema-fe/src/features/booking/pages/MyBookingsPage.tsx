@@ -41,7 +41,9 @@ function MyBookingsPage() {
           <Spinner size="lg" />
         </div>
       )}
-      {!isLoading && invoices.length === 0 && <EmptyState title={t('myBookings.empty')} />}
+      {!isLoading && invoices.length === 0 && (
+        <EmptyState title={t('myBookings.empty')} icon="fa-solid fa-ticket" />
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {invoices.map((inv) => {

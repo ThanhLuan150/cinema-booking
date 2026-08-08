@@ -6,7 +6,7 @@
       "totalRevenue": "Общая выручка",
       "totalUsers": "Пользователи",
       "totalOwners": "Владельцы кинотеатров",
-      "totalCinemas": "Кинотеатры",
+      "totalCinemas": "Филиалы",
       "totalTicketsSold": "Продано билетов",
       "totalTransactions": "Транзакции"
     },
@@ -24,23 +24,20 @@
         "description": "Описание:",
         "trailer": "Трейлер:",
         "producer": "Продюсер:",
-        "director": "Режиссёр:",
-        "producerAvatar": "Фото продюсера (URL):",
-        "directorAvatar": "Фото режиссёра (URL):"
+        "producerAvatar": "Фото продюсера (URL):"
       },
       "cast": {
         "label": "Актёрский состав:",
-        "name": "Имя",
-        "role": "Роль",
-        "avatarUrl": "URL изображения",
-        "remove": "Удалить",
-        "add": "+ Добавить актёра",
+        "role": "Character name",
         "isLead": "Главная роль"
       },
       "category": "Категория:",
       "submit": "Добавить",
       "toastSuccess": "Успешно добавлено",
-      "toastError": "Не удалось добавить"
+      "toastError": "Не удалось добавить",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "Редактировать фильм",
@@ -54,22 +51,19 @@
         "trailer": "Трейлер:",
         "uploadNewTrailer": "Загрузить новый трейлер:",
         "producer": "Продюсер:",
-        "director": "Режиссёр:",
-        "producerAvatar": "Фото продюсера (URL):",
-        "directorAvatar": "Фото режиссёра (URL):"
+        "producerAvatar": "Фото продюсера (URL):"
       },
       "cast": {
         "label": "Актёрский состав:",
-        "name": "Имя",
-        "role": "Роль",
-        "avatarUrl": "URL изображения",
-        "remove": "Удалить",
-        "add": "+ Добавить актёра",
+        "role": "Character name",
         "isLead": "Главная роль"
       },
       "category": "Категория:",
       "submit": "Обновить",
-      "toastSuccess": "Фильм успешно обновлён!"
+      "toastSuccess": "Фильм успешно обновлён!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "Удалить фильм с id {{id}}?",
@@ -100,12 +94,57 @@
       "countryRequired": "Страна обязательна",
       "trailerRequired": "Трейлер обязателен",
       "producerRequired": "Продюсер обязателен",
-      "directorRequired": "Режиссёр обязателен",
-      "castNameRequired": "Имя актёра обязательно",
-      "castAvatarInvalid": "Некорректная ссылка на фото актёра",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "Выберите хотя бы одну категорию",
-      "producerAvatarInvalid": "Недействительный URL фото продюсера",
-      "directorAvatarInvalid": "Недействительный URL фото режиссёра"
+      "producerAvatarInvalid": "Недействительный URL фото продюсера"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "Статус",
       "Действие"
     ],
-    "cinemaSuffix": "{{name}} (кинотеатр)",
+    "cinemaSuffix": "{{name}} (филиал)",
     "hiddenStatus": "Скрыт",
     "visibleStatus": "Виден",
     "hideButton": "Скрыть",
@@ -194,12 +233,12 @@
     "refundSuccess": "Средства по транзакции возвращены."
   },
   "cinemas": {
-    "breadcrumb": "Кинотеатры",
+    "breadcrumb": "Филиалы",
     "headers": [
       "ID",
-      "Фото владельца",
-      "Название кинотеатра",
-      "Владелец (ID)",
+      "Фото управляющего",
+      "Название филиала",
+      "Управляющий (ID)",
       "Адрес",
       "Статус",
       "Действие"
@@ -212,11 +251,29 @@
     "approveButton": "Одобрить",
     "blockButton": "Заблокировать",
     "deleteButton": "Удалить",
-    "blockConfirm": "Заблокировать этот кинотеатр?",
-    "deleteConfirm": "Удалить этот кинотеатр? Это действие нельзя отменить.",
-    "approveSuccess": "Кинотеатр одобрен.",
-    "blockSuccess": "Кинотеатр заблокирован.",
-    "deleteSuccess": "Кинотеатр удалён."
+    "blockConfirm": "Заблокировать этот филиал?",
+    "deleteConfirm": "Удалить этот филиал? Это действие нельзя отменить.",
+    "approveSuccess": "Филиал одобрен.",
+    "blockSuccess": "Филиал заблокирован.",
+    "deleteSuccess": "Филиал удалён.",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

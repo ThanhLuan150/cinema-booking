@@ -6,7 +6,7 @@
       "totalRevenue": "Tổng doanh thu",
       "totalUsers": "Người dùng",
       "totalOwners": "Chủ rạp",
-      "totalCinemas": "Rạp",
+      "totalCinemas": "Chi nhánh",
       "totalTicketsSold": "Vé đã bán",
       "totalTransactions": "Giao dịch"
     },
@@ -24,18 +24,15 @@
         "description": "Mô tả:",
         "trailer": "Trailer:",
         "producer": "Nhà sản xuất:",
-        "producerAvatar": "Ảnh nhà sản xuất (URL):",
-        "director": "Đạo diễn:",
-        "directorAvatar": "Ảnh đạo diễn (URL):"
+        "producerAvatar": "Ảnh nhà sản xuất (URL):"
+      },
+      "directors": {
+        "label": "Đạo diễn:"
       },
       "cast": {
         "label": "Diễn viên:",
-        "name": "Tên",
         "role": "Vai diễn",
-        "avatarUrl": "URL ảnh",
-        "isLead": "Vai chính",
-        "remove": "Xóa",
-        "add": "+ Thêm diễn viên"
+        "isLead": "Vai chính"
       },
       "category": "Danh mục:",
       "submit": "Thêm",
@@ -54,18 +51,15 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Tải trailer mới:",
         "producer": "Nhà sản xuất:",
-        "producerAvatar": "Ảnh nhà sản xuất (URL):",
-        "director": "Đạo diễn:",
-        "directorAvatar": "Ảnh đạo diễn (URL):"
+        "producerAvatar": "Ảnh nhà sản xuất (URL):"
+      },
+      "directors": {
+        "label": "Đạo diễn:"
       },
       "cast": {
         "label": "Diễn viên:",
-        "name": "Tên",
         "role": "Vai diễn",
-        "avatarUrl": "URL ảnh",
-        "isLead": "Vai chính",
-        "remove": "Xóa",
-        "add": "+ Thêm diễn viên"
+        "isLead": "Vai chính"
       },
       "category": "Danh mục:",
       "submit": "Cập nhật",
@@ -101,11 +95,56 @@
       "trailerRequired": "Vui lòng thêm trailer",
       "producerRequired": "Vui lòng nhập nhà sản xuất",
       "producerAvatarInvalid": "URL ảnh nhà sản xuất không hợp lệ",
-      "directorRequired": "Vui lòng nhập đạo diễn",
-      "directorAvatarInvalid": "URL ảnh đạo diễn không hợp lệ",
-      "castNameRequired": "Vui lòng nhập tên diễn viên",
-      "castAvatarInvalid": "URL ảnh diễn viên không hợp lệ",
+      "directorRequired": "Vui lòng chọn ít nhất một đạo diễn",
       "categoryRequired": "Vui lòng chọn ít nhất một danh mục"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Diễn viên",
+    "addButton": "Thêm diễn viên +",
+    "addTitle": "Thêm diễn viên",
+    "fullNameLabel": "Họ tên",
+    "avatarUrlLabel": "Ảnh đại diện (URL)",
+    "nationalityLabel": "Quốc tịch",
+    "dobLabel": "Ngày sinh",
+    "bioLabel": "Tiểu sử",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm diễn viên.",
+    "delete": "Xóa",
+    "deleteConfirm": "Xóa diễn viên này?",
+    "deleteSuccess": "Đã xóa diễn viên.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Họ tên",
+      "nationality": "Quốc tịch",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "fullNameRequired": "Vui lòng nhập họ tên"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Đạo diễn",
+    "addButton": "Thêm đạo diễn +",
+    "addTitle": "Thêm đạo diễn",
+    "fullNameLabel": "Họ tên",
+    "avatarUrlLabel": "Ảnh đại diện (URL)",
+    "nationalityLabel": "Quốc tịch",
+    "dobLabel": "Ngày sinh",
+    "bioLabel": "Tiểu sử",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm đạo diễn.",
+    "delete": "Xóa",
+    "deleteConfirm": "Xóa đạo diễn này?",
+    "deleteSuccess": "Đã xóa đạo diễn.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Họ tên",
+      "nationality": "Quốc tịch",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "fullNameRequired": "Vui lòng nhập họ tên"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "Trạng thái",
       "Hành động"
     ],
-    "cinemaSuffix": "{{name}} (rạp)",
+    "cinemaSuffix": "{{name}} (chi nhánh)",
     "hiddenStatus": "Đã ẩn",
     "visibleStatus": "Hiển thị",
     "hideButton": "Ẩn",
@@ -194,12 +233,12 @@
     "refundSuccess": "Đã hoàn tiền cho giao dịch."
   },
   "cinemas": {
-    "breadcrumb": "Rạp chiếu",
+    "breadcrumb": "Chi nhánh",
     "headers": [
       "ID",
-      "Ảnh chủ rạp",
-      "Tên rạp",
-      "Chủ sở hữu (ID)",
+      "Ảnh Branch Admin",
+      "Tên chi nhánh",
+      "Branch Admin (ID)",
       "Địa chỉ",
       "Trạng thái",
       "Hành động"
@@ -212,11 +251,29 @@
     "approveButton": "Duyệt",
     "blockButton": "Khóa",
     "deleteButton": "Xóa",
-    "blockConfirm": "Khóa rạp này?",
-    "deleteConfirm": "Xóa rạp này? Hành động không thể hoàn tác.",
-    "approveSuccess": "Đã duyệt rạp.",
-    "blockSuccess": "Đã khóa rạp.",
-    "deleteSuccess": "Đã xóa rạp."
+    "blockConfirm": "Khóa chi nhánh này?",
+    "deleteConfirm": "Xóa chi nhánh này? Hành động không thể hoàn tác.",
+    "approveSuccess": "Đã duyệt chi nhánh.",
+    "blockSuccess": "Đã khóa chi nhánh.",
+    "deleteSuccess": "Đã xóa chi nhánh.",
+    "addBranchAdmin": {
+      "addButton": "Thêm chi nhánh & Branch Admin",
+      "title": "Thêm chi nhánh & Branch Admin",
+      "emailLabel": "Email Branch Admin",
+      "passwordLabel": "Mật khẩu",
+      "nameLabel": "Họ tên",
+      "phoneLabel": "Số điện thoại",
+      "cinemaNameLabel": "Tên chi nhánh",
+      "addressLabel": "Địa chỉ",
+      "cityLabel": "Thành phố",
+      "submit": "Tạo",
+      "success": "Đã tạo chi nhánh và Branch Admin.",
+      "validation": {
+        "emailRequired": "Vui lòng nhập email.",
+        "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự.",
+        "cinemaNameRequired": "Vui lòng nhập tên chi nhánh."
+      }
+    }
   },
   "users": {
     "block": {

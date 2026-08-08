@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
-const { requireAuth, requireRole } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
+const { requirePermission } = require('../middleware/permission');
 const categoryController = require('../controllers/category.controller');
 
 const router = express.Router();
@@ -11,7 +12,7 @@ router.get('/', asyncHandler(categoryController.list));
 // GET /api/cat/:id
 router.get('/:id', asyncHandler(categoryController.getById));
 
-// POST /api/cat (admin or theater staff)
-router.post('/', requireAuth, requireRole(0, 2), asyncHandler(categoryController.create));
+// POST /api/cat (category.create permission)
+router.post('/', requireAuth, requirePermission('category.create'), asyncHandler(categoryController.create));
 
 module.exports = router;

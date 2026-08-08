@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "Schnellbuchung",
-    "cinema": "Kino wählen",
+    "cinema": "Filiale wählen",
     "movie": "Film wählen",
     "date": "Datum wählen",
     "time": "Vorstellung wählen",
@@ -26,7 +26,7 @@
     "viewMore": "Mehr anzeigen"
   },
   "topCinemasSlider": {
-    "title": "Top-Kinos",
+    "title": "Top-Filialen",
     "addressUpdating": "Adresse wird aktualisiert",
     "newRating": "Neu",
     "ticketsBooked": "gebuchte Tickets"

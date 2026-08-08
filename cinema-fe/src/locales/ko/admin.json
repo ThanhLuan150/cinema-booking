@@ -6,7 +6,7 @@
       "totalRevenue": "총 매출",
       "totalUsers": "회원 수",
       "totalOwners": "극장주",
-      "totalCinemas": "영화관 수",
+      "totalCinemas": "지점 수",
       "totalTicketsSold": "판매된 티켓 수",
       "totalTransactions": "거래 건수"
     },
@@ -24,23 +24,20 @@
         "description": "설명:",
         "trailer": "예고편:",
         "producer": "제작자:",
-        "director": "감독:",
-        "producerAvatar": "제작자 이미지 URL:",
-        "directorAvatar": "감독 이미지 URL:"
+        "producerAvatar": "제작자 이미지 URL:"
       },
       "cast": {
         "label": "출연진:",
-        "name": "이름",
-        "role": "역할",
-        "avatarUrl": "이미지 URL",
-        "remove": "삭제",
-        "add": "+ 출연진 추가",
+        "role": "Character name",
         "isLead": "주연"
       },
       "category": "장르:",
       "submit": "추가",
       "toastSuccess": "추가되었습니다",
-      "toastError": "추가에 실패했습니다"
+      "toastError": "추가에 실패했습니다",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "영화 수정",
@@ -54,22 +51,19 @@
         "trailer": "예고편:",
         "uploadNewTrailer": "새 예고편 업로드:",
         "producer": "제작자:",
-        "director": "감독:",
-        "producerAvatar": "제작자 이미지 URL:",
-        "directorAvatar": "감독 이미지 URL:"
+        "producerAvatar": "제작자 이미지 URL:"
       },
       "cast": {
         "label": "출연진:",
-        "name": "이름",
-        "role": "역할",
-        "avatarUrl": "이미지 URL",
-        "remove": "삭제",
-        "add": "+ 출연진 추가",
+        "role": "Character name",
         "isLead": "주연"
       },
       "category": "장르:",
       "submit": "수정",
-      "toastSuccess": "영화가 수정되었습니다!"
+      "toastSuccess": "영화가 수정되었습니다!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "ID가 {{id}}인 영화를 삭제하시겠습니까?",
@@ -100,12 +94,57 @@
       "countryRequired": "국가를 입력해 주세요",
       "trailerRequired": "예고편을 등록해 주세요",
       "producerRequired": "제작자를 입력해 주세요",
-      "directorRequired": "감독을 입력해 주세요",
-      "castNameRequired": "출연진 이름을 입력해 주세요",
-      "castAvatarInvalid": "출연진 이미지 URL이 올바르지 않습니다",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "장르를 하나 이상 선택해 주세요",
-      "producerAvatarInvalid": "제작자 이미지 URL이 유효하지 않습니다",
-      "directorAvatarInvalid": "감독 이미지 URL이 유효하지 않습니다"
+      "producerAvatarInvalid": "제작자 이미지 URL이 유효하지 않습니다"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -163,7 +202,7 @@
       "상태",
       "작업"
     ],
-    "cinemaSuffix": "{{name}} (영화관)",
+    "cinemaSuffix": "{{name}} (지점)",
     "hiddenStatus": "숨김",
     "visibleStatus": "공개",
     "hideButton": "숨기기",
@@ -194,12 +233,12 @@
     "refundSuccess": "거래가 환불되었습니다."
   },
   "cinemas": {
-    "breadcrumb": "영화관",
+    "breadcrumb": "지점",
     "headers": [
       "ID",
-      "소유자 사진",
-      "영화관 이름",
-      "소유자 (ID)",
+      "지점장 사진",
+      "지점 이름",
+      "지점장 (ID)",
       "주소",
       "상태",
       "작업"
@@ -212,11 +251,29 @@
     "approveButton": "승인",
     "blockButton": "차단",
     "deleteButton": "삭제",
-    "blockConfirm": "이 영화관을 차단하시겠습니까?",
-    "deleteConfirm": "이 영화관을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-    "approveSuccess": "영화관이 승인되었습니다.",
-    "blockSuccess": "영화관이 차단되었습니다.",
-    "deleteSuccess": "영화관이 삭제되었습니다."
+    "blockConfirm": "이 지점을 차단하시겠습니까?",
+    "deleteConfirm": "이 지점을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "approveSuccess": "지점이 승인되었습니다.",
+    "blockSuccess": "지점이 차단되었습니다.",
+    "deleteSuccess": "지점이 삭제되었습니다.",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Branch name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a branch name."
+      }
+    }
   },
   "users": {
     "block": {

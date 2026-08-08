@@ -13,4 +13,12 @@ describe('EmptyState', () => {
     expect(screen.getByText('Try again later')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
+
+  it('renders a default icon and accepts a custom one', () => {
+    const { container, rerender } = render(<EmptyState title="No results" />);
+    expect(container.querySelector('.fa-inbox')).toBeInTheDocument();
+
+    rerender(<EmptyState title="No results" icon="fa-solid fa-clapperboard" />);
+    expect(container.querySelector('.fa-clapperboard')).toBeInTheDocument();
+  });
 });

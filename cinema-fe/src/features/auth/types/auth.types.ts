@@ -27,19 +27,10 @@ export interface SaveUserInfoPayload {
   email: string;
 }
 
-export interface SaveCinemaInfoPayload {
-  email: string;
-  name: string;
-  phone: string;
-  address: string;
-  city: string;
-}
-
 export interface RegisterVariables {
   email: string;
   password: string;
   c_password: string;
-  role: string;
 }
 
 export interface VerifyCodePayload {
@@ -54,6 +45,7 @@ export interface CurrentUser {
   phone: string;
   avatar?: string;
   role: number;
+  cinema_id?: number; // present for employee (role 3) accounts — the cinema they're staffed at
 }
 
 export interface UpdateProfilePayload {
