@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "ภาพยนตร์ใหม่: {{name}}",
-    "cinemaPending": "มีโรงภาพยนตร์ลงทะเบียนใหม่ รอการอนุมัติ: {{name}}",
-    "cinemaApproved": "โรงภาพยนตร์ \"{{name}}\" ได้รับการอนุมัติแล้ว",
-    "cinemaBlocked": "โรงภาพยนตร์ \"{{name}}\" ถูกระงับแล้ว",
+    "cinemaPending": "มีสาขาลงทะเบียนใหม่ รอการอนุมัติ: {{name}}",
+    "cinemaApproved": "สาขา \"{{name}}\" ได้รับการอนุมัติแล้ว",
+    "cinemaBlocked": "สาขา \"{{name}}\" ถูกระงับแล้ว",
     "newBooking": "มีการจองใหม่: +{{amount}}đ"
   },
   "toastContainer": {

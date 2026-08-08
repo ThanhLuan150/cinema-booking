@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "त्वरित बुकिंग",
-    "cinema": "सिनेमा चुनें",
+    "cinema": "शाखा चुनें",
     "movie": "फ़िल्म चुनें",
     "date": "तारीख़ चुनें",
     "time": "शो चुनें",
@@ -26,7 +26,7 @@
     "viewMore": "और देखें"
   },
   "topCinemasSlider": {
-    "title": "टॉप सिनेमा",
+    "title": "टॉप शाखाएं",
     "addressUpdating": "पता अपडेट हो रहा है",
     "newRating": "नया",
     "ticketsBooked": "टिकट बुक हुईं"

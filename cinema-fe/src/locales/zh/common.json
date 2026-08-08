@@ -5,8 +5,8 @@
     "movies": "电影",
     "playing": "正在热映",
     "upcoming": "即将上映",
-    "cinemas": "影院",
-    "allCinemas": "所有影院"
+    "cinemas": "分店",
+    "allCinemas": "所有分店"
   },
   "header": {
     "toggleMenu": "切换菜单",
@@ -26,7 +26,7 @@
     "quickLink": "快捷链接",
     "aboutUs": "关于我们",
     "movies": "电影",
-    "partner": "合作伙伴",
+    "partner": "分店",
     "help": "帮助",
     "important": "重要信息",
     "support": "客服支持",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "请输入邮箱",
     "send": "发送",
     "followUs": "关注我们",
-    "companyInfo": "CineNova 影院系统"
+    "companyInfo": "CineNova 分店系统"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "控制台",
       "films": "电影管理",
       "schedule": "排片管理",
-      "cinemas": "影院管理",
+      "cinemas": "分店管理",
       "combos": "套餐管理",
       "vouchers": "优惠券管理",
       "bookings": "订单管理",

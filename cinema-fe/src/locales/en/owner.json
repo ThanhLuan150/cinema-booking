@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Cinemas",
-    "addButton": "Add cinema +",
-    "addTitle": "Add cinema",
-    "nameLabel": "Cinema name",
-    "addressLabel": "Address",
-    "cityLabel": "City",
-    "submit": "Add",
-    "createSuccess": "Cinema creation request sent, pending Admin approval.",
-    "createError": "Unable to create cinema.",
+    "breadcrumb": "My Branch",
     "manageRooms": "Manage rooms",
     "statusLabels": {
       "0": "Pending approval",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Cinema name",
+      "name": "Branch name",
       "address": "Address",
       "city": "City",
       "status": "Status",

@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "จองตั๋วด่วน",
-    "cinema": "เลือกโรงภาพยนตร์",
+    "cinema": "เลือกสาขา",
     "movie": "เลือกภาพยนตร์",
     "date": "เลือกวันที่",
     "time": "เลือกรอบฉาย",
@@ -26,7 +26,7 @@
     "viewMore": "ดูเพิ่มเติม"
   },
   "topCinemasSlider": {
-    "title": "โรงภาพยนตร์ยอดนิยม",
+    "title": "สาขายอดนิยม",
     "addressUpdating": "กำลังอัปเดตที่อยู่",
     "newRating": "ใหม่",
     "ticketsBooked": "ตั๋วที่จองแล้ว"

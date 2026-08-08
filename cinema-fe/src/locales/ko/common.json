@@ -5,8 +5,8 @@
     "movies": "영화",
     "playing": "상영 중",
     "upcoming": "상영 예정",
-    "cinemas": "영화관",
-    "allCinemas": "전체 극장"
+    "cinemas": "지점",
+    "allCinemas": "전체 지점"
   },
   "header": {
     "toggleMenu": "메뉴 열기/닫기",
@@ -26,7 +26,7 @@
     "quickLink": "빠른 링크",
     "aboutUs": "회사 소개",
     "movies": "영화",
-    "partner": "파트너",
+    "partner": "지점",
     "help": "도움말",
     "important": "중요 안내",
     "support": "고객 지원",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "이메일 입력",
     "send": "전송",
     "followUs": "팔로우하기",
-    "companyInfo": "CineNova 영화관 시스템"
+    "companyInfo": "CineNova 지점 시스템"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "대시보드",
       "films": "영화",
       "schedule": "상영 일정",
-      "cinemas": "영화관",
+      "cinemas": "지점",
       "combos": "콤보",
       "vouchers": "할인 쿠폰",
       "bookings": "예매 관리",

@@ -8,7 +8,7 @@ function requireCinemaOwnership(resolveCinemaId) {
         return res.status(404).json({ message: 'Cinema not found' });
       }
 
-      if (req.account.role === 0) {
+      if (req.permissionScope === 'ALL') {
         req.cinemaId = cinemaId;
         return next();
       }

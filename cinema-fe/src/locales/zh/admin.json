@@ -6,7 +6,7 @@
       "totalRevenue": "总收入",
       "totalUsers": "用户数",
       "totalOwners": "影院业主",
-      "totalCinemas": "影院数",
+      "totalCinemas": "分店数",
       "totalTicketsSold": "已售票数",
       "totalTransactions": "交易数"
     },
@@ -202,7 +202,7 @@
       "状态",
       "操作"
     ],
-    "cinemaSuffix": "{{name}}（影院）",
+    "cinemaSuffix": "{{name}}（分店）",
     "hiddenStatus": "已隐藏",
     "visibleStatus": "显示中",
     "hideButton": "隐藏",
@@ -233,12 +233,12 @@
     "refundSuccess": "交易已退款。"
   },
   "cinemas": {
-    "breadcrumb": "影院管理",
+    "breadcrumb": "分店管理",
     "headers": [
       "ID",
-      "业主照片",
-      "影院名称",
-      "业主（ID）",
+      "店长照片",
+      "分店名称",
+      "店长（ID）",
       "地址",
       "状态",
       "操作"
@@ -251,11 +251,11 @@
     "approveButton": "通过",
     "blockButton": "封禁",
     "deleteButton": "删除",
-    "blockConfirm": "确定要封禁该影院吗？",
-    "deleteConfirm": "确定要删除该影院吗？此操作不可撤销。",
-    "approveSuccess": "影院已通过审核。",
-    "blockSuccess": "影院已封禁。",
-    "deleteSuccess": "影院已删除。",
+    "blockConfirm": "确定要封禁该分店吗？",
+    "deleteConfirm": "确定要删除该分店吗？此操作不可撤销。",
+    "approveSuccess": "分店已通过审核。",
+    "blockSuccess": "分店已封禁。",
+    "deleteSuccess": "分店已删除。",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

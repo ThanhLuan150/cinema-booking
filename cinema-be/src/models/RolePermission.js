@@ -6,6 +6,7 @@ const rolePermissionSchema = new mongoose.Schema(
     id: { type: Number, required: true, unique: true, index: true },
     role_id: { type: Number, required: true, index: true },
     permission_id: { type: Number, required: true, index: true },
+    scope: { type: String, enum: ['ALL', 'BRANCH', 'OWN'], default: 'ALL' },
   },
   { timestamps: true },
 );

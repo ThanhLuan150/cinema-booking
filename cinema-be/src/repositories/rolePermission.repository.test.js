@@ -35,4 +35,19 @@ describe('rolePermission.repository', () => {
     const codes = await rolePermissionRepository.findPermissionCodesForRole(5);
     expect(codes.sort()).toEqual(['employee.create', 'employee.read']);
   });
+
+  it('findScopeForRolePermission returns the granted scope', async () => {
+    await Permission.create({ id: 1, code: 'booking.read', module: 'booking' });
+    await RolePermission.create({ id: 1, role_id: 5, permission_id: 1, scope: 'BRANCH' });
+    expect(await rolePermissionRepository.findScopeForRolePermission(5, 'booking.read')).toBe('BRANCH');
+  });
+
+  it('findScopeForRolePermission returns null when the role lacks the permission', async () => {
+    await Permission.create({ id: 1, code: 'booking.read', module: 'booking' });
+    expect(await rolePermissionRepository.findScopeForRolePermission(5, 'booking.read')).toBeNull();
+  });
+
+  it('findScopeForRolePermission returns null for an unknown permission code', async () => {
+    expect(await rolePermissionRepository.findScopeForRolePermission(5, 'unknown.code')).toBeNull();
+  });
 });

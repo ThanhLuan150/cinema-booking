@@ -112,7 +112,7 @@ async function getTopRanked() {
 async function findFavoriteCinemasByAccountId(accountId) {
   const favorites = await FavoriteCinema.find({ account_id: accountId }).sort({ id: -1 });
   const cinemaIds = favorites.map((f) => f.cinema_id);
-  const cinemas = await Cinema.find({ id: { $in: cinemaIds } });
+  const cinemas = await Cinema.find({ id: { $in: cinemaIds }, status: 1 });
   const cinemaById = new Map(cinemas.map((c) => [c.id, c]));
   return favorites.map((f) => cinemaById.get(f.cinema_id)).filter(Boolean);
 }
@@ -135,6 +135,10 @@ async function deleteFavorite({ cinemaId, accountId }) {
 
 async function findById(id) {
   return Cinema.findOne({ id: Number(id) });
+}
+
+async function findApprovedById(id) {
+  return Cinema.findOne({ id: Number(id), status: 1 });
 }
 
 async function findAccountByEmail(email) {
@@ -192,6 +196,7 @@ module.exports = {
   createFavorite,
   deleteFavorite,
   findById,
+  findApprovedById,
   findAccountByEmail,
   createOwnerAccount,
   create,

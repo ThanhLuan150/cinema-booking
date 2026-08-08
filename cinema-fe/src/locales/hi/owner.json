@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "सिनेमा",
-    "addButton": "सिनेमा जोड़ें +",
-    "addTitle": "सिनेमा जोड़ें",
-    "nameLabel": "सिनेमा का नाम",
-    "addressLabel": "पता",
-    "cityLabel": "शहर",
-    "submit": "जोड़ें",
-    "createSuccess": "सिनेमा बनाने का अनुरोध भेज दिया गया है, एडमिन की स्वीकृति लंबित है।",
-    "createError": "सिनेमा नहीं बनाया जा सका।",
+    "breadcrumb": "मेरी शाखा",
     "manageRooms": "स्क्रीन प्रबंधित करें",
     "statusLabels": {
       "0": "स्वीकृति लंबित",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "सिनेमा का नाम",
+      "name": "शाखा का नाम",
       "address": "पता",
       "city": "शहर",
       "status": "स्थिति",

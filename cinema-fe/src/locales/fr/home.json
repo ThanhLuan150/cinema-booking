@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "Réservation rapide",
-    "cinema": "Choisir un cinéma",
+    "cinema": "Choisir une succursale",
     "movie": "Choisir un film",
     "date": "Choisir une date",
     "time": "Choisir une séance",
@@ -26,7 +26,7 @@
     "viewMore": "Voir plus"
   },
   "topCinemasSlider": {
-    "title": "Meilleurs cinémas",
+    "title": "Meilleures succursales",
     "addressUpdating": "Adresse en cours de mise à jour",
     "newRating": "Nouveau",
     "ticketsBooked": "billets réservés"

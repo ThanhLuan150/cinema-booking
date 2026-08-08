@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "影院管理",
-    "addButton": "新增影院 +",
-    "addTitle": "新增影院",
-    "nameLabel": "影院名称",
-    "addressLabel": "地址",
-    "cityLabel": "城市",
-    "submit": "新增",
-    "createSuccess": "创建影院申请已提交，等待管理员审核。",
-    "createError": "无法创建影院。",
+    "breadcrumb": "我的分店",
     "manageRooms": "管理影厅",
     "statusLabels": {
       "0": "待审核",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "影院名称",
+      "name": "分店名称",
       "address": "地址",
       "city": "城市",
       "status": "状态",

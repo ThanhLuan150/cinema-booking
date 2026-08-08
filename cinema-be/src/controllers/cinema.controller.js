@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const cinemaRepository = require('../repositories/cinema.repository');
 const nextId = require('../utils/nextId');
-const { emitToAdmin, emitToOwner } = require('../utils/socket');
+const { emitToOwner } = require('../utils/socket');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // GET /api/cinema?page=&limit= -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
@@ -74,9 +74,10 @@ async function unfavorite(req, res) {
   res.json({ message: 'Unfavorited' });
 }
 
-// GET /api/cinema/:id -> public detail
+// GET /api/cinema/:id -> public detail (approved branches only — a pending or blocked
+// branch is never publicly visible, only reachable by its own admin via GET /cinema/mine)
 async function getById(req, res) {
-  const cinema = await cinemaRepository.findById(req.params.id);
+  const cinema = await cinemaRepository.findApprovedById(req.params.id);
   if (!cinema) return res.status(404).json({ message: 'Cinema not found' });
   res.json(cinema);
 }
@@ -119,24 +120,20 @@ async function createBranchAdmin(req, res) {
   res.status(201).json({ ...cinema.toJSON(), owner_email: account.email, owner_name: account.name });
 }
 
-// POST /api/cinema (admin or theater staff)
 async function create(req, res) {
-  const { name, address, city, images } = req.body;
+  const { name, address, city, images, owner_id } = req.body;
   if (!name) return res.status(400).json({ message: 'name is required' });
 
   const id = await nextId('cinema');
-  const ownerId = req.account.role === 0 && req.body.owner_id ? Number(req.body.owner_id) : req.account.accountId;
-
   const cinema = await cinemaRepository.create({
     id,
-    owner_id: ownerId,
+    owner_id: owner_id ? Number(owner_id) : req.account.accountId,
     name,
     address: address || '',
     city: city || '',
     images: Array.isArray(images) ? images : [],
-    status: req.account.role === 0 ? 1 : 0, // admin-created cinemas are auto-approved
+    status: 1,
   });
-  if (cinema.status === 0) emitToAdmin('cinema:pending', cinema);
   res.status(201).json(cinema);
 }
 

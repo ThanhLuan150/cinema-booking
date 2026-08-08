@@ -4,17 +4,14 @@ const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// True if the caller is allowed to act on bookings belonging to `cinema`: super admin,
-// the branch admin who owns it, or an active employee staffed there.
-async function canAccessCinema(account, cinema) {
-  if (account.role === 0) return true;
+// True if the caller may act on bookings for `cinema`: ALL scope (super admin) bypasses;
+// otherwise the caller must own the cinema or be an active employee staffed there.
+async function canAccessCinema(req, cinema) {
+  if (req.permissionScope === 'ALL') return true;
   if (!cinema) return false;
-  if (account.role === 2) return cinema.owner_id === account.accountId;
-  if (account.role === 3) {
-    const employee = await employeeRepository.findActiveByAccountAndCinema(account.accountId, cinema.id);
-    return Boolean(employee);
-  }
-  return false;
+  if (cinema.owner_id === req.account.accountId) return true;
+  const employee = await employeeRepository.findActiveByAccountAndCinema(req.account.accountId, cinema.id);
+  return Boolean(employee);
 }
 
 // POST /api/scheduleId { movie_id, movie_date, time_begin } -> { id } (auth required)
@@ -138,7 +135,7 @@ async function myInvoices(req, res) {
 async function cancelInvoice(req, res) {
   const invoice = await bookingRepository.findInvoiceById(req.params.id);
   if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
-  if (invoice.account_id !== req.account.accountId && req.account.role !== 0) {
+  if (invoice.account_id !== req.account.accountId && req.permissionScope !== 'ALL') {
     return res.status(403).json({ message: 'Forbidden' });
   }
   if (invoice.status === 0) {
@@ -234,7 +231,7 @@ async function lookupInvoice(req, res) {
   const cinema = room ? await bookingRepository.findCinemaById(room.cinema_id) : null;
   const movie = schedule ? await bookingRepository.findMovieById(schedule.movie_id) : null;
 
-  if (!(await canAccessCinema(req.account, cinema))) {
+  if (!(await canAccessCinema(req, cinema))) {
     return res.status(403).json({ message: 'Forbidden' });
   }
 

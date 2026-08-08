@@ -14,8 +14,6 @@ import type {
 export const getMyCinemas = (params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Cinema>>('/cinema/mine', { params }).then((res) => res.data);
 
-export const createCinema = (payload: CinemaFormValues) => apiClient.post('/cinema', payload);
-
 export const updateCinema = (id: number | string, payload: Partial<CinemaFormValues>) =>
   apiClient.put(`/cinema/${id}`, payload);
 

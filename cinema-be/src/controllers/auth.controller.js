@@ -7,11 +7,6 @@ const { sendOtpEmail, sendPasswordResetEmail } = require('../utils/mailer');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, hashToken } = require('../utils/tokens');
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
-// The frontend and backend are separate origins (different ports/hosts in dev,
-// typically different subdomains in production), so the cookie must survive
-// cross-site XHR — that requires SameSite=None, which in turn requires Secure.
-// Chromium treats http://localhost and http://127.0.0.1 as secure contexts, so
-// this still works without TLS in local dev.
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: true,
@@ -23,8 +18,6 @@ function isOtpValid(account, otp) {
   return Boolean(account.otp && account.otp === otp && account.otpExpiresAt && account.otpExpiresAt.getTime() > Date.now());
 }
 
-// Signs a fresh access+refresh pair, persists the refresh token's hash for
-// rotation/revocation, and sets the httpOnly refresh cookie on the response.
 async function issueTokens(res, account) {
   const accessToken = signAccessToken(account);
   const refreshToken = signRefreshToken(account);

@@ -6,7 +6,7 @@
       "totalRevenue": "Revenu total",
       "totalUsers": "Utilisateurs",
       "totalOwners": "Propriétaires de salles",
-      "totalCinemas": "Cinémas",
+      "totalCinemas": "Succursales",
       "totalTicketsSold": "Billets vendus",
       "totalTransactions": "Transactions"
     },
@@ -202,7 +202,7 @@
       "Statut",
       "Action"
     ],
-    "cinemaSuffix": "{{name}} (cinéma)",
+    "cinemaSuffix": "{{name}} (succursale)",
     "hiddenStatus": "Masqué",
     "visibleStatus": "Visible",
     "hideButton": "Masquer",
@@ -233,12 +233,12 @@
     "refundSuccess": "Transaction remboursée."
   },
   "cinemas": {
-    "breadcrumb": "Cinémas",
+    "breadcrumb": "Succursales",
     "headers": [
       "ID",
-      "Photo du propriétaire",
-      "Nom du cinéma",
-      "Propriétaire (ID)",
+      "Photo du responsable",
+      "Nom de la succursale",
+      "Responsable (ID)",
       "Adresse",
       "Statut",
       "Action"
@@ -251,11 +251,11 @@
     "approveButton": "Approuver",
     "blockButton": "Bloquer",
     "deleteButton": "Supprimer",
-    "blockConfirm": "Bloquer ce cinéma ?",
-    "deleteConfirm": "Supprimer ce cinéma ? Cette action est irréversible.",
-    "approveSuccess": "Cinéma approuvé.",
-    "blockSuccess": "Cinéma bloqué.",
-    "deleteSuccess": "Cinéma supprimé.",
+    "blockConfirm": "Bloquer cette succursale ?",
+    "deleteConfirm": "Supprimer cette succursale ? Cette action est irréversible.",
+    "approveSuccess": "Succursale approuvée.",
+    "blockSuccess": "Succursale bloquée.",
+    "deleteSuccess": "Succursale supprimée.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

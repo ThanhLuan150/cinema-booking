@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "映画館",
-    "title": "映画館一覧",
-    "empty": "まだ映画館がありません",
+    "breadcrumb": "支店",
+    "title": "支店一覧",
+    "empty": "まだ支店がありません",
     "addressUpdating": "住所情報を更新中",
     "viewDetails": "詳細を見る"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "詳細を見る"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "映画館をお気に入りに追加",
-    "removeFavorite": "映画館をお気に入りから削除",
+    "addFavorite": "支店をお気に入りに追加",
+    "removeFavorite": "支店をお気に入りから削除",
     "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。"
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "ジャンル",
     "country": "製作国",
-    "cinema": "映画館",
+    "cinema": "支店",
     "date": "上映日",
     "search": "検索",
     "searchPlaceholder": "映画名...",

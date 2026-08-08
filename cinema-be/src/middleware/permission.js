@@ -2,9 +2,6 @@ const roleRepository = require('../repositories/role.repository');
 const rolePermissionRepository = require('../repositories/rolePermission.repository');
 const cinemaRepository = require('../repositories/cinema.repository');
 const employeeRepository = require('../repositories/employee.repository');
-
-// Gate a route by permission code (e.g. 'employee.create'), resolved via the
-// Role/Permission/RolePermission tables instead of a hardcoded role number list.
 function requirePermission(code) {
   return async (req, res, next) => {
     try {
@@ -13,18 +10,17 @@ function requirePermission(code) {
       const role = await roleRepository.findByLegacyNumber(req.account.role);
       if (!role) return res.status(403).json({ message: 'Forbidden' });
 
-      const allowed = await rolePermissionRepository.roleHasPermission(role.id, code);
-      if (!allowed) return res.status(403).json({ message: 'Forbidden' });
+      const scope = await rolePermissionRepository.findScopeForRolePermission(role.id, code);
+      if (!scope) return res.status(403).json({ message: 'Forbidden' });
 
+      req.permissionScope = scope;
+      req.roleCode = role.code;
       next();
     } catch (err) {
       next(err);
     }
   };
 }
-
-// Generalizes requireCinemaOwnership: super admin bypasses, branch admin (role 2)
-// must own the cinema, employee (role 3) must be an active staff member of it.
 function requireCinemaAccess(resolveCinemaId) {
   return async (req, res, next) => {
     try {
@@ -33,7 +29,7 @@ function requireCinemaAccess(resolveCinemaId) {
         return res.status(404).json({ message: 'Cinema not found' });
       }
 
-      if (req.account.role === 0) {
+      if (req.permissionScope === 'ALL') {
         req.cinemaId = cinemaId;
         return next();
       }
@@ -41,21 +37,14 @@ function requireCinemaAccess(resolveCinemaId) {
       const cinema = await cinemaRepository.findById(cinemaId);
       if (!cinema) return res.status(404).json({ message: 'Cinema not found' });
 
-      if (req.account.role === 2) {
-        if (cinema.owner_id !== req.account.accountId) {
-          return res.status(403).json({ message: 'Forbidden' });
-        }
+      if (cinema.owner_id === req.account.accountId) {
         req.cinemaId = cinemaId;
         req.cinema = cinema;
         return next();
       }
 
-      if (req.account.role === 3) {
-        const employee = await employeeRepository.findActiveByAccountAndCinema(
-          req.account.accountId,
-          cinemaId,
-        );
-        if (!employee) return res.status(403).json({ message: 'Forbidden' });
+      const employee = await employeeRepository.findActiveByAccountAndCinema(req.account.accountId, cinemaId);
+      if (employee) {
         req.cinemaId = cinemaId;
         req.cinema = cinema;
         req.employee = employee;

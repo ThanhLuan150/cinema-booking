@@ -37,14 +37,37 @@ describe('seedRbac', () => {
     expect(await Role.countDocuments()).toBe(4);
   });
 
-  it('does not grant branch admin ticket.create, booking.refund or review.moderate', async () => {
+  it('does not grant branch admin ticket.create, booking.refund, review.moderate or cinema.create', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
-    for (const code of ['ticket.create', 'booking.refund', 'review.moderate']) {
+    for (const code of ['ticket.create', 'booking.refund', 'review.moderate', 'cinema.create']) {
       const permission = await Permission.findOne({ code });
       const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
       expect(link).toBeNull();
     }
+  });
+
+  it('assigns booking.read the scope from the RBAC doc\'s worked example (ALL/BRANCH/BRANCH/OWN)', async () => {
+    await seedRbac();
+    const permission = await Permission.findOne({ code: 'booking.read' });
+    const expected = { SUPER_ADMIN: 'ALL', BRANCH_ADMIN: 'BRANCH', EMPLOYEE: 'BRANCH', CUSTOMER: 'OWN' };
+    for (const [roleCode, scope] of Object.entries(expected)) {
+      const role = await Role.findOne({ code: roleCode });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      expect(link.scope).toBe(scope);
+    }
+  });
+
+  it('updates an existing link\'s scope on the next run instead of only checking presence', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    const permission = await Permission.findOne({ code: 'booking.read' });
+    await RolePermission.updateOne({ role_id: branchAdmin.id, permission_id: permission.id }, { scope: 'ALL' });
+
+    await seedRbac();
+
+    const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+    expect(link.scope).toBe('BRANCH');
   });
 
   it('prunes a role-permission link that is no longer in the map on the next run', async () => {

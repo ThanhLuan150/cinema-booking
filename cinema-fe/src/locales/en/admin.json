@@ -6,7 +6,7 @@
       "totalRevenue": "Total revenue",
       "totalUsers": "Users",
       "totalOwners": "Theater owners",
-      "totalCinemas": "Cinemas",
+      "totalCinemas": "Branches",
       "totalTicketsSold": "Tickets sold",
       "totalTransactions": "Transactions"
     },
@@ -202,7 +202,7 @@
       "Status",
       "Action"
     ],
-    "cinemaSuffix": "{{name}} (cinema)",
+    "cinemaSuffix": "{{name}} (branch)",
     "hiddenStatus": "Hidden",
     "visibleStatus": "Visible",
     "hideButton": "Hide",
@@ -233,12 +233,12 @@
     "refundSuccess": "Transaction refunded."
   },
   "cinemas": {
-    "breadcrumb": "Cinemas",
+    "breadcrumb": "Branches",
     "headers": [
       "ID",
-      "Owner photo",
-      "Cinema name",
-      "Owner (ID)",
+      "Branch Admin photo",
+      "Branch name",
+      "Branch Admin (ID)",
       "Address",
       "Status",
       "Action"
@@ -251,11 +251,11 @@
     "approveButton": "Approve",
     "blockButton": "Block",
     "deleteButton": "Delete",
-    "blockConfirm": "Block this cinema?",
-    "deleteConfirm": "Delete this cinema? This action cannot be undone.",
-    "approveSuccess": "Cinema approved.",
-    "blockSuccess": "Cinema blocked.",
-    "deleteSuccess": "Cinema deleted.",
+    "blockConfirm": "Block this branch?",
+    "deleteConfirm": "Delete this branch? This action cannot be undone.",
+    "approveSuccess": "Branch approved.",
+    "blockSuccess": "Branch blocked.",
+    "deleteSuccess": "Branch deleted.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

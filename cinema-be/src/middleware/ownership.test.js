@@ -27,9 +27,9 @@ describe('requireCinemaOwnership', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('lets admins (role 0) through without checking cinema ownership', async () => {
+  it('lets an ALL-scope caller (super admin) through without checking cinema ownership', async () => {
     const middleware = requireCinemaOwnership(async () => 5);
-    const req = { account: { accountId: 1, role: 0 } };
+    const req = { account: { accountId: 1, role: 0 }, permissionScope: 'ALL' };
     const res = mockRes();
     const next = jest.fn();
 

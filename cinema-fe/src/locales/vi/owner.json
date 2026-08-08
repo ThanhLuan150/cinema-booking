@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Rạp chiếu",
-    "addButton": "Thêm rạp +",
-    "addTitle": "Thêm rạp",
-    "nameLabel": "Tên rạp",
-    "addressLabel": "Địa chỉ",
-    "cityLabel": "Thành phố",
-    "submit": "Thêm",
-    "createSuccess": "Đã gửi yêu cầu tạo rạp, chờ Admin duyệt.",
-    "createError": "Không thể tạo rạp.",
+    "breadcrumb": "Chi nhánh của tôi",
     "manageRooms": "Quản lý phòng",
     "statusLabels": {
       "0": "Chờ duyệt",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Tên rạp",
+      "name": "Tên chi nhánh",
       "address": "Địa chỉ",
       "city": "Thành phố",
       "status": "Trạng thái",

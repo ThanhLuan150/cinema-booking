@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "영화관",
-    "title": "영화관 시스템",
-    "empty": "아직 등록된 영화관이 없습니다",
+    "breadcrumb": "지점",
+    "title": "지점 안내",
+    "empty": "아직 등록된 지점이 없습니다",
     "addressUpdating": "주소 업데이트 중",
     "viewDetails": "자세히 보기"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "자세히 보기"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "영화관 즐겨찾기 추가",
-    "removeFavorite": "영화관 즐겨찾기 해제",
+    "addFavorite": "지점 즐겨찾기 추가",
+    "removeFavorite": "지점 즐겨찾기 해제",
     "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요."
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "장르",
     "country": "국가",
-    "cinema": "영화관",
+    "cinema": "지점",
     "date": "상영일",
     "search": "검색",
     "searchPlaceholder": "영화 제목...",

@@ -227,10 +227,13 @@ describe('POST /api/invoice/:id/cancel', () => {
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  it('allows an admin to cancel any invoice', async () => {
+  it('allows an ALL-scope caller (admin) to cancel any invoice', async () => {
     await Invoice.create({ id: 1, ticket_id: 1, account_id: 2, code: 'ABC', total_price: 100000, status: 1 });
     const res = mockRes();
-    await bookingController.cancelInvoice({ params: { id: 1 }, account: { accountId: 99, role: 0 } }, res);
+    await bookingController.cancelInvoice(
+      { params: { id: 1 }, account: { accountId: 99, role: 0 }, permissionScope: 'ALL' },
+      res,
+    );
     expect(res.status).not.toHaveBeenCalledWith(403);
   });
 

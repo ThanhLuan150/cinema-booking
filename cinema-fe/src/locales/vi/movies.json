@@ -1,8 +1,8 @@
 {
   "cinemas": {
-    "breadcrumb": "Rạp",
-    "title": "Hệ thống rạp",
-    "empty": "Chưa có rạp nào",
+    "breadcrumb": "Chi nhánh",
+    "title": "Hệ thống chi nhánh",
+    "empty": "Chưa có chi nhánh nào",
     "addressUpdating": "Đang cập nhật địa chỉ",
     "viewDetails": "Xem chi tiết"
   },
@@ -21,8 +21,8 @@
     "moreDetails": "Xem thêm"
   },
   "favoriteCinemaButton": {
-    "addFavorite": "Yêu thích rạp",
-    "removeFavorite": "Bỏ yêu thích rạp",
+    "addFavorite": "Yêu thích chi nhánh",
+    "removeFavorite": "Bỏ yêu thích chi nhánh",
     "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này."
   },
   "like": {
@@ -35,7 +35,7 @@
   "filterBar": {
     "category": "Thể loại",
     "country": "Quốc gia",
-    "cinema": "Rạp",
+    "cinema": "Chi nhánh",
     "date": "Ngày chiếu",
     "search": "Tìm kiếm",
     "searchPlaceholder": "Tên phim...",

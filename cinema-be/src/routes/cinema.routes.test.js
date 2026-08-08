@@ -82,4 +82,21 @@ describe('cinema.routes wiring', () => {
       .send({ email: 'a@b.com', password: 'pw', cinema_name: 'A' });
     expect(res.status).toBe(201);
   });
+
+  it('POST /api/cinema forbids a branch admin (single company, no self-service branch creation)', async () => {
+    const res = await request(app)
+      .post('/api/cinema')
+      .set('Authorization', authHeader({ role: 2 }))
+      .send({ name: 'New Branch' });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/cinema allows super admin and auto-approves the new branch', async () => {
+    const res = await request(app)
+      .post('/api/cinema')
+      .set('Authorization', authHeader({ role: 0 }))
+      .send({ name: 'New Branch' });
+    expect(res.status).toBe(201);
+    expect(res.body.status).toBe(1);
+  });
 });

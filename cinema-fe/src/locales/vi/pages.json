@@ -2,10 +2,10 @@
   "about": {
     "breadcrumb": "Về chúng tôi",
     "title": "Về CineNova",
-    "intro": "CineNova là hệ thống rạp chiếu phim mang đến trải nghiệm điện ảnh trọn vẹn: phòng chiếu hiện đại, âm thanh sống động và quy trình đặt vé trực tuyến chỉ trong vài bước.",
+    "intro": "CineNova là hệ thống chi nhánh mang đến trải nghiệm điện ảnh trọn vẹn: phòng chiếu hiện đại, âm thanh sống động và quy trình đặt vé trực tuyến chỉ trong vài bước.",
     "mission": "Chúng tôi tin rằng mỗi buổi xem phim đều đáng nhớ. Vì vậy, CineNova không ngừng đầu tư vào chất lượng phòng chiếu, dịch vụ và công nghệ đặt vé để bạn luôn có chỗ ngồi ưng ý.",
     "stats": {
-      "cinemas": { "value": "25+", "label": "Rạp trên toàn quốc" },
+      "cinemas": { "value": "25+", "label": "Chi nhánh trên toàn quốc" },
       "seats": { "value": "12.000+", "label": "Ghế ngồi" },
       "movies": { "value": "500+", "label": "Phim đã chiếu" },
       "customers": { "value": "1 triệu+", "label": "Khách hàng tin dùng" }
@@ -40,7 +40,7 @@
     "items": {
       "booking": {
         "question": "Làm sao để đặt vé trên CineNova?",
-        "answer": "Chọn phim bạn muốn xem, chọn rạp và suất chiếu, chọn ghế rồi tiến hành thanh toán. Vé điện tử sẽ hiển thị trong mục Lịch sử đặt vé sau khi thanh toán thành công."
+        "answer": "Chọn phim bạn muốn xem, chọn chi nhánh và suất chiếu, chọn ghế rồi tiến hành thanh toán. Vé điện tử sẽ hiển thị trong mục Lịch sử đặt vé sau khi thanh toán thành công."
       },
       "payment": {
         "question": "CineNova hỗ trợ những hình thức thanh toán nào?",

@@ -48,9 +48,23 @@ describe('requirePermission', () => {
 
     const res = mockRes();
     const next = jest.fn();
-    await requirePermission('employee.create')({ account: { role: 2, accountId: 1 } }, res, next);
+    const req = { account: { role: 2, accountId: 1 } };
+    await requirePermission('employee.create')(req, res, next);
     expect(next).toHaveBeenCalledWith();
     expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it('attaches the granted scope as req.permissionScope', async () => {
+    const role = await Role.create({ id: 1, code: 'BRANCH_ADMIN', legacy_role_number: 2, name: 'Branch Admin' });
+    const permission = await Permission.create({ id: 1, code: 'booking.read', module: 'booking' });
+    await RolePermission.create({ id: 1, role_id: role.id, permission_id: permission.id, scope: 'BRANCH' });
+
+    const res = mockRes();
+    const next = jest.fn();
+    const req = { account: { role: 2, accountId: 1 } };
+    await requirePermission('booking.read')(req, res, next);
+    expect(req.permissionScope).toBe('BRANCH');
+    expect(req.roleCode).toBe('BRANCH_ADMIN');
   });
 });
 
@@ -62,10 +76,10 @@ describe('requireCinemaAccess', () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it('lets super admin (role 0) bypass ownership checks', async () => {
+  it('lets an ALL-scope caller (super admin) bypass ownership checks', async () => {
     const res = mockRes();
     const next = jest.fn();
-    const req = { account: { role: 0, accountId: 99 } };
+    const req = { account: { role: 0, accountId: 99 }, permissionScope: 'ALL' };
     await requireCinemaAccess(() => 1)(req, res, next);
     expect(next).toHaveBeenCalledWith();
     expect(req.cinemaId).toBe(1);

@@ -2,10 +2,10 @@
   "about": {
     "breadcrumb": "À propos",
     "title": "À propos de CineNova",
-    "intro": "CineNova est un réseau de cinémas pensé pour une expérience complète : salles modernes, son immersif et réservation en ligne en quelques étapes seulement.",
+    "intro": "CineNova est un réseau de succursales pensé pour une expérience complète : salles modernes, son immersif et réservation en ligne en quelques étapes seulement.",
     "mission": "Nous pensons que chaque séance mérite d'être mémorable. CineNova investit donc en continu dans la qualité des salles, le service et la technologie de réservation pour que vous ayez toujours la place souhaitée.",
     "stats": {
-      "cinemas": { "value": "25+", "label": "Cinémas dans le pays" },
+      "cinemas": { "value": "25+", "label": "Succursales dans le pays" },
       "seats": { "value": "12 000+", "label": "Fauteuils" },
       "movies": { "value": "500+", "label": "Films projetés" },
       "customers": { "value": "1 M+", "label": "Spectateurs satisfaits" }
@@ -40,7 +40,7 @@
     "items": {
       "booking": {
         "question": "Comment réserver des billets sur CineNova ?",
-        "answer": "Choisissez le film souhaité, sélectionnez un cinéma et une séance, puis vos places, et finalisez le paiement. Le billet électronique apparaît dans Mes réservations dès que le paiement est validé."
+        "answer": "Choisissez le film souhaité, sélectionnez une succursale et une séance, puis vos places, et finalisez le paiement. Le billet électronique apparaît dans Mes réservations dès que le paiement est validé."
       },
       "payment": {
         "question": "Quels moyens de paiement sont acceptés ?",

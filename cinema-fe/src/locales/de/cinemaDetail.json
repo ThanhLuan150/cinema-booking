@@ -7,19 +7,19 @@
     "statusActive": "Aktiv",
     "statusPaused": "Vorübergehend geschlossen",
     "viewShowtimes": "Vorstellungen ansehen",
-    "breadcrumbCinemas": "Kinos"
+    "breadcrumbCinemas": "Filialen"
   },
   "moviesSection": {
-    "title": "Aktuell in diesem Kino",
-    "emptyState": "Dieses Kino hat noch keine Vorstellungen",
+    "title": "Aktuell in dieser Filiale",
+    "emptyState": "Diese Filiale hat noch keine Vorstellungen",
     "moreDetails": "Mehr Details"
   },
   "reviews": {
-    "title": "Bewertungen zum Kinoerlebnis",
+    "title": "Bewertungen zur Filiale",
     "ratingSummary": "{{average}}/5 · {{count}} Bewertungen",
     "ratingLabel": "Bewertung:",
     "starOption": "{{count}} Sterne",
-    "commentPlaceholder": "Teilen Sie Ihre Erfahrung in diesem Kino (Sitze, Ton, Personal, Sauberkeit...)...",
+    "commentPlaceholder": "Teilen Sie Ihre Erfahrung in dieser Filiale (Sitze, Ton, Personal, Sauberkeit...)...",
     "submit": "Bewertung abschicken",
     "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
     "submitSuccess": "Bewertung übermittelt.",

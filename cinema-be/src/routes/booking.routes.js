@@ -31,10 +31,15 @@ router.post('/MomoPayment/ipn', asyncHandler(bookingController.momoIpn));
 router.post('/MomoPayment/confirm', requireAuth, asyncHandler(bookingController.momoConfirm));
 
 // GET /api/my-invoices -> booking history for the caller, joined with ticket/schedule/movie details
-router.get('/my-invoices', requireAuth, asyncHandler(bookingController.myInvoices));
+router.get('/my-invoices', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.myInvoices));
 
-// POST /api/invoice/:id/cancel -> cancels a booking if the showtime is more than 2h away (auth required)
-router.post('/invoice/:id/cancel', requireAuth, asyncHandler(bookingController.cancelInvoice));
+// POST /api/invoice/:id/cancel -> cancels a booking if the showtime is more than 2h away
+router.post(
+  '/invoice/:id/cancel',
+  requireAuth,
+  requirePermission('booking.read'),
+  asyncHandler(bookingController.cancelInvoice),
+);
 
 // GET /api/admin/invoices -> all transactions system-wide, newest first (booking.admin permission — super admin only)
 router.get('/admin/invoices', requireAuth, requirePermission('booking.admin'), asyncHandler(bookingController.adminInvoices));

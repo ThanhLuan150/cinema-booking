@@ -6,7 +6,7 @@
       "totalRevenue": "総売上",
       "totalUsers": "会員数",
       "totalOwners": "劇場オーナー数",
-      "totalCinemas": "映画館数",
+      "totalCinemas": "支店数",
       "totalTicketsSold": "販売済みチケット数",
       "totalTransactions": "取引件数"
     },
@@ -202,7 +202,7 @@
       "状態",
       "操作"
     ],
-    "cinemaSuffix": "{{name}}(映画館)",
+    "cinemaSuffix": "{{name}}(支店)",
     "hiddenStatus": "非表示",
     "visibleStatus": "表示",
     "hideButton": "非表示にする",
@@ -233,12 +233,12 @@
     "refundSuccess": "取引を返金しました。"
   },
   "cinemas": {
-    "breadcrumb": "映画館",
+    "breadcrumb": "支店",
     "headers": [
       "ID",
-      "オーナー写真",
-      "映画館名",
-      "オーナー(ID)",
+      "支店長の写真",
+      "支店名",
+      "支店長(ID)",
       "住所",
       "状態",
       "操作"
@@ -251,11 +251,11 @@
     "approveButton": "承認",
     "blockButton": "ブロック",
     "deleteButton": "削除",
-    "blockConfirm": "この映画館をブロックしますか?",
-    "deleteConfirm": "この映画館を削除しますか?この操作は取り消せません。",
-    "approveSuccess": "映画館を承認しました。",
-    "blockSuccess": "映画館をブロックしました。",
-    "deleteSuccess": "映画館を削除しました。",
+    "blockConfirm": "この支店をブロックしますか?",
+    "deleteConfirm": "この支店を削除しますか?この操作は取り消せません。",
+    "approveSuccess": "支店を承認しました。",
+    "blockSuccess": "支店をブロックしました。",
+    "deleteSuccess": "支店を削除しました。",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

@@ -2,10 +2,10 @@
   "about": {
     "breadcrumb": "About Us",
     "title": "About CineNova",
-    "intro": "CineNova is a cinema network built around a complete movie experience: modern auditoriums, immersive sound and online booking that takes only a few steps.",
+    "intro": "CineNova is a branch network built around a complete movie experience: modern auditoriums, immersive sound and online booking that takes only a few steps.",
     "mission": "We believe every screening should be memorable. That is why CineNova keeps investing in screen quality, service and booking technology so you always get the seat you want.",
     "stats": {
-      "cinemas": { "value": "25+", "label": "Cinemas nationwide" },
+      "cinemas": { "value": "25+", "label": "Branches nationwide" },
       "seats": { "value": "12,000+", "label": "Seats" },
       "movies": { "value": "500+", "label": "Movies screened" },
       "customers": { "value": "1M+", "label": "Happy customers" }
@@ -40,7 +40,7 @@
     "items": {
       "booking": {
         "question": "How do I book tickets on CineNova?",
-        "answer": "Pick the movie you want to watch, choose a cinema and showtime, select your seats and complete the payment. Your e-ticket appears under My Bookings once the payment succeeds."
+        "answer": "Pick the movie you want to watch, choose a branch and showtime, select your seats and complete the payment. Your e-ticket appears under My Bookings once the payment succeeds."
       },
       "payment": {
         "question": "Which payment methods does CineNova accept?",

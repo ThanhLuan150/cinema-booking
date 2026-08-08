@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "New movie: {{name}}",
-    "cinemaPending": "New cinema registered, pending approval: {{name}}",
-    "cinemaApproved": "Cinema \"{{name}}\" has been approved.",
-    "cinemaBlocked": "Cinema \"{{name}}\" has been blocked.",
+    "cinemaPending": "New branch registered, pending approval: {{name}}",
+    "cinemaApproved": "Branch \"{{name}}\" has been approved.",
+    "cinemaBlocked": "Branch \"{{name}}\" has been blocked.",
     "newBooking": "New booking received: +{{amount}}đ"
   },
   "toastContainer": {

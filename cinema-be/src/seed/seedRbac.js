@@ -47,48 +47,50 @@ const PERMISSIONS = [
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
 
-const BRANCH_ADMIN_PERMISSIONS = [
-  'cinema.create', 'cinema.read', 'cinema.update',
-  'room.create', 'room.read', 'room.update', 'room.delete',
-  'seat.create', 'seat.read', 'seat.update', 'seat.delete',
-  'movie.create', 'movie.read', 'movie.update', 'movie.delete',
-  'category.create', 'category.read',
-  'schedule.read',
-  'ticket.read', 'ticket.checkin',
-  'booking.create', 'booking.read',
-  'voucher.create', 'voucher.read', 'voucher.update', 'voucher.delete',
-  'combo.create', 'combo.read', 'combo.update', 'combo.delete',
-  'review.read',
-  'employee.create', 'employee.read', 'employee.update', 'employee.delete',
-  'actor.read', 'director.read',
-  'dashboard.view',
-];
+const BRANCH_ADMIN_PERMISSIONS = {
+  'cinema.read': 'BRANCH',
+  'cinema.update': 'BRANCH',
+  'room.create': 'BRANCH', 'room.read': 'BRANCH', 'room.update': 'BRANCH', 'room.delete': 'BRANCH',
+  'seat.create': 'BRANCH', 'seat.read': 'BRANCH', 'seat.update': 'BRANCH', 'seat.delete': 'BRANCH',
+  'movie.create': 'ALL', 'movie.read': 'ALL', 'movie.update': 'ALL', 'movie.delete': 'ALL',
+  'category.create': 'ALL', 'category.read': 'ALL',
+  'schedule.read': 'BRANCH',
+  'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
+  'booking.create': 'BRANCH', 'booking.read': 'BRANCH',
+  'voucher.create': 'BRANCH', 'voucher.read': 'BRANCH', 'voucher.update': 'BRANCH', 'voucher.delete': 'BRANCH',
+  'combo.create': 'BRANCH', 'combo.read': 'BRANCH', 'combo.update': 'BRANCH', 'combo.delete': 'BRANCH',
+  'review.read': 'ALL',
+  'employee.create': 'BRANCH', 'employee.read': 'BRANCH', 'employee.update': 'BRANCH', 'employee.delete': 'BRANCH',
+  'actor.read': 'ALL', 'director.read': 'ALL',
+  'dashboard.view': 'BRANCH',
+};
+const EMPLOYEE_PERMISSIONS = {
+  'seat.read': 'BRANCH', 'category.read': 'ALL', 'schedule.read': 'BRANCH',
+  'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
+  'booking.create': 'BRANCH', 'booking.read': 'BRANCH',
+  'combo.read': 'ALL', 'review.read': 'ALL',
+  'actor.read': 'ALL', 'director.read': 'ALL',
+};
 
-// NOTE: these two roles deliberately do NOT include 'cinema.read'/'movie.read'/'voucher.read'
-// even though they can view cinemas/movies/vouchers in the app — those browsing surfaces are
-// public GET routes with no permission gate at all. The *.read codes here are reserved for the
-// admin/owner "management listing" endpoints (e.g. GET /cinema/mine, GET /voucher), which
-// customers and employees must not pass.
-const EMPLOYEE_PERMISSIONS = [
-  'seat.read', 'category.read', 'schedule.read',
-  'ticket.read', 'ticket.checkin',
-  'booking.create', 'booking.read',
-  'combo.read', 'review.read',
-  'actor.read', 'director.read',
-];
+const CUSTOMER_PERMISSIONS = {
+  'category.read': 'ALL',
+  'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN',
+  'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',
+  'actor.read': 'ALL', 'director.read': 'ALL',
+};
 
-const CUSTOMER_PERMISSIONS = [
-  'category.read',
-  'ticket.read', 'booking.create', 'booking.read',
-  'combo.read', 'review.create', 'review.read',
-  'actor.read', 'director.read',
-];
+function normalizePermissionScopes(permissions) {
+  if (Array.isArray(permissions)) {
+    return permissions.map((code) => ({ code, scope: 'ALL' }));
+  }
+  return Object.entries(permissions).map(([code, scope]) => ({ code, scope }));
+}
 
 const ROLE_PERMISSION_MAP = {
-  SUPER_ADMIN: SUPER_ADMIN_PERMISSIONS,
-  BRANCH_ADMIN: BRANCH_ADMIN_PERMISSIONS,
-  EMPLOYEE: EMPLOYEE_PERMISSIONS,
-  CUSTOMER: CUSTOMER_PERMISSIONS,
+  SUPER_ADMIN: normalizePermissionScopes(SUPER_ADMIN_PERMISSIONS),
+  BRANCH_ADMIN: normalizePermissionScopes(BRANCH_ADMIN_PERMISSIONS),
+  EMPLOYEE: normalizePermissionScopes(EMPLOYEE_PERMISSIONS),
+  CUSTOMER: normalizePermissionScopes(CUSTOMER_PERMISSIONS),
 };
 
 async function seedRbac() {
@@ -114,23 +116,23 @@ async function seedRbac() {
     permissionByCode[code] = permission;
   }
 
-  // Sync each role's RolePermission links to exactly match ROLE_PERMISSION_MAP: add
-  // whatever's missing, prune whatever's no longer granted. Keeps this file the single
-  // source of truth even as the map changes across releases.
-  for (const [roleCode, permissionCodes] of Object.entries(ROLE_PERMISSION_MAP)) {
+  for (const [roleCode, permissionScopes] of Object.entries(ROLE_PERMISSION_MAP)) {
     const role = roleByCode[roleCode];
-    const desiredPermissionIds = new Set(permissionCodes.map((code) => permissionByCode[code].id));
+    const desired = new Map(permissionScopes.map(({ code, scope }) => [permissionByCode[code].id, scope]));
 
-    for (const permissionId of desiredPermissionIds) {
-      const exists = await RolePermission.findOne({ role_id: role.id, permission_id: permissionId });
-      if (!exists) {
+    for (const [permissionId, scope] of desired) {
+      const existing = await RolePermission.findOne({ role_id: role.id, permission_id: permissionId });
+      if (!existing) {
         const id = await nextId('rolePermission');
-        await RolePermission.create({ id, role_id: role.id, permission_id: permissionId });
+        await RolePermission.create({ id, role_id: role.id, permission_id: permissionId, scope });
+      } else if (existing.scope !== scope) {
+        existing.scope = scope;
+        await existing.save();
       }
     }
 
     const currentLinks = await RolePermission.find({ role_id: role.id });
-    const staleLinks = currentLinks.filter((link) => !desiredPermissionIds.has(link.permission_id));
+    const staleLinks = currentLinks.filter((link) => !desired.has(link.permission_id));
     if (staleLinks.length > 0) {
       await RolePermission.deleteMany({ _id: { $in: staleLinks.map((link) => link._id) } });
     }

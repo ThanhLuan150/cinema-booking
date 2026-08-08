@@ -2,10 +2,10 @@
   "about": {
     "breadcrumb": "关于我们",
     "title": "关于 CineNova",
-    "intro": "CineNova 是一家致力于打造完整观影体验的连锁影院：现代化影厅、沉浸式音效，以及只需几步即可完成的在线订票流程。",
+    "intro": "CineNova 是一家致力于打造完整观影体验的连锁分店：现代化影厅、沉浸式音效，以及只需几步即可完成的在线订票流程。",
     "mission": "我们相信每一场电影都值得被铭记。因此 CineNova 持续投入影厅品质、服务与订票技术，让您总能坐到心仪的座位。",
     "stats": {
-      "cinemas": { "value": "25+", "label": "全国影院" },
+      "cinemas": { "value": "25+", "label": "全国分店" },
       "seats": { "value": "12,000+", "label": "座位" },
       "movies": { "value": "500+", "label": "已上映影片" },
       "customers": { "value": "100万+", "label": "满意顾客" }
@@ -40,7 +40,7 @@
     "items": {
       "booking": {
         "question": "如何在 CineNova 订票？",
-        "answer": "选择想看的影片，选定影院与场次，挑选座位后完成支付。支付成功后，电子票会显示在「我的订票」中。"
+        "answer": "选择想看的影片，选定分店与场次，挑选座位后完成支付。支付成功后，电子票会显示在「我的订票」中。"
       },
       "payment": {
         "question": "CineNova 支持哪些支付方式？",

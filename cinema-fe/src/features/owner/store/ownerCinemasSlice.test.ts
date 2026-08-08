@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import reducer, {
-  closeAddCinemaModal,
   closeAddRoomModal,
   closeSeatMapModal,
-  openAddCinemaModal,
   openAddRoomModal,
   openSeatMapModal,
 } from './ownerCinemasSlice';
@@ -11,13 +9,6 @@ import reducer, {
 const initialState = reducer(undefined, { type: '@@INIT' });
 
 describe('ownerCinemasSlice', () => {
-  it('opens and closes the add cinema modal', () => {
-    const opened = reducer(initialState, openAddCinemaModal());
-    expect(opened.showAddCinemaModal).toBe(true);
-    const closed = reducer(opened, closeAddCinemaModal());
-    expect(closed.showAddCinemaModal).toBe(false);
-  });
-
   it('opens and closes the add room modal', () => {
     const opened = reducer(initialState, openAddRoomModal());
     expect(opened.showAddRoomModal).toBe(true);

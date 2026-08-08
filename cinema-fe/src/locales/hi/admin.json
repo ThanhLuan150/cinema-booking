@@ -6,7 +6,7 @@
       "totalRevenue": "कुल आय",
       "totalUsers": "उपयोगकर्ता",
       "totalOwners": "थिएटर मालिक",
-      "totalCinemas": "सिनेमा",
+      "totalCinemas": "शाखाएं",
       "totalTicketsSold": "बिकी टिकटें",
       "totalTransactions": "लेन-देन"
     },
@@ -202,7 +202,7 @@
       "स्थिति",
       "कार्रवाई"
     ],
-    "cinemaSuffix": "{{name}} (सिनेमा)",
+    "cinemaSuffix": "{{name}} (शाखा)",
     "hiddenStatus": "छिपी हुई",
     "visibleStatus": "दिखाई दे रही है",
     "hideButton": "छिपाएं",
@@ -233,12 +233,12 @@
     "refundSuccess": "लेन-देन का रिफंड कर दिया गया।"
   },
   "cinemas": {
-    "breadcrumb": "सिनेमा",
+    "breadcrumb": "शाखाएं",
     "headers": [
       "ID",
-      "मालिक की फ़ोटो",
-      "सिनेमा का नाम",
-      "मालिक (ID)",
+      "शाखा प्रबंधक की फ़ोटो",
+      "शाखा का नाम",
+      "शाखा प्रबंधक (ID)",
       "पता",
       "स्थिति",
       "कार्रवाई"
@@ -251,11 +251,11 @@
     "approveButton": "स्वीकृत करें",
     "blockButton": "अवरुद्ध करें",
     "deleteButton": "हटाएं",
-    "blockConfirm": "क्या इस सिनेमा को अवरुद्ध करना है?",
-    "deleteConfirm": "क्या इस सिनेमा को हटाना है? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
-    "approveSuccess": "सिनेमा स्वीकृत हो गया।",
-    "blockSuccess": "सिनेमा अवरुद्ध कर दिया गया।",
-    "deleteSuccess": "सिनेमा हटा दिया गया।",
+    "blockConfirm": "क्या इस शाखा को अवरुद्ध करना है?",
+    "deleteConfirm": "क्या इस शाखा को हटाना है? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+    "approveSuccess": "शाखा स्वीकृत हो गई।",
+    "blockSuccess": "शाखा अवरुद्ध कर दी गई।",
+    "deleteSuccess": "शाखा हटा दी गई।",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

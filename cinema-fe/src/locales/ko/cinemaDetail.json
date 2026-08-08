@@ -7,19 +7,19 @@
     "statusActive": "운영 중",
     "statusPaused": "임시 휴업",
     "viewShowtimes": "상영 시간 보기",
-    "breadcrumbCinemas": "영화관"
+    "breadcrumbCinemas": "지점"
   },
   "moviesSection": {
-    "title": "이 영화관 상영작",
-    "emptyState": "이 영화관은 아직 상영 일정이 없습니다",
+    "title": "이 지점 상영작",
+    "emptyState": "이 지점은 아직 상영 일정이 없습니다",
     "moreDetails": "자세히 보기"
   },
   "reviews": {
-    "title": "영화관 이용 후기",
+    "title": "지점 이용 후기",
     "ratingSummary": "{{average}}/5 · 리뷰 {{count}}개",
     "ratingLabel": "평점:",
     "starOption": "{{count}}점",
-    "commentPlaceholder": "이 영화관에서의 경험을 남겨주세요 (좌석, 음향, 직원 서비스, 청결도 등)...",
+    "commentPlaceholder": "이 지점에서의 경험을 남겨주세요 (좌석, 음향, 직원 서비스, 청결도 등)...",
     "submit": "리뷰 등록",
     "loginRequired": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
     "submitSuccess": "리뷰가 등록되었습니다.",

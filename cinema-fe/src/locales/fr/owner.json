@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Cinémas",
-    "addButton": "Ajouter un cinéma +",
-    "addTitle": "Ajouter un cinéma",
-    "nameLabel": "Nom du cinéma",
-    "addressLabel": "Adresse",
-    "cityLabel": "Ville",
-    "submit": "Ajouter",
-    "createSuccess": "Demande de création de cinéma envoyée, en attente d'approbation par l'administrateur.",
-    "createError": "Impossible de créer le cinéma.",
+    "breadcrumb": "Ma succursale",
     "manageRooms": "Gérer les salles",
     "statusLabels": {
       "0": "En attente d'approbation",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Nom du cinéma",
+      "name": "Nom de la succursale",
       "address": "Adresse",
       "city": "Ville",
       "status": "Statut",

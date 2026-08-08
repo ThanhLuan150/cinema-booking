@@ -9,7 +9,7 @@
   },
   "quickBooking": {
     "title": "Đặt vé nhanh",
-    "cinema": "Chọn rạp",
+    "cinema": "Chọn chi nhánh",
     "movie": "Chọn phim",
     "date": "Chọn ngày",
     "time": "Chọn suất",
@@ -26,7 +26,7 @@
     "viewMore": "Xem thêm"
   },
   "topCinemasSlider": {
-    "title": "Rạp nổi bật",
+    "title": "Chi nhánh nổi bật",
     "addressUpdating": "Đang cập nhật địa chỉ",
     "newRating": "Mới",
     "ticketsBooked": "vé đã đặt"

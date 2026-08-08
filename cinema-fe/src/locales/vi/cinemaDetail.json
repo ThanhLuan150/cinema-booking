@@ -7,19 +7,19 @@
     "statusActive": "Đang hoạt động",
     "statusPaused": "Tạm ngừng",
     "viewShowtimes": "Xem phim đang chiếu",
-    "breadcrumbCinemas": "Rạp"
+    "breadcrumbCinemas": "Chi nhánh"
   },
   "moviesSection": {
-    "title": "Phim đang chiếu tại rạp",
-    "emptyState": "Rạp này hiện chưa có suất chiếu nào",
+    "title": "Phim đang chiếu tại chi nhánh",
+    "emptyState": "Chi nhánh này hiện chưa có suất chiếu nào",
     "moreDetails": "Xem chi tiết"
   },
   "reviews": {
-    "title": "Đánh giá trải nghiệm tại rạp",
+    "title": "Đánh giá trải nghiệm tại chi nhánh",
     "ratingSummary": "{{average}}/5 · {{count}} đánh giá",
     "ratingLabel": "Điểm:",
     "starOption": "{{count}} sao",
-    "commentPlaceholder": "Cảm nhận của bạn khi tới rạp (chỗ ngồi, âm thanh, nhân viên, vệ sinh...)...",
+    "commentPlaceholder": "Cảm nhận của bạn khi tới chi nhánh (chỗ ngồi, âm thanh, nhân viên, vệ sinh...)...",
     "submit": "Gửi đánh giá",
     "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
     "submitSuccess": "Đã gửi đánh giá.",

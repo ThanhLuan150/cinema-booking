@@ -72,7 +72,6 @@ export interface OwnerDashboardState {
 }
 
 export interface OwnerCinemasState {
-  showAddCinemaModal: boolean;
   showAddRoomModal: boolean;
   seatMapRoomId: number | null;
 }

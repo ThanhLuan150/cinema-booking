@@ -37,15 +37,7 @@
     }
   },
   "cinemas": {
-    "breadcrumb": "Kinos",
-    "addButton": "Kino hinzufügen +",
-    "addTitle": "Kino hinzufügen",
-    "nameLabel": "Kinoname",
-    "addressLabel": "Adresse",
-    "cityLabel": "Stadt",
-    "submit": "Hinzufügen",
-    "createSuccess": "Anfrage zur Kinoerstellung gesendet, Genehmigung durch den Administrator ausstehend.",
-    "createError": "Kino konnte nicht erstellt werden.",
+    "breadcrumb": "Meine Filiale",
     "manageRooms": "Säle verwalten",
     "statusLabels": {
       "0": "Genehmigung ausstehend",
@@ -54,7 +46,7 @@
     },
     "headers": {
       "id": "ID",
-      "name": "Kinoname",
+      "name": "Filialname",
       "address": "Adresse",
       "city": "Stadt",
       "status": "Status",

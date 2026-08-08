@@ -30,12 +30,6 @@ describe('owner.api', () => {
     expect(getMock).toHaveBeenCalledWith('/cinema/mine', { params: { limit: 100 } });
   });
 
-  it('createCinema posts to /cinema', async () => {
-    const payload = { name: 'A', address: 'B', city: 'C' } as any;
-    await ownerApi.createCinema(payload);
-    expect(postMock).toHaveBeenCalledWith('/cinema', payload);
-  });
-
   it('updateCinema puts /cinema/:id', async () => {
     await ownerApi.updateCinema(1, { name: 'New' });
     expect(putMock).toHaveBeenCalledWith('/cinema/1', { name: 'New' });

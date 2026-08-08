@@ -5,8 +5,8 @@
     "movies": "Movies",
     "playing": "Playing",
     "upcoming": "Upcoming",
-    "cinemas": "Cinemas",
-    "allCinemas": "All cinemas"
+    "cinemas": "Branches",
+    "allCinemas": "All branches"
   },
   "header": {
     "toggleMenu": "Toggle menu",
@@ -26,7 +26,7 @@
     "quickLink": "Quick Link",
     "aboutUs": "About Us",
     "movies": "Movies",
-    "partner": "Partner",
+    "partner": "Branches",
     "help": "Help",
     "important": "Important",
     "support": "Support",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "Enter Email",
     "send": "Send",
     "followUs": "Follow Us",
-    "companyInfo": "CineNova cinema system"
+    "companyInfo": "CineNova branch system"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "Dashboard",
       "films": "Films",
       "schedule": "Schedule",
-      "cinemas": "Cinemas",
+      "cinemas": "Branches",
       "combos": "Combos",
       "vouchers": "Vouchers",
       "bookings": "Bookings",

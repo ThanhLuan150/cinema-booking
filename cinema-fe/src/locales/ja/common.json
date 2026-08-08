@@ -5,8 +5,8 @@
     "movies": "映画",
     "playing": "上映中",
     "upcoming": "公開予定",
-    "cinemas": "映画館",
-    "allCinemas": "すべての劇場"
+    "cinemas": "支店",
+    "allCinemas": "すべての支店"
   },
   "header": {
     "toggleMenu": "メニューの開閉",
@@ -26,7 +26,7 @@
     "quickLink": "クイックリンク",
     "aboutUs": "会社概要",
     "movies": "映画",
-    "partner": "提携店舗",
+    "partner": "支店",
     "help": "ヘルプ",
     "important": "重要事項",
     "support": "サポート",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "メールアドレスを入力",
     "send": "送信",
     "followUs": "フォローする",
-    "companyInfo": "CineNova シネマシステム"
+    "companyInfo": "CineNova 支店システム"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "ダッシュボード",
       "films": "映画一覧",
       "schedule": "上映スケジュール",
-      "cinemas": "映画館",
+      "cinemas": "支店",
       "combos": "コンボセット",
       "vouchers": "割引クーポン",
       "bookings": "予約",

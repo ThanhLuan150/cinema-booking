@@ -5,8 +5,8 @@
     "movies": "Films",
     "playing": "À l'affiche",
     "upcoming": "Prochainement",
-    "cinemas": "Cinémas",
-    "allCinemas": "Tous les cinémas"
+    "cinemas": "Succursales",
+    "allCinemas": "Toutes les succursales"
   },
   "header": {
     "toggleMenu": "Afficher/masquer le menu",
@@ -26,7 +26,7 @@
     "quickLink": "Liens rapides",
     "aboutUs": "À propos de nous",
     "movies": "Films",
-    "partner": "Partenaire",
+    "partner": "Succursales",
     "help": "Aide",
     "important": "Important",
     "support": "Assistance",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "Saisissez votre email",
     "send": "Envoyer",
     "followUs": "Suivez-nous",
-    "companyInfo": "Réseau de cinémas CineNova"
+    "companyInfo": "Réseau de succursales CineNova"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "Tableau de bord",
       "films": "Films",
       "schedule": "Programmation",
-      "cinemas": "Cinémas",
+      "cinemas": "Succursales",
       "combos": "Combos",
       "vouchers": "Codes promo",
       "bookings": "Réservations",

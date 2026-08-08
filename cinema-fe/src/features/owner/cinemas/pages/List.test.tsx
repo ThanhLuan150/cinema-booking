@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -26,11 +26,6 @@ vi.mock('../../hooks/useMyCinemas', () => ({
   useMyCinemas: (...args: unknown[]) => useMyCinemasMock(...args),
 }));
 
-const createCinemaMutate = vi.fn();
-vi.mock('../../hooks/useCreateCinema', () => ({
-  useCreateCinema: () => ({ mutateAsync: createCinemaMutate, isPending: false }),
-}));
-
 import CinemaList from './List';
 
 function renderPage() {
@@ -50,7 +45,6 @@ function renderPage() {
 describe('Owner Cinemas List', () => {
   beforeEach(() => {
     useMyCinemasMock.mockReset();
-    createCinemaMutate.mockReset();
   });
 
   it('renders the owner cinemas with their status', () => {
@@ -61,23 +55,5 @@ describe('Owner Cinemas List', () => {
     expect(screen.getByText('Cinema A')).toBeInTheDocument();
     expect(screen.getByText('Pending')).toBeInTheDocument();
     expect(screen.getByText('cinemas.manageRooms')).toBeInTheDocument();
-  });
-
-  it('opens the add-cinema modal and submits the form', async () => {
-    useMyCinemasMock.mockReturnValue({ data: { data: [] } });
-    createCinemaMutate.mockResolvedValue({});
-    renderPage();
-
-    fireEvent.click(screen.getByText('cinemas.addButton'));
-    expect(screen.getByText('cinemas.addTitle')).toBeInTheDocument();
-
-    fireEvent.change(document.querySelector('input[name="name"]')!, { target: { value: 'New Cinema' } });
-    fireEvent.change(document.querySelector('input[name="address"]')!, { target: { value: '123 St' } });
-    fireEvent.change(document.querySelector('input[name="city"]')!, { target: { value: 'HN' } });
-    fireEvent.click(screen.getByText('cinemas.submit'));
-
-    await waitFor(() =>
-      expect(createCinemaMutate).toHaveBeenCalledWith({ name: 'New Cinema', address: '123 St', city: 'HN' }),
-    );
   });
 });

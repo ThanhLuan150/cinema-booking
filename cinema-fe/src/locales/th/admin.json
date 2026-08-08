@@ -6,7 +6,7 @@
       "totalRevenue": "รายได้รวม",
       "totalUsers": "ผู้ใช้งาน",
       "totalOwners": "เจ้าของโรงภาพยนตร์",
-      "totalCinemas": "โรงภาพยนตร์",
+      "totalCinemas": "สาขา",
       "totalTicketsSold": "ตั๋วที่ขายได้",
       "totalTransactions": "ธุรกรรม"
     },
@@ -202,7 +202,7 @@
       "สถานะ",
       "การดำเนินการ"
     ],
-    "cinemaSuffix": "{{name}} (โรงภาพยนตร์)",
+    "cinemaSuffix": "{{name}} (สาขา)",
     "hiddenStatus": "ซ่อนอยู่",
     "visibleStatus": "แสดงอยู่",
     "hideButton": "ซ่อน",
@@ -233,12 +233,12 @@
     "refundSuccess": "คืนเงินสำหรับธุรกรรมเรียบร้อยแล้ว"
   },
   "cinemas": {
-    "breadcrumb": "โรงภาพยนตร์",
+    "breadcrumb": "สาขา",
     "headers": [
       "รหัส",
-      "รูปเจ้าของ",
-      "ชื่อโรงภาพยนตร์",
-      "เจ้าของ (รหัส)",
+      "รูปผู้จัดการสาขา",
+      "ชื่อสาขา",
+      "ผู้จัดการสาขา (รหัส)",
       "ที่อยู่",
       "สถานะ",
       "การดำเนินการ"
@@ -251,11 +251,11 @@
     "approveButton": "อนุมัติ",
     "blockButton": "ระงับ",
     "deleteButton": "ลบ",
-    "blockConfirm": "ต้องการระงับโรงภาพยนตร์นี้หรือไม่?",
-    "deleteConfirm": "ต้องการลบโรงภาพยนตร์นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
-    "approveSuccess": "อนุมัติโรงภาพยนตร์เรียบร้อยแล้ว",
-    "blockSuccess": "ระงับโรงภาพยนตร์เรียบร้อยแล้ว",
-    "deleteSuccess": "ลบโรงภาพยนตร์เรียบร้อยแล้ว",
+    "blockConfirm": "ต้องการระงับสาขานี้หรือไม่?",
+    "deleteConfirm": "ต้องการลบสาขานี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+    "approveSuccess": "อนุมัติสาขาเรียบร้อยแล้ว",
+    "blockSuccess": "ระงับสาขาเรียบร้อยแล้ว",
+    "deleteSuccess": "ลบสาขาเรียบร้อยแล้ว",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
       "title": "Add branch + Branch Admin",
@@ -263,7 +263,7 @@
       "passwordLabel": "Password",
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
-      "cinemaNameLabel": "Cinema name",
+      "cinemaNameLabel": "Branch name",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +271,7 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a cinema name."
+        "cinemaNameRequired": "Please enter a branch name."
       }
     }
   },

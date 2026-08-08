@@ -5,8 +5,8 @@
     "movies": "Filme",
     "playing": "Im Kino",
     "upcoming": "Demnächst",
-    "cinemas": "Kinos",
-    "allCinemas": "Alle Kinos"
+    "cinemas": "Filialen",
+    "allCinemas": "Alle Filialen"
   },
   "header": {
     "toggleMenu": "Menü umschalten",
@@ -26,7 +26,7 @@
     "quickLink": "Schnellzugriff",
     "aboutUs": "Über uns",
     "movies": "Filme",
-    "partner": "Partner",
+    "partner": "Filialen",
     "help": "Hilfe",
     "important": "Wichtig",
     "support": "Support",
@@ -38,7 +38,7 @@
     "emailPlaceholder": "E-Mail eingeben",
     "send": "Senden",
     "followUs": "Folgen Sie uns",
-    "companyInfo": "CineNova Kinosystem"
+    "companyInfo": "CineNova Filialsystem"
   },
   "adminLayout": {
     "nav": {
@@ -46,7 +46,7 @@
       "dashboard": "Dashboard",
       "films": "Filme",
       "schedule": "Spielplan",
-      "cinemas": "Kinos",
+      "cinemas": "Filialen",
       "combos": "Combos",
       "vouchers": "Gutscheine",
       "bookings": "Buchungen",

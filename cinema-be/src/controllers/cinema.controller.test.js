@@ -83,7 +83,7 @@ describe('cinema.controller favorites', () => {
   });
 
   it('favoritesMine returns the caller\'s favorited cinemas', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'Fav' });
+    await Cinema.create({ id: 1, owner_id: 1, name: 'Fav', status: 1 });
     await FavoriteCinema.create({ id: 1, cinema_id: 1, account_id: 42 });
     const res = mockRes();
     await cinemaController.favoritesMine({ account: { accountId: 42 } }, res);
@@ -103,6 +103,27 @@ describe('cinema.controller getById', () => {
     const res = mockRes();
     await cinemaController.getById({ params: { id: 999 } }, res);
     expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('returns 404 for a pending (not yet approved) cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 0 });
+    const res = mockRes();
+    await cinemaController.getById({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('returns 404 for a blocked cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 2 });
+    const res = mockRes();
+    await cinemaController.getById({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('returns an approved cinema', async () => {
+    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 1 });
+    const res = mockRes();
+    await cinemaController.getById({ params: { id: 1 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ name: 'A' }));
   });
 });
 
@@ -145,25 +166,26 @@ describe('cinema.controller createBranchAdmin', () => {
 describe('cinema.controller create', () => {
   it('rejects a missing name', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: {}, account: { role: 2, accountId: 1 } }, res);
+    await cinemaController.create({ body: {}, account: { role: 0, accountId: 1 } }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('auto-approves cinemas created by an admin', async () => {
+  it('always creates a pre-approved branch (single company, no pending workflow)', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: { name: 'Admin Cinema' }, account: { role: 0, accountId: 1 } }, res);
-    const created = await Cinema.findOne({ name: 'Admin Cinema' });
+    await cinemaController.create({ body: { name: 'New Branch' }, account: { role: 0, accountId: 1 } }, res);
+    const created = await Cinema.findOne({ name: 'New Branch' });
     expect(created.status).toBe(1);
-    expect(socket.emitToAdmin).not.toHaveBeenCalled();
+    expect(created.owner_id).toBe(1);
   });
 
-  it('leaves an owner-created cinema pending and notifies admins', async () => {
+  it('assigns the given owner_id to the new branch when provided', async () => {
     const res = mockRes();
-    await cinemaController.create({ body: { name: 'Owner Cinema' }, account: { role: 2, accountId: 42 } }, res);
-    const created = await Cinema.findOne({ name: 'Owner Cinema' });
-    expect(created.status).toBe(0);
+    await cinemaController.create(
+      { body: { name: 'New Branch', owner_id: 42 }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    const created = await Cinema.findOne({ name: 'New Branch' });
     expect(created.owner_id).toBe(42);
-    expect(socket.emitToAdmin).toHaveBeenCalledWith('cinema:pending', expect.objectContaining({ name: 'Owner Cinema' }));
   });
 });
 
