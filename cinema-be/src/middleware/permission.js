@@ -1,6 +1,6 @@
 const roleRepository = require('../repositories/role.repository');
 const rolePermissionRepository = require('../repositories/rolePermission.repository');
-const cinemaRepository = require('../repositories/cinema.repository');
+const branchRepository = require('../repositories/branch.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const positionPermissionRepository = require('../repositories/positionPermission.repository');
 
@@ -31,32 +31,36 @@ function requirePermission(code) {
     }
   };
 }
-function requireCinemaAccess(resolveCinemaId) {
+
+// Branch-scope gate: SUPER_ADMIN (ALL scope) bypasses; a Branch Admin must own the target
+// branch, an Employee must be actively staffed there. Enforces "cannot access/modify/view
+// another branch's data" for BRANCH-scoped roles.
+function requireBranchAccess(resolveBranchId) {
   return async (req, res, next) => {
     try {
-      const cinemaId = await resolveCinemaId(req);
-      if (cinemaId === null || cinemaId === undefined || Number.isNaN(cinemaId)) {
-        return res.status(404).json({ message: 'Cinema not found' });
+      const branchId = await resolveBranchId(req);
+      if (branchId === null || branchId === undefined || Number.isNaN(branchId)) {
+        return res.status(404).json({ message: 'Branch not found' });
       }
 
       if (req.permissionScope === 'ALL') {
-        req.cinemaId = cinemaId;
+        req.branchId = branchId;
         return next();
       }
 
-      const cinema = await cinemaRepository.findById(cinemaId);
-      if (!cinema) return res.status(404).json({ message: 'Cinema not found' });
+      const branch = await branchRepository.findById(branchId);
+      if (!branch) return res.status(404).json({ message: 'Branch not found' });
 
-      if (cinema.owner_id === req.account.accountId) {
-        req.cinemaId = cinemaId;
-        req.cinema = cinema;
+      if (branch.owner_id === req.account.accountId) {
+        req.branchId = branchId;
+        req.branch = branch;
         return next();
       }
 
-      const employee = await employeeRepository.findActiveByAccountAndCinema(req.account.accountId, cinemaId);
+      const employee = await employeeRepository.findActiveByAccountAndBranch(req.account.accountId, branchId);
       if (employee) {
-        req.cinemaId = cinemaId;
-        req.cinema = cinema;
+        req.branchId = branchId;
+        req.branch = branch;
         req.employee = employee;
         return next();
       }
@@ -68,4 +72,4 @@ function requireCinemaAccess(resolveCinemaId) {
   };
 }
 
-module.exports = { requirePermission, requireCinemaAccess };
+module.exports = { requirePermission, requireBranchAccess };

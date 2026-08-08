@@ -2,7 +2,7 @@ const Invoice = require('../models/Invoice');
 const Ticket = require('../models/Ticket');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Account = require('../models/Account');
 
 function groupRevenueByDay(invoices) {
@@ -17,12 +17,12 @@ function groupRevenueByDay(invoices) {
 }
 
 async function findOwnerScopedCinemas({ role, accountId }) {
-  const cinemaFilter = role === 0 ? {} : { owner_id: accountId };
-  return Cinema.find(cinemaFilter).sort({ id: 1 });
+  const branchFilter = role === 0 ? {} : { owner_id: accountId };
+  return Branch.find(branchFilter).sort({ id: 1 });
 }
 
-async function getOwnerStats(cinemaIds) {
-  const rooms = await Room.find({ cinema_id: { $in: cinemaIds } });
+async function getOwnerStats(branchIds) {
+  const rooms = await Room.find({ cinema_id: { $in: branchIds } });
   const roomIds = rooms.map((r) => r.id);
   const schedules = await Schedule.find({ room_id: { $in: roomIds } });
   const scheduleIds = schedules.map((s) => s.id);
@@ -49,7 +49,7 @@ async function getAdminTotals() {
   const [totalUsers, totalOwners, totalCinemas, totalTicketsSold, invoices] = await Promise.all([
     Account.countDocuments({ role: 1 }),
     Account.countDocuments({ role: 2 }),
-    Cinema.countDocuments(),
+    Branch.countDocuments(),
     Ticket.countDocuments({ status: 0 }),
     Invoice.find({ status: { $ne: 0 } }),
   ]);

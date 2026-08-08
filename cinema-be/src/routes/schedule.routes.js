@@ -2,7 +2,7 @@ const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
 const { requirePermission } = require('../middleware/permission');
-const { requireCinemaOwnership } = require('../middleware/ownership');
+const { requireBranchOwnership } = require('../middleware/ownership');
 const roomRepository = require('../repositories/room.repository');
 const scheduleRepository = require('../repositories/schedule.repository');
 const scheduleController = require('../controllers/schedule.controller');
@@ -22,7 +22,7 @@ router.post(
   '/',
   requireAuth,
   requirePermission('schedule.create'),
-  requireCinemaOwnership((req) => roomRepository.findCinemaIdByRoomId(req.body.room_id)),
+  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.body.room_id)),
   asyncHandler(scheduleController.create),
 );
 
@@ -31,7 +31,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('schedule.update'),
-  requireCinemaOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.update),
 );
 
@@ -40,7 +40,7 @@ router.patch(
   '/:id/cancel',
   requireAuth,
   requirePermission('schedule.cancel'),
-  requireCinemaOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.cancel),
 );
 
@@ -49,7 +49,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('schedule.delete'),
-  requireCinemaOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.remove),
 );
 

@@ -14,13 +14,13 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('room.controller', () => {
-  it('list filters by cinemaId when provided', async () => {
+  it('list filters by branchId when provided', async () => {
     await Room.create([
       { id: 1, cinema_id: 1, name: 'R1' },
       { id: 2, cinema_id: 2, name: 'R2' },
     ]);
     const res = mockRes();
-    await roomController.list({ query: { cinemaId: '1' } }, res);
+    await roomController.list({ query: { branchId: '1' } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 

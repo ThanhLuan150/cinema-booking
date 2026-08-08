@@ -17,12 +17,12 @@ function wrapper({ children }: { children: React.ReactNode }) {
 describe('useCinemaFavoriteCount', () => {
   beforeEach(() => getCinemaFavoriteCountMock.mockReset());
 
-  it('is disabled when cinemaId is undefined', () => {
+  it('is disabled when branchId is undefined', () => {
     const { result } = renderHook(() => useCinemaFavoriteCount(undefined), { wrapper });
     expect(result.current.fetchStatus).toBe('idle');
   });
 
-  it('fetches the favorite count when cinemaId is provided', async () => {
+  it('fetches the favorite count when branchId is provided', async () => {
     getCinemaFavoriteCountMock.mockResolvedValue(4);
     const { result } = renderHook(() => useCinemaFavoriteCount(1), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

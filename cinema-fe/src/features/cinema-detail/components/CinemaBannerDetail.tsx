@@ -76,7 +76,7 @@ const CinemaBannerDetail = () => {
               <i className="fa-solid fa-clapperboard" />
               {t('bannerDetail.viewShowtimes')}
             </a>
-            <FavoriteCinemaButton cinemaId={cinema.id} />
+            <FavoriteCinemaButton branchId={cinema.id} />
           </div>
         </div>
       </div>

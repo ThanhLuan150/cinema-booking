@@ -33,7 +33,7 @@ export const ROUTES = {
   adminReviews: '/AdminReviews',
   ownerDashboard: '/OwnerDashboard',
   ownerCinemas: '/OwnerCinemas',
-  ownerCinemaRooms: (cinemaId: string | number) => `/OwnerCinemas/${cinemaId}/Rooms`,
+  ownerCinemaRooms: (branchId: string | number) => `/OwnerCinemas/${branchId}/Rooms`,
   ownerRooms: '/OwnerCinemas/Rooms',
   ownerCombos: '/OwnerCombos',
   ownerVouchers: '/OwnerVouchers',

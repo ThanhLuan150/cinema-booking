@@ -1,9 +1,9 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
-const { requirePermission, requireCinemaAccess } = require('./permission');
+const { requirePermission, requireBranchAccess } = require('./permission');
 const Role = require('../models/Role');
 const Permission = require('../models/Permission');
 const RolePermission = require('../models/RolePermission');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 const Position = require('../models/Position');
 const PositionPermission = require('../models/PositionPermission');
@@ -70,11 +70,11 @@ describe('requirePermission', () => {
   });
 });
 
-describe('requireCinemaAccess', () => {
-  it('returns 404 when the cinema cannot be resolved', async () => {
+describe('requireBranchAccess', () => {
+  it('returns 404 when the branch cannot be resolved', async () => {
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => null)({ account: { role: 0 } }, res, next);
+    await requireBranchAccess(() => null)({ account: { role: 0 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
@@ -82,69 +82,69 @@ describe('requireCinemaAccess', () => {
     const res = mockRes();
     const next = jest.fn();
     const req = { account: { role: 0, accountId: 99 }, permissionScope: 'ALL' };
-    await requireCinemaAccess(() => 1)(req, res, next);
+    await requireBranchAccess(() => 1)(req, res, next);
     expect(next).toHaveBeenCalledWith();
-    expect(req.cinemaId).toBe(1);
+    expect(req.branchId).toBe(1);
   });
 
-  it('returns 404 when the cinema does not exist for a non-admin role', async () => {
+  it('returns 404 when the branch does not exist for a non-admin role', async () => {
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => 1)({ account: { role: 2, accountId: 1 } }, res, next);
+    await requireBranchAccess(() => 1)({ account: { role: 2, accountId: 1 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it('forbids a branch admin who does not own the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('forbids a branch admin who does not own the branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => 1)({ account: { role: 2, accountId: 1 } }, res, next);
+    await requireBranchAccess(() => 1)({ account: { role: 2, accountId: 1 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  it('allows a branch admin who owns the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('allows a branch admin who owns the branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     const next = jest.fn();
     const req = { account: { role: 2, accountId: 42 } };
-    await requireCinemaAccess(() => 1)(req, res, next);
+    await requireBranchAccess(() => 1)(req, res, next);
     expect(next).toHaveBeenCalledWith();
-    expect(req.cinema.owner_id).toBe(42);
+    expect(req.branch.owner_id).toBe(42);
   });
 
-  it('forbids an employee not staffed at the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('forbids an employee not staffed at the branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => 1)({ account: { role: 3, accountId: 7 } }, res, next);
+    await requireBranchAccess(() => 1)({ account: { role: 3, accountId: 7 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  it('allows an employee actively staffed at the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('allows an employee actively staffed at the branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 1 });
     const res = mockRes();
     const next = jest.fn();
     const req = { account: { role: 3, accountId: 7 } };
-    await requireCinemaAccess(() => 1)(req, res, next);
+    await requireBranchAccess(() => 1)(req, res, next);
     expect(next).toHaveBeenCalledWith();
     expect(req.employee.user_id).toBe(7);
   });
 
-  it('forbids an employee deactivated at the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('forbids an employee deactivated at the branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 0 });
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => 1)({ account: { role: 3, accountId: 7 } }, res, next);
+    await requireBranchAccess(() => 1)({ account: { role: 3, accountId: 7 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
   it('forbids an unknown role number', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     const next = jest.fn();
-    await requireCinemaAccess(() => 1)({ account: { role: 9, accountId: 1 } }, res, next);
+    await requireBranchAccess(() => 1)({ account: { role: 9, accountId: 1 } }, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
   });
 });

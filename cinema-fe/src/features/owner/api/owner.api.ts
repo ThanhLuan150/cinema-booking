@@ -17,8 +17,8 @@ export const getMyCinemas = (params?: PaginationParams) =>
 export const updateCinema = (id: number | string, payload: Partial<CinemaFormValues>) =>
   apiClient.put(`/cinema/${id}`, payload);
 
-export const getRoomsByCinema = (cinemaId: number | string | undefined, params?: PaginationParams) =>
-  apiClient.get<PaginatedResponse<Room>>('/room', { params: { cinemaId, ...params } }).then((res) => res.data);
+export const getRoomsByCinema = (branchId: number | string | undefined, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Room>>('/room', { params: { branchId, ...params } }).then((res) => res.data);
 
 export const createRoom = (payload: { name: string; cinema_id: number }) => apiClient.post('/room', payload);
 
@@ -36,8 +36,8 @@ export const generateSeatMap = (roomId: number | string, payload: GenerateSeatMa
 export const updateSeat = (id: number | string, payload: { is_locked: boolean }) =>
   apiClient.put(`/seat/${id}`, payload);
 
-export const getOwnerCombos = (cinemaId?: number | string, params?: PaginationParams) =>
-  apiClient.get<PaginatedResponse<Combo>>('/combo', { params: { cinemaId, ...params } }).then((res) => res.data);
+export const getOwnerCombos = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Combo>>('/combo', { params: { branchId, ...params } }).then((res) => res.data);
 
 export const createCombo = (payload: Omit<ComboFormValues, 'price'> & { price: number }) =>
   apiClient.post('/combo', payload);
@@ -47,8 +47,8 @@ export const updateCombo = (id: number | string, payload: Record<string, unknown
 
 export const deleteCombo = (id: number | string) => apiClient.delete(`/combo/${id}`);
 
-export const getOwnerVouchers = (cinemaId?: number | string, params?: PaginationParams) =>
-  apiClient.get<PaginatedResponse<Voucher>>('/voucher', { params: { cinemaId, ...params } }).then((res) => res.data);
+export const getOwnerVouchers = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Voucher>>('/voucher', { params: { branchId, ...params } }).then((res) => res.data);
 
 export const createVoucher = (
   payload: Omit<VoucherFormValues, 'discount_value' | 'min_order_value'> & {
@@ -62,15 +62,15 @@ export const updateVoucher = (id: number | string, payload: Record<string, unkno
 
 export const deleteVoucher = (id: number | string) => apiClient.delete(`/voucher/${id}`);
 
-export const getOwnerDashboard = (cinemaId?: number | string) =>
-  apiClient.get<OwnerDashboardStats>('/owner/dashboard', { params: { cinemaId } }).then((res) => res.data);
+export const getOwnerDashboard = (branchId?: number | string) =>
+  apiClient.get<OwnerDashboardStats>('/owner/dashboard', { params: { branchId } }).then((res) => res.data);
 
 export const lookupInvoiceByCode = (code: string) =>
   apiClient.get<LookedUpInvoice>(`/invoice/lookup/${code}`).then((res) => res.data);
 
-export const getMyEmployees = (cinemaId: number | string, params?: PaginationParams) =>
+export const getMyEmployees = (branchId: number | string, params?: PaginationParams) =>
   apiClient
-    .get<PaginatedResponse<Employee>>('/employee', { params: { cinemaId, ...params } })
+    .get<PaginatedResponse<Employee>>('/employee', { params: { branchId, ...params } })
     .then((res) => res.data);
 
 export const createEmployee = (

@@ -1,32 +1,27 @@
 const Schedule = require('../models/Schedule');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
-
-// The set of cinema (branch) ids this account may act on under BRANCH scope: any cinema it
-// owns, plus the single cinema it's actively staffed at (if any). Used to filter showtime
-// listings for a Branch Admin/Employee without hardcoding a role check — the caller decides
-// whether BRANCH scope applies (via req.permissionScope) and only then asks "which branches".
-async function resolveAccessibleCinemaIds(accountId) {
-  const [ownedCinemas, employee] = await Promise.all([
-    Cinema.find({ owner_id: accountId }, 'id'),
+async function resolveAccessiblebranchIds(accountId) {
+  const [ownedBranches, employee] = await Promise.all([
+    Branch.find({ owner_id: accountId }, 'id'),
     Employee.findOne({ user_id: accountId, status: 1 }),
   ]);
-  const ids = new Set(ownedCinemas.map((c) => c.id));
+  const ids = new Set(ownedBranches.map((c) => c.id));
   if (employee) ids.add(employee.branch_id);
   return [...ids];
 }
 
 // Lists schedules for management. `scope` is 'ALL' (super admin — no restriction) or 'BRANCH'
-// (restricted to `accessibleCinemaIds`). `cinemaId`/`roomId` narrow the result further.
-async function findFiltered({ scope, accessibleCinemaIds = [], cinemaId, roomId, skip = 0, limit = 20 }) {
+// (restricted to `accessiblebranchIds`). `branchId`/`roomId` narrow the result further.
+async function findFiltered({ scope, accessiblebranchIds = [], branchId, roomId, skip = 0, limit = 20 }) {
   const filter = {};
   if (roomId) filter.room_id = Number(roomId);
-  if (cinemaId) filter.cinema_id = Number(cinemaId);
+  if (branchId) filter.cinema_id = Number(branchId);
 
   if (scope !== 'ALL') {
-    const allowed = cinemaId
-      ? accessibleCinemaIds.filter((id) => id === Number(cinemaId))
-      : accessibleCinemaIds;
+    const allowed = branchId
+      ? accessiblebranchIds.filter((id) => id === Number(branchId))
+      : accessiblebranchIds;
     filter.cinema_id = { $in: allowed };
   }
 
@@ -41,7 +36,7 @@ async function findById(id) {
   return Schedule.findOne({ id: Number(id) });
 }
 
-async function findCinemaIdByScheduleId(id) {
+async function findbranchIdByScheduleId(id) {
   const schedule = await Schedule.findOne({ id: Number(id) });
   return schedule ? schedule.cinema_id : null;
 }
@@ -74,10 +69,10 @@ async function remove(id) {
 }
 
 module.exports = {
-  resolveAccessibleCinemaIds,
+  resolveAccessiblebranchIds,
   findFiltered,
   findById,
-  findCinemaIdByScheduleId,
+  findbranchIdByScheduleId,
   findOverlapping,
   create,
   updateFields,

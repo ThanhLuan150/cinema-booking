@@ -5,7 +5,7 @@ import reducer, {
   applyVoucherSuccess,
   clearVoucher,
   resetBookingSelection,
-  setCinemaId,
+  setbranchId,
   setMomoPayUrl,
   setPaymentResult,
   setScheduleId,
@@ -33,11 +33,11 @@ describe('bookingSlice', () => {
     expect(state.timeBegin).toBe('10:00');
   });
 
-  it('setScheduleId and setCinemaId update their fields', () => {
+  it('setScheduleId and setbranchId update their fields', () => {
     let state = reducer(initialState, setScheduleId(42));
     expect(state.scheduleId).toBe(42);
-    state = reducer(state, setCinemaId(7));
-    expect(state.cinemaId).toBe(7);
+    state = reducer(state, setbranchId(7));
+    expect(state.branchId).toBe(7);
   });
 
   it('setSelectedDay resets the selected time', () => {

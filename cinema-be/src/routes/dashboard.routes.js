@@ -6,7 +6,7 @@ const dashboardController = require('../controllers/dashboard.controller');
 
 const router = express.Router();
 
-// GET /api/owner/dashboard?cinemaId= -> revenue/tickets/occupancy scoped to the caller's cinema(s)
+// GET /api/owner/dashboard?branchId= -> revenue/tickets/occupancy scoped to the caller's cinema(s)
 router.get('/owner/dashboard', requireAuth, requirePermission('dashboard.view'), asyncHandler(dashboardController.ownerDashboard));
 
 // GET /api/admin/dashboard -> system-wide totals (dashboard.viewSystem permission — super admin only)

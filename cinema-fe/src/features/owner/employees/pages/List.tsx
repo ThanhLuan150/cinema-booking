@@ -23,11 +23,11 @@ import {
   useResetEmployeePassword,
   useUpdateEmployee,
 } from '../../hooks/useEmployeeMutations';
-import { closeAddModal, openAddModal, setSelectedCinemaId } from '../../store/ownerEmployeesSlice';
+import { closeAddModal, openAddModal, setSelectedbranchId } from '../../store/ownerEmployeesSlice';
 import type { EmployeeFormValues } from '../../types/owner.types';
 
-const emptyForm = (cinemaId: string): EmployeeFormValues => ({
-  cinema_id: cinemaId,
+const emptyForm = (branchId: string): EmployeeFormValues => ({
+  cinema_id: branchId,
   email: '',
   password: '',
   name: '',
@@ -42,16 +42,16 @@ function EmployeeList() {
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data: positions } = usePositions();
-  const selectedCinemaId = useAppSelector((state) => state.ownerEmployees.selectedCinemaId);
+  const selectedbranchId = useAppSelector((state) => state.ownerEmployees.selectedbranchId);
   const { showAddModal } = useAppSelector((state) => state.ownerEmployees);
 
   useEffect(() => {
-    if (!selectedCinemaId && cinemas.length > 0) {
-      dispatch(setSelectedCinemaId(String(cinemas[0].id)));
+    if (!selectedbranchId && cinemas.length > 0) {
+      dispatch(setSelectedbranchId(String(cinemas[0].id)));
     }
-  }, [cinemas, selectedCinemaId, dispatch]);
+  }, [cinemas, selectedbranchId, dispatch]);
 
-  const { data } = useMyEmployees(selectedCinemaId || undefined, page, DEFAULT_PAGE_SIZE);
+  const { data } = useMyEmployees(selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE);
   const employees = data?.data ?? [];
   const createEmployeeMutation = useCreateEmployee();
   const updateEmployeeMutation = useUpdateEmployee();
@@ -127,8 +127,8 @@ function EmployeeList() {
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select
-            value={selectedCinemaId}
-            onChange={(e) => dispatch(setSelectedCinemaId(e.target.value))}
+            value={selectedbranchId}
+            onChange={(e) => dispatch(setSelectedbranchId(e.target.value))}
             placeholder={t('employees.cinemaPlaceholder')}
             options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
           />
@@ -141,7 +141,7 @@ function EmployeeList() {
       {showAddModal && (
         <Modal open onClose={() => dispatch(closeAddModal())} title={t('employees.addTitle')}>
           <Formik<EmployeeFormValues>
-            initialValues={emptyForm(selectedCinemaId)}
+            initialValues={emptyForm(selectedbranchId)}
             enableReinitialize
             validate={validateEmployee}
             onSubmit={handleSubmit}

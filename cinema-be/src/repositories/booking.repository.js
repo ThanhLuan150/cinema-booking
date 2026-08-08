@@ -4,7 +4,7 @@ const Invoice = require('../models/Invoice');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
 const Room = require('../models/Room');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 const nextId = require('../utils/nextId');
 const { sendInvoiceEmail } = require('../utils/mailer');
@@ -90,9 +90,9 @@ async function finalizeMomoOrder(orderId, orderPayload) {
   if (firstTicket) {
     const schedule = await Schedule.findOne({ id: firstTicket.schedule_id });
     const room = schedule ? await Room.findOne({ id: schedule.room_id }) : null;
-    const cinema = room ? await Cinema.findOne({ id: room.cinema_id }) : null;
-    if (cinema) {
-      emitToOwner(cinema.owner_id, 'booking:new', { cinemaId: cinema.id, amount: totalPrice });
+    const branch = room ? await Branch.findOne({ id: room.cinema_id }) : null;
+    if (branch) {
+      emitToOwner(branch.owner_id, 'booking:new', { branchId: branch.id, amount: totalPrice });
     }
   }
 
@@ -157,7 +157,7 @@ async function findRoomById(id) {
 }
 
 async function findCinemaById(id) {
-  return Cinema.findOne({ id });
+  return Branch.findOne({ id });
 }
 
 async function findMovieById(id) {
@@ -166,7 +166,7 @@ async function findMovieById(id) {
 
 // Walks Invoice -> Ticket -> Schedule -> Room -> Cinema to resolve the owning cinema,
 // used to scope check-in/counter-sale access to the invoice's actual branch.
-async function findCinemaIdByInvoiceId(id) {
+async function findbranchIdByInvoiceId(id) {
   const invoice = await Invoice.findOne({ id: Number(id) });
   if (!invoice) return null;
   const ticket = await Ticket.findOne({ id: invoice.ticket_id });
@@ -177,7 +177,7 @@ async function findCinemaIdByInvoiceId(id) {
   return room ? room.cinema_id : null;
 }
 
-async function findCinemaIdByTicketId(ticketId) {
+async function findbranchIdByTicketId(ticketId) {
   const ticket = await Ticket.findOne({ id: Number(ticketId) });
   if (!ticket) return null;
   const schedule = await Schedule.findOne({ id: ticket.schedule_id });
@@ -213,7 +213,7 @@ module.exports = {
   findRoomById,
   findCinemaById,
   findMovieById,
-  findCinemaIdByInvoiceId,
-  findCinemaIdByTicketId,
+  findbranchIdByInvoiceId,
+  findbranchIdByTicketId,
   createCounterSale,
 };

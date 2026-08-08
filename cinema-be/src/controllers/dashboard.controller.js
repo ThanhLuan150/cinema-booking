@@ -1,22 +1,22 @@
 const dashboardRepository = require('../repositories/dashboard.repository');
 
-// GET /api/owner/dashboard?cinemaId= -> revenue/tickets/occupancy scoped to the caller's cinema(s)
+// GET /api/owner/dashboard?branchId= -> revenue/tickets/occupancy scoped to the caller's cinema(s)
 async function ownerDashboard(req, res) {
   const cinemas = await dashboardRepository.findOwnerScopedCinemas({
     role: req.account.role,
     accountId: req.account.accountId,
   });
 
-  let scopedCinemaIds = cinemas.map((c) => c.id);
-  if (req.query.cinemaId) {
-    const requestedId = Number(req.query.cinemaId);
-    if (!scopedCinemaIds.includes(requestedId)) {
+  let scopedbranchIds = cinemas.map((c) => c.id);
+  if (req.query.branchId) {
+    const requestedId = Number(req.query.branchId);
+    if (!scopedbranchIds.includes(requestedId)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    scopedCinemaIds = [requestedId];
+    scopedbranchIds = [requestedId];
   }
 
-  const stats = await dashboardRepository.getOwnerStats(scopedCinemaIds);
+  const stats = await dashboardRepository.getOwnerStats(scopedbranchIds);
 
   res.json({
     cinemas: cinemas.map((c) => ({ id: c.id, name: c.name, status: c.status })),

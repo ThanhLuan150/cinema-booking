@@ -3,7 +3,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seatRoutes = require('./seat.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 
 const app = buildTestApp('/api/seat', seatRoutes);
@@ -25,7 +25,7 @@ describe('seat.routes wiring', () => {
   });
 
   it('POST /api/seat/room/:roomId/generate forbids a non-owning theater staff', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     const res = await request(app)
       .post('/api/seat/room/1/generate')
@@ -35,7 +35,7 @@ describe('seat.routes wiring', () => {
   });
 
   it('POST /api/seat/room/:roomId/generate allows the owning theater staff', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     const res = await request(app)
       .post('/api/seat/room/1/generate')

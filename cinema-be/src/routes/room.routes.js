@@ -2,13 +2,13 @@ const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
 const { requirePermission } = require('../middleware/permission');
-const { requireCinemaOwnership } = require('../middleware/ownership');
+const { requireBranchOwnership } = require('../middleware/ownership');
 const roomRepository = require('../repositories/room.repository');
 const roomController = require('../controllers/room.controller');
 
 const router = express.Router();
 
-// GET /api/room?cinemaId=
+// GET /api/room?branchId=
 router.get('/', asyncHandler(roomController.list));
 
 // POST /api/room { name, cinema_id } (room.create permission, owner-scoped)
@@ -16,7 +16,7 @@ router.post(
   '/',
   requireAuth,
   requirePermission('room.create'),
-  requireCinemaOwnership((req) => Number(req.body.cinema_id)),
+  requireBranchOwnership((req) => Number(req.body.cinema_id)),
   asyncHandler(roomController.create),
 );
 
@@ -25,7 +25,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('room.update'),
-  requireCinemaOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.id)),
+  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.params.id)),
   asyncHandler(roomController.update),
 );
 
@@ -34,7 +34,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('room.delete'),
-  requireCinemaOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.id)),
+  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.params.id)),
   asyncHandler(roomController.remove),
 );
 

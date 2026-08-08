@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getOwnerDashboard } from '../api/owner.api';
 
-export function useOwnerDashboardStats(cinemaId: string | undefined) {
+export function useOwnerDashboardStats(branchId: string | undefined) {
   return useQuery({
-    queryKey: ['ownerDashboardStats', cinemaId || undefined],
-    queryFn: () => getOwnerDashboard(cinemaId || undefined),
+    queryKey: ['ownerDashboardStats', branchId || undefined],
+    queryFn: () => getOwnerDashboard(branchId || undefined),
   });
 }

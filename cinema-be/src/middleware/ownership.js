@@ -1,26 +1,29 @@
-const cinemaRepository = require('../repositories/cinema.repository');
+const branchRepository = require('../repositories/branch.repository');
 
-function requireCinemaOwnership(resolveCinemaId) {
+// Stricter branch-scope gate than requireBranchAccess: SUPER_ADMIN (ALL scope) bypasses,
+// otherwise the caller must be the branch's assigned owner (Branch Admin) — an Employee
+// merely staffed there is not enough. Enforces "cannot modify/change scope of another branch".
+function requireBranchOwnership(resolveBranchId) {
   return async (req, res, next) => {
     try {
-      const cinemaId = await resolveCinemaId(req);
-      if (cinemaId === null || cinemaId === undefined || Number.isNaN(cinemaId)) {
-        return res.status(404).json({ message: 'Cinema not found' });
+      const branchId = await resolveBranchId(req);
+      if (branchId === null || branchId === undefined || Number.isNaN(branchId)) {
+        return res.status(404).json({ message: 'Branch not found' });
       }
 
       if (req.permissionScope === 'ALL') {
-        req.cinemaId = cinemaId;
+        req.branchId = branchId;
         return next();
       }
 
-      const cinema = await cinemaRepository.findById(cinemaId);
-      if (!cinema) return res.status(404).json({ message: 'Cinema not found' });
-      if (cinema.owner_id !== req.account.accountId) {
+      const branch = await branchRepository.findById(branchId);
+      if (!branch) return res.status(404).json({ message: 'Branch not found' });
+      if (branch.owner_id !== req.account.accountId) {
         return res.status(403).json({ message: 'Forbidden' });
       }
 
-      req.cinemaId = cinemaId;
-      req.cinema = cinema;
+      req.branchId = branchId;
+      req.branch = branch;
       next();
     } catch (err) {
       next(err);
@@ -28,4 +31,4 @@ function requireCinemaOwnership(resolveCinemaId) {
   };
 }
 
-module.exports = { requireCinemaOwnership };
+module.exports = { requireBranchOwnership };

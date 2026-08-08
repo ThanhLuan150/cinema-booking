@@ -136,7 +136,7 @@ describe('booking.repository', () => {
       expect(mailer.sendInvoiceEmail).toHaveBeenCalledWith('buyer@example.com', expect.objectContaining({
         seats: ['A1', 'A2'],
       }));
-      expect(socket.emitToOwner).toHaveBeenCalledWith(77, 'booking:new', expect.objectContaining({ cinemaId: 1 }));
+      expect(socket.emitToOwner).toHaveBeenCalledWith(77, 'booking:new', expect.objectContaining({ branchId: 1 }));
     });
 
     it('increments used_count when a voucher code is present', async () => {
@@ -231,19 +231,19 @@ describe('booking.repository', () => {
     expect(await bookingRepository.findMovieById(1)).not.toBeNull();
   });
 
-  it('findCinemaIdByInvoiceId / findCinemaIdByTicketId walk the invoice/ticket chain to a cinema', async () => {
+  it('findbranchIdByInvoiceId / findbranchIdByTicketId walk the invoice/ticket chain to a cinema', async () => {
     await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
     await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1 });
 
-    expect(await bookingRepository.findCinemaIdByInvoiceId(1)).toBe(1);
-    expect(await bookingRepository.findCinemaIdByTicketId(1)).toBe(1);
+    expect(await bookingRepository.findbranchIdByInvoiceId(1)).toBe(1);
+    expect(await bookingRepository.findbranchIdByTicketId(1)).toBe(1);
   });
 
-  it('findCinemaIdByInvoiceId returns null for an unknown invoice', async () => {
-    expect(await bookingRepository.findCinemaIdByInvoiceId(999)).toBeNull();
+  it('findbranchIdByInvoiceId returns null for an unknown invoice', async () => {
+    expect(await bookingRepository.findbranchIdByInvoiceId(999)).toBeNull();
   });
 
   it('createCounterSale records a paid invoice with created_by set', async () => {

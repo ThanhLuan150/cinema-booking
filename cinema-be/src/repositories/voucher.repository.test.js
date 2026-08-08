@@ -8,12 +8,12 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('voucher.repository', () => {
-  it('findOwnedCinemaIds returns cinema ids owned by the account', async () => {
+  it('findOwnedbranchIds returns cinema ids owned by the account', async () => {
     await Cinema.create([
       { id: 1, owner_id: 42, name: 'A' },
       { id: 2, owner_id: 99, name: 'B' },
     ]);
-    expect(await voucherRepository.findOwnedCinemaIds(42)).toEqual([1]);
+    expect(await voucherRepository.findOwnedbranchIds(42)).toEqual([1]);
   });
 
   it('findFiltered paginates on an arbitrary filter', async () => {

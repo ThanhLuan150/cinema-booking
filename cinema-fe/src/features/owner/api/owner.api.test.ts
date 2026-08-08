@@ -35,9 +35,9 @@ describe('owner.api', () => {
     expect(putMock).toHaveBeenCalledWith('/cinema/1', { name: 'New' });
   });
 
-  it('getRoomsByCinema gets /room with cinemaId param', async () => {
+  it('getRoomsByCinema gets /room with branchId param', async () => {
     await ownerApi.getRoomsByCinema(1, { limit: 100 } as any);
-    expect(getMock).toHaveBeenCalledWith('/room', { params: { cinemaId: 1, limit: 100 } });
+    expect(getMock).toHaveBeenCalledWith('/room', { params: { branchId: 1, limit: 100 } });
   });
 
   it('createRoom posts to /room', async () => {
@@ -72,9 +72,9 @@ describe('owner.api', () => {
     expect(putMock).toHaveBeenCalledWith('/seat/1', { is_locked: true });
   });
 
-  it('getOwnerCombos gets /combo with cinemaId param', async () => {
+  it('getOwnerCombos gets /combo with branchId param', async () => {
     await ownerApi.getOwnerCombos(1, { page: 1 } as any);
-    expect(getMock).toHaveBeenCalledWith('/combo', { params: { cinemaId: 1, page: 1 } });
+    expect(getMock).toHaveBeenCalledWith('/combo', { params: { branchId: 1, page: 1 } });
   });
 
   it('createCombo posts to /combo', async () => {
@@ -93,9 +93,9 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/combo/1');
   });
 
-  it('getOwnerVouchers gets /voucher with cinemaId param', async () => {
+  it('getOwnerVouchers gets /voucher with branchId param', async () => {
     await ownerApi.getOwnerVouchers(1, { page: 1 } as any);
-    expect(getMock).toHaveBeenCalledWith('/voucher', { params: { cinemaId: 1, page: 1 } });
+    expect(getMock).toHaveBeenCalledWith('/voucher', { params: { branchId: 1, page: 1 } });
   });
 
   it('createVoucher posts to /voucher', async () => {
@@ -114,9 +114,9 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/voucher/1');
   });
 
-  it('getOwnerDashboard gets /owner/dashboard with cinemaId param', async () => {
+  it('getOwnerDashboard gets /owner/dashboard with branchId param', async () => {
     await ownerApi.getOwnerDashboard(1);
-    expect(getMock).toHaveBeenCalledWith('/owner/dashboard', { params: { cinemaId: 1 } });
+    expect(getMock).toHaveBeenCalledWith('/owner/dashboard', { params: { branchId: 1 } });
   });
 
   it('lookupInvoiceByCode gets /invoice/lookup/:code', async () => {
@@ -124,9 +124,9 @@ describe('owner.api', () => {
     expect(getMock).toHaveBeenCalledWith('/invoice/lookup/ABC');
   });
 
-  it('getMyEmployees gets /employee with cinemaId param', async () => {
+  it('getMyEmployees gets /employee with branchId param', async () => {
     await ownerApi.getMyEmployees(1, { page: 1 } as any);
-    expect(getMock).toHaveBeenCalledWith('/employee', { params: { cinemaId: 1, page: 1 } });
+    expect(getMock).toHaveBeenCalledWith('/employee', { params: { branchId: 1, page: 1 } });
   });
 
   it('createEmployee posts to /employee', async () => {

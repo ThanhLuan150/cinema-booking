@@ -126,11 +126,11 @@ describe('cinema.repository', () => {
     });
 
     it('findFavorite/createFavorite/deleteFavorite manage a single favorite', async () => {
-      expect(await cinemaRepository.findFavorite({ cinemaId: 1, accountId: 42 })).toBeNull();
-      await cinemaRepository.createFavorite({ id: 1, cinemaId: 1, accountId: 42 });
-      expect(await cinemaRepository.findFavorite({ cinemaId: 1, accountId: 42 })).not.toBeNull();
-      await cinemaRepository.deleteFavorite({ cinemaId: 1, accountId: 42 });
-      expect(await cinemaRepository.findFavorite({ cinemaId: 1, accountId: 42 })).toBeNull();
+      expect(await cinemaRepository.findFavorite({ branchId: 1, accountId: 42 })).toBeNull();
+      await cinemaRepository.createFavorite({ id: 1, branchId: 1, accountId: 42 });
+      expect(await cinemaRepository.findFavorite({ branchId: 1, accountId: 42 })).not.toBeNull();
+      await cinemaRepository.deleteFavorite({ branchId: 1, accountId: 42 });
+      expect(await cinemaRepository.findFavorite({ branchId: 1, accountId: 42 })).toBeNull();
     });
   });
 

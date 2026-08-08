@@ -29,21 +29,21 @@ describe('FavoriteCinemaButton', () => {
 
   it('favorites the cinema when not yet favorited', () => {
     useFavoriteCinemasMock.mockReturnValue({ data: [] });
-    render(<FavoriteCinemaButton cinemaId={5} />);
+    render(<FavoriteCinemaButton branchId={5} />);
     fireEvent.click(screen.getByRole('button'));
     expect(favoriteMutate).toHaveBeenCalledWith(5, expect.any(Object));
   });
 
   it('unfavorites the cinema when already favorited', () => {
     useFavoriteCinemasMock.mockReturnValue({ data: [{ id: 5 }] });
-    render(<FavoriteCinemaButton cinemaId={5} />);
+    render(<FavoriteCinemaButton branchId={5} />);
     fireEvent.click(screen.getByRole('button'));
     expect(unfavoriteMutate).toHaveBeenCalledWith(5, expect.any(Object));
   });
 
   it('shows the filled heart icon when favorited', () => {
     useFavoriteCinemasMock.mockReturnValue({ data: [{ id: 5 }] });
-    render(<FavoriteCinemaButton cinemaId={5} />);
+    render(<FavoriteCinemaButton branchId={5} />);
     expect(document.querySelector('.fa-solid.fa-heart')).toBeInTheDocument();
   });
 });

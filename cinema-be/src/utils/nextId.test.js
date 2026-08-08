@@ -21,9 +21,9 @@ describe('nextId', () => {
 
   it('keeps separate counters per name', async () => {
     const movieId = await nextId('movie');
-    const cinemaId = await nextId('cinema');
+    const branchId = await nextId('cinema');
     expect(movieId).toBe(1);
-    expect(cinemaId).toBe(1);
+    expect(branchId).toBe(1);
   });
 
   it('persists the sequence in the Counter collection', async () => {

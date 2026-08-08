@@ -3,7 +3,8 @@ require('dotenv').config();
 const connectDB = require('../config/db');
 const Account = require('../models/Account');
 const Category = require('../models/Category');
-const Cinema = require('../models/Cinema');
+const Company = require('../models/Company');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
@@ -80,11 +81,25 @@ async function run() {
     console.error('No admin account found — run seed.js first.');
     process.exit(1);
   }
-  let defaultCinema = await Cinema.findOne({ owner_id: admin.id, name: 'Default Cinema' });
+  let defaultCompany = await Company.findOne({ code: 'DEFAULT' });
+  if (!defaultCompany) {
+    const id = await nextId('company');
+    defaultCompany = await Company.create({ id, name: 'Default Company', code: 'DEFAULT', status: 'ACTIVE' });
+    console.log(`Created default company (id=${defaultCompany.id})`);
+  }
+
+  let defaultCinema = await Branch.findOne({ owner_id: admin.id, name: 'Default Cinema' });
   if (!defaultCinema) {
     const id = await nextId('cinema');
-    defaultCinema = await Cinema.create({ id, owner_id: admin.id, name: 'Default Cinema', status: 1 });
-    console.log(`Created default cinema (id=${defaultCinema.id})`);
+    defaultCinema = await Branch.create({
+      id,
+      company_id: defaultCompany.id,
+      owner_id: admin.id,
+      name: 'Default Cinema',
+      code: 'DEFAULT-01',
+      status: 'ACTIVE',
+    });
+    console.log(`Created default branch (id=${defaultCinema.id})`);
   }
 
   const rooms = [];

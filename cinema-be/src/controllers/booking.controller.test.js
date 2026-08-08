@@ -358,13 +358,13 @@ describe('POST /api/invoice/:id/checkin', () => {
 describe('POST /api/invoice/counter-sale', () => {
   it('rejects a missing ticketIds', async () => {
     const res = mockRes();
-    await bookingController.createCounterSale({ body: { accountId: 1 }, account: { accountId: 7 }, cinemaId: 1 }, res);
+    await bookingController.createCounterSale({ body: { accountId: 1 }, account: { accountId: 7 }, branchId: 1 }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it('rejects a missing accountId', async () => {
     const res = mockRes();
-    await bookingController.createCounterSale({ body: { ticketIds: [1] }, account: { accountId: 7 }, cinemaId: 1 }, res);
+    await bookingController.createCounterSale({ body: { ticketIds: [1] }, account: { accountId: 7 }, branchId: 1 }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
@@ -378,7 +378,7 @@ describe('POST /api/invoice/counter-sale', () => {
 
     const res = mockRes();
     await bookingController.createCounterSale(
-      { body: { ticketIds: [1], accountId: 1, totalPrice: 1000 }, account: { accountId: 7 }, cinemaId: 1 },
+      { body: { ticketIds: [1], accountId: 1, totalPrice: 1000 }, account: { accountId: 7 }, branchId: 1 },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(400);
@@ -394,7 +394,7 @@ describe('POST /api/invoice/counter-sale', () => {
 
     const res = mockRes();
     await bookingController.createCounterSale(
-      { body: { ticketIds: [1], accountId: 1, totalPrice: 100000 }, account: { accountId: 7 }, cinemaId: 1 },
+      { body: { ticketIds: [1], accountId: 1, totalPrice: 100000 }, account: { accountId: 7 }, branchId: 1 },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(201);

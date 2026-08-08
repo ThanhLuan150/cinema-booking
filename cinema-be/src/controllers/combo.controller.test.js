@@ -15,13 +15,13 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('combo.controller list', () => {
-  it('scopes to cinemaId query when provided, active combos only', async () => {
+  it('scopes to branchId query when provided, active combos only', async () => {
     await Combo.create([
       { id: 1, cinema_id: 1, name: 'Active', price: 1, active: true },
       { id: 2, cinema_id: 1, name: 'Inactive', price: 1, active: false },
     ]);
     const res = mockRes();
-    await comboController.list({ query: { cinemaId: '1' } }, res);
+    await comboController.list({ query: { branchId: '1' } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 

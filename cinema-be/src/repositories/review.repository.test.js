@@ -61,12 +61,12 @@ describe('review.repository', () => {
     });
   });
 
-  it('findVisibleByCinemaId scopes to a cinema id', async () => {
+  it('findVisibleBybranchId scopes to a cinema id', async () => {
     await Review.create([
       { id: 1, cinema_id: 5, account_id: 1, rating: 5 },
       { id: 2, cinema_id: 6, account_id: 1, rating: 3 },
     ]);
-    const result = await reviewRepository.findVisibleByCinemaId(5, null);
+    const result = await reviewRepository.findVisibleBybranchId(5, null);
     expect(result.count).toBe(1);
   });
 

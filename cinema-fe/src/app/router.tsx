@@ -142,7 +142,7 @@ export function AppRouter() {
         }
       />
       <Route
-        path="/OwnerCinemas/:cinemaId/Rooms"
+        path="/OwnerCinemas/:branchId/Rooms"
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerRooms />

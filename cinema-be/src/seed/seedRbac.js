@@ -19,9 +19,12 @@ const ROLES = [
 // exactly one of these codes, and ROLE_PERMISSION_MAP below reproduces the same
 // allow/deny behavior the routes used to hardcode via requireRole(...).
 const PERMISSIONS = [
-  ['cinema.create', 'cinema'], ['cinema.read', 'cinema'], ['cinema.update', 'cinema'],
-  ['cinema.delete', 'cinema'], ['cinema.approve', 'cinema'], ['cinema.block', 'cinema'],
-  ['branchAdmin.create', 'cinema'],
+  ['branch.create', 'branch'], ['branch.read', 'branch'], ['branch.update', 'branch'],
+  ['branch.delete', 'branch'], ['branch.activate', 'branch'], ['branch.disable', 'branch'],
+  ['branch.assignAdmin', 'branch'],
+  ['branchAdmin.create', 'branch'],
+  ['company.create', 'company'], ['company.read', 'company'],
+  ['company.update', 'company'], ['company.delete', 'company'],
   ['room.create', 'room'], ['room.read', 'room'], ['room.update', 'room'], ['room.delete', 'room'],
   ['seat.create', 'seat'], ['seat.read', 'seat'], ['seat.update', 'seat'], ['seat.delete', 'seat'],
   ['movie.create', 'movie'], ['movie.read', 'movie'], ['movie.update', 'movie'], ['movie.delete', 'movie'],
@@ -52,12 +55,10 @@ const PERMISSIONS = [
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
 
 const BRANCH_ADMIN_PERMISSIONS = {
-  'cinema.read': 'BRANCH',
-  'cinema.update': 'BRANCH',
+  'branch.read': 'BRANCH',
+  'branch.update': 'BRANCH',
   'room.create': 'BRANCH', 'room.read': 'BRANCH', 'room.update': 'BRANCH', 'room.delete': 'BRANCH',
   'seat.create': 'BRANCH', 'seat.read': 'BRANCH', 'seat.update': 'BRANCH', 'seat.delete': 'BRANCH',
-  // Movie Catalog is company-wide, owned by Super Admin only — Branch Admin may pick a
-  // movie for a Showtime but never create/edit/delete the Movie itself.
   'movie.read': 'ALL',
   'category.read': 'ALL',
   'schedule.create': 'BRANCH', 'schedule.read': 'BRANCH',
