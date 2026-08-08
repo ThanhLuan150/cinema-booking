@@ -36,6 +36,14 @@ describe('ticket.controller create', () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
+  it('rejects generating tickets for a cancelled showtime', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
+    const res = mockRes();
+    await ticketController.create({ body: { schedule_id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
+
   it('rejects when the room has no seat map', async () => {
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     const res = mockRes();

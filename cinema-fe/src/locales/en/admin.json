@@ -51,7 +51,8 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Upload new trailer:",
         "producer": "Producer:",
-        "producerAvatar": "Producer avatar (URL):"
+        "producerAvatar": "Producer avatar (URL):",
+        "status": "Status:"
       },
       "directors": {
         "label": "Director(s):"
@@ -64,6 +65,10 @@
       "category": "Category:",
       "submit": "Update",
       "toastSuccess": "Movie updated successfully!"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
     },
     "delete": {
       "confirm": "Do you want to delete the movie with id {{id}}?",
@@ -150,6 +155,11 @@
   "schedules": {
     "add": {
       "title": "Add showtime",
+      "movie": {
+        "label": "Movie:",
+        "placeholder": "Select movie (active)",
+        "required": "Please select a movie."
+      },
       "cinema": {
         "label": "Branch:",
         "placeholder": "Select branch",
@@ -178,6 +188,7 @@
     },
     "list": {
       "breadcrumb": "Schedule",
+      "addButton": "Add showtime +",
       "headers": [
         "ID",
         "Movie",
@@ -186,10 +197,18 @@
         "Time Begin",
         "Time End",
         "Movie Date",
-        "Price"
+        "Price",
+        "Status",
+        "Action"
       ],
       "filterCinemaPlaceholder": "All branches",
-      "filterRoomPlaceholder": "All rooms"
+      "filterRoomPlaceholder": "All rooms",
+      "statusActive": "Active",
+      "statusCancelled": "Cancelled",
+      "cancelButton": "Cancel showtime",
+      "cancelConfirm": "Cancel this showtime?",
+      "cancelToastSuccess": "Showtime cancelled.",
+      "cancelToastError": "Failed to cancel the showtime."
     }
   },
   "reviews": {

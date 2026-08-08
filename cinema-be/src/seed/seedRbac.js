@@ -27,7 +27,7 @@ const PERMISSIONS = [
   ['movie.create', 'movie'], ['movie.read', 'movie'], ['movie.update', 'movie'], ['movie.delete', 'movie'],
   ['category.create', 'category'], ['category.read', 'category'],
   ['schedule.create', 'schedule'], ['schedule.read', 'schedule'],
-  ['schedule.update', 'schedule'], ['schedule.delete', 'schedule'],
+  ['schedule.update', 'schedule'], ['schedule.delete', 'schedule'], ['schedule.cancel', 'schedule'],
   ['ticket.create', 'ticket'], ['ticket.read', 'ticket'], ['ticket.checkin', 'ticket'], ['ticket.generate', 'ticket'],
   ['booking.create', 'booking'], ['booking.read', 'booking'],
   ['booking.refund', 'booking'], ['booking.admin', 'booking'],
@@ -52,9 +52,12 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'cinema.update': 'BRANCH',
   'room.create': 'BRANCH', 'room.read': 'BRANCH', 'room.update': 'BRANCH', 'room.delete': 'BRANCH',
   'seat.create': 'BRANCH', 'seat.read': 'BRANCH', 'seat.update': 'BRANCH', 'seat.delete': 'BRANCH',
-  'movie.create': 'ALL', 'movie.read': 'ALL', 'movie.update': 'ALL', 'movie.delete': 'ALL',
-  'category.create': 'ALL', 'category.read': 'ALL',
-  'schedule.read': 'BRANCH',
+  // Movie Catalog is company-wide, owned by Super Admin only — Branch Admin may pick a
+  // movie for a Showtime but never create/edit/delete the Movie itself.
+  'movie.read': 'ALL',
+  'category.read': 'ALL',
+  'schedule.create': 'BRANCH', 'schedule.read': 'BRANCH',
+  'schedule.update': 'BRANCH', 'schedule.delete': 'BRANCH', 'schedule.cancel': 'BRANCH',
   'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
   'booking.create': 'BRANCH', 'booking.read': 'BRANCH',
   'voucher.create': 'BRANCH', 'voucher.read': 'BRANCH', 'voucher.update': 'BRANCH', 'voucher.delete': 'BRANCH',
@@ -65,6 +68,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'dashboard.view': 'BRANCH',
 };
 const EMPLOYEE_PERMISSIONS = {
+  'movie.read': 'ALL',
   'seat.read': 'BRANCH', 'category.read': 'ALL', 'schedule.read': 'BRANCH',
   'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
   'booking.create': 'BRANCH', 'booking.read': 'BRANCH',
@@ -73,6 +77,7 @@ const EMPLOYEE_PERMISSIONS = {
 };
 
 const CUSTOMER_PERMISSIONS = {
+  'movie.read': 'ALL',
   'category.read': 'ALL',
   'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN',
   'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',

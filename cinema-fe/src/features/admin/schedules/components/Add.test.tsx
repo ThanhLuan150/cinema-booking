@@ -12,8 +12,8 @@ vi.mock('@/features/owner/hooks/useRoomsByCinema', () => ({
   useRoomsByCinema: (...args: unknown[]) => useRoomsByCinemaMock(...args),
 }));
 
-const useMovieDetailMock = vi.fn();
-vi.mock('@/features/movies/hooks/useMovieDetail', () => ({ useMovieDetail: (...args: unknown[]) => useMovieDetailMock(...args) }));
+const useMyMoviesMock = vi.fn();
+vi.mock('../../movies/hooks/useMyMovies', () => ({ useMyMovies: (...args: unknown[]) => useMyMoviesMock(...args) }));
 
 const createScheduleMutate = vi.fn();
 vi.mock('../hooks/useCreateSchedule', () => ({
@@ -34,11 +34,11 @@ describe('admin schedules Add', () => {
   beforeEach(() => {
     useMyCinemasMock.mockReset();
     useRoomsByCinemaMock.mockReset();
-    useMovieDetailMock.mockReset();
+    useMyMoviesMock.mockReset();
     createScheduleMutate.mockReset();
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42 }] } });
     useRoomsByCinemaMock.mockReturnValue({ data: { data: [] }, isFetching: false, isFetched: true });
-    useMovieDetailMock.mockReturnValue({ data: { owner_id: 42 }, isFetched: true });
+    useMyMoviesMock.mockReturnValue({ data: { data: [{ id: 7, name: 'Active Movie' }] } });
   });
 
   it('renders the add-schedule modal', () => {
@@ -46,14 +46,27 @@ describe('admin schedules Add', () => {
     expect(screen.getByText('schedules.add.title')).toBeInTheDocument();
   });
 
-  it('scopes cinema options to the movie owner', () => {
+  it('does not show a movie picker when opened with a preset movie id', () => {
+    renderModal(5);
+    expect(screen.queryByText('schedules.add.movie.label')).not.toBeInTheDocument();
+  });
+
+  it('shows a movie picker restricted to ACTIVE movies when opened without a preset movie', () => {
+    renderModal(null);
+    expect(screen.getByText('schedules.add.movie.label')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /schedules.add.movie.placeholder/ }));
+    expect(screen.getByText('Active Movie')).toBeInTheDocument();
+    expect(useMyMoviesMock).toHaveBeenCalledWith(1, expect.any(Number), 'ACTIVE');
+  });
+
+  it('offers every branch useMyCinemas returns (already scoped server-side to the caller)', () => {
     useMyCinemasMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Owned', owner_id: 42 }, { id: 2, name: 'NotOwned', owner_id: 99 }] },
+      data: { data: [{ id: 1, name: 'Branch A', owner_id: 42 }, { id: 2, name: 'Branch B', owner_id: 42 }] },
     });
     renderModal();
     fireEvent.click(screen.getByRole('button', { name: /schedules.add.cinema.placeholder/ }));
-    expect(screen.getByText('Owned')).toBeInTheDocument();
-    expect(screen.queryByText('NotOwned')).not.toBeInTheDocument();
+    expect(screen.getByText('Branch A')).toBeInTheDocument();
+    expect(screen.getByText('Branch B')).toBeInTheDocument();
   });
 
   it('shows a hint when the selected cinema has no rooms', async () => {

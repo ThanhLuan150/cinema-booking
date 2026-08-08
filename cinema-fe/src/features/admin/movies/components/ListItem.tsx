@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { getMoviePosterUrl, getTrailerKind } from '@/utils';
@@ -34,8 +35,13 @@ const TrailerPreview = ({ trailer }: { trailer: string }) => {
 };
 
 const ListItem = ({ movie }: { movie: Movie }) => {
+  const { t } = useTranslation('admin');
   const dispatch = useAppDispatch();
-  const isAdmin = useAuthRole() === ROLES.admin;
+  const role = useAuthRole();
+  // Movie Catalog CRUD is Super Admin only; a branch admin/employee only ever views it.
+  const isAdmin = role === ROLES.admin;
+  // Both Super Admin and Branch Admin may put an existing ACTIVE movie on a Showtime.
+  const canCreateShowtime = (isAdmin || role === ROLES.owner) && movie.status !== 'INACTIVE';
   return (
     <tr>
       <td>{movie.id}</td>
@@ -46,7 +52,14 @@ const ListItem = ({ movie }: { movie: Movie }) => {
           className="h-[70px] w-[110px] rounded-md object-cover shadow-card"
         />
       </td>
-      <td className="font-medium text-white">{movie.name}</td>
+      <td className="font-medium text-white">
+        {movie.name}
+        {movie.status === 'INACTIVE' && (
+          <Badge variant="default" className="ml-2 align-middle">
+            {t('movies.status.inactive')}
+          </Badge>
+        )}
+      </td>
       <td>{movie.premiere_date}</td>
       <td>{movie.country}</td>
       <td className="max-w-[150px] truncate">{movie.description}</td>
@@ -64,19 +77,23 @@ const ListItem = ({ movie }: { movie: Movie }) => {
       </td>
       <td>
         <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="text-gold hover:bg-gold/10 hover:text-gold"
-            onClick={() => dispatch(openEditModal(movie.id))}
-          >
-            <ion-icon name="pencil-outline" style={{ fontSize: '1.15rem' }} id={movie.id} />
-          </Button>
-
-          <Delete delete={movie.id} />
-
           {isAdmin && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-gold hover:bg-gold/10 hover:text-gold"
+                onClick={() => dispatch(openEditModal(movie.id))}
+              >
+                <ion-icon name="pencil-outline" style={{ fontSize: '1.15rem' }} id={movie.id} />
+              </Button>
+
+              <Delete delete={movie.id} />
+            </>
+          )}
+
+          {canCreateShowtime && (
             <Button
               type="button"
               variant="ghost"

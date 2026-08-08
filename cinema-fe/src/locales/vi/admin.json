@@ -51,7 +51,8 @@
         "trailer": "Trailer:",
         "uploadNewTrailer": "Tải trailer mới:",
         "producer": "Nhà sản xuất:",
-        "producerAvatar": "Ảnh nhà sản xuất (URL):"
+        "producerAvatar": "Ảnh nhà sản xuất (URL):",
+        "status": "Trạng thái:"
       },
       "directors": {
         "label": "Đạo diễn:"
@@ -64,6 +65,10 @@
       "category": "Danh mục:",
       "submit": "Cập nhật",
       "toastSuccess": "Cập nhật phim thành công!"
+    },
+    "status": {
+      "active": "Đang chiếu",
+      "inactive": "Ngừng chiếu"
     },
     "delete": {
       "confirm": "Bạn muốn xóa phim có id là {{id}}?",
@@ -150,6 +155,11 @@
   "schedules": {
     "add": {
       "title": "Thêm suất chiếu",
+      "movie": {
+        "label": "Phim:",
+        "placeholder": "Chọn phim (đang chiếu)",
+        "required": "Vui lòng chọn phim."
+      },
       "cinema": {
         "label": "Chi nhánh:",
         "placeholder": "Chọn chi nhánh",
@@ -178,6 +188,7 @@
     },
     "list": {
       "breadcrumb": "Lịch chiếu",
+      "addButton": "Thêm suất chiếu +",
       "headers": [
         "ID",
         "Phim",
@@ -186,10 +197,18 @@
         "Giờ bắt đầu",
         "Giờ kết thúc",
         "Ngày chiếu",
-        "Giá vé"
+        "Giá vé",
+        "Trạng thái",
+        "Hành động"
       ],
       "filterCinemaPlaceholder": "Tất cả chi nhánh",
-      "filterRoomPlaceholder": "Tất cả phòng"
+      "filterRoomPlaceholder": "Tất cả phòng",
+      "statusActive": "Đang chiếu",
+      "statusCancelled": "Đã hủy",
+      "cancelButton": "Hủy suất chiếu",
+      "cancelConfirm": "Bạn muốn hủy suất chiếu này?",
+      "cancelToastSuccess": "Đã hủy suất chiếu.",
+      "cancelToastError": "Hủy suất chiếu không thành công."
     }
   },
   "reviews": {

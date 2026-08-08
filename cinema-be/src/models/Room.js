@@ -6,6 +6,7 @@ const roomSchema = new mongoose.Schema(
     id: { type: Number, required: true, unique: true, index: true },
     cinema_id: { type: Number, required: true, index: true },
     name: { type: String, required: true },
+    status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' },
   },
   { timestamps: true },
 );

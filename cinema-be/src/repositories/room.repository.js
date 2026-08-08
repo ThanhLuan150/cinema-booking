@@ -5,6 +5,10 @@ async function findCinemaIdByRoomId(roomId) {
   return room ? room.cinema_id : null;
 }
 
+async function findById(id) {
+  return Room.findOne({ id: Number(id) });
+}
+
 async function findAll(filter, { skip = 0, limit = 20 } = {}) {
   const [data, total] = await Promise.all([
     Room.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
@@ -25,4 +29,4 @@ async function remove(id) {
   return Room.deleteOne({ id: Number(id) });
 }
 
-module.exports = { findCinemaIdByRoomId, findAll, create, updateFields, remove };
+module.exports = { findCinemaIdByRoomId, findById, findAll, create, updateFields, remove };

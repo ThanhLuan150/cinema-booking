@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/features/auth/store/authSlice';
 import adminMoviesReducer from '../store/adminMoviesSlice';
+import { ROLES } from '@/constants/roles';
 
 vi.mock('react-i18next', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-i18next')>();
@@ -30,9 +31,12 @@ vi.mock('../../schedules/components/Add', () => ({ default: () => <div>Add Sched
 
 import AdminMoviesList from './List';
 
-function renderPage() {
+function renderPage(role: number = ROLES.admin) {
   const queryClient = new QueryClient();
-  const store = configureStore({ reducer: { auth: authReducer, adminMovies: adminMoviesReducer } });
+  const store = configureStore({
+    reducer: { auth: authReducer, adminMovies: adminMoviesReducer },
+    preloadedState: { auth: { accessToken: null, userId: null, role: String(role), account: null } },
+  });
   return { ...render(
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
@@ -53,11 +57,17 @@ describe('Admin Movies List', () => {
     expect(screen.getByText('Movie A')).toBeInTheDocument();
   });
 
-  it('opens the add-movie modal', () => {
+  it('opens the add-movie modal for super admin', () => {
     useMyMoviesMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
-    const { store } = renderPage();
+    const { store } = renderPage(ROLES.admin);
     fireEvent.click(screen.getByText('movies.list.addButton'));
     expect(store.getState().adminMovies.showAddModal).toBe(true);
     expect(screen.getByText('Add Movie Modal')).toBeInTheDocument();
+  });
+
+  it('hides the add-movie button for a branch admin (Movie Catalog is view-only)', () => {
+    useMyMoviesMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage(ROLES.owner);
+    expect(screen.queryByText('movies.list.addButton')).not.toBeInTheDocument();
   });
 });

@@ -1,31 +1,33 @@
 const Schedule = require('../models/Schedule');
-const Room = require('../models/Room');
 const Cinema = require('../models/Cinema');
 const Employee = require('../models/Employee');
 
-// Lists schedules for management (admin sees every showtime; a theater owner only sees
-// showtimes in rooms belonging to their own cinema(s)). `cinemaId`/`roomId` narrow the result
-// to a single cinema/room, resolved to a room_id filter since Schedule only stores room_id.
-async function findFiltered({ role, accountId, cinemaId, roomId, skip = 0, limit = 20 }) {
-  const filter = {};
+// The set of cinema (branch) ids this account may act on under BRANCH scope: any cinema it
+// owns, plus the single cinema it's actively staffed at (if any). Used to filter showtime
+// listings for a Branch Admin/Employee without hardcoding a role check — the caller decides
+// whether BRANCH scope applies (via req.permissionScope) and only then asks "which branches".
+async function resolveAccessibleCinemaIds(accountId) {
+  const [ownedCinemas, employee] = await Promise.all([
+    Cinema.find({ owner_id: accountId }, 'id'),
+    Employee.findOne({ account_id: accountId, status: 1 }),
+  ]);
+  const ids = new Set(ownedCinemas.map((c) => c.id));
+  if (employee) ids.add(employee.cinema_id);
+  return [...ids];
+}
 
-  if (roomId) {
-    filter.room_id = Number(roomId);
-  } else if (role === 2) {
-    const ownedCinemas = await Cinema.find({ owner_id: accountId });
-    const cinemaIds = cinemaId
-      ? ownedCinemas.map((c) => c.id).filter((id) => id === Number(cinemaId))
-      : ownedCinemas.map((c) => c.id);
-    const rooms = await Room.find({ cinema_id: { $in: cinemaIds } });
-    filter.room_id = { $in: rooms.map((r) => r.id) };
-  } else if (role === 3) {
-    const employee = await Employee.findOne({ account_id: accountId, status: 1 });
-    const cinemaIds = employee ? [employee.cinema_id] : [];
-    const rooms = await Room.find({ cinema_id: { $in: cinemaIds } });
-    filter.room_id = { $in: rooms.map((r) => r.id) };
-  } else if (cinemaId) {
-    const rooms = await Room.find({ cinema_id: Number(cinemaId) });
-    filter.room_id = { $in: rooms.map((r) => r.id) };
+// Lists schedules for management. `scope` is 'ALL' (super admin — no restriction) or 'BRANCH'
+// (restricted to `accessibleCinemaIds`). `cinemaId`/`roomId` narrow the result further.
+async function findFiltered({ scope, accessibleCinemaIds = [], cinemaId, roomId, skip = 0, limit = 20 }) {
+  const filter = {};
+  if (roomId) filter.room_id = Number(roomId);
+  if (cinemaId) filter.cinema_id = Number(cinemaId);
+
+  if (scope !== 'ALL') {
+    const allowed = cinemaId
+      ? accessibleCinemaIds.filter((id) => id === Number(cinemaId))
+      : accessibleCinemaIds;
+    filter.cinema_id = { $in: allowed };
   }
 
   const [data, total] = await Promise.all([
@@ -39,8 +41,45 @@ async function findById(id) {
   return Schedule.findOne({ id: Number(id) });
 }
 
+async function findCinemaIdByScheduleId(id) {
+  const schedule = await Schedule.findOne({ id: Number(id) });
+  return schedule ? schedule.cinema_id : null;
+}
+
+// True if `room_id` already has a non-cancelled showtime overlapping [time_begin, time_end)
+// on `movie_date`. `excludeId` skips the schedule being edited so an update doesn't collide
+// with itself.
+async function findOverlapping({ room_id, movie_date, time_begin, time_end, excludeId }) {
+  const filter = {
+    room_id: Number(room_id),
+    movie_date,
+    status: { $ne: 'CANCELLED' },
+    time_begin: { $lt: time_end },
+    time_end: { $gt: time_begin },
+  };
+  if (excludeId !== undefined) filter.id = { $ne: Number(excludeId) };
+  return Schedule.findOne(filter);
+}
+
 async function create(data) {
   return Schedule.create(data);
 }
 
-module.exports = { findFiltered, findById, create };
+async function updateFields(id, updates) {
+  return Schedule.findOneAndUpdate({ id: Number(id) }, { $set: updates }, { new: true });
+}
+
+async function remove(id) {
+  return Schedule.deleteOne({ id: Number(id) });
+}
+
+module.exports = {
+  resolveAccessibleCinemaIds,
+  findFiltered,
+  findById,
+  findCinemaIdByScheduleId,
+  findOverlapping,
+  create,
+  updateFields,
+  remove,
+};

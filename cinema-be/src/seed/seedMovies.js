@@ -133,6 +133,7 @@ async function run() {
         id,
         movie_id: movie.id,
         room_id: room.id,
+        cinema_id: room.cinema_id,
         movie_date: m.premiere_date,
         time_begin: '19:00',
         time_end: '21:00',

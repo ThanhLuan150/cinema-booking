@@ -17,12 +17,6 @@ apiClient.interceptors.request.use((config) => {
 });
 
 let refreshPromise = null;
-
-// Shared by every caller in the app (the 401 interceptor below and the socket
-// "unauthorized" handler in RealtimeBridge) so concurrent triggers collapse into
-// a single in-flight request. The refresh token is rotated server-side on every
-// use, so racing, uncoordinated calls would make the loser's stale token look
-// like a replay/theft attempt and wipe the session the winner just renewed.
 export function refreshAccessToken() {
   if (!refreshPromise) {
     refreshPromise = axios

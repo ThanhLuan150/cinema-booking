@@ -15,4 +15,6 @@ export const getSchedules = (filters?: ScheduleFilters, pagination?: PaginationP
 export const createSchedule = (payload: Record<string, unknown>) =>
   apiClient.post<{ id: number }>('/schedule', payload);
 
+export const cancelSchedule = (id: number | string) => apiClient.patch<Schedule>(`/schedule/${id}/cancel`);
+
 export const createTicket = (payload: { schedule_id: number }) => apiClient.post('/ticket', payload);

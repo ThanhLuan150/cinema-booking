@@ -50,10 +50,42 @@ describe('admin movies ListItem', () => {
     expect(screen.getByText('Action')).toBeInTheDocument();
   });
 
-  it('only shows the add-schedule action for admins', () => {
+  it('shows the add-showtime action for a branch admin (owner) on an active movie', () => {
     useAuthRoleMock.mockReturnValue(ROLES.owner);
-    const { rerender } = renderItem(baseMovie);
+    renderItem(baseMovie);
+    expect(document.querySelector('ion-icon[name="add-circle-outline"]')).toBeInTheDocument();
+  });
+
+  it('shows the add-showtime action for super admin on an active movie', () => {
+    useAuthRoleMock.mockReturnValue(ROLES.admin);
+    renderItem(baseMovie);
+    expect(document.querySelector('ion-icon[name="add-circle-outline"]')).toBeInTheDocument();
+  });
+
+  it('hides the add-showtime action for an INACTIVE movie', () => {
+    useAuthRoleMock.mockReturnValue(ROLES.owner);
+    renderItem({ ...baseMovie, status: 'INACTIVE' });
     expect(document.querySelector('ion-icon[name="add-circle-outline"]')).not.toBeInTheDocument();
+  });
+
+  it('hides the add-showtime action for an employee', () => {
+    useAuthRoleMock.mockReturnValue(ROLES.employee);
+    renderItem(baseMovie);
+    expect(document.querySelector('ion-icon[name="add-circle-outline"]')).not.toBeInTheDocument();
+  });
+
+  it('hides Edit/Delete for a branch admin (Movie Catalog is view-only for them)', () => {
+    useAuthRoleMock.mockReturnValue(ROLES.owner);
+    renderItem(baseMovie);
+    expect(document.querySelector('ion-icon[name="pencil-outline"]')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+  });
+
+  it('shows Edit/Delete for super admin', () => {
+    useAuthRoleMock.mockReturnValue(ROLES.admin);
+    renderItem(baseMovie);
+    expect(document.querySelector('ion-icon[name="pencil-outline"]')).toBeInTheDocument();
+    expect(screen.getByText('Delete')).toBeInTheDocument();
   });
 
   it('dispatches openEditModal when the edit button is clicked', () => {

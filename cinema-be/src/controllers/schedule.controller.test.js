@@ -3,6 +3,7 @@ const scheduleController = require('./schedule.controller');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
 const Cinema = require('../models/Cinema');
+const Movie = require('../models/Movie');
 
 function mockRes() {
   const res = {};
@@ -15,22 +16,34 @@ beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
+async function seedMovieAndRoom({ movieStatus = 'ACTIVE', roomStatus = 'ACTIVE', premiere_date = '2026-01-01' } = {}) {
+  await Cinema.create({ id: 1, owner_id: 42, name: 'Cinema A' });
+  await Movie.create({ id: 1, name: 'A', premiere_date, status: movieStatus });
+  await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', status: roomStatus });
+}
+
 describe('schedule.controller list', () => {
-  it('scopes to an owner\'s cinemas for role 2', async () => {
+  it('scopes to the accessible cinemas for BRANCH scope', async () => {
     await Cinema.create([
       { id: 1, owner_id: 42, name: 'Mine' },
       { id: 2, owner_id: 99, name: 'Not mine' },
     ]);
-    await Room.create([
-      { id: 1, cinema_id: 1, name: 'R1' },
-      { id: 2, cinema_id: 2, name: 'R2' },
-    ]);
     await Schedule.create([
-      { id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
-      { id: 2, movie_id: 1, room_id: 2, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+      { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+      { id: 2, movie_id: 1, room_id: 2, cinema_id: 2, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
     ]);
     const res = mockRes();
-    await scheduleController.list({ query: {}, account: { role: 2, accountId: 42 } }, res);
+    await scheduleController.list({ query: {}, account: { accountId: 42 }, permissionScope: 'BRANCH' }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
+  });
+
+  it('returns everything for ALL scope', async () => {
+    await Cinema.create([{ id: 1, owner_id: 42, name: 'A' }]);
+    await Schedule.create([
+      { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+    ]);
+    const res = mockRes();
+    await scheduleController.list({ query: {}, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 });
@@ -43,7 +56,7 @@ describe('schedule.controller getById', () => {
   });
 
   it('returns the matching schedule', async () => {
-    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     const res = mockRes();
     await scheduleController.getById({ params: { id: 1 } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }));
@@ -51,22 +64,175 @@ describe('schedule.controller getById', () => {
 });
 
 describe('schedule.controller create', () => {
+  const baseReq = (overrides = {}) => ({
+    account: { accountId: 42 },
+    permissionScope: 'ALL',
+    cinemaId: 1,
+    ...overrides,
+    body: {
+      movie_id: 1,
+      room_id: 1,
+      movie_date: '2026-01-10',
+      time_begin: '10:00',
+      time_end: '12:00',
+      price: '5000',
+      ...overrides.body,
+    },
+  });
+
   it('rejects missing required fields', async () => {
     const res = mockRes();
-    await scheduleController.create({ body: { movie_id: 1 } }, res);
+    await scheduleController.create({ body: { movie_id: 1 }, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('creates a schedule with normalized numeric fields', async () => {
+  it('rejects time_begin >= time_end', async () => {
+    await seedMovieAndRoom();
     const res = mockRes();
-    await scheduleController.create(
-      { body: { movie_id: '1', room_id: '2', movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: '5000' } },
-      res,
-    );
+    await scheduleController.create(baseReq({ body: { time_begin: '12:00', time_end: '10:00' } }), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('rejects an unknown movie', async () => {
+    await seedMovieAndRoom();
+    const res = mockRes();
+    await scheduleController.create(baseReq({ body: { movie_id: 999 } }), res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects an INACTIVE movie', async () => {
+    await seedMovieAndRoom({ movieStatus: 'INACTIVE' });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'MOVIE_NOT_ACTIVE' }));
+  });
+
+  it('rejects a showtime scheduled before the movie premieres', async () => {
+    await seedMovieAndRoom({ premiere_date: '2026-06-01' });
+    const res = mockRes();
+    await scheduleController.create(baseReq({ body: { movie_date: '2026-01-10' } }), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'BEFORE_PREMIERE' }));
+  });
+
+  it('rejects an unknown room', async () => {
+    await seedMovieAndRoom();
+    const res = mockRes();
+    await scheduleController.create(baseReq({ body: { room_id: 999 } }), res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects an INACTIVE room', async () => {
+    await seedMovieAndRoom({ roomStatus: 'INACTIVE' });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ROOM_NOT_ACTIVE' }));
+  });
+
+  it('rejects a room outside the caller\'s BRANCH scope', async () => {
+    await seedMovieAndRoom();
+    const res = mockRes();
+    await scheduleController.create(baseReq({ permissionScope: 'BRANCH', cinemaId: 999 }), res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('rejects an overlapping showtime in the same room', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create({ id: 5, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '09:00', time_end: '11:00', price: 1 });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_OVERLAP' }));
+  });
+
+  it('creates a schedule and stamps cinema_id from the room', async () => {
+    await seedMovieAndRoom();
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
     expect(res.status).toHaveBeenCalledWith(201);
     const created = await Schedule.findOne({});
     expect(created.movie_id).toBe(1);
-    expect(created.room_id).toBe(2);
+    expect(created.room_id).toBe(1);
+    expect(created.cinema_id).toBe(1);
     expect(created.price).toBe(5000);
+    expect(created.status).toBe('ACTIVE');
+  });
+});
+
+describe('schedule.controller update', () => {
+  it('returns 404 for an unknown schedule', async () => {
+    const res = mockRes();
+    await scheduleController.update({ params: { id: 999 }, body: {}, permissionScope: 'ALL' }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects editing a cancelled showtime', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
+    const res = mockRes();
+    await scheduleController.update({ params: { id: 1 }, body: { price: 2000 }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
+
+  it('rejects an update that would overlap another showtime in the room', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create([
+      { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 },
+      { id: 2, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00', price: 1 },
+    ]);
+    const res = mockRes();
+    await scheduleController.update({ params: { id: 2 }, body: { time_begin: '11:00', time_end: '13:00' }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('updates price without touching other fields', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1000 });
+    const res = mockRes();
+    await scheduleController.update({ params: { id: 1 }, body: { price: 2500 }, permissionScope: 'ALL', cinemaId: 1 }, res);
+    const updated = await Schedule.findOne({ id: 1 });
+    expect(updated.price).toBe(2500);
+    expect(updated.time_begin).toBe('10:00');
+  });
+});
+
+describe('schedule.controller cancel', () => {
+  it('returns 404 for an unknown schedule', async () => {
+    const res = mockRes();
+    await scheduleController.cancel({ params: { id: 999 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects cancelling an already-cancelled showtime', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
+    const res = mockRes();
+    await scheduleController.cancel({ params: { id: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('marks an active showtime as cancelled', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = mockRes();
+    await scheduleController.cancel({ params: { id: 1 } }, res);
+    const updated = await Schedule.findOne({ id: 1 });
+    expect(updated.status).toBe('CANCELLED');
+  });
+});
+
+describe('schedule.controller remove', () => {
+  it('returns 404 for an unknown schedule', async () => {
+    const res = mockRes();
+    await scheduleController.remove({ params: { id: 999 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('deletes the schedule', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = mockRes();
+    await scheduleController.remove({ params: { id: 1 } }, res);
+    expect(await Schedule.countDocuments()).toBe(0);
   });
 });

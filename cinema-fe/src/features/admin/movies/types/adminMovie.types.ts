@@ -13,6 +13,7 @@ export interface MovieFormValues {
   trailer: string;
   producer: string;
   producerAvatar: string;
+  status?: 'ACTIVE' | 'INACTIVE';
 }
 
 export interface CreateMoviePayload extends MovieFormValues {
