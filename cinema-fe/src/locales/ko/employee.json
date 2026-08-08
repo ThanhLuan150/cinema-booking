@@ -1,0 +1,41 @@
+{
+  "dashboard": {
+    "breadcrumb": "Dashboard",
+    "sellTickets": "Sell tickets",
+    "checkIn": "Check-in",
+    "noShowtimesToday": "No showtimes today",
+    "headers": {
+      "movie": "Movie",
+      "room": "Room",
+      "time": "Time",
+      "price": "Price",
+      "actions": "Actions"
+    }
+  },
+  "counterSale": {
+    "breadcrumb": "Counter sale",
+    "scheduleLabel": "Showtime",
+    "schedulePlaceholder": "Select a showtime",
+    "seatsTitle": "Seats",
+    "noSeats": "No seats for this showtime",
+    "customerTitle": "Customer",
+    "customerEmailPlaceholder": "Customer email",
+    "findCustomer": "Find",
+    "customerFound": "Customer found",
+    "customerNotFound": "No account found with this email",
+    "total": "Total",
+    "submit": "Confirm sale",
+    "saleSuccess": "Sale completed."
+  },
+  "checkIn": {
+    "breadcrumb": "Check-in",
+    "codePlaceholder": "Enter ticket code",
+    "lookup": "Look up",
+    "notFound": "No booking found with this code.",
+    "statusCheckedIn": "Checked in",
+    "statusPaid": "Paid",
+    "statusNotPaid": "Not paid",
+    "confirmCheckIn": "Confirm check-in",
+    "checkInSuccess": "Checked in successfully."
+  }
+}

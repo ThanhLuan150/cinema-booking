@@ -65,6 +65,15 @@ describe('AdminLayout', () => {
     expect(screen.queryByText('adminLayout.nav.transactions')).not.toBeInTheDocument();
   });
 
+  it('shows only employee nav links for an employee user', () => {
+    useCurrentUserMock.mockReturnValue({ data: { role: 3, name: 'Staff' } });
+    renderLayout();
+    expect(screen.getByText('adminLayout.nav.counterSale')).toBeInTheDocument();
+    expect(screen.getByText('adminLayout.nav.checkIn')).toBeInTheDocument();
+    expect(screen.queryByText('adminLayout.nav.films')).not.toBeInTheDocument();
+    expect(screen.queryByText('adminLayout.nav.employees')).not.toBeInTheDocument();
+  });
+
   it('falls back to a generic display name when there is no user', () => {
     useCurrentUserMock.mockReturnValue({ data: undefined });
     renderLayout();

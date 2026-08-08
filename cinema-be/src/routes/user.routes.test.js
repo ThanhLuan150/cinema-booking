@@ -1,12 +1,14 @@
 const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
+const seedRbac = require('../seed/seedRbac');
 const userRoutes = require('./user.routes');
 const Account = require('../models/Account');
 
 const app = buildTestApp('/api', userRoutes);
 
 beforeAll(async () => connect());
+beforeEach(async () => seedRbac());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 

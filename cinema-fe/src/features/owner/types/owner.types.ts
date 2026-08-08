@@ -51,6 +51,15 @@ export interface VoucherFormValues {
   min_order_value: string;
 }
 
+export interface EmployeeFormValues {
+  cinema_id: string;
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+  position: string;
+}
+
 export interface SeatMapFormValues {
   rowsInput: string;
   seatsPerRow: string;
@@ -73,5 +82,10 @@ export interface OwnerCombosState {
 }
 
 export interface OwnerVouchersState {
+  showAddModal: boolean;
+}
+
+export interface OwnerEmployeesState {
+  selectedCinemaId: string;
   showAddModal: boolean;
 }

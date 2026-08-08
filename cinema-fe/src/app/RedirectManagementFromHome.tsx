@@ -18,6 +18,9 @@ export function RedirectManagementFromHome({ children }: RedirectManagementFromH
   if (accessToken && role === ROLES.owner) {
     return <Navigate to={ROUTES.ownerDashboard} replace />;
   }
+  if (accessToken && role === ROLES.employee) {
+    return <Navigate to={ROUTES.employeeDashboard} replace />;
+  }
 
   return <>{children}</>;
 }

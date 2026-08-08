@@ -24,23 +24,20 @@
         "description": "विवरण:",
         "trailer": "ट्रेलर:",
         "producer": "निर्माता:",
-        "director": "निर्देशक:",
-        "producerAvatar": "निर्माता की तस्वीर (URL):",
-        "directorAvatar": "निर्देशक की तस्वीर (URL):"
+        "producerAvatar": "निर्माता की तस्वीर (URL):"
       },
       "cast": {
         "label": "कलाकार:",
-        "name": "नाम",
-        "role": "भूमिका",
-        "avatarUrl": "इमेज URL",
-        "remove": "हटाएं",
-        "add": "+ कलाकार जोड़ें",
+        "role": "Character name",
         "isLead": "मुख्य भूमिका"
       },
       "category": "श्रेणी:",
       "submit": "जोड़ें",
       "toastSuccess": "सफलतापूर्वक जोड़ा गया",
-      "toastError": "जोड़ने में विफल"
+      "toastError": "जोड़ने में विफल",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "edit": {
       "title": "फिल्म संपादित करें",
@@ -54,22 +51,19 @@
         "trailer": "ट्रेलर:",
         "uploadNewTrailer": "नया ट्रेलर अपलोड करें:",
         "producer": "निर्माता:",
-        "director": "निर्देशक:",
-        "producerAvatar": "निर्माता की तस्वीर (URL):",
-        "directorAvatar": "निर्देशक की तस्वीर (URL):"
+        "producerAvatar": "निर्माता की तस्वीर (URL):"
       },
       "cast": {
         "label": "कलाकार:",
-        "name": "नाम",
-        "role": "भूमिका",
-        "avatarUrl": "इमेज URL",
-        "remove": "हटाएं",
-        "add": "+ कलाकार जोड़ें",
+        "role": "Character name",
         "isLead": "मुख्य भूमिका"
       },
       "category": "श्रेणी:",
       "submit": "अपडेट करें",
-      "toastSuccess": "फिल्म सफलतापूर्वक अपडेट की गई!"
+      "toastSuccess": "फिल्म सफलतापूर्वक अपडेट की गई!",
+      "directors": {
+        "label": "Director(s):"
+      }
     },
     "delete": {
       "confirm": "क्या आप ID {{id}} वाली फिल्म को हटाना चाहते हैं?",
@@ -100,12 +94,57 @@
       "countryRequired": "देश आवश्यक है",
       "trailerRequired": "ट्रेलर आवश्यक है",
       "producerRequired": "निर्माता आवश्यक है",
-      "directorRequired": "निर्देशक आवश्यक है",
-      "castNameRequired": "कलाकार का नाम आवश्यक है",
-      "castAvatarInvalid": "कलाकार की छवि URL अमान्य है",
+      "directorRequired": "Select at least one director",
       "categoryRequired": "कम से कम एक श्रेणी चुनें",
-      "producerAvatarInvalid": "निर्माता की तस्वीर का URL अमान्य है",
-      "directorAvatarInvalid": "निर्देशक की तस्वीर का URL अमान्य है"
+      "producerAvatarInvalid": "निर्माता की तस्वीर का URL अमान्य है"
+    }
+  },
+  "actors": {
+    "breadcrumb": "Actors",
+    "addButton": "Add actor +",
+    "addTitle": "Add actor",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Actor added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this actor?",
+    "deleteSuccess": "Actor deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
+    }
+  },
+  "directors": {
+    "breadcrumb": "Directors",
+    "addButton": "Add director +",
+    "addTitle": "Add director",
+    "fullNameLabel": "Full name",
+    "avatarUrlLabel": "Avatar (URL)",
+    "nationalityLabel": "Nationality",
+    "dobLabel": "Date of birth",
+    "bioLabel": "Biography",
+    "submit": "Add",
+    "createSuccess": "Director added.",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this director?",
+    "deleteSuccess": "Director deleted.",
+    "headers": {
+      "id": "ID",
+      "fullName": "Full name",
+      "nationality": "Nationality",
+      "actions": "Actions"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required"
     }
   },
   "schedules": {
@@ -216,7 +255,25 @@
     "deleteConfirm": "क्या इस सिनेमा को हटाना है? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
     "approveSuccess": "सिनेमा स्वीकृत हो गया।",
     "blockSuccess": "सिनेमा अवरुद्ध कर दिया गया।",
-    "deleteSuccess": "सिनेमा हटा दिया गया।"
+    "deleteSuccess": "सिनेमा हटा दिया गया।",
+    "addBranchAdmin": {
+      "addButton": "Add branch + Branch Admin",
+      "title": "Add branch + Branch Admin",
+      "emailLabel": "Branch Admin email",
+      "passwordLabel": "Password",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "cinemaNameLabel": "Cinema name",
+      "addressLabel": "Address",
+      "cityLabel": "City",
+      "submit": "Create",
+      "success": "Branch and Branch Admin created.",
+      "validation": {
+        "emailRequired": "Please enter an email.",
+        "passwordInvalid": "Password must be at least 6 characters.",
+        "cinemaNameRequired": "Please enter a cinema name."
+      }
+    }
   },
   "users": {
     "block": {

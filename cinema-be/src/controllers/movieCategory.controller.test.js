@@ -1,6 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const movieCategoryController = require('./movieCategory.controller');
 const MovieCategory = require('../models/MovieCategory');
+const Movie = require('../models/Movie');
 
 function mockRes() {
   const res = {};
@@ -40,9 +41,23 @@ describe('movieCategory.controller', () => {
 
     it('creates a new mapping', async () => {
       const res = mockRes();
-      await movieCategoryController.create({ body: { movie_id: 5, cat_id: 1 } }, res);
+      await movieCategoryController.create(
+        { body: { movie_id: 5, cat_id: 1 }, account: { role: 0, accountId: 1 } },
+        res,
+      );
       expect(res.status).toHaveBeenCalledWith(201);
       expect(await MovieCategory.countDocuments()).toBe(1);
+    });
+
+    it('rejects a theater owner tagging a movie they did not create', async () => {
+      await Movie.create({ id: 5, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+      const res = mockRes();
+      await movieCategoryController.create(
+        { body: { movie_id: 5, cat_id: 1 }, account: { role: 2, accountId: 42 } },
+        res,
+      );
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(await MovieCategory.countDocuments()).toBe(0);
     });
   });
 
@@ -52,7 +67,22 @@ describe('movieCategory.controller', () => {
       { id: 2, movie_id: 6, cat_id: 1 },
     ]);
     const res = mockRes();
-    await movieCategoryController.removeForMovie({ params: { movieId: 5 } }, res);
+    await movieCategoryController.removeForMovie(
+      { params: { movieId: 5 }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    expect(await MovieCategory.countDocuments()).toBe(1);
+  });
+
+  it('removeForMovie rejects a theater owner clearing tags on a movie they did not create', async () => {
+    await Movie.create({ id: 5, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+    await MovieCategory.create({ id: 1, movie_id: 5, cat_id: 1 });
+    const res = mockRes();
+    await movieCategoryController.removeForMovie(
+      { params: { movieId: 5 }, account: { role: 2, accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
     expect(await MovieCategory.countDocuments()).toBe(1);
   });
 });

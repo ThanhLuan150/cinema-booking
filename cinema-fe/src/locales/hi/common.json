@@ -52,7 +52,12 @@
       "bookings": "बुकिंग",
       "transactions": "लेन-देन",
       "reviews": "समीक्षाएं",
-      "rooms": "स्क्रीन"
+      "rooms": "स्क्रीन",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

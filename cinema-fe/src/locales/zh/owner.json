@@ -108,6 +108,40 @@
     },
     "selectCinemaPlaceholder": "选择分店"
   },
+  "employees": {
+    "breadcrumb": "Employees",
+    "addButton": "Add employee +",
+    "addTitle": "Add employee",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone",
+    "positionLabel": "Position",
+    "submit": "Add",
+    "createSuccess": "Employee added.",
+    "deactivateConfirm": "Deactivate this employee?",
+    "deactivateSuccess": "Employee deactivated.",
+    "reactivateSuccess": "Employee reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Deactivated",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "headers": {
+      "id": "ID",
+      "name": "Full name",
+      "email": "Email",
+      "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "emailRequired": "Please enter an email.",
+      "passwordInvalid": "Password must be at least 6 characters."
+    }
+  },
   "combos": {
     "breadcrumb": "套餐管理",
     "addButton": "新增套餐 +",

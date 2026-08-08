@@ -52,7 +52,12 @@
       "bookings": "Đặt vé",
       "transactions": "Giao dịch",
       "reviews": "Đánh giá",
-      "rooms": "Phòng chiếu"
+      "rooms": "Phòng chiếu",
+      "employees": "Nhân viên",
+      "actors": "Diễn viên",
+      "directors": "Đạo diễn",
+      "counterSale": "Bán vé tại quầy",
+      "checkIn": "Soát vé"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

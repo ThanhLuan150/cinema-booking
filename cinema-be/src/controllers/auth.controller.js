@@ -139,7 +139,7 @@ async function checkEmail(req, res) {
 
 // POST /api/register
 async function register(req, res) {
-  const { email, password, c_password, role } = req.body;
+  const { email, password, c_password } = req.body;
   if (!email || !password || !c_password) {
     return res.status(400).json({ message: 'email, password and c_password are required' });
   }
@@ -147,9 +147,10 @@ async function register(req, res) {
     return res.status(400).json({ message: 'Password confirmation does not match', code: 'PASSWORD_MISMATCH' });
   }
 
-  // Public registration may only self-assign "user" (1) or "theater staff" (2); admin (0) is provisioned separately.
-  const requestedRole = Number(role);
-  const normalizedRole = [1, 2].includes(requestedRole) ? requestedRole : 1;
+  // Public self-registration only ever creates a customer account (1). Branch Admin (2) and
+  // Employee (3) accounts are provisioned directly by Super Admin/Branch Admin; admin (0) is
+  // provisioned separately still.
+  const normalizedRole = 1;
 
   const normalizedEmail = email.toLowerCase();
   let account = await authRepository.findByEmailWithPassword(normalizedEmail);
@@ -162,12 +163,10 @@ async function register(req, res) {
   const otp = generateOtp();
   const otpExpiresAt = otpExpiryDate();
 
-  const approved = normalizedRole !== 2;
-
   if (account) {
     account.password = hashed;
     account.role = normalizedRole;
-    account.approved = approved;
+    account.approved = true;
     account.otp = otp;
     account.otpExpiresAt = otpExpiresAt;
     await authRepository.saveAccount(account);
@@ -178,7 +177,7 @@ async function register(req, res) {
       email: normalizedEmail,
       password: hashed,
       role: normalizedRole,
-      approved,
+      approved: true,
       verified: false,
       otp,
       otpExpiresAt,

@@ -1,9 +1,10 @@
 import apiClient from 'services/apiClient';
-import type { Cinema, Combo, Room, Seat, Voucher } from '@/types/entities';
+import type { Cinema, Combo, Employee, Room, Seat, Voucher } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
   ComboFormValues,
+  EmployeeFormValues,
   GenerateSeatMapPayload,
   LookedUpInvoice,
   OwnerDashboardStats,
@@ -68,3 +69,16 @@ export const getOwnerDashboard = (cinemaId?: number | string) =>
 
 export const lookupInvoiceByCode = (code: string) =>
   apiClient.get<LookedUpInvoice>(`/invoice/lookup/${code}`).then((res) => res.data);
+
+export const getMyEmployees = (cinemaId: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<Employee>>('/employee', { params: { cinemaId, ...params } })
+    .then((res) => res.data);
+
+export const createEmployee = (payload: Omit<EmployeeFormValues, 'cinema_id'> & { cinema_id: number }) =>
+  apiClient.post('/employee', payload);
+
+export const updateEmployee = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/employee/${id}`, payload);
+
+export const deactivateEmployee = (id: number | string) => apiClient.delete(`/employee/${id}`);

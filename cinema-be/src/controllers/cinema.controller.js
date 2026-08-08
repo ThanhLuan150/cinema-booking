@@ -1,8 +1,8 @@
+const bcrypt = require('bcryptjs');
 const cinemaRepository = require('../repositories/cinema.repository');
 const nextId = require('../utils/nextId');
 const { emitToAdmin, emitToOwner } = require('../utils/socket');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
-const { uploadImage } = require('../utils/uploadImage');
 
 // GET /api/cinema?page=&limit= -> public list of approved cinemas (for the customer-facing "choose cinema" filter)
 async function list(req, res) {
@@ -81,34 +81,42 @@ async function getById(req, res) {
   res.json(cinema);
 }
 
-// POST /api/cinema/onboard (multipart: email, name, address, city, phone, avatar file, images
-async function onboard(req, res) {
-  const { email, name, address, city, phone } = req.body;
-  if (!email || !name || !phone) {
-    return res.status(400).json({ message: 'email, name and phone are required' });
+// POST /api/cinema/branch-admin { email, password, name, phone, cinema_name, address, city }
+// (branchAdmin.create permission — super admin only). Provisions a Branch Admin account and
+// their first cinema together, pre-approved — replaces the old self-registration + OTP +
+// admin-approval onboarding flow with direct, centralized provisioning.
+async function createBranchAdmin(req, res) {
+  const { email, password, name, phone, cinema_name, address, city } = req.body;
+  if (!email || !password || !cinema_name) {
+    return res.status(400).json({ message: 'email, password and cinema_name are required' });
   }
 
-  const account = await cinemaRepository.findAccountByEmail(email);
-  if (!account) return res.status(404).json({ message: 'Account not found' });
-  if (account.role !== 2) return res.status(400).json({ message: 'Account is not a theater owner' });
+  const normalizedEmail = String(email).toLowerCase();
+  const existing = await cinemaRepository.findAccountByEmail(normalizedEmail);
+  if (existing) return res.status(409).json({ message: 'Email already exists', code: 'EMAIL_ALREADY_EXISTS' });
 
-  const avatarFile = req.files?.avatar?.[0];
-  const imageFiles = req.files?.images || [];
-  const [avatarUrl, imageUrls] = await Promise.all([
-    avatarFile ? uploadImage(avatarFile, 'cinemas/owners') : Promise.resolve(undefined),
-    Promise.all(imageFiles.map((file) => uploadImage(file, 'cinemas'))),
-  ]);
-
-  const cinema = await cinemaRepository.upsertOnboard(account, {
+  const accountId = await nextId('account');
+  const hashed = await bcrypt.hash(password, 10);
+  const account = await cinemaRepository.createOwnerAccount({
+    id: accountId,
+    email: normalizedEmail,
+    password: hashed,
     name,
-    address,
-    city,
-    images: imageUrls.length ? imageUrls : undefined,
+    phone,
   });
-  await cinemaRepository.updateOwnerContactInfo(account, { name, phone, avatar: avatarUrl });
 
-  emitToAdmin('cinema:pending', cinema);
-  res.status(201).json(cinema);
+  const cinemaId = await nextId('cinema');
+  const cinema = await cinemaRepository.create({
+    id: cinemaId,
+    owner_id: account.id,
+    name: cinema_name,
+    address: address || '',
+    city: city || '',
+    images: [],
+    status: 1,
+  });
+
+  res.status(201).json({ ...cinema.toJSON(), owner_email: account.email, owner_name: account.name });
 }
 
 // POST /api/cinema (admin or theater staff)
@@ -178,7 +186,7 @@ module.exports = {
   favorite,
   unfavorite,
   getById,
-  onboard,
+  createBranchAdmin,
   create,
   update,
   approve,

@@ -1,12 +1,5 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
 
-export interface CastMember {
-  name: string;
-  role?: string;
-  avatar?: string;
-  isLead?: boolean;
-}
-
 export interface Movie {
   id: number;
   owner_id?: number | null;
@@ -18,10 +11,9 @@ export interface Movie {
   trailer: string;
   producer?: string;
   producerAvatar?: string;
-  director?: string;
-  directorAvatar?: string;
-  cast?: CastMember[];
   categories?: Category[];
+  actors?: MovieActor[];
+  directors?: Director[];
   createdAt?: string;
 }
 
@@ -34,6 +26,23 @@ export interface MovieCategory {
   id: number;
   movie_id: number;
   cat_id: number;
+}
+
+// Raw join-table record from GET /movieActor/:movieId (as opposed to `MovieActor` below,
+// which is the actor profile already populated onto `Movie.actors` by the backend).
+export interface MovieActorLink {
+  id: number;
+  movie_id: number;
+  actor_id: number;
+  character_name: string;
+  is_lead: boolean;
+}
+
+// Raw join-table record from GET /movieDirector/:movieId.
+export interface MovieDirectorLink {
+  id: number;
+  movie_id: number;
+  director_id: number;
 }
 
 export interface Room {
@@ -105,6 +114,41 @@ export interface Schedule {
   time_begin: string;
   time_end: string;
   price: number;
+}
+
+export interface Employee {
+  id: number;
+  account_id: number;
+  cinema_id: number;
+  position: string;
+  hire_date: string;
+  status: number; // 1 = active, 0 = deactivated
+  email?: string;
+  name?: string;
+  phone?: string;
+}
+
+export interface Actor {
+  id: number;
+  full_name: string;
+  avatar_url: string;
+  bio: string;
+  dob: string | null;
+  nationality: string;
+}
+
+export interface MovieActor extends Actor {
+  character_name?: string;
+  is_lead?: boolean;
+}
+
+export interface Director {
+  id: number;
+  full_name: string;
+  avatar_url: string;
+  bio: string;
+  dob: string | null;
+  nationality: string;
 }
 
 export interface User {

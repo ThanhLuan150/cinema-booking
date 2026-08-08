@@ -15,7 +15,7 @@ vi.mock('../api/auth.api', () => ({
 
 import VerifyCodePage from './VerifyCodePage';
 
-function renderPage(path = '/verifycode?email=a@b.com&role=1') {
+function renderPage(path = '/verifycode?email=a@b.com') {
   const queryClient = new QueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
@@ -23,7 +23,6 @@ function renderPage(path = '/verifycode?email=a@b.com&role=1') {
         <Routes>
           <Route path="/verifycode" element={<VerifyCodePage />} />
           <Route path="/UserInfo" element={<div>User Info Page</div>} />
-          <Route path="/CinemaInfo" element={<div>Cinema Info Page</div>} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
@@ -43,23 +42,14 @@ describe('VerifyCodePage', () => {
     expect(screen.getAllByPlaceholderText('0')).toHaveLength(6);
   });
 
-  it('navigates to UserInfo for a regular user on successful verification', async () => {
+  it('navigates to UserInfo on successful verification', async () => {
     verifyCodeMock.mockResolvedValue({ status: 200, data: {} });
-    renderPage('/verifycode?email=a@b.com&role=1');
+    renderPage('/verifycode?email=a@b.com');
     const inputs = screen.getAllByPlaceholderText('0');
     '123456'.split('').forEach((digit, i) => fireEvent.change(inputs[i], { target: { value: digit } }));
     fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
     expect(await screen.findByText('User Info Page')).toBeInTheDocument();
     expect(verifyCodeMock).toHaveBeenCalledWith({ email: 'a@b.com', otp: '123456' });
-  });
-
-  it('navigates to CinemaInfo for a theater-owner role', async () => {
-    verifyCodeMock.mockResolvedValue({ status: 200, data: {} });
-    renderPage('/verifycode?email=a@b.com&role=2');
-    const inputs = screen.getAllByPlaceholderText('0');
-    '123456'.split('').forEach((digit, i) => fireEvent.change(inputs[i], { target: { value: digit } }));
-    fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
-    expect(await screen.findByText('Cinema Info Page')).toBeInTheDocument();
   });
 
   it('shows an error message when verification fails', async () => {

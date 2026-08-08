@@ -1,12 +1,13 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
-const { requireAuth, requireRole, optionalAuth } = require('../middleware/auth');
+const { requireAuth, optionalAuth } = require('../middleware/auth');
+const { requirePermission } = require('../middleware/permission');
 const reviewController = require('../controllers/review.controller');
 
 const router = express.Router();
 
-// GET /api/review -> all reviews including hidden ones, joined with movie/cinema name (admin only — moderation)
-router.get('/', requireAuth, requireRole(0), asyncHandler(reviewController.listForModeration));
+// GET /api/review -> all reviews including hidden ones, joined with movie/cinema name (review.moderate permission)
+router.get('/', requireAuth, requirePermission('review.moderate'), asyncHandler(reviewController.listForModeration));
 
 // GET /api/review/cinema/:cinemaId -> visible reviews (with replies) for a cinema + average rating;
 // optionalAuth so a logged-in viewer's own reaction is flagged without requiring login to view
@@ -28,8 +29,8 @@ router.post('/:id/react', requireAuth, asyncHandler(reviewController.react));
 // POST /api/review/:id/report { reason } -> flag someone else's review/reply (auth required)
 router.post('/:id/report', requireAuth, asyncHandler(reviewController.report));
 
-// PUT /api/review/:id/hide (admin only — moderation)
-router.put('/:id/hide', requireAuth, requireRole(0), asyncHandler(reviewController.hide));
+// PUT /api/review/:id/hide (review.moderate permission)
+router.put('/:id/hide', requireAuth, requirePermission('review.moderate'), asyncHandler(reviewController.hide));
 
 // DELETE /api/review/:id (admin, or the review's own author)
 router.delete('/:id', requireAuth, asyncHandler(reviewController.remove));

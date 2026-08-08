@@ -9,13 +9,17 @@ import { toast } from '@/features/notifications/toast';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useAppDispatch } from '@/hooks/redux';
 import { useCategories } from '@/features/movies/hooks/useCategories';
+import { useDirectorsCatalog } from '@/features/admin/directors/hooks/useDirectors';
+import { useActorsCatalog } from '@/features/admin/actors/hooks/useActors';
 import { useCreateMovie } from '../hooks/useCreateMovie';
 import { closeAddModal } from '../store/adminMoviesSlice';
 import { buildMovieSchema } from '../schemas/movie.schema';
-import type { CastMemberDraft, MovieFormValues } from '../types/adminMovie.types';
+import type { MovieActorDraft, MovieFormValues } from '../types/adminMovie.types';
 
 interface AddMovieFormValues extends MovieFormValues {
   categoryIds: number[];
+  directorIds: number[];
+  actors: MovieActorDraft[];
 }
 
 const emptyValues = (): AddMovieFormValues => ({
@@ -27,16 +31,19 @@ const emptyValues = (): AddMovieFormValues => ({
   trailer: '',
   producer: '',
   producerAvatar: '',
-  director: '',
-  directorAvatar: '',
-  cast: [],
   categoryIds: [],
+  directorIds: [],
+  actors: [],
 });
 
 const Add = () => {
   const { t } = useTranslation('admin');
   const dispatch = useAppDispatch();
   const { data: cats = [] } = useCategories();
+  const { data: directorsPage } = useDirectorsCatalog();
+  const directors = directorsPage?.data ?? [];
+  const { data: actorsPage } = useActorsCatalog();
+  const actorsCatalog = actorsPage?.data ?? [];
   const createMovieMutation = useCreateMovie();
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const trailerInputRef = useRef<HTMLInputElement>(null);
@@ -47,9 +54,9 @@ const Add = () => {
   const handleCloseAdd = () => dispatch(closeAddModal());
 
   const handleSubmit = async (values: AddMovieFormValues) => {
-    const { categoryIds, ...form } = values;
+    const { categoryIds, directorIds, actors, ...form } = values;
     try {
-      await createMovieMutation.mutateAsync({ ...form, categoryIds, avatarFile, trailerFile });
+      await createMovieMutation.mutateAsync({ ...form, categoryIds, directorIds, actors, avatarFile, trailerFile });
       if (avatarInputRef.current) avatarInputRef.current.value = '';
       if (trailerInputRef.current) trailerInputRef.current.value = '';
       setAvatarFile(null);
@@ -85,34 +92,37 @@ const Add = () => {
             formik.setFieldValue('trailer', file ? file.name : '');
           };
 
-          const updateCastRow = (index: number, field: keyof CastMemberDraft, value: string) => {
-            const cast = formik.values.cast.map((member, i) => (i === index ? { ...member, [field]: value } : member));
-            formik.setFieldValue('cast', cast);
-          };
-
-          const addCastRow = () => {
-            formik.setFieldValue('cast', [...formik.values.cast, { name: '', role: '', avatar: '', isLead: false }]);
-          };
-
-          const toggleCastLead = (index: number) => {
-            const cast = formik.values.cast.map((member, i) =>
-              i === index ? { ...member, isLead: !member.isLead } : member,
-            );
-            formik.setFieldValue('cast', cast);
-          };
-
-          const removeCastRow = (index: number) => {
-            formik.setFieldValue(
-              'cast',
-              formik.values.cast.filter((_, i) => i !== index),
-            );
-          };
-
           const toggleCategory = (categoryId: number) => {
             const current = formik.values.categoryIds;
             formik.setFieldValue(
               'categoryIds',
               current.includes(categoryId) ? current.filter((id) => id !== categoryId) : [...current, categoryId],
+            );
+          };
+
+          const toggleDirector = (directorId: number) => {
+            const current = formik.values.directorIds;
+            formik.setFieldValue(
+              'directorIds',
+              current.includes(directorId) ? current.filter((id) => id !== directorId) : [...current, directorId],
+            );
+          };
+
+          const toggleActor = (actorId: number) => {
+            const current = formik.values.actors;
+            const exists = current.some((a) => a.actor_id === actorId);
+            formik.setFieldValue(
+              'actors',
+              exists
+                ? current.filter((a) => a.actor_id !== actorId)
+                : [...current, { actor_id: actorId, character_name: '', is_lead: false }],
+            );
+          };
+
+          const updateActorField = (actorId: number, field: 'character_name' | 'is_lead', value: string | boolean) => {
+            formik.setFieldValue(
+              'actors',
+              formik.values.actors.map((a) => (a.actor_id === actorId ? { ...a, [field]: value } : a)),
             );
           };
 
@@ -190,61 +200,59 @@ const Add = () => {
                 className="mt-2 border-l-2 border-border pl-3"
                 error={getError('producerAvatar')}
               />
-              <Field
-                as={Input}
-                label={t('movies.add.fields.director')}
-                type="text"
-                name="director"
-                id="director"
-                className="mt-5"
-                error={getError('director')}
-              />
-              <Field
-                as={Input}
-                label={t('movies.add.fields.directorAvatar')}
-                type="text"
-                name="directorAvatar"
-                id="directorAvatar"
-                className="mt-2 border-l-2 border-border pl-3"
-                error={getError('directorAvatar')}
-              />
+
+              <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.add.directors.label')}</label>
+              <div className="flex flex-wrap gap-4">
+                {directors.map((director) => (
+                  <label key={director.id} className="flex items-center gap-1.5">
+                    <input
+                      type="checkbox"
+                      checked={formik.values.directorIds.includes(director.id)}
+                      onChange={() => toggleDirector(director.id)}
+                    />
+                    <span>{director.full_name}</span>
+                  </label>
+                ))}
+              </div>
+              {getError('directorIds') && (
+                <span className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <i className="fa-solid fa-circle-exclamation text-xs" />
+                  {getError('directorIds')}
+                </span>
+              )}
 
               <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.add.cast.label')}</label>
-              <div className="flex flex-col gap-4">
-                {formik.values.cast.map((member, index) => (
-                  <div key={index} className="flex flex-col gap-2 rounded-md border border-txt/10 p-3">
-                    <Input
-                      label={t('movies.add.cast.name')}
-                      type="text"
-                      value={member.name}
-                      onChange={(e) => updateCastRow(index, 'name', e.target.value)}
-                      error={getError(`cast.${index}.name`)}
-                    />
-                    <Input
-                      label={t('movies.add.cast.role')}
-                      type="text"
-                      value={member.role}
-                      onChange={(e) => updateCastRow(index, 'role', e.target.value)}
-                    />
-                    <Input
-                      label={t('movies.add.cast.avatarUrl')}
-                      type="text"
-                      value={member.avatar}
-                      onChange={(e) => updateCastRow(index, 'avatar', e.target.value)}
-                      error={getError(`cast.${index}.avatar`)}
-                    />
-                    <label className="flex items-center gap-1.5 text-sm">
-                      <input type="checkbox" checked={member.isLead} onChange={() => toggleCastLead(index)} />
-                      <span>{t('movies.add.cast.isLead')}</span>
-                    </label>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => removeCastRow(index)} className="self-end">
-                      {t('movies.add.cast.remove')}
-                    </Button>
-                  </div>
-                ))}
-                <Button type="button" variant="secondary" size="sm" onClick={addCastRow} className="self-start">
-                  {t('movies.add.cast.add')}
-                </Button>
+              <div className="flex flex-col gap-2">
+                {actorsCatalog.map((actor) => {
+                  const selected = formik.values.actors.find((a) => a.actor_id === actor.id);
+                  return (
+                    <div key={actor.id} className="rounded-md border border-txt/10 p-3">
+                      <label className="flex items-center gap-1.5">
+                        <input type="checkbox" checked={!!selected} onChange={() => toggleActor(actor.id)} />
+                        <span>{actor.full_name}</span>
+                      </label>
+                      {selected && (
+                        <div className="mt-2 flex flex-wrap items-center gap-3 pl-6">
+                          <Input
+                            label={t('movies.add.cast.role')}
+                            id={`actor-character-${actor.id}`}
+                            type="text"
+                            value={selected.character_name}
+                            onChange={(e) => updateActorField(actor.id, 'character_name', e.target.value)}
+                          />
+                          <label className="flex items-center gap-1.5 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={selected.is_lead}
+                              onChange={(e) => updateActorField(actor.id, 'is_lead', e.target.checked)}
+                            />
+                            <span>{t('movies.add.cast.isLead')}</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               <label htmlFor="name" className="mb-1 mt-5 block text-sm font-medium">

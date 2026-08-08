@@ -32,7 +32,15 @@ async function finalizeMomoOrder(orderId, orderPayload) {
   const existing = await Invoice.findOne({ code: orderId });
   if (existing) return { alreadyProcessed: true };
 
-  const { ticketIds = [], comboIds = [], voucherCode, discountAmount = 0, totalPrice = 0, accountId } = orderPayload;
+  const {
+    ticketIds = [],
+    comboIds = [],
+    voucherCode,
+    discountAmount = 0,
+    totalPrice = 0,
+    accountId,
+    createdBy = null,
+  } = orderPayload;
   if (!accountId || ticketIds.length === 0) return { alreadyProcessed: false, skipped: true };
 
   if (voucherCode) {
@@ -59,6 +67,7 @@ async function finalizeMomoOrder(orderId, orderPayload) {
       voucher_code: isFirst && voucherCode ? String(voucherCode).toUpperCase() : null,
       discount_amount: isFirst ? Number(discountAmount) : 0,
       status: 1,
+      created_by: createdBy,
     });
     await Ticket.updateOne({ id: Number(ticketIds[index]) }, { $set: { status: 0 } });
   }
@@ -150,6 +159,35 @@ async function findMovieById(id) {
   return Movie.findOne({ id });
 }
 
+// Walks Invoice -> Ticket -> Schedule -> Room -> Cinema to resolve the owning cinema,
+// used to scope check-in/counter-sale access to the invoice's actual branch.
+async function findCinemaIdByInvoiceId(id) {
+  const invoice = await Invoice.findOne({ id: Number(id) });
+  if (!invoice) return null;
+  const ticket = await Ticket.findOne({ id: invoice.ticket_id });
+  if (!ticket) return null;
+  const schedule = await Schedule.findOne({ id: ticket.schedule_id });
+  if (!schedule) return null;
+  const room = await Room.findOne({ id: schedule.room_id });
+  return room ? room.cinema_id : null;
+}
+
+async function findCinemaIdByTicketId(ticketId) {
+  const ticket = await Ticket.findOne({ id: Number(ticketId) });
+  if (!ticket) return null;
+  const schedule = await Schedule.findOne({ id: ticket.schedule_id });
+  if (!schedule) return null;
+  const room = await Room.findOne({ id: schedule.room_id });
+  return room ? room.cinema_id : null;
+}
+
+// Records a paid, immediate booking sold in person (cash/POS at the counter), reusing
+// finalizeMomoOrder's invoice/ticket-writing logic with a synthetic, unique order code.
+async function createCounterSale({ ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy }) {
+  const orderId = `CTR-${await nextId('counterOrder')}`;
+  return finalizeMomoOrder(orderId, { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy });
+}
+
 module.exports = {
   findScheduleByMovieDateTime,
   findTicketsByScheduleId,
@@ -170,4 +208,7 @@ module.exports = {
   findRoomById,
   findCinemaById,
   findMovieById,
+  findCinemaIdByInvoiceId,
+  findCinemaIdByTicketId,
+  createCounterSale,
 };

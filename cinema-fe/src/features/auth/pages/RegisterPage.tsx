@@ -5,7 +5,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthCard } from '@/components/common/AuthCard';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useCheckEmail } from '../hooks/useCheckEmail';
@@ -13,7 +12,6 @@ import { useRegister } from '../hooks/useRegister';
 import { buildRegisterSchema, type RegisterFormValues } from '../schemas/register.schema';
 import { toast } from '@/features/notifications/toast';
 import { ROUTES } from '@/constants/routes';
-import { ROLES } from '@/constants/roles';
 
 const Register = () => {
   const { t } = useTranslation('auth');
@@ -37,7 +35,7 @@ const Register = () => {
 
       toast.success(t('register.registerSuccess'));
 
-      navigate(`${ROUTES.verifyCode}?email=${encodeURIComponent(values.email)}&role=${encodeURIComponent(values.role)}`);
+      navigate(`${ROUTES.verifyCode}?email=${encodeURIComponent(values.email)}`);
     } catch (error) {
       toast.error(getApiErrorMessage(error, t));
     }
@@ -46,7 +44,7 @@ const Register = () => {
   return (
     <AuthCard title={t('register.title')}>
       <Formik<RegisterFormValues>
-        initialValues={{ email: emailParam, password: '', c_password: '', role: `${ROLES.customer}` }}
+        initialValues={{ email: emailParam, password: '', c_password: '' }}
         validate={toFormikValidate<RegisterFormValues>(registerSchema)}
         onSubmit={handleSubmit}
       >
@@ -83,20 +81,6 @@ const Register = () => {
                 error={formik.touched.c_password ? formik.errors.c_password : undefined}
               />
             </div>
-            <div className="mt-4">
-              <Field
-                as={Select}
-                label={t('register.accountTypeLabel')}
-                id="role"
-                name="role"
-                error={formik.touched.role ? formik.errors.role : undefined}
-                options={[
-                  { label: t('register.roleUser'), value: `${ROLES.customer}` },
-                  { label: t('register.roleCinema'), value: `${ROLES.owner}` },
-                ]}
-              />
-            </div>
-
             <Button type="submit" loading={registerMutation.isPending} className="mt-6 w-full">
               {t('register.submit')}
             </Button>

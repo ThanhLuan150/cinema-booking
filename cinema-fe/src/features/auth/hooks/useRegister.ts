@@ -4,7 +4,6 @@ import type { RegisterVariables } from '../types/auth.types';
 
 export function useRegister() {
   return useMutation({
-    mutationFn: ({ email, password, c_password, role }: RegisterVariables) =>
-      register(email, password, c_password, Number(role)),
+    mutationFn: ({ email, password, c_password }: RegisterVariables) => register(email, password, c_password),
   });
 }

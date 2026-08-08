@@ -131,22 +131,17 @@ describe('cinema.repository', () => {
     expect(await cinemaRepository.findAccountByEmail('OWNER@example.com')).not.toBeNull();
   });
 
-  describe('upsertOnboard', () => {
-    it('creates a new pending cinema for the owner\'s first submission', async () => {
-      const account = { id: 42 };
-      const cinema = await cinemaRepository.upsertOnboard(account, { name: 'New Cinema', address: 'Addr', city: 'HN' });
-      expect(cinema.status).toBe(0);
-      expect(cinema.owner_id).toBe(42);
+  it('createOwnerAccount creates a pre-approved, pre-verified branch admin account', async () => {
+    const account = await cinemaRepository.createOwnerAccount({
+      id: 1,
+      email: 'owner@example.com',
+      password: 'hashed',
+      name: 'Owner',
+      phone: '0123456789',
     });
-
-    it('updates the existing cinema in place on a second submission', async () => {
-      const account = { id: 42 };
-      await cinemaRepository.upsertOnboard(account, { name: 'First', address: 'A', city: 'HN' });
-      await cinemaRepository.upsertOnboard(account, { name: 'Second', address: 'B', city: 'HCM' });
-      expect(await Cinema.countDocuments({ owner_id: 42 })).toBe(1);
-      const cinema = await Cinema.findOne({ owner_id: 42 });
-      expect(cinema.name).toBe('Second');
-    });
+    expect(account.role).toBe(2);
+    expect(account.approved).toBe(true);
+    expect(account.verified).toBe(true);
   });
 
   it('create/updateFields/approve/block/remove manage a cinema document', async () => {

@@ -52,7 +52,12 @@
       "bookings": "Бронирования",
       "transactions": "Транзакции",
       "reviews": "Отзывы",
-      "rooms": "Залы"
+      "rooms": "Залы",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

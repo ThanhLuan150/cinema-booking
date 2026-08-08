@@ -1,12 +1,14 @@
 const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
+const seedRbac = require('../seed/seedRbac');
 const comboRoutes = require('./combo.routes');
 const Cinema = require('../models/Cinema');
 
 const app = buildTestApp('/api/combo', comboRoutes);
 
 beforeAll(async () => connect());
+beforeEach(async () => seedRbac());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 

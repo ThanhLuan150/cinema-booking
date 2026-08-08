@@ -52,7 +52,12 @@
       "bookings": "予約",
       "transactions": "取引履歴",
       "reviews": "レビュー",
-      "rooms": "上映室"
+      "rooms": "上映室",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

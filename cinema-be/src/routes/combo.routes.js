@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
-const { requireAuth, requireRole, optionalAuth } = require('../middleware/auth');
+const { requireAuth, optionalAuth } = require('../middleware/auth');
+const { requirePermission } = require('../middleware/permission');
 const { requireCinemaOwnership } = require('../middleware/ownership');
 const comboRepository = require('../repositories/combo.repository');
 const comboController = require('../controllers/combo.controller');
@@ -19,25 +20,25 @@ router.get('/:id', asyncHandler(comboController.getById));
 router.post(
   '/',
   requireAuth,
-  requireRole(0, 2),
+  requirePermission('combo.create'),
   requireCinemaOwnership((req) => Number(req.body.cinema_id)),
   asyncHandler(comboController.create),
 );
 
-// PUT /api/combo/:id (owner/admin)
+// PUT /api/combo/:id (combo.update permission, owner-scoped)
 router.put(
   '/:id',
   requireAuth,
-  requireRole(0, 2),
+  requirePermission('combo.update'),
   requireCinemaOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.update),
 );
 
-// DELETE /api/combo/:id (owner/admin)
+// DELETE /api/combo/:id (combo.delete permission, owner-scoped)
 router.delete(
   '/:id',
   requireAuth,
-  requireRole(0, 2),
+  requirePermission('combo.delete'),
   requireCinemaOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.remove),
 );

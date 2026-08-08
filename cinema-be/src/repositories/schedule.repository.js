@@ -1,6 +1,7 @@
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
 const Cinema = require('../models/Cinema');
+const Employee = require('../models/Employee');
 
 // Lists schedules for management (admin sees every showtime; a theater owner only sees
 // showtimes in rooms belonging to their own cinema(s)). `cinemaId`/`roomId` narrow the result
@@ -15,6 +16,11 @@ async function findFiltered({ role, accountId, cinemaId, roomId, skip = 0, limit
     const cinemaIds = cinemaId
       ? ownedCinemas.map((c) => c.id).filter((id) => id === Number(cinemaId))
       : ownedCinemas.map((c) => c.id);
+    const rooms = await Room.find({ cinema_id: { $in: cinemaIds } });
+    filter.room_id = { $in: rooms.map((r) => r.id) };
+  } else if (role === 3) {
+    const employee = await Employee.findOne({ account_id: accountId, status: 1 });
+    const cinemaIds = employee ? [employee.cinema_id] : [];
     const rooms = await Room.find({ cinema_id: { $in: cinemaIds } });
     filter.room_id = { $in: rooms.map((r) => r.id) };
   } else if (cinemaId) {

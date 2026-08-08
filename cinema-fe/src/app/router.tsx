@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { ADMIN_ONLY_ROLES, MANAGEMENT_ROLES } from '@/constants/roles';
+import { ADMIN_ONLY_ROLES, MANAGEMENT_ROLES, EMPLOYEE_ONLY_ROLES, STAFF_ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
 import { RequireRole } from './RequireRole';
 import { RedirectManagementFromHome } from './RedirectManagementFromHome';
@@ -10,7 +10,6 @@ import Register from '@/features/auth/pages/RegisterPage';
 import LoginForm from '@/features/auth/pages/LoginPage';
 import VerifyCode from '@/features/auth/pages/VerifyCodePage';
 import UserInfo from '@/features/auth/pages/UserInfoPage';
-import CinemaInfo from '@/features/auth/pages/CinemaInfoPage';
 import Profile from '@/features/auth/pages/ProfilePage';
 import ForgotPassword from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPassword from '@/features/auth/pages/ResetPasswordPage';
@@ -28,6 +27,12 @@ import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
 import OwnerBookingLookup from '@/features/owner/pages/Lookup';
+import OwnerEmployees from '@/features/owner/employees/pages/List';
+import AdminActors from '@/features/admin/actors/pages/List';
+import AdminDirectors from '@/features/admin/directors/pages/List';
+import EmployeeDashboard from '@/features/employee/pages/EmployeeDashboard';
+import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
+import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -59,7 +64,6 @@ export function AppRouter() {
       <Route path={ROUTES.login} element={<LoginForm />} />
       <Route path={ROUTES.verifyCode} element={<VerifyCode />} />
       <Route path={ROUTES.userInfo} element={<UserInfo />} />
-      <Route path={ROUTES.cinemaInfo} element={<CinemaInfo />} />
       <Route path={ROUTES.profile} element={<Profile />} />
       <Route path={ROUTES.forgotPassword} element={<ForgotPassword />} />
       <Route path={ROUTES.resetPassword} element={<ResetPassword />} />
@@ -166,6 +170,54 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerBookingLookup />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerEmployees}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerEmployees />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeDashboard}
+        element={
+          <RequireRole roles={EMPLOYEE_ONLY_ROLES}>
+            <EmployeeDashboard />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeCounterSale}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <EmployeeCounterSale />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeCheckIn}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <EmployeeCheckIn />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.adminActors}
+        element={
+          <RequireRole roles={ADMIN_ONLY_ROLES}>
+            <AdminActors />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.adminDirectors}
+        element={
+          <RequireRole roles={ADMIN_ONLY_ROLES}>
+            <AdminDirectors />
           </RequireRole>
         }
       />

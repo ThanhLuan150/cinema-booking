@@ -1,7 +1,9 @@
 require('dotenv').config();
 
 const connectDB = require('../config/db');
+const Account = require('../models/Account');
 const Category = require('../models/Category');
+const Cinema = require('../models/Cinema');
 const Room = require('../models/Room');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
@@ -73,12 +75,24 @@ async function run() {
     categoryByName[name] = cat;
   }
 
+  const admin = await Account.findOne({ role: 0 }).sort({ id: 1 });
+  if (!admin) {
+    console.error('No admin account found — run seed.js first.');
+    process.exit(1);
+  }
+  let defaultCinema = await Cinema.findOne({ owner_id: admin.id, name: 'Default Cinema' });
+  if (!defaultCinema) {
+    const id = await nextId('cinema');
+    defaultCinema = await Cinema.create({ id, owner_id: admin.id, name: 'Default Cinema', status: 1 });
+    console.log(`Created default cinema (id=${defaultCinema.id})`);
+  }
+
   const rooms = [];
   for (const name of ROOMS) {
-    let room = await Room.findOne({ name });
+    let room = await Room.findOne({ name, cinema_id: defaultCinema.id });
     if (!room) {
       const id = await nextId('room');
-      room = await Room.create({ id, name });
+      room = await Room.create({ id, cinema_id: defaultCinema.id, name });
       console.log(`Created room: ${name}`);
     }
     rooms.push(room);

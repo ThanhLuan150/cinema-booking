@@ -52,7 +52,12 @@
       "bookings": "Bookings",
       "transactions": "Transactions",
       "reviews": "Reviews",
-      "rooms": "Rooms"
+      "rooms": "Rooms",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

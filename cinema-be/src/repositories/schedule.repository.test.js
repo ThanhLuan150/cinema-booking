@@ -3,6 +3,7 @@ const scheduleRepository = require('./schedule.repository');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
 const Cinema = require('../models/Cinema');
+const Employee = require('../models/Employee');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
@@ -50,6 +51,20 @@ describe('schedule.repository', () => {
       const result = await scheduleRepository.findFiltered({ role: 1, accountId: 1, cinemaId: 2 });
       expect(result.total).toBe(1);
       expect(result.data[0].room_id).toBe(2);
+    });
+
+    it('scopes an employee (role 3) to only their staffed cinema\'s rooms', async () => {
+      await seedShowtimes();
+      await Employee.create({ id: 1, account_id: 7, cinema_id: 2, status: 1 });
+      const result = await scheduleRepository.findFiltered({ role: 3, accountId: 7 });
+      expect(result.total).toBe(1);
+      expect(result.data[0].room_id).toBe(2);
+    });
+
+    it('returns nothing for an employee with no active staff record', async () => {
+      await seedShowtimes();
+      const result = await scheduleRepository.findFiltered({ role: 3, accountId: 7 });
+      expect(result.total).toBe(0);
     });
   });
 

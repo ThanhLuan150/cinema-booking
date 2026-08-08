@@ -52,7 +52,12 @@
       "bookings": "예매 관리",
       "transactions": "거래 내역",
       "reviews": "리뷰",
-      "rooms": "상영관"
+      "rooms": "상영관",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "관리자 메뉴 열기/닫기",
     "adminFallback": "관리자",

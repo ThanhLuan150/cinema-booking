@@ -1,16 +1,6 @@
 const mongoose = require('mongoose');
 const { withCleanJSON } = require('./plugins');
 
-const castMemberSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    role: { type: String, default: '' },
-    avatar: { type: String, default: '' },
-    isLead: { type: Boolean, default: false },
-  },
-  { _id: false },
-);
-
 const movieSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
@@ -23,9 +13,7 @@ const movieSchema = new mongoose.Schema(
     trailer: { type: String, default: '' },
     producer: { type: String, default: '' },
     producerAvatar: { type: String, default: '' },
-    director: { type: String, default: '' },
-    directorAvatar: { type: String, default: '' },
-    cast: { type: [castMemberSchema], default: [] },
+    // Director(s)/cast are relational now — see MovieDirector/MovieActor + Director/Actor models.
   },
   { timestamps: true },
 );

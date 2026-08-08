@@ -52,7 +52,12 @@
       "bookings": "การจอง",
       "transactions": "ธุรกรรม",
       "reviews": "รีวิว",
-      "rooms": "ห้องฉาย"
+      "rooms": "ห้องฉาย",
+      "employees": "Employees",
+      "actors": "Actors",
+      "directors": "Directors",
+      "counterSale": "Counter sale",
+      "checkIn": "Check-in"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

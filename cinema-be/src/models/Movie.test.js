@@ -17,8 +17,6 @@ describe('Movie model', () => {
     expect(movie.country).toBe('');
     expect(movie.trailer).toBe('');
     expect(movie.producer).toBe('');
-    expect(movie.director).toBe('');
-    expect(movie.cast).toEqual([]);
     expect(movie.createdAt).toBeInstanceOf(Date);
   });
 
@@ -32,32 +30,6 @@ describe('Movie model', () => {
   it('enforces unique id', async () => {
     await Movie.create({ id: 1, name: 'A', premiere_date: '2020-01-01' });
     await expect(Movie.create({ id: 1, name: 'B', premiere_date: '2020-01-02' })).rejects.toThrow();
-  });
-
-  it('stores embedded cast members with their own defaults', async () => {
-    const movie = await Movie.create({
-      id: 1,
-      name: 'A',
-      premiere_date: '2020-01-01',
-      cast: [{ name: 'Actor One' }, { name: 'Actor Two', role: 'Villain', avatar: 'a.jpg' }],
-    });
-    expect(movie.cast).toHaveLength(2);
-    expect(movie.cast[0].name).toBe('Actor One');
-    expect(movie.cast[0].role).toBe('');
-    expect(movie.cast[0].avatar).toBe('');
-    expect(movie.cast[1].role).toBe('Villain');
-    expect(movie.cast[0]._id).toBeUndefined();
-  });
-
-  it('fails validation when a cast member is missing a name', () => {
-    const movie = new Movie({
-      id: 1,
-      name: 'A',
-      premiere_date: '2020-01-01',
-      cast: [{ role: 'No name' }],
-    });
-    const err = movie.validateSync();
-    expect(err.errors['cast.0.name']).toBeDefined();
   });
 
   it('toJSON strips _id and __v', async () => {

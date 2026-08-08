@@ -22,7 +22,20 @@ describe('Invoice model', () => {
     expect(invoice.discount_amount).toBe(0);
     expect(invoice.status).toBe(1);
     expect(invoice.checked_in).toBe(false);
+    expect(invoice.created_by).toBeNull();
     expect(invoice.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('stores created_by when a counter sale is recorded', async () => {
+    const invoice = await Invoice.create({
+      id: 1,
+      ticket_id: 1,
+      account_id: 1,
+      code: 'A',
+      total_price: 1,
+      created_by: 42,
+    });
+    expect(invoice.created_by).toBe(42);
   });
 
   it('fails validation when required fields are missing', () => {

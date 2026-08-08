@@ -3,12 +3,14 @@ jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.
 const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
+const seedRbac = require('../seed/seedRbac');
 const cinemaRoutes = require('./cinema.routes');
 const Cinema = require('../models/Cinema');
 
 const app = buildTestApp('/api/cinema', cinemaRoutes);
 
 beforeAll(async () => connect());
+beforeEach(async () => seedRbac());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
@@ -56,5 +58,28 @@ describe('cinema.routes wiring', () => {
       .put('/api/cinema/1/approve')
       .set('Authorization', authHeader({ role: 2 }));
     expect(res.status).toBe(403);
+  });
+
+  it('POST /api/cinema/branch-admin requires auth', async () => {
+    const res = await request(app)
+      .post('/api/cinema/branch-admin')
+      .send({ email: 'a@b.com', password: 'pw', cinema_name: 'A' });
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/cinema/branch-admin forbids a branch admin (super admin only)', async () => {
+    const res = await request(app)
+      .post('/api/cinema/branch-admin')
+      .set('Authorization', authHeader({ role: 2 }))
+      .send({ email: 'a@b.com', password: 'pw', cinema_name: 'A' });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/cinema/branch-admin allows super admin', async () => {
+    const res = await request(app)
+      .post('/api/cinema/branch-admin')
+      .set('Authorization', authHeader({ role: 0 }))
+      .send({ email: 'a@b.com', password: 'pw', cinema_name: 'A' });
+    expect(res.status).toBe(201);
   });
 });

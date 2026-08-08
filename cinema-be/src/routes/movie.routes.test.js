@@ -7,11 +7,14 @@ jest.mock('../utils/uploadImage', () => ({
 const request = require('supertest');
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
+const seedRbac = require('../seed/seedRbac');
 const movieRoutes = require('./movie.routes');
+const Movie = require('../models/Movie');
 
 const app = buildTestApp('/api/movie', movieRoutes);
 
 beforeAll(async () => connect());
+beforeEach(async () => seedRbac());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
@@ -50,5 +53,37 @@ describe('movie.routes wiring', () => {
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
       .send({ name: 'New Movie', premiere_date: '2026-01-01' });
     expect(res.status).toBe(201);
+  });
+
+  it('PUT /api/movie/:id forbids a theater owner editing a movie they did not create', async () => {
+    await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .put('/api/movie/1')
+      .set('Authorization', authHeader({ role: 2, accountId: 42 }))
+      .send({ name: 'Hacked' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PUT /api/movie/:id allows the owning theater staff', async () => {
+    await Movie.create({ id: 1, owner_id: 42, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .put('/api/movie/1')
+      .set('Authorization', authHeader({ role: 2, accountId: 42 }))
+      .send({ name: 'Updated' });
+    expect(res.status).toBe(200);
+  });
+
+  it('DELETE /api/movie/:id forbids a theater owner deleting a movie they did not create', async () => {
+    await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .delete('/api/movie/1')
+      .set('Authorization', authHeader({ role: 2, accountId: 42 }));
+    expect(res.status).toBe(403);
+  });
+
+  it('DELETE /api/movie/:id allows admin regardless of ownership', async () => {
+    await Movie.create({ id: 1, owner_id: 99, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app).delete('/api/movie/1').set('Authorization', authHeader({ role: 0 }));
+    expect(res.status).toBe(200);
   });
 });
