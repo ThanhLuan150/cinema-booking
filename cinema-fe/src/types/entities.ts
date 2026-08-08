@@ -127,8 +127,8 @@ export interface Position {
 
 export interface Employee {
   id: number;
-  account_id: number;
-  cinema_id: number;
+  user_id: number;
+  branch_id: number;
   employee_code: string;
   position_id: number;
   position?: { code: string; name: string };

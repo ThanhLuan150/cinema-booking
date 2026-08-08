@@ -20,16 +20,16 @@ function toEmployeeJson(employee, account, position) {
 
 // GET /api/employee?cinemaId=&page=&limit= (branch admin/super admin, cinema-scoped)
 async function list(req, res) {
-  const filter = { cinema_id: req.cinemaId };
+  const filter = { branch_id: req.cinemaId };
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await employeeRepository.findAll(filter, { skip, limit });
 
-  const accounts = await authRepository.findByFilter({ id: { $in: data.map((e) => e.account_id) } });
+  const accounts = await authRepository.findByFilter({ id: { $in: data.map((e) => e.user_id) } });
   const accountById = new Map(accounts.map((a) => [a.id, a]));
   const positions = await positionRepository.findAll();
   const positionById = new Map(positions.map((p) => [p.id, p]));
   const enriched = data.map((employee) =>
-    toEmployeeJson(employee, accountById.get(employee.account_id), positionById.get(employee.position_id)),
+    toEmployeeJson(employee, accountById.get(employee.user_id), positionById.get(employee.position_id)),
   );
 
   res.json(buildPaginatedResult({ data: enriched, total, page, limit }));
@@ -68,8 +68,8 @@ async function create(req, res) {
   const employeeId = await nextId('employee');
   const employee = await employeeRepository.create({
     id: employeeId,
-    account_id: account.id,
-    cinema_id: req.cinemaId,
+    user_id: account.id,
+    branch_id: req.cinemaId,
     employee_code: `EMP-${String(employeeId).padStart(6, '0')}`,
     position_id: position.id,
     hire_date: new Date(),
@@ -91,19 +91,19 @@ async function update(req, res) {
   const employee = await employeeRepository.updateFields(req.params.id, updates);
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
 
-  const account = await authRepository.findById(employee.account_id);
+  const account = await authRepository.findById(employee.user_id);
   const position = await positionRepository.findById(employee.position_id);
   res.json(toEmployeeJson(employee, account, position));
 }
 
 // DELETE /api/employee/:id (branch admin/super admin, cinema-scoped) — deactivates the
 // employee record and locks the underlying account instead of hard-deleting, so past
-// bookings/check-ins the employee created keep a valid account_id/created_by reference.
+// bookings/check-ins the employee created keep a valid user_id/created_by reference.
 async function remove(req, res) {
   const employee = await employeeRepository.updateFields(req.params.id, { status: 0 });
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
 
-  await userRepository.updateFields(employee.account_id, { status: 0 });
+  await userRepository.updateFields(employee.user_id, { status: 0 });
 
   res.json({ message: 'Deactivated' });
 }
@@ -114,7 +114,7 @@ async function resetPassword(req, res) {
   const employee = await employeeRepository.findById(req.params.id);
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
 
-  const account = await authRepository.findById(employee.account_id);
+  const account = await authRepository.findById(employee.user_id);
   if (!account) return res.status(404).json({ message: 'Employee not found' });
 
   const tempPassword = crypto.randomBytes(6).toString('hex');

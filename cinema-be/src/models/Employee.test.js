@@ -12,8 +12,8 @@ describe('Employee model', () => {
   it('creates a valid employee with defaults', async () => {
     const employee = await Employee.create({
       id: 1,
-      account_id: 10,
-      cinema_id: 1,
+      user_id: 10,
+      branch_id: 1,
       employee_code: 'EMP-000001',
       position_id: 1,
     });
@@ -24,16 +24,16 @@ describe('Employee model', () => {
   it('fails validation when required fields are missing', () => {
     const err = new Employee({}).validateSync();
     expect(err.errors.id).toBeDefined();
-    expect(err.errors.account_id).toBeDefined();
-    expect(err.errors.cinema_id).toBeDefined();
+    expect(err.errors.user_id).toBeDefined();
+    expect(err.errors.branch_id).toBeDefined();
     expect(err.errors.employee_code).toBeDefined();
     expect(err.errors.position_id).toBeDefined();
   });
 
-  it('enforces unique account_id (one employee record per account)', async () => {
-    await Employee.create({ id: 1, account_id: 10, cinema_id: 1, employee_code: 'EMP-000001', position_id: 1 });
+  it('enforces unique user_id (one employee record per account)', async () => {
+    await Employee.create({ id: 1, user_id: 10, branch_id: 1, employee_code: 'EMP-000001', position_id: 1 });
     await expect(
-      Employee.create({ id: 2, account_id: 10, cinema_id: 2, employee_code: 'EMP-000002', position_id: 1 }),
+      Employee.create({ id: 2, user_id: 10, branch_id: 2, employee_code: 'EMP-000002', position_id: 1 }),
     ).rejects.toThrow();
   });
 });

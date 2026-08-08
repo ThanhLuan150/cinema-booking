@@ -4,8 +4,8 @@ const { withCleanJSON } = require('./plugins');
 const employeeSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
-    account_id: { type: Number, required: true, unique: true, index: true },
-    cinema_id: { type: Number, required: true, index: true },
+    user_id: { type: Number, required: true, unique: true, index: true },
+    branch_id: { type: Number, required: true, index: true },
     employee_code: { type: String, required: true, unique: true, index: true },
     position_id: { type: Number, required: true, index: true },
     hire_date: { type: Date, default: Date.now },

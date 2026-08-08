@@ -30,7 +30,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('employee.update'),
-  requireCinemaAccess((req) => employeeRepository.findCinemaIdByEmployeeId(req.params.id)),
+  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.update),
 );
 
@@ -39,7 +39,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('employee.delete'),
-  requireCinemaAccess((req) => employeeRepository.findCinemaIdByEmployeeId(req.params.id)),
+  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.remove),
 );
 
@@ -48,7 +48,7 @@ router.post(
   '/:id/reset-password',
   requireAuth,
   requirePermission('employee.update'),
-  requireCinemaAccess((req) => employeeRepository.findCinemaIdByEmployeeId(req.params.id)),
+  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.resetPassword),
 );
 

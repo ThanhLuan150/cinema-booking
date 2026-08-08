@@ -19,7 +19,7 @@ async function toProfileJson(account) {
   };
   if (account.role === 3) {
     const employee = await employeeRepository.findByAccountId(account.id);
-    if (employee) profile.cinema_id = employee.cinema_id;
+    if (employee) profile.cinema_id = employee.branch_id;
   }
   return profile;
 }

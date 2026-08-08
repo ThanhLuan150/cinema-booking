@@ -61,8 +61,8 @@ describe('employee.controller', () => {
       const account = await Account.findOne({ email: 'staff@cinema.com' });
       expect(account.role).toBe(3);
       expect(account.approved).toBe(true);
-      const employee = await Employee.findOne({ account_id: account.id });
-      expect(employee.cinema_id).toBe(5);
+      const employee = await Employee.findOne({ user_id: account.id });
+      expect(employee.branch_id).toBe(5);
       expect(employee.position_id).toBe(1);
       expect(employee.employee_code).toMatch(/^EMP-\d{6}$/);
     });
@@ -86,8 +86,8 @@ describe('employee.controller', () => {
     it('returns employees scoped to req.cinemaId enriched with account info and position', async () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3, name: 'A' });
-      await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1 });
-      await Employee.create({ id: 2, account_id: 2, cinema_id: 9, employee_code: 'EMP-000002', position_id: 1 });
+      await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
+      await Employee.create({ id: 2, user_id: 2, branch_id: 9, employee_code: 'EMP-000002', position_id: 1 });
       const res = mockRes();
       await employeeController.list({ query: {}, cinemaId: 5 }, res);
       const payload = res.json.mock.calls[0][0];
@@ -107,7 +107,7 @@ describe('employee.controller', () => {
     it('rejects a position_id that does not exist', async () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3 });
-      await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1 });
+      await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
       const res = mockRes();
       await employeeController.update({ params: { id: 1 }, body: { position_id: 999 } }, res);
       expect(res.status).toHaveBeenCalledWith(400);
@@ -117,7 +117,7 @@ describe('employee.controller', () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Position.create({ id: 2, code: 'SHIFT_SUPERVISOR', name: 'Shift Supervisor', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3 });
-      await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1 });
+      await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
       const res = mockRes();
       await employeeController.update({ params: { id: 1 }, body: { position_id: 2, status: 0 } }, res);
       const updated = await Employee.findOne({ id: 1 });
@@ -130,7 +130,7 @@ describe('employee.controller', () => {
     it('deactivates the employee and locks the account', async () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3, status: 1 });
-      await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1, status: 1 });
+      await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1, status: 1 });
       const res = mockRes();
       await employeeController.remove({ params: { id: 1 } }, res);
       expect(await Employee.findOne({ id: 1 })).toHaveProperty('status', 0);
@@ -148,7 +148,7 @@ describe('employee.controller', () => {
     it('hashes a new password onto the account without returning it', async () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'oldhash', role: 3, status: 1 });
-      await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1 });
+      await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
       const res = mockRes();
       await employeeController.resetPassword({ params: { id: 1 } }, res);
       const account = await Account.findOne({ id: 1 }).select('+password');

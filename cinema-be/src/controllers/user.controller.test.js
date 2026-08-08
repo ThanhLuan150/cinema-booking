@@ -38,7 +38,7 @@ describe('me / updateMe', () => {
 
   it('me includes cinema_id for an employee account', async () => {
     await Account.create({ id: 1, email: 'staff@b.com', password: 'x', role: 3 });
-    await Employee.create({ id: 1, account_id: 1, cinema_id: 5, employee_code: 'EMP-000001', position_id: 1 });
+    await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
     const res = mockRes();
     await userController.me({ account: { accountId: 1 } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ cinema_id: 5 }));

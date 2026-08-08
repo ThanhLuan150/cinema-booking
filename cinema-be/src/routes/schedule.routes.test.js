@@ -59,8 +59,8 @@ describe('schedule.routes wiring', () => {
     const security = await Position.findOne({ code: 'SECURITY' });
     await Employee.create({
       id: 1,
-      account_id: 7,
-      cinema_id: 1,
+      user_id: 7,
+      branch_id: 1,
       employee_code: 'EMP-000001',
       position_id: security.id,
       status: 1,
@@ -74,8 +74,8 @@ describe('schedule.routes wiring', () => {
     const ticketStaff = await Position.findOne({ code: 'TICKET_STAFF' });
     await Employee.create({
       id: 1,
-      account_id: 7,
-      cinema_id: 1,
+      user_id: 7,
+      branch_id: 1,
       employee_code: 'EMP-000001',
       position_id: ticketStaff.id,
       status: 1,

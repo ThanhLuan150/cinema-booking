@@ -89,7 +89,7 @@ describe('employee.routes wiring', () => {
 
   it('PUT /api/employee/:id forbids a branch admin from another cinema', async () => {
     await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
-    await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
+    await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
     const res = await request(app)
       .put('/api/employee/1')
       .set('Authorization', authHeader({ role: 2, accountId: 99 }))
@@ -100,7 +100,7 @@ describe('employee.routes wiring', () => {
   describe('POST /api/employee/:id/reset-password', () => {
     it('forbids a branch admin from another cinema', async () => {
       await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
-      await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
+      await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
       const res = await request(app)
         .post('/api/employee/1/reset-password')
         .set('Authorization', authHeader({ role: 2, accountId: 99 }));
@@ -110,7 +110,7 @@ describe('employee.routes wiring', () => {
     it('allows the owning branch admin and does not return the new password', async () => {
       await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
       await Account.create({ id: 7, email: 'staff@b.com', password: 'oldhash', role: 3, status: 1 });
-      await Employee.create({ id: 1, account_id: 7, cinema_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
+      await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
       const res = await request(app)
         .post('/api/employee/1/reset-password')
         .set('Authorization', authHeader({ role: 2, accountId: 42 }));
