@@ -17,6 +17,7 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
 const useMyCinemasMock = vi.fn();
 vi.mock('../../hooks/useMyCinemas', () => ({
@@ -31,10 +32,17 @@ vi.mock('../../hooks/useMyEmployees', () => ({
 const createEmployeeMutate = vi.fn();
 const updateEmployeeMutate = vi.fn();
 const deactivateEmployeeMutate = vi.fn();
+const resetPasswordMutate = vi.fn();
 vi.mock('../../hooks/useEmployeeMutations', () => ({
   useCreateEmployee: () => ({ mutateAsync: createEmployeeMutate, isPending: false }),
   useUpdateEmployee: () => ({ mutateAsync: updateEmployeeMutate }),
   useDeactivateEmployee: () => ({ mutateAsync: deactivateEmployeeMutate }),
+  useResetEmployeePassword: () => ({ mutateAsync: resetPasswordMutate }),
+}));
+
+const usePositionsMock = vi.fn();
+vi.mock('../../hooks/usePositions', () => ({
+  usePositions: (...args: unknown[]) => usePositionsMock(...args),
 }));
 
 const confirmDialogMock = vi.fn();
@@ -63,23 +71,51 @@ describe('Owner Employees List', () => {
     createEmployeeMutate.mockReset();
     updateEmployeeMutate.mockReset();
     deactivateEmployeeMutate.mockReset();
+    resetPasswordMutate.mockReset();
     confirmDialogMock.mockReset();
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A' }] } });
+    usePositionsMock.mockReturnValue({ data: [{ id: 1, code: 'CASHIER', name: 'Cashier' }] });
   });
 
   it('renders employee rows with status', () => {
     useMyEmployeesMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Staff A', email: 'a@b.com', position: 'Cashier', status: 1 }], totalPages: 1 },
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 1,
+          },
+        ],
+        totalPages: 1,
+      },
     });
     renderPage();
     expect(screen.getByText('Staff A')).toBeInTheDocument();
     expect(screen.getByText('a@b.com')).toBeInTheDocument();
+    expect(screen.getByText('EMP-000001')).toBeInTheDocument();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
     expect(screen.getByText('employees.statusActive')).toBeInTheDocument();
   });
 
   it('deactivates an employee after confirming', async () => {
     useMyEmployeesMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Staff A', email: 'a@b.com', position: 'Cashier', status: 1 }], totalPages: 1 },
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 1,
+          },
+        ],
+        totalPages: 1,
+      },
     });
     confirmDialogMock.mockResolvedValue(true);
     deactivateEmployeeMutate.mockResolvedValue({});
@@ -90,12 +126,47 @@ describe('Owner Employees List', () => {
 
   it('reactivates a deactivated employee', async () => {
     useMyEmployeesMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Staff A', email: 'a@b.com', position: 'Cashier', status: 0 }], totalPages: 1 },
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 0,
+          },
+        ],
+        totalPages: 1,
+      },
     });
     updateEmployeeMutate.mockResolvedValue({});
     renderPage();
     fireEvent.click(screen.getByText('employees.reactivate'));
     await waitFor(() => expect(updateEmployeeMutate).toHaveBeenCalledWith({ id: 1, status: 1 }));
+  });
+
+  it('resets an employee password after confirming', async () => {
+    useMyEmployeesMock.mockReturnValue({
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 1,
+          },
+        ],
+        totalPages: 1,
+      },
+    });
+    confirmDialogMock.mockResolvedValue(true);
+    resetPasswordMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('employees.resetPassword'));
+    await waitFor(() => expect(resetPasswordMutate).toHaveBeenCalledWith(1));
   });
 
   it('opens the add-employee modal from the add button', () => {

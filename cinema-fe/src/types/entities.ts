@@ -118,11 +118,20 @@ export interface Schedule {
   price: number;
 }
 
+export interface Position {
+  id: number;
+  code: string;
+  name: string;
+  status?: number; // 1 = active, 0 = inactive
+}
+
 export interface Employee {
   id: number;
-  account_id: number;
-  cinema_id: number;
-  position: string;
+  user_id: number;
+  branch_id: number;
+  employee_code: string;
+  position_id: number;
+  position?: { code: string; name: string };
   hire_date: string;
   status: number; // 1 = active, 0 = deactivated
   email?: string;

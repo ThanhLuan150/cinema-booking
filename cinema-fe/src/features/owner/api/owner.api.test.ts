@@ -130,7 +130,7 @@ describe('owner.api', () => {
   });
 
   it('createEmployee posts to /employee', async () => {
-    const payload = { cinema_id: 1, email: 'a@b.com', password: 'pw', name: 'A', phone: '', position: '' } as any;
+    const payload = { cinema_id: 1, email: 'a@b.com', password: 'pw', name: 'A', phone: '', position_id: 1 } as any;
     await ownerApi.createEmployee(payload);
     expect(postMock).toHaveBeenCalledWith('/employee', payload);
   });
@@ -143,5 +143,15 @@ describe('owner.api', () => {
   it('deactivateEmployee deletes /employee/:id', async () => {
     await ownerApi.deactivateEmployee(1);
     expect(deleteMock).toHaveBeenCalledWith('/employee/1');
+  });
+
+  it('resetEmployeePassword posts to /employee/:id/reset-password', async () => {
+    await ownerApi.resetEmployeePassword(1);
+    expect(postMock).toHaveBeenCalledWith('/employee/1/reset-password');
+  });
+
+  it('getPositions gets /position', async () => {
+    await ownerApi.getPositions();
+    expect(getMock).toHaveBeenCalledWith('/position');
   });
 });

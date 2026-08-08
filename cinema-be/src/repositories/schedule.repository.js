@@ -9,10 +9,10 @@ const Employee = require('../models/Employee');
 async function resolveAccessibleCinemaIds(accountId) {
   const [ownedCinemas, employee] = await Promise.all([
     Cinema.find({ owner_id: accountId }, 'id'),
-    Employee.findOne({ account_id: accountId, status: 1 }),
+    Employee.findOne({ user_id: accountId, status: 1 }),
   ]);
   const ids = new Set(ownedCinemas.map((c) => c.id));
-  if (employee) ids.add(employee.cinema_id);
+  if (employee) ids.add(employee.branch_id);
   return [...ids];
 }
 

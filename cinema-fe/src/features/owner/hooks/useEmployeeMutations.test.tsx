@@ -5,13 +5,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const createEmployeeMock = vi.fn();
 const updateEmployeeMock = vi.fn();
 const deactivateEmployeeMock = vi.fn();
+const resetEmployeePasswordMock = vi.fn();
 vi.mock('../api/owner.api', () => ({
   createEmployee: (...args: unknown[]) => createEmployeeMock(...args),
   updateEmployee: (...args: unknown[]) => updateEmployeeMock(...args),
   deactivateEmployee: (...args: unknown[]) => deactivateEmployeeMock(...args),
+  resetEmployeePassword: (...args: unknown[]) => resetEmployeePasswordMock(...args),
 }));
 
-import { useCreateEmployee, useUpdateEmployee, useDeactivateEmployee } from './useEmployeeMutations';
+import {
+  useCreateEmployee,
+  useUpdateEmployee,
+  useDeactivateEmployee,
+  useResetEmployeePassword,
+} from './useEmployeeMutations';
 
 function makeWrapper() {
   const client = new QueryClient();
@@ -27,9 +34,10 @@ describe('employee mutation hooks', () => {
     createEmployeeMock.mockReset();
     updateEmployeeMock.mockReset();
     deactivateEmployeeMock.mockReset();
+    resetEmployeePasswordMock.mockReset();
   });
 
-  it('useCreateEmployee coerces cinema_id to a number and invalidates myEmployees', async () => {
+  it('useCreateEmployee coerces cinema_id and position_id to numbers and invalidates myEmployees', async () => {
     createEmployeeMock.mockResolvedValue({});
     const { wrapper, invalidateSpy } = makeWrapper();
     const { result } = renderHook(() => useCreateEmployee(), { wrapper });
@@ -39,7 +47,7 @@ describe('employee mutation hooks', () => {
       password: 'pw',
       name: 'A',
       phone: '0123',
-      position: 'Cashier',
+      position_id: '2',
     });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(createEmployeeMock).toHaveBeenCalledWith({
@@ -48,7 +56,7 @@ describe('employee mutation hooks', () => {
       password: 'pw',
       name: 'A',
       phone: '0123',
-      position: 'Cashier',
+      position_id: 2,
     });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myEmployees'] });
   });
@@ -59,7 +67,7 @@ describe('employee mutation hooks', () => {
     const { result } = renderHook(() => useUpdateEmployee(), { wrapper });
     result.current.mutate({ id: 1, status: 0 });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(updateEmployeeMock).toHaveBeenCalledWith(1, { status: 0 });
+    expect(updateEmployeeMock).toHaveBeenCalledWith(1, { status: 0, position_id: undefined });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myEmployees'] });
   });
 
@@ -71,5 +79,14 @@ describe('employee mutation hooks', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(deactivateEmployeeMock).toHaveBeenCalledWith(1);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myEmployees'] });
+  });
+
+  it('useResetEmployeePassword calls resetEmployeePassword', async () => {
+    resetEmployeePasswordMock.mockResolvedValue({});
+    const { wrapper } = makeWrapper();
+    const { result } = renderHook(() => useResetEmployeePassword(), { wrapper });
+    result.current.mutate(1);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(resetEmployeePasswordMock).toHaveBeenCalledWith(1);
   });
 });

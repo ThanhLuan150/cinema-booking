@@ -47,15 +47,21 @@ describe('seedRbac', () => {
     }
   });
 
-  it('assigns booking.read the scope from the RBAC doc\'s worked example (ALL/BRANCH/BRANCH/OWN)', async () => {
+  it('assigns booking.read the scope from the RBAC doc\'s worked example (ALL/BRANCH/OWN) at the role level', async () => {
     await seedRbac();
     const permission = await Permission.findOne({ code: 'booking.read' });
-    const expected = { SUPER_ADMIN: 'ALL', BRANCH_ADMIN: 'BRANCH', EMPLOYEE: 'BRANCH', CUSTOMER: 'OWN' };
+    // EMPLOYEE is deliberately absent — booking.read is now granted per-Position (see
+    // seedPositions.js), not as a blanket EMPLOYEE-role permission.
+    const expected = { SUPER_ADMIN: 'ALL', BRANCH_ADMIN: 'BRANCH', CUSTOMER: 'OWN' };
     for (const [roleCode, scope] of Object.entries(expected)) {
       const role = await Role.findOne({ code: roleCode });
       const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
       expect(link.scope).toBe(scope);
     }
+
+    const employeeRole = await Role.findOne({ code: 'EMPLOYEE' });
+    const employeeLink = await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id });
+    expect(employeeLink).toBeNull();
   });
 
   it('updates an existing link\'s scope on the next run instead of only checking presence', async () => {

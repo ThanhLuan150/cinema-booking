@@ -52,6 +52,14 @@ async function sendPasswordResetEmail(email, otp) {
   });
 }
 
+async function sendTempPasswordEmail(email, tempPassword) {
+  return sendMail({
+    to: email,
+    subject: 'Cinema Booking - Your password has been reset',
+    text: `Your account password was reset by a branch admin. Your new temporary password is: ${tempPassword}. Please sign in and change it as soon as possible.`,
+  });
+}
+
 async function sendInvoiceEmail(email, { seats, schedule_id, price }) {
   return sendMail({
     to: email,
@@ -60,4 +68,4 @@ async function sendInvoiceEmail(email, { seats, schedule_id, price }) {
   });
 }
 
-module.exports = { sendMail, sendOtpEmail, sendPasswordResetEmail, sendInvoiceEmail };
+module.exports = { sendMail, sendOtpEmail, sendPasswordResetEmail, sendTempPasswordEmail, sendInvoiceEmail };

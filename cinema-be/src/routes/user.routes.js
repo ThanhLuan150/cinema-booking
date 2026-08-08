@@ -12,6 +12,9 @@ router.get('/user', requireAuth, asyncHandler(userController.me));
 // PUT /api/user  (update the caller's own profile: name, phone, avatar)
 router.put('/user', requireAuth, asyncHandler(userController.updateMe));
 
+// GET /api/user/permissions  (the caller's own resolved role/position permission codes)
+router.get('/user/permissions', requireAuth, asyncHandler(userController.myPermissions));
+
 // GET /api/users (user.read permission)
 router.get('/users', requireAuth, requirePermission('user.read'), asyncHandler(userController.list));
 

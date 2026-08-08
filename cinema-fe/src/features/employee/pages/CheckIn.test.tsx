@@ -16,6 +16,7 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: { role: 3 } }) }));
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
 const refetchMock = vi.fn();
 const useLookupInvoiceForCheckInMock = vi.fn();

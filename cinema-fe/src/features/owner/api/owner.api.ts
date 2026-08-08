@@ -1,5 +1,5 @@
 import apiClient from 'services/apiClient';
-import type { Cinema, Combo, Employee, Room, Seat, Voucher } from '@/types/entities';
+import type { Cinema, Combo, Employee, Position, Room, Seat, Voucher } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
@@ -73,10 +73,15 @@ export const getMyEmployees = (cinemaId: number | string, params?: PaginationPar
     .get<PaginatedResponse<Employee>>('/employee', { params: { cinemaId, ...params } })
     .then((res) => res.data);
 
-export const createEmployee = (payload: Omit<EmployeeFormValues, 'cinema_id'> & { cinema_id: number }) =>
-  apiClient.post('/employee', payload);
+export const createEmployee = (
+  payload: Omit<EmployeeFormValues, 'cinema_id' | 'position_id'> & { cinema_id: number; position_id: number },
+) => apiClient.post('/employee', payload);
 
 export const updateEmployee = (id: number | string, payload: Record<string, unknown>) =>
   apiClient.put(`/employee/${id}`, payload);
 
 export const deactivateEmployee = (id: number | string) => apiClient.delete(`/employee/${id}`);
+
+export const resetEmployeePassword = (id: number | string) => apiClient.post(`/employee/${id}/reset-password`);
+
+export const getPositions = () => apiClient.get<Position[]>('/position').then((res) => res.data);

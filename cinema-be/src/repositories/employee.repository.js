@@ -2,14 +2,14 @@ const Employee = require('../models/Employee');
 
 async function findActiveByAccountAndCinema(accountId, cinemaId) {
   return Employee.findOne({
-    account_id: Number(accountId),
-    cinema_id: Number(cinemaId),
+    user_id: Number(accountId),
+    branch_id: Number(cinemaId),
     status: 1,
   });
 }
 
 async function findByAccountId(accountId) {
-  return Employee.findOne({ account_id: Number(accountId) });
+  return Employee.findOne({ user_id: Number(accountId) });
 }
 
 async function findAll(filter, { skip = 0, limit = 20 } = {}) {
@@ -20,8 +20,8 @@ async function findAll(filter, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function create({ id, account_id, cinema_id, position, hire_date }) {
-  return Employee.create({ id, account_id, cinema_id, position, hire_date });
+async function create({ id, user_id, branch_id, employee_code, position_id, hire_date }) {
+  return Employee.create({ id, user_id, branch_id, employee_code, position_id, hire_date });
 }
 
 async function updateFields(id, updates) {
@@ -32,9 +32,9 @@ async function findById(id) {
   return Employee.findOne({ id: Number(id) });
 }
 
-async function findCinemaIdByEmployeeId(employeeId) {
+async function findBranchIdByEmployeeId(employeeId) {
   const employee = await Employee.findOne({ id: Number(employeeId) });
-  return employee ? employee.cinema_id : null;
+  return employee ? employee.branch_id : null;
 }
 
 module.exports = {
@@ -44,5 +44,5 @@ module.exports = {
   create,
   updateFields,
   findById,
-  findCinemaIdByEmployeeId,
+  findBranchIdByEmployeeId,
 };
