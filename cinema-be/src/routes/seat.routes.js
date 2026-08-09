@@ -2,7 +2,7 @@ const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
 const { requirePermission } = require('../middleware/permission');
-const { requireCinemaOwnership } = require('../middleware/ownership');
+const { requireBranchOwnership } = require('../middleware/ownership');
 const roomRepository = require('../repositories/room.repository');
 const seatRepository = require('../repositories/seat.repository');
 const seatController = require('../controllers/seat.controller');
@@ -17,7 +17,7 @@ router.post(
   '/room/:roomId/generate',
   requireAuth,
   requirePermission('seat.create'),
-  requireCinemaOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.roomId)),
+  requireBranchOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.roomId)),
   asyncHandler(seatController.generate),
 );
 
@@ -26,7 +26,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('seat.update'),
-  requireCinemaOwnership(async (req) => {
+  requireBranchOwnership(async (req) => {
     const seat = await seatRepository.findById(req.params.id);
     if (!seat) return null;
     return roomRepository.findCinemaIdByRoomId(seat.room_id);

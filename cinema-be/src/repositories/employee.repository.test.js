@@ -7,20 +7,20 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('employee.repository', () => {
-  it('findActiveByAccountAndCinema finds an active match', async () => {
+  it('findActiveByAccountAndBranch finds an active match', async () => {
     await Employee.create({ id: 1, user_id: 10, branch_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 1 });
-    const employee = await employeeRepository.findActiveByAccountAndCinema(10, 1);
+    const employee = await employeeRepository.findActiveByAccountAndBranch(10, 1);
     expect(employee).not.toBeNull();
   });
 
-  it('findActiveByAccountAndCinema returns null for a deactivated employee', async () => {
+  it('findActiveByAccountAndBranch returns null for a deactivated employee', async () => {
     await Employee.create({ id: 1, user_id: 10, branch_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 0 });
-    expect(await employeeRepository.findActiveByAccountAndCinema(10, 1)).toBeNull();
+    expect(await employeeRepository.findActiveByAccountAndBranch(10, 1)).toBeNull();
   });
 
-  it('findActiveByAccountAndCinema returns null for the wrong cinema', async () => {
+  it('findActiveByAccountAndBranch returns null for the wrong cinema', async () => {
     await Employee.create({ id: 1, user_id: 10, branch_id: 1, employee_code: 'EMP-000001', position_id: 1, status: 1 });
-    expect(await employeeRepository.findActiveByAccountAndCinema(10, 2)).toBeNull();
+    expect(await employeeRepository.findActiveByAccountAndBranch(10, 2)).toBeNull();
   });
 
   it('findAll paginates and filters by branch_id', async () => {

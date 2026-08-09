@@ -11,7 +11,7 @@ const Invoice = require('../models/Invoice');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
 const Room = require('../models/Room');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 
 beforeAll(async () => connect());
@@ -90,7 +90,7 @@ describe('booking.repository', () => {
 
   describe('finalizeMomoOrder', () => {
     async function seedOrder() {
-      await Cinema.create({ id: 1, owner_id: 77, name: 'Cinema' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 77, name: 'Cinema', code: 'A' });
       await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
       await Schedule.create({
         id: 1,
@@ -136,7 +136,7 @@ describe('booking.repository', () => {
       expect(mailer.sendInvoiceEmail).toHaveBeenCalledWith('buyer@example.com', expect.objectContaining({
         seats: ['A1', 'A2'],
       }));
-      expect(socket.emitToOwner).toHaveBeenCalledWith(77, 'booking:new', expect.objectContaining({ cinemaId: 1 }));
+      expect(socket.emitToOwner).toHaveBeenCalledWith(77, 'booking:new', expect.objectContaining({ branchId: 1 }));
     });
 
     it('increments used_count when a voucher code is present', async () => {
@@ -221,7 +221,7 @@ describe('booking.repository', () => {
     await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
     await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1 });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
-    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
     await Movie.create({ id: 1, name: 'M1', premiere_date: '2026-01-01' });
 
     expect(await bookingRepository.findAccountsByIds([1])).toHaveLength(1);
@@ -231,8 +231,8 @@ describe('booking.repository', () => {
     expect(await bookingRepository.findMovieById(1)).not.toBeNull();
   });
 
-  it('findCinemaIdByInvoiceId / findCinemaIdByTicketId walk the invoice/ticket chain to a cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+  it('findCinemaIdByInvoiceId / findCinemaIdByTicketId walk the invoice/ticket chain to a branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });

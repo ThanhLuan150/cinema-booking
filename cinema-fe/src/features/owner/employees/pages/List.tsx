@@ -13,6 +13,7 @@ import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { usePermissions } from '@/hooks/usePermissions';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useMyEmployees } from '../../hooks/useMyEmployees';
@@ -23,11 +24,11 @@ import {
   useResetEmployeePassword,
   useUpdateEmployee,
 } from '../../hooks/useEmployeeMutations';
-import { closeAddModal, openAddModal, setSelectedCinemaId } from '../../store/ownerEmployeesSlice';
+import { closeAddModal, openAddModal, setSelectedbranchId } from '../../store/ownerEmployeesSlice';
 import type { EmployeeFormValues } from '../../types/owner.types';
 
-const emptyForm = (cinemaId: string): EmployeeFormValues => ({
-  cinema_id: cinemaId,
+const emptyForm = (branchId: string): EmployeeFormValues => ({
+  cinema_id: branchId,
   email: '',
   password: '',
   name: '',
@@ -42,16 +43,17 @@ function EmployeeList() {
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data: positions } = usePositions();
-  const selectedCinemaId = useAppSelector((state) => state.ownerEmployees.selectedCinemaId);
+  const { hasPermission } = usePermissions();
+  const selectedbranchId = useAppSelector((state) => state.ownerEmployees.selectedbranchId);
   const { showAddModal } = useAppSelector((state) => state.ownerEmployees);
 
   useEffect(() => {
-    if (!selectedCinemaId && cinemas.length > 0) {
-      dispatch(setSelectedCinemaId(String(cinemas[0].id)));
+    if (!selectedbranchId && cinemas.length > 0) {
+      dispatch(setSelectedbranchId(String(cinemas[0].id)));
     }
-  }, [cinemas, selectedCinemaId, dispatch]);
+  }, [cinemas, selectedbranchId, dispatch]);
 
-  const { data } = useMyEmployees(selectedCinemaId || undefined, page, DEFAULT_PAGE_SIZE);
+  const { data } = useMyEmployees(selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE);
   const employees = data?.data ?? [];
   const createEmployeeMutation = useCreateEmployee();
   const updateEmployeeMutation = useUpdateEmployee();
@@ -127,21 +129,23 @@ function EmployeeList() {
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select
-            value={selectedCinemaId}
-            onChange={(e) => dispatch(setSelectedCinemaId(e.target.value))}
+            value={selectedbranchId}
+            onChange={(e) => dispatch(setSelectedbranchId(e.target.value))}
             placeholder={t('employees.cinemaPlaceholder')}
             options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
           />
         </div>
-        <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
-          {t('employees.addButton')}
-        </Button>
+        {hasPermission('employee.create') && (
+          <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
+            {t('employees.addButton')}
+          </Button>
+        )}
       </div>
 
       {showAddModal && (
         <Modal open onClose={() => dispatch(closeAddModal())} title={t('employees.addTitle')}>
           <Formik<EmployeeFormValues>
-            initialValues={emptyForm(selectedCinemaId)}
+            initialValues={emptyForm(selectedbranchId)}
             enableReinitialize
             validate={validateEmployee}
             onSubmit={handleSubmit}
@@ -223,30 +227,34 @@ function EmployeeList() {
               </td>
               <td>
                 <div className="flex flex-wrap gap-3">
-                  {employee.status === 1 ? (
+                  {employee.status === 1
+                    ? hasPermission('employee.delete') && (
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                          onClick={() => handleDeactivate(employee.id)}
+                        >
+                          {t('employees.deactivate')}
+                        </button>
+                      )
+                    : hasPermission('employee.update') && (
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                          onClick={() => handleReactivate(employee.id)}
+                        >
+                          {t('employees.reactivate')}
+                        </button>
+                      )}
+                  {hasPermission('employee.update') && (
                     <button
                       type="button"
-                      className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                      onClick={() => handleDeactivate(employee.id)}
+                      className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
+                      onClick={() => handleResetPassword(employee.id)}
                     >
-                      {t('employees.deactivate')}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                      onClick={() => handleReactivate(employee.id)}
-                    >
-                      {t('employees.reactivate')}
+                      {t('employees.resetPassword')}
                     </button>
                   )}
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
-                    onClick={() => handleResetPassword(employee.id)}
-                  >
-                    {t('employees.resetPassword')}
-                  </button>
                 </div>
               </td>
             </tr>

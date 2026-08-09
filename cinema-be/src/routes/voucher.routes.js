@@ -6,7 +6,7 @@ const voucherController = require('../controllers/voucher.controller');
 
 const router = express.Router();
 
-// GET /api/voucher?cinemaId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
+// GET /api/voucher?branchId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
 router.get('/', requireAuth, requirePermission('voucher.read'), asyncHandler(voucherController.list));
 
 // POST /api/voucher/validate { code, cinema_id, order_value } -> (auth) checks a code without consuming it

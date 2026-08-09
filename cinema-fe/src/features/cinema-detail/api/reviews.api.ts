@@ -7,8 +7,8 @@ import type {
   ReviewsResponse,
 } from '../types/cinemaDetail.types';
 
-export const getCinemaReviews = (cinemaId: string | number) =>
-  apiClient.get<ReviewsResponse>(`/review/cinema/${cinemaId}`).then((res) => res.data);
+export const getCinemaReviews = (branchId: string | number) =>
+  apiClient.get<ReviewsResponse>(`/review/cinema/${branchId}`).then((res) => res.data);
 
 export const postCinemaReview = (payload: CinemaReviewPayload) => apiClient.post('/review', payload);
 

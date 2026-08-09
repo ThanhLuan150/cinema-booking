@@ -22,7 +22,7 @@ describe('cinemaReviewsQueryKey', () => {
 describe('useCinemaReviews', () => {
   beforeEach(() => getCinemaReviewsMock.mockReset());
 
-  it('is disabled when cinemaId is undefined', () => {
+  it('is disabled when branchId is undefined', () => {
     const { result } = renderHook(() => useCinemaReviews(undefined), { wrapper });
     expect(result.current.fetchStatus).toBe('idle');
   });

@@ -69,9 +69,9 @@ describe('booking.api', () => {
     expect(postMock).toHaveBeenCalledWith('/voucher/validate', payload);
   });
 
-  it('getCombos gets /combo with cinemaId and full-list limit', async () => {
+  it('getCombos gets /combo with branchId and full-list limit', async () => {
     await bookingApi.getCombos(3);
-    expect(getMock).toHaveBeenCalledWith('/combo', { params: { cinemaId: 3, limit: FULL_LIST_FETCH_LIMIT } });
+    expect(getMock).toHaveBeenCalledWith('/combo', { params: { branchId: 3, limit: FULL_LIST_FETCH_LIMIT } });
   });
 
   it('getRoomsList gets /room with full-list limit', async () => {

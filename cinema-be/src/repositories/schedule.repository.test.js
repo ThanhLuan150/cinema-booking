@@ -1,7 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const scheduleRepository = require('./schedule.repository');
 const Schedule = require('../models/Schedule');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 
 beforeAll(async () => connect());
@@ -9,9 +9,9 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 async function seedShowtimes() {
-  await Cinema.create([
-    { id: 1, owner_id: 100, name: 'Cinema A' },
-    { id: 2, owner_id: 200, name: 'Cinema B' },
+  await Branch.create([
+    { id: 1, company_id: 1, owner_id: 100, name: 'Cinema A', code: 'A' },
+    { id: 2, company_id: 1, owner_id: 200, name: 'Cinema B', code: 'B' },
   ]);
   await Schedule.create([
     { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1000 },

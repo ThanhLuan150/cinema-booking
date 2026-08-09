@@ -48,7 +48,7 @@ export function MovieFilterBar({ filters, onChange }: MovieFilterBarProps) {
             placeholder={t('filterBar.all')}
           />
         </div>
-        {filters.cinema && <FavoriteCinemaButton cinemaId={Number(filters.cinema)} />}
+        {filters.cinema && <FavoriteCinemaButton branchId={Number(filters.cinema)} />}
       </div>
       <div className="min-w-[160px] flex-1">
         <Input

@@ -18,9 +18,9 @@ function toEmployeeJson(employee, account, position) {
   };
 }
 
-// GET /api/employee?cinemaId=&page=&limit= (branch admin/super admin, cinema-scoped)
+// GET /api/employee?branchId=&page=&limit= (branch admin/super admin, cinema-scoped)
 async function list(req, res) {
-  const filter = { branch_id: req.cinemaId };
+  const filter = { branch_id: req.branchId };
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await employeeRepository.findAll(filter, { skip, limit });
 
@@ -69,7 +69,7 @@ async function create(req, res) {
   const employee = await employeeRepository.create({
     id: employeeId,
     user_id: account.id,
-    branch_id: req.cinemaId,
+    branch_id: req.branchId,
     employee_code: `EMP-${String(employeeId).padStart(6, '0')}`,
     position_id: position.id,
     hire_date: new Date(),

@@ -17,7 +17,7 @@ describe('useSchedules', () => {
 
   it('fetches schedules with filters, page and limit', async () => {
     getSchedulesMock.mockResolvedValue({ data: [], total: 0 });
-    const filters = { cinemaId: 1 };
+    const filters = { branchId: 1 };
     const { result } = renderHook(() => useSchedules(filters, 1, 20), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(getSchedulesMock).toHaveBeenCalledWith(filters, { page: 1, limit: 20 });

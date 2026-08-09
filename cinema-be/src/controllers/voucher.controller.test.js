@@ -1,7 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const voucherController = require('./voucher.controller');
 const Voucher = require('../models/Voucher');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 function mockRes() {
   const res = {};
@@ -16,7 +16,7 @@ afterAll(async () => closeDatabase());
 
 describe('GET /api/voucher (list)', () => {
   it('scopes an owner (role 2) to vouchers on their own cinemas', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Voucher.create([
       { id: 1, cinema_id: 1, code: 'MINE', discount_type: 'fixed', discount_value: 1000 },
       { id: 2, cinema_id: 2, code: 'NOTMINE', discount_type: 'fixed', discount_value: 1000 },
@@ -26,18 +26,18 @@ describe('GET /api/voucher (list)', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
 
-  it('filters an owner to -1 (no results) when requesting a cinemaId they don\'t own', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('filters an owner to -1 (no results) when requesting a branchId they don\'t own', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Voucher.create({ id: 1, cinema_id: 1, code: 'MINE', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
     await voucherController.list(
-      { query: { cinemaId: '999' }, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' },
+      { query: { branchId: '999' }, account: { role: 2, accountId: 42 }, permissionScope: 'BRANCH' },
       res,
     );
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 0 }));
   });
 
-  it('returns all vouchers for admin with no cinemaId filter', async () => {
+  it('returns all vouchers for admin with no branchId filter', async () => {
     await Voucher.create([
       { id: 1, cinema_id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000 },
       { id: 2, code: 'B', discount_type: 'fixed', discount_value: 1000 },
@@ -65,7 +65,7 @@ describe('POST /api/voucher (create)', () => {
   });
 
   it('forbids an owner creating a voucher for a cinema they do not own', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = mockRes();
     await voucherController.create(
       { body: { cinema_id: 1, code: 'X', discount_type: 'fixed', discount_value: 1000 }, account: { role: 2, accountId: 42 } },
@@ -75,7 +75,7 @@ describe('POST /api/voucher (create)', () => {
   });
 
   it('creates a voucher for the owner\'s own cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     await voucherController.create(
       { body: { cinema_id: 1, code: 'promo', discount_type: 'fixed', discount_value: 1000 }, account: { role: 2, accountId: 42 } },
@@ -110,7 +110,7 @@ describe('PUT /api/voucher/:id (update)', () => {
   });
 
   it('forbids an owner updating another owner\'s cinema voucher', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     await Voucher.create({ id: 1, cinema_id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
     await voucherController.update(
@@ -141,7 +141,7 @@ describe('DELETE /api/voucher/:id (remove)', () => {
   });
 
   it('forbids an owner removing another owner\'s cinema voucher', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     await Voucher.create({ id: 1, cinema_id: 1, code: 'A', discount_type: 'fixed', discount_value: 1000 });
     const res = mockRes();
     await voucherController.remove({ params: { id: 1 }, account: { role: 2, accountId: 42 } }, res);

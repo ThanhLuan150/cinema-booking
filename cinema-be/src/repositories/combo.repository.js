@@ -1,13 +1,13 @@
 const Combo = require('../models/Combo');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 async function findCinemaIdByComboId(comboId) {
   const combo = await Combo.findOne({ id: Number(comboId) });
   return combo ? combo.cinema_id : null;
 }
 
-async function findActiveByCinemaId(cinemaId, { skip = 0, limit = 20 } = {}) {
-  const filter = { active: true, cinema_id: Number(cinemaId) };
+async function findActiveByCinemaId(branchId, { skip = 0, limit = 20 } = {}) {
+  const filter = { active: true, cinema_id: Number(branchId) };
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Combo.countDocuments(filter),
@@ -15,8 +15,8 @@ async function findActiveByCinemaId(cinemaId, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findByCinemaIds(cinemaIds, { skip = 0, limit = 20 } = {}) {
-  const filter = { cinema_id: { $in: cinemaIds } };
+async function findByCinemaIds(branchIds, { skip = 0, limit = 20 } = {}) {
+  const filter = { cinema_id: { $in: branchIds } };
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Combo.countDocuments(filter),
@@ -46,8 +46,8 @@ async function findById(id) {
 }
 
 async function findOwnedCinemaIds(accountId) {
-  const ownedCinemas = await Cinema.find({ owner_id: accountId });
-  return ownedCinemas.map((c) => c.id);
+  const ownedBranches = await Branch.find({ owner_id: accountId });
+  return ownedBranches.map((c) => c.id);
 }
 
 async function create(data) {

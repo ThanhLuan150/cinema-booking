@@ -12,7 +12,7 @@ export interface BookingState {
   movieDate: string | null;
   timeBegin: string | null;
   scheduleId: number | null;
-  cinemaId: number | null;
+  branchId: number | null;
   selectedDay: string;
   selectedTime: string;
   selectedSeatCodes: string[];

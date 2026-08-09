@@ -3,7 +3,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const roomRoutes = require('./room.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 const app = buildTestApp('/api/room', roomRoutes);
 
@@ -24,7 +24,7 @@ describe('room.routes wiring', () => {
   });
 
   it('POST /api/room forbids an owner who does not own the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/room')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -33,7 +33,7 @@ describe('room.routes wiring', () => {
   });
 
   it('POST /api/room allows the owning theater staff', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/room')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -42,7 +42,7 @@ describe('room.routes wiring', () => {
   });
 
   it('POST /api/room allows admin regardless of ownership', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/room')
       .set('Authorization', authHeader({ role: 0, accountId: 1 }))

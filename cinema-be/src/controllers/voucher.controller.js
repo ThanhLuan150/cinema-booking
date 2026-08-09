@@ -3,25 +3,25 @@ const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // A BRANCH-scope caller may only touch vouchers on a cinema they own; ALL scope always passes.
-async function assertCinemaOwnership(req, cinemaId) {
+async function assertCinemaOwnership(req, branchId) {
   if (req.permissionScope === 'ALL') return true;
-  if (!cinemaId) return false;
-  const cinema = await voucherRepository.findCinemaById(cinemaId);
+  if (!branchId) return false;
+  const cinema = await voucherRepository.findCinemaById(branchId);
   return Boolean(cinema && cinema.owner_id === req.account.accountId);
 }
 
-// GET /api/voucher?cinemaId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
+// GET /api/voucher?branchId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
 async function list(req, res) {
   const filter = {};
   if (req.permissionScope === 'BRANCH') {
     const ownedIds = await voucherRepository.findOwnedCinemaIds(req.account.accountId);
-    filter.cinema_id = req.query.cinemaId
-      ? ownedIds.includes(Number(req.query.cinemaId))
-        ? Number(req.query.cinemaId)
+    filter.cinema_id = req.query.branchId
+      ? ownedIds.includes(Number(req.query.branchId))
+        ? Number(req.query.branchId)
         : -1
       : { $in: ownedIds };
-  } else if (req.query.cinemaId) {
-    filter.cinema_id = Number(req.query.cinemaId);
+  } else if (req.query.branchId) {
+    filter.cinema_id = Number(req.query.branchId);
   }
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await voucherRepository.findFiltered(filter, { skip, limit });

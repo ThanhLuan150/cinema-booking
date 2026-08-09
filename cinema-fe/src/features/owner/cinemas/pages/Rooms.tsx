@@ -153,24 +153,24 @@ function SeatMapModal({ room, onClose }: { room: Room; onClose: () => void }) {
 function Rooms() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
-  const { cinemaId: cinemaIdParam } = useParams<{ cinemaId?: string }>();
+  const { branchId: branchIdParam } = useParams<{ branchId?: string }>();
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
-  const [selectedCinemaId, setSelectedCinemaId] = useState(cinemaIdParam ?? '');
+  const [selectedbranchId, setSelectedbranchId] = useState(branchIdParam ?? '');
   const didAutoSelectCinema = useRef(false);
 
   useEffect(() => {
-    if (cinemaIdParam) {
-      setSelectedCinemaId(cinemaIdParam);
+    if (branchIdParam) {
+      setSelectedbranchId(branchIdParam);
       return;
     }
     if (!didAutoSelectCinema.current && cinemas.length > 0) {
       didAutoSelectCinema.current = true;
-      setSelectedCinemaId(String(cinemas[0].id));
+      setSelectedbranchId(String(cinemas[0].id));
     }
-  }, [cinemaIdParam, cinemas]);
+  }, [branchIdParam, cinemas]);
 
-  const { data: roomsPage } = useRoomsByCinema(selectedCinemaId || undefined);
+  const { data: roomsPage } = useRoomsByCinema(selectedbranchId || undefined);
   const rooms = useMemo(() => roomsPage?.data ?? [], [roomsPage]);
   const { showAddRoomModal, seatMapRoomId } = useAppSelector((state) => state.ownerCinemas);
   const createRoomMutation = useCreateRoom();
@@ -202,9 +202,9 @@ function Rooms() {
 
   const handleAddRoom = useCallback(
     async (values: { name: string }, { resetForm }: FormikHelpers<{ name: string }>) => {
-      if (!selectedCinemaId) return;
+      if (!selectedbranchId) return;
       try {
-        await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(selectedCinemaId) });
+        await createRoomMutation.mutateAsync({ name: values.name, cinema_id: Number(selectedbranchId) });
         toast.success(t('rooms.createSuccess'));
         resetForm();
         dispatch(closeAddRoomModal());
@@ -212,21 +212,21 @@ function Rooms() {
         toast.error(getApiErrorMessage(error, t));
       }
     },
-    [selectedCinemaId, createRoomMutation, dispatch, t],
+    [selectedbranchId, createRoomMutation, dispatch, t],
   );
 
   return (
     <AdminLayout breadcrumb={t('rooms.breadcrumb')}>
       <div className="mb-4 max-w-xs">
         <Select
-          value={selectedCinemaId}
-          onChange={(e) => setSelectedCinemaId(e.target.value)}
+          value={selectedbranchId}
+          onChange={(e) => setSelectedbranchId(e.target.value)}
           options={cinemas.map((cinema) => ({ label: cinema.name, value: cinema.id }))}
           placeholder={t('rooms.selectCinemaPlaceholder')}
         />
       </div>
 
-      <Button type="button" variant="danger" disabled={!selectedCinemaId} onClick={() => dispatch(openAddRoomModal())}>
+      <Button type="button" variant="danger" disabled={!selectedbranchId} onClick={() => dispatch(openAddRoomModal())}>
         {t('rooms.addButton')}
       </Button>
 

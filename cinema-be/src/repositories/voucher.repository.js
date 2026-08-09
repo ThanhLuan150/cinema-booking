@@ -1,9 +1,9 @@
 const Voucher = require('../models/Voucher');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 async function findOwnedCinemaIds(accountId) {
-  const ownedCinemas = await Cinema.find({ owner_id: accountId });
-  return ownedCinemas.map((c) => c.id);
+  const ownedBranches = await Branch.find({ owner_id: accountId });
+  return ownedBranches.map((c) => c.id);
 }
 
 async function findFiltered(filter, { skip = 0, limit = 20 } = {}) {
@@ -22,8 +22,8 @@ async function findById(id) {
   return Voucher.findOne({ id: Number(id) });
 }
 
-async function findCinemaById(cinemaId) {
-  return Cinema.findOne({ id: cinemaId });
+async function findCinemaById(branchId) {
+  return Branch.findOne({ id: branchId });
 }
 
 async function create(data) {

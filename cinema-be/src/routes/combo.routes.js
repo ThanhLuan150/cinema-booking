@@ -2,14 +2,14 @@ const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { requirePermission } = require('../middleware/permission');
-const { requireCinemaOwnership } = require('../middleware/ownership');
+const { requireBranchOwnership } = require('../middleware/ownership');
 const comboRepository = require('../repositories/combo.repository');
 const comboController = require('../controllers/combo.controller');
 
 const router = express.Router();
 
-// GET /api/combo?cinemaId= -> with a cinemaId, public list of active combos for that branch
-// (used by customers during checkout). Without cinemaId, this is the management view: a
+// GET /api/combo?branchId= -> with a branchId, public list of active combos for that branch
+// (used by customers during checkout). Without branchId, this is the management view: a
 // theater owner gets only their own cinemas' combos (any status), admin gets everything.
 router.get('/', optionalAuth, asyncHandler(comboController.list));
 
@@ -21,7 +21,7 @@ router.post(
   '/',
   requireAuth,
   requirePermission('combo.create'),
-  requireCinemaOwnership((req) => Number(req.body.cinema_id)),
+  requireBranchOwnership((req) => Number(req.body.cinema_id)),
   asyncHandler(comboController.create),
 );
 
@@ -30,7 +30,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('combo.update'),
-  requireCinemaOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
+  requireBranchOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.update),
 );
 
@@ -39,7 +39,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('combo.delete'),
-  requireCinemaOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
+  requireBranchOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.remove),
 );
 

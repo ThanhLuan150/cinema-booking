@@ -19,20 +19,20 @@ describe('employee.controller', () => {
   describe('create', () => {
     it('rejects missing email or password', async () => {
       const res = mockRes();
-      await employeeController.create({ body: {}, cinemaId: 1 }, res);
+      await employeeController.create({ body: {}, branchId: 1 }, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
     it('rejects a missing position_id', async () => {
       const res = mockRes();
-      await employeeController.create({ body: { email: 'a@b.com', password: 'pw' }, cinemaId: 1 }, res);
+      await employeeController.create({ body: { email: 'a@b.com', password: 'pw' }, branchId: 1 }, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
     it('rejects a position_id that does not exist', async () => {
       const res = mockRes();
       await employeeController.create(
-        { body: { email: 'a@b.com', password: 'pw', position_id: 999 }, cinemaId: 1 },
+        { body: { email: 'a@b.com', password: 'pw', position_id: 999 }, branchId: 1 },
         res,
       );
       expect(res.status).toHaveBeenCalledWith(400);
@@ -44,7 +44,7 @@ describe('employee.controller', () => {
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3 });
       const res = mockRes();
       await employeeController.create(
-        { body: { email: 'a@b.com', password: 'pw', position_id: 1 }, cinemaId: 1 },
+        { body: { email: 'a@b.com', password: 'pw', position_id: 1 }, branchId: 1 },
         res,
       );
       expect(res.status).toHaveBeenCalledWith(409);
@@ -54,7 +54,7 @@ describe('employee.controller', () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       const res = mockRes();
       await employeeController.create(
-        { body: { email: 'staff@cinema.com', password: 'pw', name: 'Staff One', position_id: 1 }, cinemaId: 5 },
+        { body: { email: 'staff@cinema.com', password: 'pw', name: 'Staff One', position_id: 1 }, branchId: 5 },
         res,
       );
       expect(res.status).toHaveBeenCalledWith(201);
@@ -73,7 +73,7 @@ describe('employee.controller', () => {
       await employeeController.create(
         {
           body: { email: 'staff2@cinema.com', password: 'pw', position_id: 1, role: 0 },
-          cinemaId: 5,
+          branchId: 5,
         },
         res,
       );
@@ -83,13 +83,13 @@ describe('employee.controller', () => {
   });
 
   describe('list', () => {
-    it('returns employees scoped to req.cinemaId enriched with account info and position', async () => {
+    it('returns employees scoped to req.branchId enriched with account info and position', async () => {
       await Position.create({ id: 1, code: 'CASHIER', name: 'Cashier', status: 1 });
       await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 3, name: 'A' });
       await Employee.create({ id: 1, user_id: 1, branch_id: 5, employee_code: 'EMP-000001', position_id: 1 });
       await Employee.create({ id: 2, user_id: 2, branch_id: 9, employee_code: 'EMP-000002', position_id: 1 });
       const res = mockRes();
-      await employeeController.list({ query: {}, cinemaId: 5 }, res);
+      await employeeController.list({ query: {}, branchId: 5 }, res);
       const payload = res.json.mock.calls[0][0];
       expect(payload.total).toBe(1);
       expect(payload.data[0].email).toBe('a@b.com');

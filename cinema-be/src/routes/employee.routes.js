@@ -1,18 +1,18 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
-const { requirePermission, requireCinemaAccess } = require('../middleware/permission');
+const { requirePermission, requireBranchAccess } = require('../middleware/permission');
 const employeeRepository = require('../repositories/employee.repository');
 const employeeController = require('../controllers/employee.controller');
 
 const router = express.Router();
 
-// GET /api/employee?cinemaId= (employee.read permission, cinema-scoped)
+// GET /api/employee?branchId= (employee.read permission, cinema-scoped)
 router.get(
   '/',
   requireAuth,
   requirePermission('employee.read'),
-  requireCinemaAccess((req) => Number(req.query.cinemaId)),
+  requireBranchAccess((req) => Number(req.query.branchId)),
   asyncHandler(employeeController.list),
 );
 
@@ -21,7 +21,7 @@ router.post(
   '/',
   requireAuth,
   requirePermission('employee.create'),
-  requireCinemaAccess((req) => Number(req.body.cinema_id)),
+  requireBranchAccess((req) => Number(req.body.cinema_id)),
   asyncHandler(employeeController.create),
 );
 
@@ -30,7 +30,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('employee.update'),
-  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
+  requireBranchAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.update),
 );
 
@@ -39,7 +39,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('employee.delete'),
-  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
+  requireBranchAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.remove),
 );
 
@@ -48,7 +48,7 @@ router.post(
   '/:id/reset-password',
   requireAuth,
   requirePermission('employee.update'),
-  requireCinemaAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
+  requireBranchAccess((req) => employeeRepository.findBranchIdByEmployeeId(req.params.id)),
   asyncHandler(employeeController.resetPassword),
 );
 

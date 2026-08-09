@@ -17,7 +17,8 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
-vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
+const hasPermissionMock = vi.fn();
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: hasPermissionMock }) }));
 
 const useMyCinemasMock = vi.fn();
 vi.mock('../../hooks/useMyCinemas', () => ({
@@ -73,6 +74,8 @@ describe('Owner Employees List', () => {
     deactivateEmployeeMutate.mockReset();
     resetPasswordMutate.mockReset();
     confirmDialogMock.mockReset();
+    hasPermissionMock.mockReset();
+    hasPermissionMock.mockReturnValue(true);
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A' }] } });
     usePositionsMock.mockReturnValue({ data: [{ id: 1, code: 'CASHIER', name: 'Cashier' }] });
   });
@@ -174,5 +177,55 @@ describe('Owner Employees List', () => {
     renderPage();
     fireEvent.click(screen.getByText('employees.addButton'));
     expect(screen.getByText('employees.addTitle')).toBeInTheDocument();
+  });
+
+  it('hides the add button when the caller lacks employee.create', () => {
+    hasPermissionMock.mockImplementation((code: string) => code !== 'employee.create');
+    useMyEmployeesMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    expect(screen.queryByText('employees.addButton')).not.toBeInTheDocument();
+  });
+
+  it('hides deactivate/reset-password when the caller lacks employee.delete and employee.update', () => {
+    hasPermissionMock.mockImplementation((code: string) => code !== 'employee.delete' && code !== 'employee.update');
+    useMyEmployeesMock.mockReturnValue({
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 1,
+          },
+        ],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.queryByText('employees.deactivate')).not.toBeInTheDocument();
+    expect(screen.queryByText('employees.resetPassword')).not.toBeInTheDocument();
+  });
+
+  it('hides reactivate when the caller lacks employee.update', () => {
+    hasPermissionMock.mockImplementation((code: string) => code !== 'employee.update');
+    useMyEmployeesMock.mockReturnValue({
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_code: 'EMP-000001',
+            name: 'Staff A',
+            email: 'a@b.com',
+            position: { code: 'CASHIER', name: 'Cashier' },
+            status: 0,
+          },
+        ],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.queryByText('employees.reactivate')).not.toBeInTheDocument();
   });
 });

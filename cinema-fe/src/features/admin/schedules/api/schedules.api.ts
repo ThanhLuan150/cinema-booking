@@ -3,7 +3,7 @@ import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type { Schedule } from '../types/adminSchedule.types';
 
 export interface ScheduleFilters {
-  cinemaId?: string | number;
+  branchId?: string | number;
   roomId?: string | number;
 }
 

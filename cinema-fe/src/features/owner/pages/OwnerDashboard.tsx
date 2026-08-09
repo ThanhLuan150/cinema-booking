@@ -8,16 +8,16 @@ import { Select } from '@/components/ui/Select';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { useMyCinemas } from '../hooks/useMyCinemas';
 import { useOwnerDashboardStats } from '../hooks/useOwnerDashboardStats';
-import { setSelectedCinemaId } from '../store/ownerDashboardSlice';
+import { setSelectedbranchId } from '../store/ownerDashboardSlice';
 
 function OwnerDashboard() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
-  const selectedCinemaId = useAppSelector((state) => state.ownerDashboard.selectedCinemaId);
+  const selectedbranchId = useAppSelector((state) => state.ownerDashboard.selectedbranchId);
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
-  const { data: stats } = useOwnerDashboardStats(selectedCinemaId);
+  const { data: stats } = useOwnerDashboardStats(selectedbranchId);
   const cinemaOptions = useMemo(() => cinemas.map((c) => ({ label: c.name, value: c.id })), [cinemas]);
 
   const bookingVersion = useAppSelector((state) => state.realtime.ownerBookingVersion);
@@ -30,8 +30,8 @@ function OwnerDashboard() {
     <AdminLayout breadcrumb={t('dashboard.breadcrumb')}>
       <div className="mb-4 max-w-xs">
         <Select
-          value={selectedCinemaId}
-          onChange={(e) => dispatch(setSelectedCinemaId(e.target.value))}
+          value={selectedbranchId}
+          onChange={(e) => dispatch(setSelectedbranchId(e.target.value))}
           placeholder={t('dashboard.allMyCinemas')}
           options={cinemaOptions}
         />

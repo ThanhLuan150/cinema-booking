@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { requireAuth } = require('../middleware/auth');
-const { requirePermission, requireCinemaAccess } = require('../middleware/permission');
+const { requirePermission, requireBranchAccess } = require('../middleware/permission');
 const bookingRepository = require('../repositories/booking.repository');
 const ticketController = require('../controllers/ticket.controller');
 
@@ -15,7 +15,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('ticket.checkin'),
-  requireCinemaAccess((req) => bookingRepository.findCinemaIdByTicketId(req.params.id)),
+  requireBranchAccess((req) => bookingRepository.findCinemaIdByTicketId(req.params.id)),
   asyncHandler(ticketController.markSold),
 );
 

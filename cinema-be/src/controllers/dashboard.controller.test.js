@@ -1,6 +1,6 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const dashboardController = require('./dashboard.controller');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Ticket = require('../models/Ticket');
 const Invoice = require('../models/Invoice');
 const Account = require('../models/Account');
@@ -17,22 +17,22 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('ownerDashboard', () => {
-  it('rejects a cinemaId the caller does not own', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+  it('rejects a branchId the caller does not own', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = mockRes();
     await dashboardController.ownerDashboard(
-      { query: { cinemaId: '999' }, account: { role: 2, accountId: 42 } },
+      { query: { branchId: '999' }, account: { role: 2, accountId: 42 } },
       res,
     );
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  it('returns scoped stats for the owner\'s cinemas', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A', status: 1 });
+  it('returns scoped stats for the owner\'s branches', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A', status: 'ACTIVE' });
     const res = mockRes();
     await dashboardController.ownerDashboard({ query: {}, account: { role: 2, accountId: 42 } }, res);
     expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ cinemas: [{ id: 1, name: 'A', status: 1 }] }),
+      expect.objectContaining({ cinemas: [{ id: 1, name: 'A', status: 'ACTIVE' }] }),
     );
   });
 });

@@ -5,6 +5,7 @@ const nextId = require('../utils/nextId');
 
 const POSITIONS = [
   { code: 'TICKET_STAFF', name: 'Ticket Staff' },
+  { code: 'CASHIER', name: 'Cashier' },
   { code: 'COMBO_STAFF', name: 'Combo Staff' },
   { code: 'TICKET_CHECKER', name: 'Ticket Checker' },
   { code: 'CUSTOMER_SERVICE', name: 'Customer Service' },
@@ -23,6 +24,15 @@ const POSITION_PERMISSIONS = {
     'booking.create': 'BRANCH',
     'booking.cancel': 'BRANCH',
     'ticket.read': 'BRANCH',
+    'payment.create': 'BRANCH',
+  },
+
+  CASHIER: {
+    'booking.read': 'BRANCH',
+    'booking.create': 'BRANCH',
+    'ticket.read': 'BRANCH',
+    'combo.read': 'BRANCH',
+    'combo.sell': 'BRANCH',
     'payment.create': 'BRANCH',
   },
   COMBO_STAFF: {

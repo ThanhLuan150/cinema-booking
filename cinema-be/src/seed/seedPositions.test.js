@@ -17,12 +17,13 @@ async function scopeFor(positionCode, permissionCode) {
 }
 
 describe('seedPositions', () => {
-  it('creates the 7 minimum required positions', async () => {
+  it('creates the 8 minimum required positions', async () => {
     await seedRbac();
     await seedPositions();
     const positions = await Position.find().sort({ code: 1 });
     expect(positions.map((p) => p.code).sort()).toEqual(
       [
+        'CASHIER',
         'CLEANING_STAFF',
         'COMBO_STAFF',
         'CUSTOMER_SERVICE',
@@ -38,7 +39,15 @@ describe('seedPositions', () => {
     await seedRbac();
     await seedPositions();
     await seedPositions();
-    expect(await Position.countDocuments()).toBe(7);
+    expect(await Position.countDocuments()).toBe(8);
+  });
+
+  it('grants Cashier booking/ticket/combo read, combo.sell and payment.create at BRANCH scope', async () => {
+    await seedRbac();
+    await seedPositions();
+    for (const code of ['booking.read', 'booking.create', 'ticket.read', 'combo.read', 'combo.sell', 'payment.create']) {
+      expect(await scopeFor('CASHIER', code)).toBe('BRANCH');
+    }
   });
 
   it('gives Security, Cleaning Staff and Maintenance Staff zero permissions', async () => {

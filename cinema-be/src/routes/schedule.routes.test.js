@@ -4,7 +4,7 @@ const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seedPositions = require('../seed/seedPositions');
 const scheduleRoutes = require('./schedule.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Movie = require('../models/Movie');
 const Schedule = require('../models/Schedule');
@@ -22,9 +22,9 @@ afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 async function seedBranches() {
-  await Cinema.create([
-    { id: 1, owner_id: 42, name: 'Branch A' },
-    { id: 2, owner_id: 99, name: 'Branch B' },
+  await Branch.create([
+    { id: 1, company_id: 1, owner_id: 42, name: 'Branch A', code: 'A' },
+    { id: 2, company_id: 1, owner_id: 99, name: 'Branch B', code: 'B' },
   ]);
   await Room.create([
     { id: 1, cinema_id: 1, name: 'Room A1' },

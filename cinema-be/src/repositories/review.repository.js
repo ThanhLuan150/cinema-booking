@@ -1,6 +1,6 @@
 const Review = require('../models/Review');
 const Movie = require('../models/Movie');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Account = require('../models/Account');
 
 async function findAccountsByIds(ids) {
@@ -69,9 +69,9 @@ async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
     Review.countDocuments(),
   ]);
   const movieIds = [...new Set(reviews.filter((r) => r.movie_id != null).map((r) => r.movie_id))];
-  const cinemaIds = [...new Set(reviews.filter((r) => r.cinema_id != null).map((r) => r.cinema_id))];
+  const branchIds = [...new Set(reviews.filter((r) => r.cinema_id != null).map((r) => r.cinema_id))];
   const movies = await Movie.find({ id: { $in: movieIds } });
-  const cinemas = await Cinema.find({ id: { $in: cinemaIds } });
+  const cinemas = await Branch.find({ id: { $in: branchIds } });
   const movieById = new Map(movies.map((m) => [m.id, m]));
   const cinemaById = new Map(cinemas.map((c) => [c.id, c]));
 
@@ -84,8 +84,8 @@ async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findVisibleByCinemaId(cinemaId, viewerAccountId) {
-  const reviews = await Review.find({ cinema_id: Number(cinemaId), hidden: false });
+async function findVisibleByCinemaId(branchId, viewerAccountId) {
+  const reviews = await Review.find({ cinema_id: Number(branchId), hidden: false });
   return buildThread(reviews, viewerAccountId);
 }
 

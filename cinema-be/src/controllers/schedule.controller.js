@@ -4,7 +4,7 @@ const roomRepository = require('../repositories/room.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// GET /api/schedule?cinemaId=&roomId=&page=&limit= -> management list (schedule.read
+// GET /api/schedule?branchId=&roomId=&page=&limit= -> management list (schedule.read
 // permission). ALL scope (super admin) sees every showtime; BRANCH scope (branch admin,
 // employee) is restricted to the caller's own branch(es).
 async function list(req, res) {
@@ -15,7 +15,7 @@ async function list(req, res) {
   const { data, total } = await scheduleRepository.findFiltered({
     scope: req.permissionScope,
     accessibleCinemaIds,
-    cinemaId: req.query.cinemaId,
+    branchId: req.query.branchId,
     roomId: req.query.roomId,
     skip,
     limit,
@@ -67,7 +67,7 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
   }
   // BRANCH scope: the room must belong to the branch the requireCinemaOwnership middleware
   // already resolved for this caller (their own cinema, or the showtime's existing cinema).
-  if (req.permissionScope !== 'ALL' && room.cinema_id !== req.cinemaId) {
+  if (req.permissionScope !== 'ALL' && room.cinema_id !== req.branchId) {
     res.status(403).json({ message: 'Forbidden' });
     return null;
   }

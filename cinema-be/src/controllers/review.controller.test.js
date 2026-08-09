@@ -31,7 +31,7 @@ describe('listForModeration / listForMovie / listForCinema', () => {
   it('listForCinema returns the threaded result', async () => {
     await Review.create({ id: 1, cinema_id: 1, account_id: 1, rating: 4 });
     const res = mockRes();
-    await reviewController.listForCinema({ params: { cinemaId: 1 }, account: null }, res);
+    await reviewController.listForCinema({ params: { branchId: 1 }, account: null }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ count: 1 }));
   });
 });

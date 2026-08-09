@@ -2,7 +2,7 @@ const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUti
 const reviewRepository = require('./review.repository');
 const Review = require('../models/Review');
 const Movie = require('../models/Movie');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Account = require('../models/Account');
 
 beforeAll(async () => connect());
@@ -61,7 +61,7 @@ describe('review.repository', () => {
     });
   });
 
-  it('findVisibleByCinemaId scopes to a cinema id', async () => {
+  it('findVisibleByCinemaId scopes to a branch id', async () => {
     await Review.create([
       { id: 1, cinema_id: 5, account_id: 1, rating: 5 },
       { id: 2, cinema_id: 6, account_id: 1, rating: 3 },
@@ -152,7 +152,7 @@ describe('review.repository', () => {
   describe('findAllForModeration', () => {
     it('includes movie/cinema names and report counts, including hidden reviews', async () => {
       await Movie.create({ id: 10, name: 'Movie X', premiere_date: '2026-01-01' });
-      await Cinema.create({ id: 20, owner_id: 1, name: 'Cinema Y' });
+      await Branch.create({ id: 20, company_id: 1, owner_id: 1, name: 'Cinema Y', code: 'Y' });
       await Review.create([
         { id: 1, movie_id: 10, account_id: 1, rating: 5, hidden: true, reports: [{ account_id: 2, reason: 'x' }] },
         { id: 2, cinema_id: 20, account_id: 1, rating: 4 },

@@ -1,17 +1,17 @@
 const Schedule = require('../models/Schedule');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 
-// The set of cinema (branch) ids this account may act on under BRANCH scope: any cinema it
-// owns, plus the single cinema it's actively staffed at (if any). Used to filter showtime
+// The set of branch ids this account may act on under BRANCH scope: any branch it owns,
+// plus the single branch it's actively staffed at (if any). Used to filter showtime
 // listings for a Branch Admin/Employee without hardcoding a role check — the caller decides
 // whether BRANCH scope applies (via req.permissionScope) and only then asks "which branches".
 async function resolveAccessibleCinemaIds(accountId) {
-  const [ownedCinemas, employee] = await Promise.all([
-    Cinema.find({ owner_id: accountId }, 'id'),
+  const [ownedBranches, employee] = await Promise.all([
+    Branch.find({ owner_id: accountId }, 'id'),
     Employee.findOne({ user_id: accountId, status: 1 }),
   ]);
-  const ids = new Set(ownedCinemas.map((c) => c.id));
+  const ids = new Set(ownedBranches.map((c) => c.id));
   if (employee) ids.add(employee.branch_id);
   return [...ids];
 }

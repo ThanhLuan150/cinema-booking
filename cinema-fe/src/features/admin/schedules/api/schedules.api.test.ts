@@ -16,8 +16,8 @@ describe('admin schedules.api', () => {
   });
 
   it('getSchedules merges filters and pagination into params', async () => {
-    await schedulesApi.getSchedules({ cinemaId: 1 }, { page: 1 } as any);
-    expect(getMock).toHaveBeenCalledWith('/schedule', { params: { cinemaId: 1, page: 1 } });
+    await schedulesApi.getSchedules({ branchId: 1 }, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/schedule', { params: { branchId: 1, page: 1 } });
   });
 
   it('createSchedule posts to /schedule', async () => {
