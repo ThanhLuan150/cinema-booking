@@ -276,7 +276,7 @@ async function createCounterSale(req, res) {
   }
 
   for (const ticketId of ticketIds) {
-    const branchId = await bookingRepository.findbranchIdByTicketId(ticketId);
+    const branchId = await bookingRepository.findCinemaIdByTicketId(ticketId);
     if (branchId !== req.branchId) {
       return res.status(400).json({ message: 'All tickets must belong to the target cinema', code: 'TICKET_CINEMA_MISMATCH' });
     }

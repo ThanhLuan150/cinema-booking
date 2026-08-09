@@ -1,7 +1,7 @@
 const Voucher = require('../models/Voucher');
 const Branch = require('../models/Branch');
 
-async function findOwnedbranchIds(accountId) {
+async function findOwnedCinemaIds(accountId) {
   const ownedBranches = await Branch.find({ owner_id: accountId });
   return ownedBranches.map((c) => c.id);
 }
@@ -39,7 +39,7 @@ async function remove(id) {
 }
 
 module.exports = {
-  findOwnedbranchIds,
+  findOwnedCinemaIds,
   findFiltered,
   findByCode,
   findById,

@@ -22,7 +22,7 @@ router.post(
   '/',
   requireAuth,
   requirePermission('schedule.create'),
-  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.body.room_id)),
+  requireBranchOwnership((req) => roomRepository.findCinemaIdByRoomId(req.body.room_id)),
   asyncHandler(scheduleController.create),
 );
 
@@ -31,7 +31,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('schedule.update'),
-  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.update),
 );
 
@@ -40,7 +40,7 @@ router.patch(
   '/:id/cancel',
   requireAuth,
   requirePermission('schedule.cancel'),
-  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.cancel),
 );
 
@@ -49,7 +49,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('schedule.delete'),
-  requireBranchOwnership((req) => scheduleRepository.findbranchIdByScheduleId(req.params.id)),
+  requireBranchOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
   asyncHandler(scheduleController.remove),
 );
 

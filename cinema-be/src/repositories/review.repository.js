@@ -84,7 +84,7 @@ async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findVisibleBybranchId(branchId, viewerAccountId) {
+async function findVisibleByCinemaId(branchId, viewerAccountId) {
   const reviews = await Review.find({ cinema_id: Number(branchId), hidden: false });
   return buildThread(reviews, viewerAccountId);
 }
@@ -156,7 +156,7 @@ async function report(id, accountId, reason) {
 
 module.exports = {
   findAllForModeration,
-  findVisibleBybranchId,
+  findVisibleByCinemaId,
   findVisibleByMovieId,
   findOwn,
   create,

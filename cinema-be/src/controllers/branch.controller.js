@@ -223,7 +223,7 @@ async function update(req, res) {
   res.json(branch);
 }
 
-// PUT /api/cinema/:id/activate (cinema.activate permission — super admin only)
+// PUT /api/cinema/:id/activate (branch.activate permission — super admin only)
 async function activate(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'ACTIVE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
@@ -231,7 +231,7 @@ async function activate(req, res) {
   res.json(branch);
 }
 
-// PUT /api/cinema/:id/disable (cinema.disable permission — super admin only)
+// PUT /api/cinema/:id/disable (branch.disable permission — super admin only)
 async function disable(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'INACTIVE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
@@ -239,7 +239,7 @@ async function disable(req, res) {
   res.json(branch);
 }
 
-// PUT /api/cinema/:id/maintenance (cinema.disable permission — super admin only)
+// PUT /api/cinema/:id/maintenance (branch.disable permission — super admin only)
 async function maintenance(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'MAINTENANCE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
@@ -247,7 +247,7 @@ async function maintenance(req, res) {
   res.json(branch);
 }
 
-// PUT /api/cinema/:id/assign-admin { account_id } (branchAdmin.create permission — super admin
+// PUT /api/cinema/:id/assign-admin { account_id } (branch.assignAdmin permission — super admin
 // only) — assigns an existing account as this branch's Branch Admin, independent of branch
 // creation (e.g. reassigning a branch to a different admin).
 async function assignAdmin(req, res) {

@@ -1,12 +1,12 @@
 const Combo = require('../models/Combo');
 const Branch = require('../models/Branch');
 
-async function findbranchIdByComboId(comboId) {
+async function findCinemaIdByComboId(comboId) {
   const combo = await Combo.findOne({ id: Number(comboId) });
   return combo ? combo.cinema_id : null;
 }
 
-async function findActiveBybranchId(branchId, { skip = 0, limit = 20 } = {}) {
+async function findActiveByCinemaId(branchId, { skip = 0, limit = 20 } = {}) {
   const filter = { active: true, cinema_id: Number(branchId) };
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
@@ -15,7 +15,7 @@ async function findActiveBybranchId(branchId, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findBybranchIds(branchIds, { skip = 0, limit = 20 } = {}) {
+async function findByCinemaIds(branchIds, { skip = 0, limit = 20 } = {}) {
   const filter = { cinema_id: { $in: branchIds } };
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
@@ -45,7 +45,7 @@ async function findById(id) {
   return Combo.findOne({ id: Number(id) });
 }
 
-async function findOwnedbranchIds(accountId) {
+async function findOwnedCinemaIds(accountId) {
   const ownedBranches = await Branch.find({ owner_id: accountId });
   return ownedBranches.map((c) => c.id);
 }
@@ -63,13 +63,13 @@ async function remove(id) {
 }
 
 module.exports = {
-  findbranchIdByComboId,
-  findActiveBybranchId,
-  findBybranchIds,
+  findCinemaIdByComboId,
+  findActiveByCinemaId,
+  findByCinemaIds,
   findAll,
   findActive,
   findById,
-  findOwnedbranchIds,
+  findOwnedCinemaIds,
   create,
   updateFields,
   remove,

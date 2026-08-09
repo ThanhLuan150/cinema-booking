@@ -13,7 +13,7 @@ async function listForModeration(req, res) {
 
 // GET /api/review/cinema/:branchId -> visible reviews (threaded with replies) for a cinema + average rating
 async function listForCinema(req, res) {
-  const result = await reviewRepository.findVisibleBybranchId(req.params.branchId, req.account?.accountId);
+  const result = await reviewRepository.findVisibleByCinemaId(req.params.branchId, req.account?.accountId);
   res.json(result);
 }
 

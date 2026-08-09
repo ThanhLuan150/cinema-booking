@@ -1,7 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const userRepository = require('./user.repository');
 const Account = require('../models/Account');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
@@ -41,14 +41,14 @@ describe('user.repository', () => {
     expect(updated.status).toBe(0);
   });
 
-  it('approveOwnedPendingCinemas approves only that owner\'s pending cinemas', async () => {
-    await Cinema.create([
-      { id: 1, owner_id: 42, name: 'A', status: 0 },
-      { id: 2, owner_id: 42, name: 'B', status: 1 },
-      { id: 3, owner_id: 99, name: 'C', status: 0 },
+  it('approveOwnedPendingCinemas reactivates only that owner\'s inactive branches', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A', status: 'INACTIVE' },
+      { id: 2, company_id: 1, owner_id: 42, name: 'B', code: 'B', status: 'ACTIVE' },
+      { id: 3, company_id: 1, owner_id: 99, name: 'C', code: 'C', status: 'INACTIVE' },
     ]);
     await userRepository.approveOwnedPendingCinemas(42);
-    const cinemas = await Cinema.find().sort({ id: 1 });
-    expect(cinemas.map((c) => c.status)).toEqual([1, 1, 0]);
+    const branches = await Branch.find().sort({ id: 1 });
+    expect(branches.map((b) => b.status)).toEqual(['ACTIVE', 'ACTIVE', 'INACTIVE']);
   });
 });

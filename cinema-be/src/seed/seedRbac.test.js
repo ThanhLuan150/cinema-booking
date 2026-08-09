@@ -37,10 +37,10 @@ describe('seedRbac', () => {
     expect(await Role.countDocuments()).toBe(4);
   });
 
-  it('does not grant branch admin ticket.create, booking.refund, review.moderate or cinema.create', async () => {
+  it('does not grant branch admin ticket.create, booking.refund, review.moderate or branch.create', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
-    for (const code of ['ticket.create', 'booking.refund', 'review.moderate', 'cinema.create']) {
+    for (const code of ['ticket.create', 'booking.refund', 'review.moderate', 'branch.create']) {
       const permission = await Permission.findOne({ code });
       const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
       expect(link).toBeNull();
@@ -105,6 +105,37 @@ describe('seedRbac', () => {
       const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
       expect(link).not.toBeNull();
       expect(link.scope).toBe('BRANCH');
+    }
+  });
+
+  it('does not grant branch admin branch.activate, branch.disable, branch.delete or branch.assignAdmin (Super Admin only lifecycle actions)', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    for (const code of ['branch.activate', 'branch.disable', 'branch.delete', 'branch.assignAdmin']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(link).toBeNull();
+    }
+  });
+
+  it('does not grant branch admin any company.* permission', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    for (const code of ['company.create', 'company.read', 'company.update', 'company.delete']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(link).toBeNull();
+    }
+  });
+
+  it('grants super admin every company.* permission with ALL scope', async () => {
+    await seedRbac();
+    const superAdmin = await Role.findOne({ code: 'SUPER_ADMIN' });
+    for (const code of ['company.create', 'company.read', 'company.update', 'company.delete']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: superAdmin.id, permission_id: permission.id });
+      expect(link).not.toBeNull();
+      expect(link.scope).toBe('ALL');
     }
   });
 

@@ -20,23 +20,23 @@ async function seedShowtimes() {
 }
 
 describe('schedule.repository', () => {
-  describe('resolveAccessiblebranchIds', () => {
+  describe('resolveAccessibleCinemaIds', () => {
     it('includes cinemas the account owns', async () => {
       await seedShowtimes();
-      const ids = await scheduleRepository.resolveAccessiblebranchIds(100);
+      const ids = await scheduleRepository.resolveAccessibleCinemaIds(100);
       expect(ids).toEqual([1]);
     });
 
     it('includes the cinema the account is actively staffed at', async () => {
       await seedShowtimes();
       await Employee.create({ id: 1, user_id: 7, branch_id: 2, employee_code: 'EMP-000001', position_id: 1, status: 1 });
-      const ids = await scheduleRepository.resolveAccessiblebranchIds(7);
+      const ids = await scheduleRepository.resolveAccessibleCinemaIds(7);
       expect(ids).toEqual([2]);
     });
 
     it('returns an empty list for an account with no cinema and no active staff record', async () => {
       await seedShowtimes();
-      const ids = await scheduleRepository.resolveAccessiblebranchIds(999);
+      const ids = await scheduleRepository.resolveAccessibleCinemaIds(999);
       expect(ids).toEqual([]);
     });
   });
@@ -57,30 +57,30 @@ describe('schedule.repository', () => {
 
     it('scopes BRANCH scope to only the accessible cinema ids', async () => {
       await seedShowtimes();
-      const result = await scheduleRepository.findFiltered({ scope: 'BRANCH', accessiblebranchIds: [1] });
+      const result = await scheduleRepository.findFiltered({ scope: 'BRANCH', accessibleCinemaIds: [1] });
       expect(result.total).toBe(1);
       expect(result.data[0].room_id).toBe(1);
     });
 
-    it('scopes by branchId for ALL scope', async () => {
+    it('scopes by cinemaId for ALL scope', async () => {
       await seedShowtimes();
-      const result = await scheduleRepository.findFiltered({ scope: 'ALL', branchId: 2 });
+      const result = await scheduleRepository.findFiltered({ scope: 'ALL', cinemaId: 2 });
       expect(result.total).toBe(1);
       expect(result.data[0].room_id).toBe(2);
     });
 
     it('returns nothing for BRANCH scope with no accessible cinemas', async () => {
       await seedShowtimes();
-      const result = await scheduleRepository.findFiltered({ scope: 'BRANCH', accessiblebranchIds: [] });
+      const result = await scheduleRepository.findFiltered({ scope: 'BRANCH', accessibleCinemaIds: [] });
       expect(result.total).toBe(0);
     });
 
-    it('ignores a branchId outside the accessible cinema ids under BRANCH scope', async () => {
+    it('ignores a cinemaId outside the accessible cinema ids under BRANCH scope', async () => {
       await seedShowtimes();
       const result = await scheduleRepository.findFiltered({
         scope: 'BRANCH',
-        accessiblebranchIds: [1],
-        branchId: 2,
+        accessibleCinemaIds: [1],
+        cinemaId: 2,
       });
       expect(result.total).toBe(0);
     });
@@ -92,9 +92,9 @@ describe('schedule.repository', () => {
     expect(schedule.movie_date).toBe('2026-01-01');
   });
 
-  it('findbranchIdByScheduleId resolves the schedule\'s branch', async () => {
+  it('findCinemaIdByScheduleId resolves the schedule\'s branch', async () => {
     await seedShowtimes();
-    expect(await scheduleRepository.findbranchIdByScheduleId(2)).toBe(2);
+    expect(await scheduleRepository.findCinemaIdByScheduleId(2)).toBe(2);
   });
 
   describe('findOverlapping', () => {

@@ -166,7 +166,7 @@ async function findMovieById(id) {
 
 // Walks Invoice -> Ticket -> Schedule -> Room -> Cinema to resolve the owning cinema,
 // used to scope check-in/counter-sale access to the invoice's actual branch.
-async function findbranchIdByInvoiceId(id) {
+async function findCinemaIdByInvoiceId(id) {
   const invoice = await Invoice.findOne({ id: Number(id) });
   if (!invoice) return null;
   const ticket = await Ticket.findOne({ id: invoice.ticket_id });
@@ -177,7 +177,7 @@ async function findbranchIdByInvoiceId(id) {
   return room ? room.cinema_id : null;
 }
 
-async function findbranchIdByTicketId(ticketId) {
+async function findCinemaIdByTicketId(ticketId) {
   const ticket = await Ticket.findOne({ id: Number(ticketId) });
   if (!ticket) return null;
   const schedule = await Schedule.findOne({ id: ticket.schedule_id });
@@ -213,7 +213,7 @@ module.exports = {
   findRoomById,
   findCinemaById,
   findMovieById,
-  findbranchIdByInvoiceId,
-  findbranchIdByTicketId,
+  findCinemaIdByInvoiceId,
+  findCinemaIdByTicketId,
   createCounterSale,
 };

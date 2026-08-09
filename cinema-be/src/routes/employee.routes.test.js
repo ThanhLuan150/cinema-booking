@@ -4,7 +4,7 @@ const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seedPositions = require('../seed/seedPositions');
 const employeeRoutes = require('./employee.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 const Position = require('../models/Position');
 const Account = require('../models/Account');
@@ -31,7 +31,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('POST /api/employee forbids a branch admin who does not own the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -40,7 +40,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('POST /api/employee allows the owning branch admin', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -51,7 +51,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('POST /api/employee allows super admin regardless of ownership', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 0, accountId: 1 }))
@@ -68,7 +68,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('POST /api/employee rejects an unknown position_id', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -77,7 +77,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('POST /api/employee never escalates role even if the body sends one — always creates an EMPLOYEE (role 3)', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
@@ -88,7 +88,7 @@ describe('employee.routes wiring', () => {
   });
 
   it('PUT /api/employee/:id forbids a branch admin from another cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
     const res = await request(app)
       .put('/api/employee/1')
@@ -99,7 +99,7 @@ describe('employee.routes wiring', () => {
 
   describe('POST /api/employee/:id/reset-password', () => {
     it('forbids a branch admin from another cinema', async () => {
-      await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
       await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
       const res = await request(app)
         .post('/api/employee/1/reset-password')
@@ -108,7 +108,7 @@ describe('employee.routes wiring', () => {
     });
 
     it('allows the owning branch admin and does not return the new password', async () => {
-      await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
       await Account.create({ id: 7, email: 'staff@b.com', password: 'oldhash', role: 3, status: 1 });
       await Employee.create({ id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() });
       const res = await request(app)

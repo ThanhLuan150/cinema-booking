@@ -4,7 +4,7 @@ const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seedPositions = require('../seed/seedPositions');
 const bookingRoutes = require('./booking.routes');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 const Position = require('../models/Position');
 
@@ -52,7 +52,7 @@ describe('booking.routes wiring', () => {
   });
 
   it('POST /api/invoice/counter-sale forbids an employee not staffed at the target cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const res = await request(app)
       .post('/api/invoice/counter-sale')
       .set('Authorization', authHeader({ role: 3, accountId: 7 }))
@@ -61,7 +61,7 @@ describe('booking.routes wiring', () => {
   });
 
   it('POST /api/invoice/counter-sale allows an employee staffed at the target cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const ticketStaff = await Position.findOne({ code: 'TICKET_STAFF' });
     await Employee.create({
       id: 1,

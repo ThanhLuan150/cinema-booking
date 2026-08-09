@@ -6,13 +6,13 @@ async function list(req, res) {
   const { page, limit, skip } = parsePagination(req.query);
 
   if (req.query.branchId) {
-    const { data, total } = await comboRepository.findActiveBybranchId(req.query.branchId, { skip, limit });
+    const { data, total } = await comboRepository.findActiveByCinemaId(req.query.branchId, { skip, limit });
     return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 
   if (req.account?.role === 2) {
-    const branchIds = await comboRepository.findOwnedbranchIds(req.account.accountId);
-    const { data, total } = await comboRepository.findBybranchIds(branchIds, { skip, limit });
+    const branchIds = await comboRepository.findOwnedCinemaIds(req.account.accountId);
+    const { data, total } = await comboRepository.findByCinemaIds(branchIds, { skip, limit });
     return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 

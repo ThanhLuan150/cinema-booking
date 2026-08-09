@@ -9,12 +9,12 @@ const { parsePagination, buildPaginatedResult } = require('../utils/pagination')
 // employee) is restricted to the caller's own branch(es).
 async function list(req, res) {
   const { page, limit, skip } = parsePagination(req.query);
-  const accessiblebranchIds =
-    req.permissionScope === 'ALL' ? [] : await scheduleRepository.resolveAccessiblebranchIds(req.account.accountId);
+  const accessibleCinemaIds =
+    req.permissionScope === 'ALL' ? [] : await scheduleRepository.resolveAccessibleCinemaIds(req.account.accountId);
 
   const { data, total } = await scheduleRepository.findFiltered({
     scope: req.permissionScope,
-    accessiblebranchIds,
+    accessibleCinemaIds,
     branchId: req.query.branchId,
     roomId: req.query.roomId,
     skip,

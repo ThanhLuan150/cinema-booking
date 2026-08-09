@@ -30,7 +30,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('combo.update'),
-  requireBranchOwnership((req) => comboRepository.findbranchIdByComboId(req.params.id)),
+  requireBranchOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.update),
 );
 
@@ -39,7 +39,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('combo.delete'),
-  requireBranchOwnership((req) => comboRepository.findbranchIdByComboId(req.params.id)),
+  requireBranchOwnership((req) => comboRepository.findCinemaIdByComboId(req.params.id)),
   asyncHandler(comboController.remove),
 );
 

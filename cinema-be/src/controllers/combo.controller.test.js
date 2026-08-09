@@ -1,7 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const comboController = require('./combo.controller');
 const Combo = require('../models/Combo');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 function mockRes() {
   const res = {};
@@ -26,7 +26,7 @@ describe('combo.controller list', () => {
   });
 
   it('scopes an owner (role 2) to combos across their own cinemas', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'A' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     await Combo.create({ id: 1, cinema_id: 1, name: 'Combo', price: 1 });
     const res = mockRes();
     await comboController.list({ query: {}, account: { role: 2, accountId: 42 } }, res);

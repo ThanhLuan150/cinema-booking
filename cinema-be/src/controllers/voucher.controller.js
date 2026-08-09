@@ -14,7 +14,7 @@ async function assertCinemaOwnership(req, branchId) {
 async function list(req, res) {
   const filter = {};
   if (req.permissionScope === 'BRANCH') {
-    const ownedIds = await voucherRepository.findOwnedbranchIds(req.account.accountId);
+    const ownedIds = await voucherRepository.findOwnedCinemaIds(req.account.accountId);
     filter.cinema_id = req.query.branchId
       ? ownedIds.includes(Number(req.query.branchId))
         ? Number(req.query.branchId)
@@ -80,18 +80,18 @@ async function create(req, res) {
     return res.status(400).json({ message: 'code, discount_type and discount_value are required' });
   }
 
-  const normalizedbranchId = cinema_id === undefined || cinema_id === null ? null : Number(cinema_id);
-  if (normalizedbranchId === null && req.permissionScope !== 'ALL') {
+  const normalizedCinemaId = cinema_id === undefined || cinema_id === null ? null : Number(cinema_id);
+  if (normalizedCinemaId === null && req.permissionScope !== 'ALL') {
     return res.status(403).json({ message: 'Only admin can create system-wide vouchers' });
   }
-  if (normalizedbranchId !== null && !(await assertCinemaOwnership(req, normalizedbranchId))) {
+  if (normalizedCinemaId !== null && !(await assertCinemaOwnership(req, normalizedCinemaId))) {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
   const id = await nextId('voucher');
   const voucher = await voucherRepository.create({
     id,
-    cinema_id: normalizedbranchId,
+    cinema_id: normalizedCinemaId,
     code: String(code).toUpperCase(),
     discount_type,
     discount_value: Number(discount_value),

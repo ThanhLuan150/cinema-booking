@@ -7,16 +7,16 @@ async function ownerDashboard(req, res) {
     accountId: req.account.accountId,
   });
 
-  let scopedbranchIds = cinemas.map((c) => c.id);
+  let scopedCinemaIds = cinemas.map((c) => c.id);
   if (req.query.branchId) {
     const requestedId = Number(req.query.branchId);
-    if (!scopedbranchIds.includes(requestedId)) {
+    if (!scopedCinemaIds.includes(requestedId)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    scopedbranchIds = [requestedId];
+    scopedCinemaIds = [requestedId];
   }
 
-  const stats = await dashboardRepository.getOwnerStats(scopedbranchIds);
+  const stats = await dashboardRepository.getOwnerStats(scopedCinemaIds);
 
   res.json({
     cinemas: cinemas.map((c) => ({ id: c.id, name: c.name, status: c.status })),

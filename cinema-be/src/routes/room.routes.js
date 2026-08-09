@@ -25,7 +25,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('room.update'),
-  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.params.id)),
+  requireBranchOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.id)),
   asyncHandler(roomController.update),
 );
 
@@ -34,7 +34,7 @@ router.delete(
   '/:id',
   requireAuth,
   requirePermission('room.delete'),
-  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.params.id)),
+  requireBranchOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.id)),
   asyncHandler(roomController.remove),
 );
 

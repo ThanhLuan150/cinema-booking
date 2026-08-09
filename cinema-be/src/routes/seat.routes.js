@@ -17,7 +17,7 @@ router.post(
   '/room/:roomId/generate',
   requireAuth,
   requirePermission('seat.create'),
-  requireBranchOwnership((req) => roomRepository.findbranchIdByRoomId(req.params.roomId)),
+  requireBranchOwnership((req) => roomRepository.findCinemaIdByRoomId(req.params.roomId)),
   asyncHandler(seatController.generate),
 );
 
@@ -29,7 +29,7 @@ router.put(
   requireBranchOwnership(async (req) => {
     const seat = await seatRepository.findById(req.params.id);
     if (!seat) return null;
-    return roomRepository.findbranchIdByRoomId(seat.room_id);
+    return roomRepository.findCinemaIdByRoomId(seat.room_id);
   }),
   asyncHandler(seatController.update),
 );

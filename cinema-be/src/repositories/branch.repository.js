@@ -28,7 +28,7 @@ async function findMine({ role, accountId, skip = 0, limit = 20 }) {
   if (role !== 0) return { data, total };
 
   // Admin view: attach each branch's owner contact info so the admin Branches list can show
-  // the assigned Branch Admin's name/avatar instead of just a bare owner_id number.
+  // the assigned Branch Admin's name/avatar instead of just a bare company_id number.
   const ownerIds = [...new Set(data.map((branch) => branch.owner_id))];
   const owners = await Account.find({ id: { $in: ownerIds } });
   const ownerById = new Map(owners.map((owner) => [owner.id, owner]));

@@ -1,19 +1,19 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const voucherRepository = require('./voucher.repository');
 const Voucher = require('../models/Voucher');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
 describe('voucher.repository', () => {
-  it('findOwnedbranchIds returns cinema ids owned by the account', async () => {
-    await Cinema.create([
-      { id: 1, owner_id: 42, name: 'A' },
-      { id: 2, owner_id: 99, name: 'B' },
+  it('findOwnedCinemaIds returns branch ids owned by the account', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 99, name: 'B', code: 'B' },
     ]);
-    expect(await voucherRepository.findOwnedbranchIds(42)).toEqual([1]);
+    expect(await voucherRepository.findOwnedCinemaIds(42)).toEqual([1]);
   });
 
   it('findFiltered paginates on an arbitrary filter', async () => {
@@ -40,8 +40,8 @@ describe('voucher.repository', () => {
     expect((await voucherRepository.findById('1')).code).toBe('A');
   });
 
-  it('findCinemaById finds the cinema by id', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'A' });
+  it('findCinemaById finds the branch by id', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'A', code: 'A' });
     expect((await voucherRepository.findCinemaById(1)).name).toBe('A');
   });
 

@@ -4,7 +4,7 @@ const Invoice = require('../models/Invoice');
 const Ticket = require('../models/Ticket');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 const Account = require('../models/Account');
 
@@ -189,7 +189,7 @@ describe('GET /api/invoice/lookup/:code', () => {
   });
 
   it('forbids a theater staff who does not own the cinema', async () => {
-    await Cinema.create({ id: 1, owner_id: 99, name: 'Cinema' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'Cinema', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
@@ -201,7 +201,7 @@ describe('GET /api/invoice/lookup/:code', () => {
   });
 
   it('allows the owning theater staff to look up a booking', async () => {
-    await Cinema.create({ id: 1, owner_id: 42, name: 'Cinema' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
@@ -369,8 +369,8 @@ describe('POST /api/invoice/counter-sale', () => {
   });
 
   it('rejects tickets that belong to a different cinema than the target', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
-    await Cinema.create({ id: 2, owner_id: 1, name: 'C2' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
+    await Branch.create({ id: 2, company_id: 1, owner_id: 1, name: 'C2', code: 'B' });
     await Room.create({ id: 1, cinema_id: 2, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
@@ -386,7 +386,7 @@ describe('POST /api/invoice/counter-sale', () => {
   });
 
   it('creates a paid counter-sale invoice tagged with the seller account id', async () => {
-    await Cinema.create({ id: 1, owner_id: 1, name: 'C1' });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
     await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });

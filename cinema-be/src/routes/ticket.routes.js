@@ -15,7 +15,7 @@ router.put(
   '/:id',
   requireAuth,
   requirePermission('ticket.checkin'),
-  requireBranchAccess((req) => bookingRepository.findbranchIdByTicketId(req.params.id)),
+  requireBranchAccess((req) => bookingRepository.findCinemaIdByTicketId(req.params.id)),
   asyncHandler(ticketController.markSold),
 );
 

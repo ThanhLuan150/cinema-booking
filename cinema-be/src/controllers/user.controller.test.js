@@ -1,7 +1,7 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const userController = require('./user.controller');
 const Account = require('../models/Account');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 
 function mockRes() {
@@ -102,13 +102,13 @@ describe('block / unblock', () => {
 });
 
 describe('approve', () => {
-  it('approves the account and, for theater staff, their pending cinemas', async () => {
+  it('approves the account and, for theater staff, reactivates their inactive branches', async () => {
     await Account.create({ id: 1, email: 'a@b.com', password: 'x', role: 2, approved: false });
-    await Cinema.create({ id: 1, owner_id: 1, name: 'A', status: 0 });
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'A', code: 'A', status: 'INACTIVE' });
     const res = mockRes();
     await userController.approve({ params: { id: 1 } }, res);
     expect((await Account.findOne({ id: 1 })).approved).toBe(true);
-    expect((await Cinema.findOne({ id: 1 })).status).toBe(1);
+    expect((await Branch.findOne({ id: 1 })).status).toBe('ACTIVE');
   });
 
   it('does not touch cinemas for a non-theater-staff account', async () => {

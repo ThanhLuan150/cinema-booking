@@ -1,6 +1,6 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const dashboardRepository = require('./dashboard.repository');
-const Cinema = require('../models/Cinema');
+const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
@@ -33,18 +33,18 @@ describe('dashboard.repository', () => {
 
   describe('findOwnerScopedCinemas', () => {
     it('scopes to the owner for a non-admin role', async () => {
-      await Cinema.create([
-        { id: 1, owner_id: 42, name: 'Mine' },
-        { id: 2, owner_id: 99, name: 'Not mine' },
+      await Branch.create([
+        { id: 1, company_id: 1, owner_id: 42, name: 'Mine', code: 'A' },
+        { id: 2, company_id: 1, owner_id: 99, name: 'Not mine', code: 'B' },
       ]);
       const result = await dashboardRepository.findOwnerScopedCinemas({ role: 2, accountId: 42 });
       expect(result).toHaveLength(1);
     });
 
-    it('returns all cinemas for an admin', async () => {
-      await Cinema.create([
-        { id: 1, owner_id: 42, name: 'A' },
-        { id: 2, owner_id: 99, name: 'B' },
+    it('returns all branches for an admin', async () => {
+      await Branch.create([
+        { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },
+        { id: 2, company_id: 1, owner_id: 99, name: 'B', code: 'B' },
       ]);
       const result = await dashboardRepository.findOwnerScopedCinemas({ role: 0, accountId: 1 });
       expect(result).toHaveLength(2);
@@ -88,13 +88,13 @@ describe('dashboard.repository', () => {
   });
 
   describe('getAdminTotals', () => {
-    it('aggregates counts across users, owners, cinemas and tickets', async () => {
+    it('aggregates counts across users, owners, branches and tickets', async () => {
       await Account.create([
         { id: 1, email: 'u1@b.com', password: 'x', role: 1 },
         { id: 2, email: 'u2@b.com', password: 'x', role: 1 },
         { id: 3, email: 'o1@b.com', password: 'x', role: 2 },
       ]);
-      await Cinema.create({ id: 1, owner_id: 3, name: 'A' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 3, name: 'A', code: 'A' });
       await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
       await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 100, status: 1 });
 

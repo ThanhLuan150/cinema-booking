@@ -57,7 +57,7 @@ router.post(
   '/invoice/:id/checkin',
   requireAuth,
   requirePermission('ticket.checkin'),
-  requireBranchAccess((req) => bookingRepository.findbranchIdByInvoiceId(req.params.id)),
+  requireBranchAccess((req) => bookingRepository.findCinemaIdByInvoiceId(req.params.id)),
   asyncHandler(bookingController.checkInInvoice),
 );
 
