@@ -13,6 +13,7 @@ import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { usePermissions } from '@/hooks/usePermissions';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useMyEmployees } from '../../hooks/useMyEmployees';
@@ -42,6 +43,7 @@ function EmployeeList() {
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data: positions } = usePositions();
+  const { hasPermission } = usePermissions();
   const selectedbranchId = useAppSelector((state) => state.ownerEmployees.selectedbranchId);
   const { showAddModal } = useAppSelector((state) => state.ownerEmployees);
 
@@ -133,9 +135,11 @@ function EmployeeList() {
             options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
           />
         </div>
-        <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
-          {t('employees.addButton')}
-        </Button>
+        {hasPermission('employee.create') && (
+          <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
+            {t('employees.addButton')}
+          </Button>
+        )}
       </div>
 
       {showAddModal && (
@@ -223,30 +227,34 @@ function EmployeeList() {
               </td>
               <td>
                 <div className="flex flex-wrap gap-3">
-                  {employee.status === 1 ? (
+                  {employee.status === 1
+                    ? hasPermission('employee.delete') && (
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                          onClick={() => handleDeactivate(employee.id)}
+                        >
+                          {t('employees.deactivate')}
+                        </button>
+                      )
+                    : hasPermission('employee.update') && (
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                          onClick={() => handleReactivate(employee.id)}
+                        >
+                          {t('employees.reactivate')}
+                        </button>
+                      )}
+                  {hasPermission('employee.update') && (
                     <button
                       type="button"
-                      className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                      onClick={() => handleDeactivate(employee.id)}
+                      className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
+                      onClick={() => handleResetPassword(employee.id)}
                     >
-                      {t('employees.deactivate')}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                      onClick={() => handleReactivate(employee.id)}
-                    >
-                      {t('employees.reactivate')}
+                      {t('employees.resetPassword')}
                     </button>
                   )}
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
-                    onClick={() => handleResetPassword(employee.id)}
-                  >
-                    {t('employees.resetPassword')}
-                  </button>
                 </div>
               </td>
             </tr>
