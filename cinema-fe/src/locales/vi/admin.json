@@ -263,17 +263,20 @@
       "Hành động"
     ],
     "status": {
-      "pending": "Chờ duyệt",
-      "approved": "Đã duyệt",
-      "blocked": "Bị khóa"
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động",
+      "maintenance": "Đang bảo trì"
     },
-    "approveButton": "Duyệt",
-    "blockButton": "Khóa",
+    "activateButton": "Kích hoạt",
+    "disableButton": "Vô hiệu hoá",
+    "maintenanceButton": "Bảo trì",
     "deleteButton": "Xóa",
-    "blockConfirm": "Khóa chi nhánh này?",
+    "disableConfirm": "Vô hiệu hoá chi nhánh này?",
+    "maintenanceConfirm": "Chuyển chi nhánh này sang chế độ bảo trì?",
     "deleteConfirm": "Xóa chi nhánh này? Hành động không thể hoàn tác.",
-    "approveSuccess": "Đã duyệt chi nhánh.",
-    "blockSuccess": "Đã khóa chi nhánh.",
+    "activateSuccess": "Đã kích hoạt chi nhánh.",
+    "disableSuccess": "Đã vô hiệu hoá chi nhánh.",
+    "maintenanceSuccess": "Đã chuyển chi nhánh sang bảo trì.",
     "deleteSuccess": "Đã xóa chi nhánh.",
     "addBranchAdmin": {
       "addButton": "Thêm chi nhánh & Branch Admin",
@@ -283,6 +286,7 @@
       "nameLabel": "Họ tên",
       "phoneLabel": "Số điện thoại",
       "cinemaNameLabel": "Tên chi nhánh",
+      "codeLabel": "Mã chi nhánh",
       "addressLabel": "Địa chỉ",
       "cityLabel": "Thành phố",
       "submit": "Tạo",
@@ -290,7 +294,8 @@
       "validation": {
         "emailRequired": "Vui lòng nhập email.",
         "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự.",
-        "cinemaNameRequired": "Vui lòng nhập tên chi nhánh."
+        "cinemaNameRequired": "Vui lòng nhập tên chi nhánh.",
+        "codeRequired": "Vui lòng nhập mã chi nhánh."
       }
     }
   },

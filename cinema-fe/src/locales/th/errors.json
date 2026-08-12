@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "คูปองนี้หมดอายุแล้ว",
   "VOUCHER_USES_EXHAUSTED": "คูปองนี้ถูกใช้ครบจำนวนสิทธิ์แล้ว",
   "VOUCHER_MIN_ORDER_NOT_MET": "ต้องมียอดสั่งซื้อขั้นต่ำ {{minOrderValue}} เพื่อใช้รหัสนี้",
+  "INVALID_TIME_FORMAT": "เวลาต้องอยู่ในรูปแบบ HH:mm",
+  "INVALID_DATE_FORMAT": "วันที่ต้องอยู่ในรูปแบบ YYYY-MM-DD",
+  "SHIFT_HAS_ASSIGNMENTS": "กะทำงานนี้มีการมอบหมายอยู่ จึงไม่สามารถลบได้",
+  "EMPLOYEE_NOT_ACTIVE": "พนักงานคนนี้ไม่ได้ใช้งานอยู่",
+  "SHIFT_NOT_ACTIVE": "กะทำงานนี้ไม่ได้เปิดใช้งาน",
+  "BRANCH_MISMATCH": "พนักงานและกะทำงานต้องอยู่ในสาขาเดียวกัน",
+  "DUPLICATE_ASSIGNMENT": "พนักงานคนนี้ถูกมอบหมายให้กะนี้ในวันนี้อยู่แล้ว",
   "GENERIC": "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่อีกครั้ง"
 }

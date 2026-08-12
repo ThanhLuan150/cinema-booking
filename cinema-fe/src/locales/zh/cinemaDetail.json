@@ -3,9 +3,9 @@
     "notAvailable": "暂无",
     "addressUpdating": "地址暂未更新",
     "favoriteCount": "{{count}} 人收藏",
-    "statusPending": "待审核",
     "statusActive": "营业中",
     "statusPaused": "暂停营业",
+    "statusMaintenance": "维护中",
     "viewShowtimes": "查看场次",
     "breadcrumbCinemas": "分店"
   },

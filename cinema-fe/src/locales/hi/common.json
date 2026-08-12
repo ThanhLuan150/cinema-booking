@@ -54,10 +54,12 @@
       "reviews": "समीक्षाएं",
       "rooms": "स्क्रीन",
       "employees": "Employees",
+      "shifts": "शिफ्ट",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "मेरा शेड्यूल"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

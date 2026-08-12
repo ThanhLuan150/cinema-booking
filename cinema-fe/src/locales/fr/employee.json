@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "Mon planning",
+    "emptyTitle": "Vous n'avez aucune équipe planifiée",
+    "shiftLabel": "Équipe n°{{id}}",
+    "statusActive": "Active",
+    "statusCancelled": "Annulée",
+    "headers": {
+      "shift": "Équipe",
+      "date": "Date",
+      "time": "Horaire",
+      "status": "Statut"
+    }
   }
 }

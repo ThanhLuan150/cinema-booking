@@ -3,9 +3,9 @@
     "notAvailable": "情報なし",
     "addressUpdating": "住所情報は準備中です",
     "favoriteCount": "お気に入り{{count}}件",
-    "statusPending": "承認待ち",
     "statusActive": "営業中",
     "statusPaused": "一時休業中",
+    "statusMaintenance": "メンテナンス中",
     "viewShowtimes": "上映スケジュールを見る",
     "breadcrumbCinemas": "支店"
   },

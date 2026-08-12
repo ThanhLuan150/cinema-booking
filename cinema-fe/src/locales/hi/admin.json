@@ -244,17 +244,20 @@
       "कार्रवाई"
     ],
     "status": {
-      "pending": "स्वीकृति लंबित",
-      "approved": "स्वीकृत",
-      "blocked": "अवरुद्ध"
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "maintenance": "रखरखाव में"
     },
-    "approveButton": "स्वीकृत करें",
-    "blockButton": "अवरुद्ध करें",
+    "activateButton": "सक्रिय करें",
+    "disableButton": "निष्क्रिय करें",
+    "maintenanceButton": "रखरखाव",
     "deleteButton": "हटाएं",
-    "blockConfirm": "क्या इस शाखा को अवरुद्ध करना है?",
+    "disableConfirm": "क्या इस शाखा को निष्क्रिय करना है?",
+    "maintenanceConfirm": "क्या इस शाखा को रखरखाव मोड में डालना है?",
     "deleteConfirm": "क्या इस शाखा को हटाना है? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
-    "approveSuccess": "शाखा स्वीकृत हो गई।",
-    "blockSuccess": "शाखा अवरुद्ध कर दी गई।",
+    "activateSuccess": "शाखा सक्रिय कर दी गई।",
+    "disableSuccess": "शाखा निष्क्रिय कर दी गई।",
+    "maintenanceSuccess": "शाखा रखरखाव मोड में डाल दी गई।",
     "deleteSuccess": "शाखा हटा दी गई।",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

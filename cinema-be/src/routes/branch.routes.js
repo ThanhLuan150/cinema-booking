@@ -41,7 +41,7 @@ router.get(
 // GET /api/cinema/:id -> public detail (active branches only)
 router.get('/:id', asyncHandler(branchController.getById));
 
-// POST /api/cinema/branch-admin { email, password, name, phone, company_id, cinema_name, code,
+// POST /api/cinema/branch-admin { email, password, name, phone, cinema_name, code, company_id? }
 router.post(
   '/branch-admin',
   requireAuth,

@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "내 스케줄",
+    "emptyTitle": "예정된 근무가 없습니다",
+    "shiftLabel": "근무조 #{{id}}",
+    "statusActive": "활성",
+    "statusCancelled": "취소됨",
+    "headers": {
+      "shift": "근무조",
+      "date": "날짜",
+      "time": "시간",
+      "status": "상태"
+    }
   }
 }

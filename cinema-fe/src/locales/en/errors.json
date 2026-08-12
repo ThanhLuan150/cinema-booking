@@ -32,5 +32,12 @@
   "INVALID_TIME_RANGE": "Start time must be before end time",
   "SCHEDULE_CANCELLED": "This showtime has been cancelled",
   "ALREADY_CANCELLED": "This showtime has already been cancelled",
+  "INVALID_TIME_FORMAT": "Time must be in HH:mm format",
+  "INVALID_DATE_FORMAT": "Date must be in YYYY-MM-DD format",
+  "SHIFT_HAS_ASSIGNMENTS": "This shift has assignments and cannot be deleted",
+  "EMPLOYEE_NOT_ACTIVE": "This employee is not active",
+  "SHIFT_NOT_ACTIVE": "This shift is not active",
+  "BRANCH_MISMATCH": "Employee and shift must belong to the same branch",
+  "DUPLICATE_ASSIGNMENT": "This employee is already assigned to this shift on this date",
   "GENERIC": "Something went wrong, please try again."
 }

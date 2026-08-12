@@ -28,11 +28,14 @@ import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
 import OwnerBookingLookup from '@/features/owner/pages/Lookup';
 import OwnerEmployees from '@/features/owner/employees/pages/List';
+import OwnerShifts from '@/features/owner/shifts/pages/List';
+import OwnerShiftAssignments from '@/features/owner/shifts/pages/Assignments';
 import AdminActors from '@/features/admin/actors/pages/List';
 import AdminDirectors from '@/features/admin/directors/pages/List';
 import EmployeeDashboard from '@/features/employee/pages/EmployeeDashboard';
 import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
 import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
+import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -182,10 +185,34 @@ export function AppRouter() {
         }
       />
       <Route
+        path={ROUTES.ownerShifts}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerShifts />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerShiftAssignments}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerShiftAssignments />
+          </RequireRole>
+        }
+      />
+      <Route
         path={ROUTES.employeeDashboard}
         element={
           <RequireRole roles={EMPLOYEE_ONLY_ROLES}>
             <EmployeeDashboard />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeMySchedule}
+        element={
+          <RequireRole roles={EMPLOYEE_ONLY_ROLES}>
+            <EmployeeMySchedule />
           </RequireRole>
         }
       />

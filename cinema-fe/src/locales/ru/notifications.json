@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "Новый фильм: {{name}}",
-    "cinemaPending": "Зарегистрирован новый филиал, ожидает одобрения: {{name}}",
-    "cinemaApproved": "Филиал «{{name}}» одобрен.",
-    "cinemaBlocked": "Филиал «{{name}}» заблокирован.",
+    "branchActivated": "Филиал «{{name}}» активирован.",
+    "branchDisabled": "Филиал «{{name}}» деактивирован.",
+    "branchMaintenance": "Филиал «{{name}}» переведён на обслуживание.",
     "newBooking": "Новое бронирование: +{{amount}}đ"
   },
   "toastContainer": {

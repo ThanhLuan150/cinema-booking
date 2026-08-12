@@ -54,10 +54,12 @@
       "reviews": "Reviews",
       "rooms": "Rooms",
       "employees": "Employees",
+      "shifts": "Shifts",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "My Schedule"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

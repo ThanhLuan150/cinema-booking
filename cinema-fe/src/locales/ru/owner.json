@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "Мой филиал",
     "manageRooms": "Управление залами",
-    "statusLabels": {
-      "0": "Ожидает одобрения",
-      "1": "Одобрено",
-      "2": "Заблокировано"
+    "status": {
+      "active": "Активен",
+      "inactive": "Неактивен",
+      "maintenance": "На обслуживании"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "Введите значение от 1 до 100 для процента или больше 0 для фиксированной суммы.",
       "minOrderValueRequired": "Пожалуйста, введите минимальную сумму заказа.",
       "minOrderValueInvalid": "Минимальная сумма заказа не может быть отрицательной."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "Смены",
+    "addButton": "Добавить смену +",
+    "addTitle": "Добавить смену",
+    "editTitle": "Изменить смену",
+    "manageAssignments": "Управление назначениями",
+    "branchLabel": "Филиал",
+    "branchPlaceholder": "Выберите филиал",
+    "nameLabel": "Название смены",
+    "startTimeLabel": "Время начала",
+    "endTimeLabel": "Время окончания",
+    "submit": "Добавить",
+    "saveButton": "Сохранить",
+    "createSuccess": "Смена добавлена.",
+    "updateSuccess": "Смена обновлена.",
+    "deactivateConfirm": "Деактивировать эту смену?",
+    "deactivateSuccess": "Смена деактивирована.",
+    "activateSuccess": "Смена активирована.",
+    "deleteConfirm": "Удалить эту смену?",
+    "deleteSuccess": "Смена удалена.",
+    "statusActive": "Активна",
+    "statusInactive": "Неактивна",
+    "activate": "Активировать",
+    "deactivate": "Деактивировать",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "headers": {
+      "id": "ID",
+      "name": "Название смены",
+      "time": "Время",
+      "status": "Статус",
+      "actions": "Действия"
+    },
+    "validation": {
+      "branchRequired": "Пожалуйста, выберите филиал.",
+      "nameRequired": "Пожалуйста, введите название смены.",
+      "startTimeRequired": "Пожалуйста, введите время начала.",
+      "endTimeRequired": "Пожалуйста, введите время окончания."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "Назначения на смены",
+    "branchPlaceholder": "Выберите филиал",
+    "assignButton": "Назначить смену +",
+    "assignTitle": "Назначить смену",
+    "employeeLabel": "Сотрудник",
+    "employeePlaceholder": "Выберите сотрудника",
+    "shiftLabel": "Смена",
+    "shiftPlaceholder": "Выберите смену",
+    "dateLabel": "Дата",
+    "submit": "Назначить",
+    "createSuccess": "Смена назначена.",
+    "cancelConfirm": "Отменить это назначение на смену?",
+    "cancelSuccess": "Назначение отменено.",
+    "cancel": "Отменить",
+    "deleteConfirm": "Удалить это назначение на смену?",
+    "deleteSuccess": "Назначение удалено.",
+    "delete": "Удалить",
+    "statusActive": "Активно",
+    "statusCancelled": "Отменено",
+    "filters": {
+      "employeeLabel": "Сотрудник",
+      "allEmployees": "Все сотрудники",
+      "dateLabel": "Дата",
+      "statusLabel": "Статус",
+      "allStatuses": "Все статусы"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "Сотрудник",
+      "shift": "Смена",
+      "date": "Дата",
+      "time": "Время",
+      "status": "Статус",
+      "actions": "Действия"
+    },
+    "validation": {
+      "employeeRequired": "Пожалуйста, выберите сотрудника.",
+      "shiftRequired": "Пожалуйста, выберите смену.",
+      "dateRequired": "Пожалуйста, выберите дату."
     }
   }
 }

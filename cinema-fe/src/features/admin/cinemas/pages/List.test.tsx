@@ -26,13 +26,15 @@ vi.mock('../hooks/useAdminCinemas', () => ({
   useAdminCinemas: (...args: unknown[]) => useAdminCinemasMock(...args),
 }));
 
-const approveMutate = vi.fn();
-const blockMutate = vi.fn();
+const activateMutate = vi.fn();
+const disableMutate = vi.fn();
+const maintenanceMutate = vi.fn();
 const deleteMutate = vi.fn();
 const createBranchAdminMutate = vi.fn();
 vi.mock('../hooks/useCinemaModeration', () => ({
-  useApproveCinema: () => ({ mutateAsync: approveMutate }),
-  useBlockCinema: () => ({ mutateAsync: blockMutate }),
+  useActivateCinema: () => ({ mutateAsync: activateMutate }),
+  useDisableCinema: () => ({ mutateAsync: disableMutate }),
+  useSetCinemaMaintenance: () => ({ mutateAsync: maintenanceMutate }),
   useDeleteCinema: () => ({ mutateAsync: deleteMutate }),
   useCreateBranchAdmin: () => ({ mutateAsync: createBranchAdminMutate, isPending: false }),
 }));
@@ -59,41 +61,53 @@ function renderPage() {
 describe('Admin Cinemas List', () => {
   beforeEach(() => {
     useAdminCinemasMock.mockReset();
-    approveMutate.mockReset();
-    blockMutate.mockReset();
+    activateMutate.mockReset();
+    disableMutate.mockReset();
+    maintenanceMutate.mockReset();
     deleteMutate.mockReset();
     createBranchAdminMutate.mockReset();
     confirmDialogMock.mockReset();
   });
 
-  it('renders a pending cinema with approve/block/delete actions', () => {
+  it('renders an inactive branch with activate/disable/maintenance/delete actions', () => {
     useAdminCinemasMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 0 }], totalPages: 1 },
+      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 'INACTIVE' }], totalPages: 1 },
     });
     renderPage();
     expect(screen.getByText('Cinema A')).toBeInTheDocument();
-    expect(screen.getByText('cinemas.approveButton')).toBeInTheDocument();
+    expect(screen.getByText('cinemas.activateButton')).toBeInTheDocument();
   });
 
-  it('approves a cinema', async () => {
+  it('activates a branch', async () => {
     useAdminCinemasMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 0 }], totalPages: 1 },
+      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 'INACTIVE' }], totalPages: 1 },
     });
-    approveMutate.mockResolvedValue({});
+    activateMutate.mockResolvedValue({});
     renderPage();
-    fireEvent.click(screen.getByText('cinemas.approveButton'));
-    await vi.waitFor(() => expect(approveMutate).toHaveBeenCalledWith(1));
+    fireEvent.click(screen.getByText('cinemas.activateButton'));
+    await vi.waitFor(() => expect(activateMutate).toHaveBeenCalledWith(1));
   });
 
-  it('blocks a cinema after confirming', async () => {
+  it('disables a branch after confirming', async () => {
     useAdminCinemasMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 1 }], totalPages: 1 },
+      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 'ACTIVE' }], totalPages: 1 },
     });
     confirmDialogMock.mockResolvedValue(true);
-    blockMutate.mockResolvedValue({});
+    disableMutate.mockResolvedValue({});
     renderPage();
-    fireEvent.click(screen.getByText('cinemas.blockButton'));
-    await vi.waitFor(() => expect(blockMutate).toHaveBeenCalledWith(1));
+    fireEvent.click(screen.getByText('cinemas.disableButton'));
+    await vi.waitFor(() => expect(disableMutate).toHaveBeenCalledWith(1));
+  });
+
+  it('sets a branch to maintenance after confirming', async () => {
+    useAdminCinemasMock.mockReturnValue({
+      data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42, address: 'Addr', city: 'HN', status: 'ACTIVE' }], totalPages: 1 },
+    });
+    confirmDialogMock.mockResolvedValue(true);
+    maintenanceMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('cinemas.maintenanceButton'));
+    await vi.waitFor(() => expect(maintenanceMutate).toHaveBeenCalledWith(1));
   });
 
   it('opens the add-branch-admin modal from the add button', () => {

@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "สาขาของฉัน",
     "manageRooms": "จัดการห้องฉาย",
-    "statusLabels": {
-      "0": "รอการอนุมัติ",
-      "1": "อนุมัติแล้ว",
-      "2": "ถูกระงับ"
+    "status": {
+      "active": "ใช้งานอยู่",
+      "inactive": "ปิดใช้งาน",
+      "maintenance": "อยู่ระหว่างปรับปรุง"
     },
     "headers": {
       "id": "รหัส",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "กรอกค่าส่วนลดระหว่าง 1-100 สำหรับเปอร์เซ็นต์ หรือมากกว่า 0 สำหรับจำนวนคงที่",
       "minOrderValueRequired": "กรุณากรอกมูลค่าการสั่งซื้อขั้นต่ำ",
       "minOrderValueInvalid": "มูลค่าการสั่งซื้อขั้นต่ำต้องไม่ติดลบ"
+    }
+  },
+  "shifts": {
+    "breadcrumb": "กะทำงาน",
+    "addButton": "เพิ่มกะทำงาน +",
+    "addTitle": "เพิ่มกะทำงาน",
+    "editTitle": "แก้ไขกะทำงาน",
+    "manageAssignments": "จัดการการมอบหมายกะ",
+    "branchLabel": "สาขา",
+    "branchPlaceholder": "เลือกสาขา",
+    "nameLabel": "ชื่อกะทำงาน",
+    "startTimeLabel": "เวลาเริ่ม",
+    "endTimeLabel": "เวลาสิ้นสุด",
+    "submit": "เพิ่ม",
+    "saveButton": "บันทึก",
+    "createSuccess": "เพิ่มกะทำงานเรียบร้อยแล้ว",
+    "updateSuccess": "อัปเดตกะทำงานเรียบร้อยแล้ว",
+    "deactivateConfirm": "ต้องการปิดใช้งานกะนี้หรือไม่?",
+    "deactivateSuccess": "ปิดใช้งานกะทำงานแล้ว",
+    "activateSuccess": "เปิดใช้งานกะทำงานแล้ว",
+    "deleteConfirm": "ต้องการลบกะทำงานนี้หรือไม่?",
+    "deleteSuccess": "ลบกะทำงานเรียบร้อยแล้ว",
+    "statusActive": "ใช้งานอยู่",
+    "statusInactive": "ปิดใช้งาน",
+    "activate": "เปิดใช้งาน",
+    "deactivate": "ปิดใช้งาน",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "headers": {
+      "id": "รหัส",
+      "name": "ชื่อกะทำงาน",
+      "time": "เวลา",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    },
+    "validation": {
+      "branchRequired": "กรุณาเลือกสาขา",
+      "nameRequired": "กรุณากรอกชื่อกะทำงาน",
+      "startTimeRequired": "กรุณากรอกเวลาเริ่ม",
+      "endTimeRequired": "กรุณากรอกเวลาสิ้นสุด"
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "การมอบหมายกะทำงาน",
+    "branchPlaceholder": "เลือกสาขา",
+    "assignButton": "มอบหมายกะ +",
+    "assignTitle": "มอบหมายกะ",
+    "employeeLabel": "พนักงาน",
+    "employeePlaceholder": "เลือกพนักงาน",
+    "shiftLabel": "กะทำงาน",
+    "shiftPlaceholder": "เลือกกะทำงาน",
+    "dateLabel": "วันที่",
+    "submit": "มอบหมาย",
+    "createSuccess": "มอบหมายกะทำงานเรียบร้อยแล้ว",
+    "cancelConfirm": "ต้องการยกเลิกการมอบหมายกะนี้หรือไม่?",
+    "cancelSuccess": "ยกเลิกการมอบหมายแล้ว",
+    "cancel": "ยกเลิก",
+    "deleteConfirm": "ต้องการลบการมอบหมายกะนี้หรือไม่?",
+    "deleteSuccess": "ลบการมอบหมายเรียบร้อยแล้ว",
+    "delete": "ลบ",
+    "statusActive": "ใช้งานอยู่",
+    "statusCancelled": "ยกเลิกแล้ว",
+    "filters": {
+      "employeeLabel": "พนักงาน",
+      "allEmployees": "พนักงานทั้งหมด",
+      "dateLabel": "วันที่",
+      "statusLabel": "สถานะ",
+      "allStatuses": "สถานะทั้งหมด"
+    },
+    "headers": {
+      "id": "รหัส",
+      "employee": "พนักงาน",
+      "shift": "กะทำงาน",
+      "date": "วันที่",
+      "time": "เวลา",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    },
+    "validation": {
+      "employeeRequired": "กรุณาเลือกพนักงาน",
+      "shiftRequired": "กรุณาเลือกกะทำงาน",
+      "dateRequired": "กรุณาเลือกวันที่"
     }
   }
 }

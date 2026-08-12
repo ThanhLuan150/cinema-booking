@@ -2,7 +2,6 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { RealtimeState } from './types/realtime.types';
 
 const initialState: RealtimeState = {
-  cinemaPendingVersion: 0,
   cinemaStatusVersion: 0,
   ownerBookingVersion: 0,
 };

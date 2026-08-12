@@ -54,10 +54,12 @@
       "reviews": "Đánh giá",
       "rooms": "Phòng chiếu",
       "employees": "Nhân viên",
+      "shifts": "Ca làm việc",
       "actors": "Diễn viên",
       "directors": "Đạo diễn",
       "counterSale": "Bán vé tại quầy",
-      "checkIn": "Soát vé"
+      "checkIn": "Soát vé",
+      "mySchedule": "Lịch làm việc của tôi"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

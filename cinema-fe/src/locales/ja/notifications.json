@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "新しい映画: {{name}}",
-    "cinemaPending": "新しい支店が登録されました。承認待ちです: {{name}}",
-    "cinemaApproved": "支店「{{name}}」が承認されました。",
-    "cinemaBlocked": "支店「{{name}}」がブロックされました。",
+    "branchActivated": "支店「{{name}}」が有効化されました。",
+    "branchDisabled": "支店「{{name}}」が無効化されました。",
+    "branchMaintenance": "支店「{{name}}」がメンテナンスモードになりました。",
     "newBooking": "新しい予約がありました: +{{amount}}đ"
   },
   "toastContainer": {

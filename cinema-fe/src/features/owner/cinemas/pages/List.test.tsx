@@ -12,8 +12,7 @@ vi.mock('react-i18next', async (importOriginal) => {
   return {
     ...actual,
     useTranslation: () => ({
-      t: (key: string, opts?: any) =>
-        key === 'cinemas.statusLabels' && opts?.returnObjects ? ['Pending', 'Approved', 'Blocked'] : key,
+      t: (key: string) => (key === 'cinemas.status.active' ? 'Active' : key),
       i18n: { resolvedLanguage: 'en', language: 'en', changeLanguage: vi.fn() },
     }),
   };
@@ -50,11 +49,11 @@ describe('Owner Cinemas List', () => {
 
   it('renders the owner cinemas with their status', () => {
     useMyCinemasMock.mockReturnValue({
-      data: { data: [{ id: 1, name: 'Cinema A', address: 'Addr', city: 'HN', status: 0 }] },
+      data: { data: [{ id: 1, name: 'Cinema A', address: 'Addr', city: 'HN', status: 'ACTIVE' }] },
     });
     renderPage();
     expect(screen.getByText('Cinema A')).toBeInTheDocument();
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    expect(screen.getByText('Active')).toBeInTheDocument();
     expect(screen.getByText('cinemas.manageRooms')).toBeInTheDocument();
   });
 });

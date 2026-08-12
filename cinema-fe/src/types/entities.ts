@@ -60,7 +60,7 @@ export interface Cinema {
   address: string;
   city: string;
   images: string[];
-  status: number; // 0 = pending, 1 = approved, 2 = blocked
+  status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
   owner_name?: string;
   owner_phone?: string;
   owner_avatar?: string;
@@ -137,6 +137,29 @@ export interface Employee {
   email?: string;
   name?: string;
   phone?: string;
+}
+
+export interface Shift {
+  id: number;
+  branch_id: number;
+  name: string;
+  start_time: string; // HH:mm
+  end_time: string; // HH:mm
+  status: 'ACTIVE' | 'INACTIVE';
+}
+
+export interface ShiftAssignment {
+  id: number;
+  employee_id: number;
+  shift_id: number;
+  branch_id: number;
+  date: string; // YYYY-MM-DD
+  start_at: string; // ISO datetime
+  end_at: string; // ISO datetime
+  status: 'ACTIVE' | 'CANCELLED';
+  // Only populated by GET /api/shiftAssignment/me — employees don't hold shift.read to look
+  // this up themselves, so the backend nests a read-only summary onto each of their own rows.
+  shift?: { name: string; start_time: string; end_time: string };
 }
 
 export interface Actor {

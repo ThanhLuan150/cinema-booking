@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "新片上线：{{name}}",
-    "cinemaPending": "新分店已注册，等待审核：{{name}}",
-    "cinemaApproved": "分店“{{name}}”已通过审核。",
-    "cinemaBlocked": "分店“{{name}}”已被封禁。",
+    "branchActivated": "分店“{{name}}”已启用。",
+    "branchDisabled": "分店“{{name}}”已停用。",
+    "branchMaintenance": "分店“{{name}}”已设为维护状态。",
     "newBooking": "收到新订单：+{{amount}}元"
   },
   "toastContainer": {

@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "मेरी शाखा",
     "manageRooms": "स्क्रीन प्रबंधित करें",
-    "statusLabels": {
-      "0": "स्वीकृति लंबित",
-      "1": "स्वीकृत",
-      "2": "अवरुद्ध"
+    "status": {
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "maintenance": "रखरखाव में"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "प्रतिशत के लिए 1 से 100 के बीच और निश्चित राशि के लिए 0 से अधिक मान दर्ज करें।",
       "minOrderValueRequired": "कृपया न्यूनतम ऑर्डर मूल्य दर्ज करें।",
       "minOrderValueInvalid": "न्यूनतम ऑर्डर मूल्य ऋणात्मक नहीं हो सकता।"
+    }
+  },
+  "shifts": {
+    "breadcrumb": "शिफ्ट",
+    "addButton": "शिफ्ट जोड़ें +",
+    "addTitle": "शिफ्ट जोड़ें",
+    "editTitle": "शिफ्ट संपादित करें",
+    "manageAssignments": "असाइनमेंट प्रबंधित करें",
+    "branchLabel": "शाखा",
+    "branchPlaceholder": "शाखा चुनें",
+    "nameLabel": "शिफ्ट का नाम",
+    "startTimeLabel": "प्रारंभ समय",
+    "endTimeLabel": "समाप्ति समय",
+    "submit": "जोड़ें",
+    "saveButton": "सहेजें",
+    "createSuccess": "शिफ्ट जोड़ी गई।",
+    "updateSuccess": "शिफ्ट अपडेट की गई।",
+    "deactivateConfirm": "क्या इस शिफ्ट को निष्क्रिय करना है?",
+    "deactivateSuccess": "शिफ्ट निष्क्रिय कर दी गई।",
+    "activateSuccess": "शिफ्ट सक्रिय कर दी गई।",
+    "deleteConfirm": "क्या इस शिफ्ट को हटाना है?",
+    "deleteSuccess": "शिफ्ट हटा दी गई।",
+    "statusActive": "सक्रिय",
+    "statusInactive": "निष्क्रिय",
+    "activate": "सक्रिय करें",
+    "deactivate": "निष्क्रिय करें",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "headers": {
+      "id": "ID",
+      "name": "शिफ्ट का नाम",
+      "time": "समय",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    },
+    "validation": {
+      "branchRequired": "कृपया एक शाखा चुनें।",
+      "nameRequired": "कृपया शिफ्ट का नाम दर्ज करें।",
+      "startTimeRequired": "कृपया प्रारंभ समय दर्ज करें।",
+      "endTimeRequired": "कृपया समाप्ति समय दर्ज करें।"
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "शिफ्ट असाइनमेंट",
+    "branchPlaceholder": "शाखा चुनें",
+    "assignButton": "शिफ्ट असाइन करें +",
+    "assignTitle": "शिफ्ट असाइन करें",
+    "employeeLabel": "कर्मचारी",
+    "employeePlaceholder": "कर्मचारी चुनें",
+    "shiftLabel": "शिफ्ट",
+    "shiftPlaceholder": "शिफ्ट चुनें",
+    "dateLabel": "तारीख",
+    "submit": "असाइन करें",
+    "createSuccess": "शिफ्ट असाइन की गई।",
+    "cancelConfirm": "क्या इस शिफ्ट असाइनमेंट को रद्द करना है?",
+    "cancelSuccess": "असाइनमेंट रद्द कर दिया गया।",
+    "cancel": "रद्द करें",
+    "deleteConfirm": "क्या इस शिफ्ट असाइनमेंट को हटाना है?",
+    "deleteSuccess": "असाइनमेंट हटा दिया गया।",
+    "delete": "हटाएं",
+    "statusActive": "सक्रिय",
+    "statusCancelled": "रद्द",
+    "filters": {
+      "employeeLabel": "कर्मचारी",
+      "allEmployees": "सभी कर्मचारी",
+      "dateLabel": "तारीख",
+      "statusLabel": "स्थिति",
+      "allStatuses": "सभी स्थितियां"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "कर्मचारी",
+      "shift": "शिफ्ट",
+      "date": "तारीख",
+      "time": "समय",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    },
+    "validation": {
+      "employeeRequired": "कृपया एक कर्मचारी चुनें।",
+      "shiftRequired": "कृपया एक शिफ्ट चुनें।",
+      "dateRequired": "कृपया एक तारीख चुनें।"
     }
   }
 }

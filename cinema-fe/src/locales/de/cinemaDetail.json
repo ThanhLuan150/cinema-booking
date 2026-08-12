@@ -3,9 +3,9 @@
     "notAvailable": "Nicht verfügbar",
     "addressUpdating": "Adresse noch nicht verfügbar",
     "favoriteCount": "{{count}} Favoriten",
-    "statusPending": "Genehmigung ausstehend",
     "statusActive": "Aktiv",
     "statusPaused": "Vorübergehend geschlossen",
+    "statusMaintenance": "In Wartung",
     "viewShowtimes": "Vorstellungen ansehen",
     "breadcrumbCinemas": "Filialen"
   },

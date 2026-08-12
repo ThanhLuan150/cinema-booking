@@ -1,5 +1,5 @@
 import apiClient from 'services/apiClient';
-import type { Cinema, Combo, Employee, Position, Room, Seat, Voucher } from '@/types/entities';
+import type { Cinema, Combo, Employee, Position, Room, Seat, Shift, ShiftAssignment, Voucher } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
@@ -85,3 +85,35 @@ export const deactivateEmployee = (id: number | string) => apiClient.delete(`/em
 export const resetEmployeePassword = (id: number | string) => apiClient.post(`/employee/${id}/reset-password`);
 
 export const getPositions = () => apiClient.get<Position[]>('/position').then((res) => res.data);
+
+export const getShifts = (branchId: number | string | undefined, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Shift>>('/shift', { params: { branchId, ...params } }).then((res) => res.data);
+
+export const createShift = (payload: { branch_id: number; name: string; start_time: string; end_time: string }) =>
+  apiClient.post('/shift', payload);
+
+export const updateShift = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/shift/${id}`, payload);
+
+export const deleteShift = (id: number | string) => apiClient.delete(`/shift/${id}`);
+
+export const getShiftAssignments = (
+  branchId: number | string | undefined,
+  params?: PaginationParams & { employeeId?: number | string; date?: string; status?: string },
+) =>
+  apiClient
+    .get<PaginatedResponse<ShiftAssignment>>('/shiftAssignment', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export const createShiftAssignment = (payload: {
+  employee_id: number;
+  shift_id: number;
+  date: string;
+  start_at?: string;
+  end_at?: string;
+}) => apiClient.post('/shiftAssignment', payload);
+
+export const updateShiftAssignment = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/shiftAssignment/${id}`, payload);
+
+export const deleteShiftAssignment = (id: number | string) => apiClient.delete(`/shiftAssignment/${id}`);

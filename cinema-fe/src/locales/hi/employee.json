@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "मेरा शेड्यूल",
+    "emptyTitle": "आपके लिए कोई शिफ्ट निर्धारित नहीं है",
+    "shiftLabel": "शिफ्ट #{{id}}",
+    "statusActive": "सक्रिय",
+    "statusCancelled": "रद्द",
+    "headers": {
+      "shift": "शिफ्ट",
+      "date": "तारीख",
+      "time": "समय",
+      "status": "स्थिति"
+    }
   }
 }

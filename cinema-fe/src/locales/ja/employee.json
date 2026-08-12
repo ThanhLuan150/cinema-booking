@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "マイスケジュール",
+    "emptyTitle": "予定されているシフトはありません",
+    "shiftLabel": "シフト #{{id}}",
+    "statusActive": "有効",
+    "statusCancelled": "キャンセル済み",
+    "headers": {
+      "shift": "シフト",
+      "date": "日付",
+      "time": "時間",
+      "status": "状態"
+    }
   }
 }

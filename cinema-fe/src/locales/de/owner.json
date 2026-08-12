@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "Meine Filiale",
     "manageRooms": "Säle verwalten",
-    "statusLabels": {
-      "0": "Genehmigung ausstehend",
-      "1": "Genehmigt",
-      "2": "Gesperrt"
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "maintenance": "In Wartung"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "Geben Sie für einen Prozentsatz einen Wert zwischen 1 und 100 ein, für einen Festbetrag einen Wert größer als 0.",
       "minOrderValueRequired": "Bitte geben Sie einen Mindestbestellwert ein.",
       "minOrderValueInvalid": "Der Mindestbestellwert darf nicht negativ sein."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "Schichten",
+    "addButton": "Schicht hinzufügen +",
+    "addTitle": "Schicht hinzufügen",
+    "editTitle": "Schicht bearbeiten",
+    "manageAssignments": "Einsätze verwalten",
+    "branchLabel": "Filiale",
+    "branchPlaceholder": "Filiale auswählen",
+    "nameLabel": "Schichtname",
+    "startTimeLabel": "Startzeit",
+    "endTimeLabel": "Endzeit",
+    "submit": "Hinzufügen",
+    "saveButton": "Speichern",
+    "createSuccess": "Schicht hinzugefügt.",
+    "updateSuccess": "Schicht aktualisiert.",
+    "deactivateConfirm": "Diese Schicht deaktivieren?",
+    "deactivateSuccess": "Schicht deaktiviert.",
+    "activateSuccess": "Schicht aktiviert.",
+    "deleteConfirm": "Diese Schicht löschen?",
+    "deleteSuccess": "Schicht gelöscht.",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "headers": {
+      "id": "ID",
+      "name": "Schichtname",
+      "time": "Zeit",
+      "status": "Status",
+      "actions": "Aktionen"
+    },
+    "validation": {
+      "branchRequired": "Bitte wählen Sie eine Filiale aus.",
+      "nameRequired": "Bitte geben Sie einen Schichtnamen ein.",
+      "startTimeRequired": "Bitte geben Sie eine Startzeit ein.",
+      "endTimeRequired": "Bitte geben Sie eine Endzeit ein."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "Schichteinsätze",
+    "branchPlaceholder": "Filiale auswählen",
+    "assignButton": "Schicht zuweisen +",
+    "assignTitle": "Schicht zuweisen",
+    "employeeLabel": "Mitarbeiter",
+    "employeePlaceholder": "Mitarbeiter auswählen",
+    "shiftLabel": "Schicht",
+    "shiftPlaceholder": "Schicht auswählen",
+    "dateLabel": "Datum",
+    "submit": "Zuweisen",
+    "createSuccess": "Schicht zugewiesen.",
+    "cancelConfirm": "Diesen Schichteinsatz stornieren?",
+    "cancelSuccess": "Einsatz storniert.",
+    "cancel": "Stornieren",
+    "deleteConfirm": "Diesen Schichteinsatz löschen?",
+    "deleteSuccess": "Einsatz gelöscht.",
+    "delete": "Löschen",
+    "statusActive": "Aktiv",
+    "statusCancelled": "Storniert",
+    "filters": {
+      "employeeLabel": "Mitarbeiter",
+      "allEmployees": "Alle Mitarbeiter",
+      "dateLabel": "Datum",
+      "statusLabel": "Status",
+      "allStatuses": "Alle Status"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "Mitarbeiter",
+      "shift": "Schicht",
+      "date": "Datum",
+      "time": "Zeit",
+      "status": "Status",
+      "actions": "Aktionen"
+    },
+    "validation": {
+      "employeeRequired": "Bitte wählen Sie einen Mitarbeiter aus.",
+      "shiftRequired": "Bitte wählen Sie eine Schicht aus.",
+      "dateRequired": "Bitte wählen Sie ein Datum aus."
     }
   }
 }

@@ -244,17 +244,20 @@
       "Действие"
     ],
     "status": {
-      "pending": "Ожидает одобрения",
-      "approved": "Одобрено",
-      "blocked": "Заблокировано"
+      "active": "Активен",
+      "inactive": "Неактивен",
+      "maintenance": "На обслуживании"
     },
-    "approveButton": "Одобрить",
-    "blockButton": "Заблокировать",
+    "activateButton": "Активировать",
+    "disableButton": "Деактивировать",
+    "maintenanceButton": "Обслуживание",
     "deleteButton": "Удалить",
-    "blockConfirm": "Заблокировать этот филиал?",
+    "disableConfirm": "Деактивировать этот филиал?",
+    "maintenanceConfirm": "Перевести этот филиал на обслуживание?",
     "deleteConfirm": "Удалить этот филиал? Это действие нельзя отменить.",
-    "approveSuccess": "Филиал одобрен.",
-    "blockSuccess": "Филиал заблокирован.",
+    "activateSuccess": "Филиал активирован.",
+    "disableSuccess": "Филиал деактивирован.",
+    "maintenanceSuccess": "Филиал переведён на обслуживание.",
     "deleteSuccess": "Филиал удалён.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

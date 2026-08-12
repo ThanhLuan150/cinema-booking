@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "Chi nhánh của tôi",
     "manageRooms": "Quản lý phòng",
-    "statusLabels": {
-      "0": "Chờ duyệt",
-      "1": "Đã duyệt",
-      "2": "Bị khóa"
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động",
+      "maintenance": "Đang bảo trì"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "Nhập giá trị giảm từ 1-100 cho loại phần trăm, hoặc lớn hơn 0 cho loại giảm cố định.",
       "minOrderValueRequired": "Vui lòng nhập giá trị đơn hàng tối thiểu.",
       "minOrderValueInvalid": "Giá trị đơn hàng tối thiểu không được âm."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "Ca làm việc",
+    "addButton": "Thêm ca làm việc +",
+    "addTitle": "Thêm ca làm việc",
+    "editTitle": "Sửa ca làm việc",
+    "manageAssignments": "Quản lý phân ca",
+    "branchLabel": "Chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "nameLabel": "Tên ca làm việc",
+    "startTimeLabel": "Giờ bắt đầu",
+    "endTimeLabel": "Giờ kết thúc",
+    "submit": "Thêm",
+    "saveButton": "Lưu",
+    "createSuccess": "Đã thêm ca làm việc.",
+    "updateSuccess": "Đã cập nhật ca làm việc.",
+    "deactivateConfirm": "Vô hiệu hóa ca làm việc này?",
+    "deactivateSuccess": "Đã vô hiệu hóa ca làm việc.",
+    "activateSuccess": "Đã kích hoạt ca làm việc.",
+    "deleteConfirm": "Xóa ca làm việc này?",
+    "deleteSuccess": "Đã xóa ca làm việc.",
+    "statusActive": "Đang hoạt động",
+    "statusInactive": "Ngừng hoạt động",
+    "activate": "Kích hoạt",
+    "deactivate": "Vô hiệu hóa",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "headers": {
+      "id": "ID",
+      "name": "Tên ca làm việc",
+      "time": "Thời gian",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "branchRequired": "Vui lòng chọn chi nhánh.",
+      "nameRequired": "Vui lòng nhập tên ca làm việc.",
+      "startTimeRequired": "Vui lòng nhập giờ bắt đầu.",
+      "endTimeRequired": "Vui lòng nhập giờ kết thúc."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "Phân ca làm việc",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "assignButton": "Phân ca +",
+    "assignTitle": "Phân ca",
+    "employeeLabel": "Nhân viên",
+    "employeePlaceholder": "Chọn nhân viên",
+    "shiftLabel": "Ca làm việc",
+    "shiftPlaceholder": "Chọn ca làm việc",
+    "dateLabel": "Ngày",
+    "submit": "Phân ca",
+    "createSuccess": "Đã phân ca làm việc.",
+    "cancelConfirm": "Hủy phân ca này?",
+    "cancelSuccess": "Đã hủy phân ca.",
+    "cancel": "Hủy",
+    "deleteConfirm": "Xóa phân ca này?",
+    "deleteSuccess": "Đã xóa phân ca.",
+    "delete": "Xóa",
+    "statusActive": "Đang hoạt động",
+    "statusCancelled": "Đã hủy",
+    "filters": {
+      "employeeLabel": "Nhân viên",
+      "allEmployees": "Tất cả nhân viên",
+      "dateLabel": "Ngày",
+      "statusLabel": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "Nhân viên",
+      "shift": "Ca làm việc",
+      "date": "Ngày",
+      "time": "Thời gian",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "employeeRequired": "Vui lòng chọn nhân viên.",
+      "shiftRequired": "Vui lòng chọn ca làm việc.",
+      "dateRequired": "Vui lòng chọn ngày."
     }
   }
 }

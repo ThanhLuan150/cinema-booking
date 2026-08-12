@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "Gutschein ist abgelaufen",
   "VOUCHER_USES_EXHAUSTED": "Gutschein hat das Nutzungslimit erreicht",
   "VOUCHER_MIN_ORDER_NOT_MET": "Mindestbestellwert von {{minOrderValue}} erforderlich, um diesen Code anzuwenden",
+  "INVALID_TIME_FORMAT": "Die Uhrzeit muss im Format HH:mm angegeben werden",
+  "INVALID_DATE_FORMAT": "Das Datum muss im Format JJJJ-MM-TT angegeben werden",
+  "SHIFT_HAS_ASSIGNMENTS": "Diese Schicht hat Einsätze und kann nicht gelöscht werden",
+  "EMPLOYEE_NOT_ACTIVE": "Dieser Mitarbeiter ist nicht aktiv",
+  "SHIFT_NOT_ACTIVE": "Diese Schicht ist nicht aktiv",
+  "BRANCH_MISMATCH": "Mitarbeiter und Schicht müssen zur selben Filiale gehören",
+  "DUPLICATE_ASSIGNMENT": "Dieser Mitarbeiter ist dieser Schicht an diesem Tag bereits zugewiesen",
   "GENERIC": "Etwas ist schiefgelaufen, bitte versuchen Sie es erneut."
 }

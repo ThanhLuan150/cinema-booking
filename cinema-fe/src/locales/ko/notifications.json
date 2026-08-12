@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "신작 영화: {{name}}",
-    "cinemaPending": "새 지점이 등록되어 승인 대기 중입니다: {{name}}",
-    "cinemaApproved": "지점 \"{{name}}\"이(가) 승인되었습니다.",
-    "cinemaBlocked": "지점 \"{{name}}\"이(가) 차단되었습니다.",
+    "branchActivated": "지점 \"{{name}}\"이(가) 활성화되었습니다.",
+    "branchDisabled": "지점 \"{{name}}\"이(가) 비활성화되었습니다.",
+    "branchMaintenance": "지점 \"{{name}}\"이(가) 점검 모드로 전환되었습니다.",
     "newBooking": "새 예매 접수: +{{amount}}đ"
   },
   "toastContainer": {

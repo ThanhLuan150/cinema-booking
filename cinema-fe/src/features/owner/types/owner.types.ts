@@ -88,3 +88,23 @@ export interface OwnerEmployeesState {
   selectedbranchId: string;
   showAddModal: boolean;
 }
+
+export interface ShiftFormValues {
+  branch_id: string;
+  name: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface ShiftAssignmentFormValues {
+  employee_id: string;
+  shift_id: string;
+  date: string;
+}
+
+export interface OwnerShiftsState {
+  selectedbranchId: string;
+  showAddModal: boolean;
+  editingShiftId: number | null;
+  showAssignModal: boolean;
+}

@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "Мой график",
+    "emptyTitle": "У вас нет запланированных смен",
+    "shiftLabel": "Смена №{{id}}",
+    "statusActive": "Активна",
+    "statusCancelled": "Отменена",
+    "headers": {
+      "shift": "Смена",
+      "date": "Дата",
+      "time": "Время",
+      "status": "Статус"
+    }
   }
 }

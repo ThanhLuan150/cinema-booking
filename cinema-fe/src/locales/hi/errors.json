@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "वाउचर की अवधि समाप्त हो चुकी है",
   "VOUCHER_USES_EXHAUSTED": "वाउचर की उपयोग सीमा पूरी हो चुकी है",
   "VOUCHER_MIN_ORDER_NOT_MET": "इस कोड को लागू करने के लिए न्यूनतम ऑर्डर {{minOrderValue}} होना चाहिए",
+  "INVALID_TIME_FORMAT": "समय HH:mm प्रारूप में होना चाहिए",
+  "INVALID_DATE_FORMAT": "तारीख YYYY-MM-DD प्रारूप में होनी चाहिए",
+  "SHIFT_HAS_ASSIGNMENTS": "इस शिफ्ट में असाइनमेंट हैं और इसे हटाया नहीं जा सकता",
+  "EMPLOYEE_NOT_ACTIVE": "यह कर्मचारी सक्रिय नहीं है",
+  "SHIFT_NOT_ACTIVE": "यह शिफ्ट सक्रिय नहीं है",
+  "BRANCH_MISMATCH": "कर्मचारी और शिफ्ट एक ही शाखा के होने चाहिए",
+  "DUPLICATE_ASSIGNMENT": "यह कर्मचारी इस तारीख को पहले से ही इस शिफ्ट में असाइन है",
   "GENERIC": "कुछ गलत हो गया, कृपया फिर से प्रयास करें।"
 }

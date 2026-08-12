@@ -143,10 +143,36 @@ describe('branch.controller getById / getAdminDetail', () => {
 });
 
 describe('branch.controller createBranchAdmin', () => {
-  it('rejects missing email, password, cinema_name, company_id or code', async () => {
+  it('rejects missing email, password, cinema_name or code', async () => {
     const res = mockRes();
     await branchController.createBranchAdmin({ body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('defaults to the well-known "Default Company" when company_id is omitted, creating it on first use', async () => {
+    const res = mockRes();
+    await branchController.createBranchAdmin(
+      { body: { email: 'a@b.com', password: 'pw', cinema_name: 'A', code: 'A' } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(201);
+    const defaultCompany = await Company.findOne({ code: 'DEFAULT' });
+    expect(defaultCompany).not.toBeNull();
+    const branch = await Branch.findOne({ code: 'A' });
+    expect(branch.company_id).toBe(defaultCompany.id);
+  });
+
+  it('reuses the existing Default Company instead of creating a second one', async () => {
+    await Company.create({ id: 5, name: 'Default Company', code: 'DEFAULT', status: 'ACTIVE' });
+    const res = mockRes();
+    await branchController.createBranchAdmin(
+      { body: { email: 'a@b.com', password: 'pw', cinema_name: 'A', code: 'A' } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(await Company.countDocuments({ code: 'DEFAULT' })).toBe(1);
+    const branch = await Branch.findOne({ code: 'A' });
+    expect(branch.company_id).toBe(5);
   });
 
   it('rejects an invalid company_id', async () => {

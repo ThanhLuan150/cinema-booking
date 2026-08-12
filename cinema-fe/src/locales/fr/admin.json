@@ -244,17 +244,20 @@
       "Action"
     ],
     "status": {
-      "pending": "En attente d'approbation",
-      "approved": "Approuvé",
-      "blocked": "Bloqué"
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "En maintenance"
     },
-    "approveButton": "Approuver",
-    "blockButton": "Bloquer",
+    "activateButton": "Activer",
+    "disableButton": "Désactiver",
+    "maintenanceButton": "Maintenance",
     "deleteButton": "Supprimer",
-    "blockConfirm": "Bloquer cette succursale ?",
+    "disableConfirm": "Désactiver cette succursale ?",
+    "maintenanceConfirm": "Mettre cette succursale en maintenance ?",
     "deleteConfirm": "Supprimer cette succursale ? Cette action est irréversible.",
-    "approveSuccess": "Succursale approuvée.",
-    "blockSuccess": "Succursale bloquée.",
+    "activateSuccess": "Succursale activée.",
+    "disableSuccess": "Succursale désactivée.",
+    "maintenanceSuccess": "Succursale mise en maintenance.",
     "deleteSuccess": "Succursale supprimée.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

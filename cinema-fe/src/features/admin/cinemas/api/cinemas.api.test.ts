@@ -20,14 +20,19 @@ describe('admin cinemas.api', () => {
     postMock.mockReset();
   });
 
-  it('approveCinema puts to /cinema/:id/approve', async () => {
-    await cinemasApi.approveCinema(1);
-    expect(putMock).toHaveBeenCalledWith('/cinema/1/approve');
+  it('activateCinema puts to /cinema/:id/activate', async () => {
+    await cinemasApi.activateCinema(1);
+    expect(putMock).toHaveBeenCalledWith('/cinema/1/activate');
   });
 
-  it('blockCinema puts to /cinema/:id/block', async () => {
-    await cinemasApi.blockCinema(1);
-    expect(putMock).toHaveBeenCalledWith('/cinema/1/block');
+  it('disableCinema puts to /cinema/:id/disable', async () => {
+    await cinemasApi.disableCinema(1);
+    expect(putMock).toHaveBeenCalledWith('/cinema/1/disable');
+  });
+
+  it('setCinemaMaintenance puts to /cinema/:id/maintenance', async () => {
+    await cinemasApi.setCinemaMaintenance(1);
+    expect(putMock).toHaveBeenCalledWith('/cinema/1/maintenance');
   });
 
   it('deleteCinema deletes /cinema/:id', async () => {
@@ -42,6 +47,7 @@ describe('admin cinemas.api', () => {
       name: 'A',
       phone: '',
       cinema_name: 'Cinema A',
+      code: 'A',
       address: '',
       city: '',
     };

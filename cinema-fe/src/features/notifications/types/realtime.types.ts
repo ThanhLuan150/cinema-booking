@@ -1,5 +1,4 @@
 export interface RealtimeState {
-  cinemaPendingVersion: number;
   cinemaStatusVersion: number;
   ownerBookingVersion: number;
 }

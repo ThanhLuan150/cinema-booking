@@ -50,6 +50,9 @@ const PERMISSIONS = [
   ['payment.create', 'payment'],
   ['booking.cancel', 'booking'],
   ['combo.sell', 'combo'], ['combo.order.view', 'combo'], ['combo.order.update', 'combo'],
+  ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
+  ['shiftAssignment.create', 'shiftAssignment'], ['shiftAssignment.read', 'shiftAssignment'],
+  ['shiftAssignment.update', 'shiftAssignment'], ['shiftAssignment.delete', 'shiftAssignment'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -73,6 +76,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'dashboard.view': 'BRANCH',
   'position.read': 'ALL',
   'payment.create': 'BRANCH',
+  'shift.create': 'BRANCH', 'shift.read': 'BRANCH', 'shift.update': 'BRANCH', 'shift.delete': 'BRANCH',
+  'shiftAssignment.create': 'BRANCH', 'shiftAssignment.read': 'BRANCH',
+  'shiftAssignment.update': 'BRANCH', 'shiftAssignment.delete': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {
@@ -81,6 +87,8 @@ const EMPLOYEE_PERMISSIONS = {
   'combo.read': 'ALL',
   'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
+  // Own work schedule only — see the Ticket 04 note against auto-restricting this per Position.
+  'shiftAssignment.read': 'OWN',
 };
 
 const CUSTOMER_PERMISSIONS = {

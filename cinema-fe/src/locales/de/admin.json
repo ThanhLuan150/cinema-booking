@@ -244,17 +244,20 @@
       "Aktion"
     ],
     "status": {
-      "pending": "Genehmigung ausstehend",
-      "approved": "Genehmigt",
-      "blocked": "Gesperrt"
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "maintenance": "In Wartung"
     },
-    "approveButton": "Genehmigen",
-    "blockButton": "Sperren",
+    "activateButton": "Aktivieren",
+    "disableButton": "Deaktivieren",
+    "maintenanceButton": "Wartung",
     "deleteButton": "Löschen",
-    "blockConfirm": "Diese Filiale sperren?",
+    "disableConfirm": "Diese Filiale deaktivieren?",
+    "maintenanceConfirm": "Diese Filiale in den Wartungsmodus versetzen?",
     "deleteConfirm": "Diese Filiale löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "approveSuccess": "Filiale genehmigt.",
-    "blockSuccess": "Filiale gesperrt.",
+    "activateSuccess": "Filiale aktiviert.",
+    "disableSuccess": "Filiale deaktiviert.",
+    "maintenanceSuccess": "Filiale in Wartung versetzt.",
     "deleteSuccess": "Filiale gelöscht.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

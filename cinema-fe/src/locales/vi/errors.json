@@ -32,5 +32,12 @@
   "INVALID_TIME_RANGE": "Giờ bắt đầu phải trước giờ kết thúc",
   "SCHEDULE_CANCELLED": "Suất chiếu này đã bị hủy",
   "ALREADY_CANCELLED": "Suất chiếu này đã được hủy trước đó",
+  "INVALID_TIME_FORMAT": "Giờ phải theo định dạng HH:mm",
+  "INVALID_DATE_FORMAT": "Ngày phải theo định dạng YYYY-MM-DD",
+  "SHIFT_HAS_ASSIGNMENTS": "Ca làm việc này đang có phân công nên không thể xóa",
+  "EMPLOYEE_NOT_ACTIVE": "Nhân viên này không hoạt động",
+  "SHIFT_NOT_ACTIVE": "Ca làm việc này không hoạt động",
+  "BRANCH_MISMATCH": "Nhân viên và ca làm việc phải thuộc cùng một chi nhánh",
+  "DUPLICATE_ASSIGNMENT": "Nhân viên này đã được phân vào ca làm việc này trong ngày này",
   "GENERIC": "Đã có lỗi xảy ra, vui lòng thử lại."
 }

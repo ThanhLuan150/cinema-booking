@@ -78,6 +78,10 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.checkIn')}
                 </NavLink>
               )}
+              <NavLink to={ROUTES.employeeMySchedule} className={navLinkClass}>
+                <ion-icon name="calendar" />
+                {t('adminLayout.nav.mySchedule')}
+              </NavLink>
             </>
           ) : (
             <>
@@ -118,6 +122,10 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
               <NavLink to={ROUTES.ownerEmployees} className={navLinkClass}>
                 <ion-icon name="people" />
                 {t('adminLayout.nav.employees')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerShifts} className={navLinkClass}>
+                <ion-icon name="time" />
+                {t('adminLayout.nav.shifts')}
               </NavLink>
               {isAdmin && (
                 <>

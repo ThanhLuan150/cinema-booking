@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "我的排班",
+    "emptyTitle": "您目前没有排班安排",
+    "shiftLabel": "班次 #{{id}}",
+    "statusActive": "有效",
+    "statusCancelled": "已取消",
+    "headers": {
+      "shift": "班次",
+      "date": "日期",
+      "time": "时间",
+      "status": "状态"
+    }
   }
 }
