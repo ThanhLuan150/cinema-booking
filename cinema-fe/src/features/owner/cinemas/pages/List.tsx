@@ -12,7 +12,6 @@ import { ROUTES } from '@/constants/routes';
 function CinemaList() {
   const { t } = useTranslation('owner');
   const queryClient = useQueryClient();
-  const STATUS_LABEL = t('cinemas.statusLabels', { returnObjects: true }) as unknown as string[];
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = cinemasPage?.data ?? [];
 
@@ -35,9 +34,9 @@ function CinemaList() {
           ]}
         >
           {cinemas.map((cinema) => {
-            const statusText = STATUS_LABEL[cinema.status] ?? STATUS_LABEL[CINEMA_STATUS.pending];
-            const statusClassName =
-              CINEMA_STATUS_META[cinema.status]?.className ?? CINEMA_STATUS_META[CINEMA_STATUS.pending].className;
+            const statusMeta = CINEMA_STATUS_META[cinema.status] ?? CINEMA_STATUS_META[CINEMA_STATUS.active];
+            const statusText = t(`cinemas.status.${statusMeta.key}`);
+            const statusClassName = statusMeta.className;
             return (
               <tr key={cinema.id}>
                 <td>{cinema.id}</td>

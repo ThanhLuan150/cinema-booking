@@ -54,10 +54,12 @@
       "reviews": "Bewertungen",
       "rooms": "Säle",
       "employees": "Employees",
+      "shifts": "Schichten",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "Mein Dienstplan"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

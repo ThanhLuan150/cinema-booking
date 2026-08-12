@@ -39,9 +39,12 @@ export const ROUTES = {
   ownerVouchers: '/OwnerVouchers',
   ownerBookings: '/OwnerBookings',
   ownerEmployees: '/OwnerEmployees',
+  ownerShifts: '/OwnerShifts',
+  ownerShiftAssignments: '/OwnerShifts/Assignments',
   adminActors: '/AdminActors',
   adminDirectors: '/AdminDirectors',
   employeeDashboard: '/EmployeeDashboard',
   employeeCounterSale: '/EmployeeCounterSale',
   employeeCheckIn: '/EmployeeCheckIn',
+  employeeMySchedule: '/EmployeeMySchedule',
 } as const;

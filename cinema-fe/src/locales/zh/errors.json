@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "该优惠码已过期",
   "VOUCHER_USES_EXHAUSTED": "该优惠码已达使用次数上限",
   "VOUCHER_MIN_ORDER_NOT_MET": "订单金额需满 {{minOrderValue}} 才能使用该优惠码",
+  "INVALID_TIME_FORMAT": "时间格式必须为 HH:mm",
+  "INVALID_DATE_FORMAT": "日期格式必须为 YYYY-MM-DD",
+  "SHIFT_HAS_ASSIGNMENTS": "该班次存在排班记录，无法删除",
+  "EMPLOYEE_NOT_ACTIVE": "该员工当前未启用",
+  "SHIFT_NOT_ACTIVE": "该班次当前未启用",
+  "BRANCH_MISMATCH": "员工与班次必须属于同一分店",
+  "DUPLICATE_ASSIGNMENT": "该员工在这一天已被分配到此班次",
   "GENERIC": "出了点问题，请重试。"
 }

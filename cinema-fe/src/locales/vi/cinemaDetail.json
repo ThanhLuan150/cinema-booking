@@ -3,9 +3,9 @@
     "notAvailable": "N/A",
     "addressUpdating": "Đang cập nhật địa chỉ",
     "favoriteCount": "{{count}} lượt yêu thích",
-    "statusPending": "Chờ duyệt",
     "statusActive": "Đang hoạt động",
     "statusPaused": "Tạm ngừng",
+    "statusMaintenance": "Đang bảo trì",
     "viewShowtimes": "Xem phim đang chiếu",
     "breadcrumbCinemas": "Chi nhánh"
   },

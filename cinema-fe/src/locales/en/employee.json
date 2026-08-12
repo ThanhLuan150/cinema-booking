@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "My Schedule",
+    "emptyTitle": "You have no shifts scheduled",
+    "shiftLabel": "Shift #{{id}}",
+    "statusActive": "Active",
+    "statusCancelled": "Cancelled",
+    "headers": {
+      "shift": "Shift",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status"
+    }
   }
 }

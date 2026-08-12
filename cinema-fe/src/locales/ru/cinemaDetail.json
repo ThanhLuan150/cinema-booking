@@ -3,9 +3,9 @@
     "notAvailable": "Н/Д",
     "addressUpdating": "Адрес пока недоступен",
     "favoriteCount": "{{count}} в избранном",
-    "statusPending": "Ожидает одобрения",
     "statusActive": "Работает",
     "statusPaused": "Временно закрыт",
+    "statusMaintenance": "На обслуживании",
     "viewShowtimes": "Смотреть сеансы",
     "breadcrumbCinemas": "Филиалы"
   },

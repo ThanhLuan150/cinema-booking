@@ -1,20 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { approveCinema, blockCinema, deleteCinema, createBranchAdmin } from '../api/cinemas.api';
+import { activateCinema, disableCinema, setCinemaMaintenance, deleteCinema, createBranchAdmin } from '../api/cinemas.api';
 import { adminCinemasQueryKey } from './useAdminCinemas';
 import type { CreateBranchAdminPayload } from '../types/cinemas.types';
 
-export function useApproveCinema() {
+export function useActivateCinema() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number | string) => approveCinema(id),
+    mutationFn: (id: number | string) => activateCinema(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey }),
   });
 }
 
-export function useBlockCinema() {
+export function useDisableCinema() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number | string) => blockCinema(id),
+    mutationFn: (id: number | string) => disableCinema(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey }),
+  });
+}
+
+export function useSetCinemaMaintenance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number | string) => setCinemaMaintenance(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey }),
   });
 }

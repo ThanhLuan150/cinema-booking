@@ -15,7 +15,13 @@ import { useAppSelector } from '@/hooks/redux';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { adminCinemasQueryKey, useAdminCinemas } from '../hooks/useAdminCinemas';
-import { useApproveCinema, useBlockCinema, useDeleteCinema, useCreateBranchAdmin } from '../hooks/useCinemaModeration';
+import {
+  useActivateCinema,
+  useDisableCinema,
+  useSetCinemaMaintenance,
+  useDeleteCinema,
+  useCreateBranchAdmin,
+} from '../hooks/useCinemaModeration';
 import { CINEMA_STATUS, CINEMA_STATUS_META } from '@/constants/cinemaStatus';
 import type { CreateBranchAdminPayload } from '../types/cinemas.types';
 
@@ -25,6 +31,7 @@ const emptyBranchAdminForm = (): CreateBranchAdminPayload => ({
   name: '',
   phone: '',
   cinema_name: '',
+  code: '',
   address: '',
   city: '',
 });
@@ -36,39 +43,53 @@ function AdminCinemas() {
   const [showAddModal, setShowAddModal] = useState(false);
   const { data } = useAdminCinemas(page, DEFAULT_PAGE_SIZE);
   const cinemas = data?.data ?? [];
-  const approveMutation = useApproveCinema();
-  const blockMutation = useBlockCinema();
+  const activateMutation = useActivateCinema();
+  const disableMutation = useDisableCinema();
+  const maintenanceMutation = useSetCinemaMaintenance();
   const deleteMutation = useDeleteCinema();
   const createBranchAdminMutation = useCreateBranchAdmin();
 
-  const pendingVersion = useAppSelector((state) => state.realtime.cinemaPendingVersion);
+  const statusVersion = useAppSelector((state) => state.realtime.cinemaStatusVersion);
   useEffect(() => {
-    if (pendingVersion > 0) queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey });
-  }, [pendingVersion, queryClient]);
+    if (statusVersion > 0) queryClient.invalidateQueries({ queryKey: adminCinemasQueryKey });
+  }, [statusVersion, queryClient]);
 
-  const handleApprove = useCallback(
+  const handleActivate = useCallback(
     async (id: number) => {
       try {
-        await approveMutation.mutateAsync(id);
-        toast.success(t('cinemas.approveSuccess'));
+        await activateMutation.mutateAsync(id);
+        toast.success(t('cinemas.activateSuccess'));
       } catch (error) {
         toast.error(getApiErrorMessage(error, t));
       }
     },
-    [approveMutation, t],
+    [activateMutation, t],
   );
 
-  const handleBlock = useCallback(
+  const handleDisable = useCallback(
     async (id: number) => {
-      if (!(await confirmDialog(t('cinemas.blockConfirm')))) return;
+      if (!(await confirmDialog(t('cinemas.disableConfirm')))) return;
       try {
-        await blockMutation.mutateAsync(id);
-        toast.success(t('cinemas.blockSuccess'));
+        await disableMutation.mutateAsync(id);
+        toast.success(t('cinemas.disableSuccess'));
       } catch (error) {
         toast.error(getApiErrorMessage(error, t));
       }
     },
-    [blockMutation, t],
+    [disableMutation, t],
+  );
+
+  const handleMaintenance = useCallback(
+    async (id: number) => {
+      if (!(await confirmDialog(t('cinemas.maintenanceConfirm')))) return;
+      try {
+        await maintenanceMutation.mutateAsync(id);
+        toast.success(t('cinemas.maintenanceSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [maintenanceMutation, t],
   );
 
   const handleDelete = useCallback(
@@ -106,6 +127,7 @@ function AdminCinemas() {
         errors.password = t('cinemas.addBranchAdmin.validation.passwordInvalid');
       }
       if (!values.cinema_name) errors.cinema_name = t('cinemas.addBranchAdmin.validation.cinemaNameRequired');
+      if (!values.code) errors.code = t('cinemas.addBranchAdmin.validation.codeRequired');
       return errors;
     },
     [t],
@@ -152,6 +174,13 @@ function AdminCinemas() {
                     className="mt-3"
                     error={showErrors ? formik.errors.cinema_name : undefined}
                   />
+                  <Field
+                    as={Input}
+                    label={t('cinemas.addBranchAdmin.codeLabel')}
+                    name="code"
+                    className="mt-3"
+                    error={showErrors ? formik.errors.code : undefined}
+                  />
                   <Field as={Input} label={t('cinemas.addBranchAdmin.addressLabel')} name="address" className="mt-3" />
                   <Field as={Input} label={t('cinemas.addBranchAdmin.cityLabel')} name="city" className="mt-3" />
                   <div className="mt-6 flex justify-end">
@@ -169,7 +198,7 @@ function AdminCinemas() {
       <div className="mt-6">
       <DataTable headers={t('cinemas.headers', { returnObjects: true }) as unknown as string[]}>
         {cinemas.map((cinema) => {
-          const status = CINEMA_STATUS_META[cinema.status] || CINEMA_STATUS_META[CINEMA_STATUS.pending];
+          const status = CINEMA_STATUS_META[cinema.status] || CINEMA_STATUS_META[CINEMA_STATUS.active];
           return (
             <tr key={cinema.id}>
               <td>{cinema.id}</td>
@@ -187,22 +216,31 @@ function AdminCinemas() {
                 </span>
               </td>
               <td className="flex gap-3">
-                {cinema.status !== CINEMA_STATUS.approved && (
+                {cinema.status !== CINEMA_STATUS.active && (
                   <button
                     type="button"
                     className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                    onClick={() => handleApprove(cinema.id)}
+                    onClick={() => handleActivate(cinema.id)}
                   >
-                    {t('cinemas.approveButton')}
+                    {t('cinemas.activateButton')}
                   </button>
                 )}
-                {cinema.status !== CINEMA_STATUS.blocked && (
+                {cinema.status !== CINEMA_STATUS.inactive && (
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
+                    onClick={() => handleDisable(cinema.id)}
+                  >
+                    {t('cinemas.disableButton')}
+                  </button>
+                )}
+                {cinema.status !== CINEMA_STATUS.maintenance && (
                   <button
                     type="button"
                     className="text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
-                    onClick={() => handleBlock(cinema.id)}
+                    onClick={() => handleMaintenance(cinema.id)}
                   >
-                    {t('cinemas.blockButton')}
+                    {t('cinemas.maintenanceButton')}
                   </button>
                 )}
                 <button

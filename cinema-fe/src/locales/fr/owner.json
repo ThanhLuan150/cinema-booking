@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "Ma succursale",
     "manageRooms": "Gérer les salles",
-    "statusLabels": {
-      "0": "En attente d'approbation",
-      "1": "Approuvé",
-      "2": "Bloqué"
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "En maintenance"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "Saisissez une valeur entre 1 et 100 pour un pourcentage, ou supérieure à 0 pour un montant fixe.",
       "minOrderValueRequired": "Veuillez saisir une valeur de commande minimale.",
       "minOrderValueInvalid": "La valeur de commande minimale ne peut pas être négative."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "Équipes",
+    "addButton": "Ajouter une équipe +",
+    "addTitle": "Ajouter une équipe",
+    "editTitle": "Modifier l'équipe",
+    "manageAssignments": "Gérer les affectations",
+    "branchLabel": "Succursale",
+    "branchPlaceholder": "Sélectionner une succursale",
+    "nameLabel": "Nom de l'équipe",
+    "startTimeLabel": "Heure de début",
+    "endTimeLabel": "Heure de fin",
+    "submit": "Ajouter",
+    "saveButton": "Enregistrer",
+    "createSuccess": "Équipe ajoutée.",
+    "updateSuccess": "Équipe mise à jour.",
+    "deactivateConfirm": "Désactiver cette équipe ?",
+    "deactivateSuccess": "Équipe désactivée.",
+    "activateSuccess": "Équipe activée.",
+    "deleteConfirm": "Supprimer cette équipe ?",
+    "deleteSuccess": "Équipe supprimée.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "headers": {
+      "id": "ID",
+      "name": "Nom de l'équipe",
+      "time": "Horaire",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "validation": {
+      "branchRequired": "Veuillez sélectionner une succursale.",
+      "nameRequired": "Veuillez saisir un nom d'équipe.",
+      "startTimeRequired": "Veuillez saisir une heure de début.",
+      "endTimeRequired": "Veuillez saisir une heure de fin."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "Affectations d'équipe",
+    "branchPlaceholder": "Sélectionner une succursale",
+    "assignButton": "Affecter une équipe +",
+    "assignTitle": "Affecter une équipe",
+    "employeeLabel": "Employé",
+    "employeePlaceholder": "Sélectionner un employé",
+    "shiftLabel": "Équipe",
+    "shiftPlaceholder": "Sélectionner une équipe",
+    "dateLabel": "Date",
+    "submit": "Affecter",
+    "createSuccess": "Équipe affectée.",
+    "cancelConfirm": "Annuler cette affectation ?",
+    "cancelSuccess": "Affectation annulée.",
+    "cancel": "Annuler",
+    "deleteConfirm": "Supprimer cette affectation ?",
+    "deleteSuccess": "Affectation supprimée.",
+    "delete": "Supprimer",
+    "statusActive": "Active",
+    "statusCancelled": "Annulée",
+    "filters": {
+      "employeeLabel": "Employé",
+      "allEmployees": "Tous les employés",
+      "dateLabel": "Date",
+      "statusLabel": "Statut",
+      "allStatuses": "Tous les statuts"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "Employé",
+      "shift": "Équipe",
+      "date": "Date",
+      "time": "Horaire",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "validation": {
+      "employeeRequired": "Veuillez sélectionner un employé.",
+      "shiftRequired": "Veuillez sélectionner une équipe.",
+      "dateRequired": "Veuillez sélectionner une date."
     }
   }
 }

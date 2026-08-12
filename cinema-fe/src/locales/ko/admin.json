@@ -244,17 +244,20 @@
       "작업"
     ],
     "status": {
-      "pending": "승인 대기",
-      "approved": "승인됨",
-      "blocked": "차단됨"
+      "active": "활성",
+      "inactive": "비활성",
+      "maintenance": "점검 중"
     },
-    "approveButton": "승인",
-    "blockButton": "차단",
+    "activateButton": "활성화",
+    "disableButton": "비활성화",
+    "maintenanceButton": "점검",
     "deleteButton": "삭제",
-    "blockConfirm": "이 지점을 차단하시겠습니까?",
+    "disableConfirm": "이 지점을 비활성화하시겠습니까?",
+    "maintenanceConfirm": "이 지점을 점검 모드로 전환하시겠습니까?",
     "deleteConfirm": "이 지점을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-    "approveSuccess": "지점이 승인되었습니다.",
-    "blockSuccess": "지점이 차단되었습니다.",
+    "activateSuccess": "지점이 활성화되었습니다.",
+    "disableSuccess": "지점이 비활성화되었습니다.",
+    "maintenanceSuccess": "지점이 점검 모드로 전환되었습니다.",
     "deleteSuccess": "지점이 삭제되었습니다.",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

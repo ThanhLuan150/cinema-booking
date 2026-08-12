@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "このクーポンの有効期限が切れています",
   "VOUCHER_USES_EXHAUSTED": "このクーポンは利用回数の上限に達しています",
   "VOUCHER_MIN_ORDER_NOT_MET": "このコードを適用するには{{minOrderValue}}以上のご注文が必要です",
+  "INVALID_TIME_FORMAT": "時刻はHH:mm形式で入力してください",
+  "INVALID_DATE_FORMAT": "日付はYYYY-MM-DD形式で入力してください",
+  "SHIFT_HAS_ASSIGNMENTS": "このシフトには割り当てがあるため削除できません",
+  "EMPLOYEE_NOT_ACTIVE": "この従業員は有効ではありません",
+  "SHIFT_NOT_ACTIVE": "このシフトは有効ではありません",
+  "BRANCH_MISMATCH": "従業員とシフトは同じ支店である必要があります",
+  "DUPLICATE_ASSIGNMENT": "この従業員はこの日付のこのシフトに既に割り当てられています",
   "GENERIC": "問題が発生しました。もう一度お試しください。"
 }

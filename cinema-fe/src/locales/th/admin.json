@@ -244,17 +244,20 @@
       "การดำเนินการ"
     ],
     "status": {
-      "pending": "รอการอนุมัติ",
-      "approved": "อนุมัติแล้ว",
-      "blocked": "ถูกระงับ"
+      "active": "ใช้งานอยู่",
+      "inactive": "ปิดใช้งาน",
+      "maintenance": "อยู่ระหว่างปรับปรุง"
     },
-    "approveButton": "อนุมัติ",
-    "blockButton": "ระงับ",
+    "activateButton": "เปิดใช้งาน",
+    "disableButton": "ปิดใช้งาน",
+    "maintenanceButton": "ปรับปรุง",
     "deleteButton": "ลบ",
-    "blockConfirm": "ต้องการระงับสาขานี้หรือไม่?",
+    "disableConfirm": "ต้องการปิดใช้งานสาขานี้หรือไม่?",
+    "maintenanceConfirm": "ต้องการตั้งสาขานี้เป็นสถานะปรับปรุงหรือไม่?",
     "deleteConfirm": "ต้องการลบสาขานี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
-    "approveSuccess": "อนุมัติสาขาเรียบร้อยแล้ว",
-    "blockSuccess": "ระงับสาขาเรียบร้อยแล้ว",
+    "activateSuccess": "เปิดใช้งานสาขาเรียบร้อยแล้ว",
+    "disableSuccess": "ปิดใช้งานสาขาเรียบร้อยแล้ว",
+    "maintenanceSuccess": "ตั้งสาขาเป็นสถานะปรับปรุงเรียบร้อยแล้ว",
     "deleteSuccess": "ลบสาขาเรียบร้อยแล้ว",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

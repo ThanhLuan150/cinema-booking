@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "自分の支店",
     "manageRooms": "上映室を管理",
-    "statusLabels": {
-      "0": "承認待ち",
-      "1": "承認済み",
-      "2": "ブロック済み"
+    "status": {
+      "active": "有効",
+      "inactive": "無効",
+      "maintenance": "メンテナンス中"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "パーセントの場合は1〜100、固定額の場合は0より大きい値を入力してください。",
       "minOrderValueRequired": "最低注文金額を入力してください。",
       "minOrderValueInvalid": "最低注文金額はマイナスにできません。"
+    }
+  },
+  "shifts": {
+    "breadcrumb": "シフト",
+    "addButton": "シフトを追加 +",
+    "addTitle": "シフトを追加",
+    "editTitle": "シフトを編集",
+    "manageAssignments": "割り当てを管理",
+    "branchLabel": "支店",
+    "branchPlaceholder": "支店を選択",
+    "nameLabel": "シフト名",
+    "startTimeLabel": "開始時刻",
+    "endTimeLabel": "終了時刻",
+    "submit": "追加",
+    "saveButton": "保存",
+    "createSuccess": "シフトを追加しました。",
+    "updateSuccess": "シフトを更新しました。",
+    "deactivateConfirm": "このシフトを無効化しますか?",
+    "deactivateSuccess": "シフトを無効化しました。",
+    "activateSuccess": "シフトを有効化しました。",
+    "deleteConfirm": "このシフトを削除しますか?",
+    "deleteSuccess": "シフトを削除しました。",
+    "statusActive": "有効",
+    "statusInactive": "無効",
+    "activate": "有効化",
+    "deactivate": "無効化",
+    "edit": "編集",
+    "delete": "削除",
+    "headers": {
+      "id": "ID",
+      "name": "シフト名",
+      "time": "時間",
+      "status": "状態",
+      "actions": "操作"
+    },
+    "validation": {
+      "branchRequired": "支店を選択してください。",
+      "nameRequired": "シフト名を入力してください。",
+      "startTimeRequired": "開始時刻を入力してください。",
+      "endTimeRequired": "終了時刻を入力してください。"
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "シフト割り当て",
+    "branchPlaceholder": "支店を選択",
+    "assignButton": "シフトを割り当て +",
+    "assignTitle": "シフトを割り当て",
+    "employeeLabel": "従業員",
+    "employeePlaceholder": "従業員を選択",
+    "shiftLabel": "シフト",
+    "shiftPlaceholder": "シフトを選択",
+    "dateLabel": "日付",
+    "submit": "割り当て",
+    "createSuccess": "シフトを割り当てました。",
+    "cancelConfirm": "このシフト割り当てをキャンセルしますか?",
+    "cancelSuccess": "割り当てをキャンセルしました。",
+    "cancel": "キャンセル",
+    "deleteConfirm": "このシフト割り当てを削除しますか?",
+    "deleteSuccess": "割り当てを削除しました。",
+    "delete": "削除",
+    "statusActive": "有効",
+    "statusCancelled": "キャンセル済み",
+    "filters": {
+      "employeeLabel": "従業員",
+      "allEmployees": "すべての従業員",
+      "dateLabel": "日付",
+      "statusLabel": "状態",
+      "allStatuses": "すべての状態"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "従業員",
+      "shift": "シフト",
+      "date": "日付",
+      "time": "時間",
+      "status": "状態",
+      "actions": "操作"
+    },
+    "validation": {
+      "employeeRequired": "従業員を選択してください。",
+      "shiftRequired": "シフトを選択してください。",
+      "dateRequired": "日付を選択してください。"
     }
   }
 }

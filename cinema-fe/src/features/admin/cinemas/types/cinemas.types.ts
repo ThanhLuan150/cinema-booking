@@ -4,6 +4,7 @@ export interface CreateBranchAdminPayload {
   name: string;
   phone: string;
   cinema_name: string;
+  code: string;
   address: string;
   city: string;
 }

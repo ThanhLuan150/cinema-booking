@@ -3,9 +3,9 @@
     "notAvailable": "N/A",
     "addressUpdating": "Address not available yet",
     "favoriteCount": "{{count}} favorites",
-    "statusPending": "Pending approval",
     "statusActive": "Active",
     "statusPaused": "Temporarily closed",
+    "statusMaintenance": "Under maintenance",
     "viewShowtimes": "View showtimes",
     "breadcrumbCinemas": "Branches"
   },

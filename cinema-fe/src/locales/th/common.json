@@ -54,10 +54,12 @@
       "reviews": "รีวิว",
       "rooms": "ห้องฉาย",
       "employees": "Employees",
+      "shifts": "กะทำงาน",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "ตารางงานของฉัน"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

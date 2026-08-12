@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "내 지점",
     "manageRooms": "상영관 관리",
-    "statusLabels": {
-      "0": "승인 대기",
-      "1": "승인됨",
-      "2": "차단됨"
+    "status": {
+      "active": "활성",
+      "inactive": "비활성",
+      "maintenance": "점검 중"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "퍼센트는 1~100 사이, 고정 금액은 0보다 큰 값을 입력해 주세요.",
       "minOrderValueRequired": "최소 주문 금액을 입력해 주세요.",
       "minOrderValueInvalid": "최소 주문 금액은 음수가 될 수 없습니다."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "근무조",
+    "addButton": "근무조 추가 +",
+    "addTitle": "근무조 추가",
+    "editTitle": "근무조 수정",
+    "manageAssignments": "배정 관리",
+    "branchLabel": "지점",
+    "branchPlaceholder": "지점 선택",
+    "nameLabel": "근무조 이름",
+    "startTimeLabel": "시작 시간",
+    "endTimeLabel": "종료 시간",
+    "submit": "추가",
+    "saveButton": "저장",
+    "createSuccess": "근무조가 추가되었습니다.",
+    "updateSuccess": "근무조가 수정되었습니다.",
+    "deactivateConfirm": "이 근무조를 비활성화하시겠습니까?",
+    "deactivateSuccess": "근무조가 비활성화되었습니다.",
+    "activateSuccess": "근무조가 활성화되었습니다.",
+    "deleteConfirm": "이 근무조를 삭제하시겠습니까?",
+    "deleteSuccess": "근무조가 삭제되었습니다.",
+    "statusActive": "활성",
+    "statusInactive": "비활성",
+    "activate": "활성화",
+    "deactivate": "비활성화",
+    "edit": "수정",
+    "delete": "삭제",
+    "headers": {
+      "id": "ID",
+      "name": "근무조 이름",
+      "time": "시간",
+      "status": "상태",
+      "actions": "작업"
+    },
+    "validation": {
+      "branchRequired": "지점을 선택해 주세요.",
+      "nameRequired": "근무조 이름을 입력해 주세요.",
+      "startTimeRequired": "시작 시간을 입력해 주세요.",
+      "endTimeRequired": "종료 시간을 입력해 주세요."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "근무 배정",
+    "branchPlaceholder": "지점 선택",
+    "assignButton": "근무 배정 +",
+    "assignTitle": "근무 배정",
+    "employeeLabel": "직원",
+    "employeePlaceholder": "직원 선택",
+    "shiftLabel": "근무조",
+    "shiftPlaceholder": "근무조 선택",
+    "dateLabel": "날짜",
+    "submit": "배정",
+    "createSuccess": "근무가 배정되었습니다.",
+    "cancelConfirm": "이 근무 배정을 취소하시겠습니까?",
+    "cancelSuccess": "배정이 취소되었습니다.",
+    "cancel": "취소",
+    "deleteConfirm": "이 근무 배정을 삭제하시겠습니까?",
+    "deleteSuccess": "배정이 삭제되었습니다.",
+    "delete": "삭제",
+    "statusActive": "활성",
+    "statusCancelled": "취소됨",
+    "filters": {
+      "employeeLabel": "직원",
+      "allEmployees": "전체 직원",
+      "dateLabel": "날짜",
+      "statusLabel": "상태",
+      "allStatuses": "전체 상태"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "직원",
+      "shift": "근무조",
+      "date": "날짜",
+      "time": "시간",
+      "status": "상태",
+      "actions": "작업"
+    },
+    "validation": {
+      "employeeRequired": "직원을 선택해 주세요.",
+      "shiftRequired": "근무조를 선택해 주세요.",
+      "dateRequired": "날짜를 선택해 주세요."
     }
   }
 }

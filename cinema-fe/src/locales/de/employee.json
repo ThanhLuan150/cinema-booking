@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "Mein Dienstplan",
+    "emptyTitle": "Sie haben keine geplanten Schichten",
+    "shiftLabel": "Schicht #{{id}}",
+    "statusActive": "Aktiv",
+    "statusCancelled": "Storniert",
+    "headers": {
+      "shift": "Schicht",
+      "date": "Datum",
+      "time": "Zeit",
+      "status": "Status"
+    }
   }
 }

@@ -80,6 +80,16 @@ describe('branch.routes wiring — authorization', () => {
     expect(res.status).toBe(201);
   });
 
+  it('POST /api/cinema/branch-admin allows super admin without a company_id, defaulting to Default Company', async () => {
+    const res = await request(app)
+      .post('/api/cinema/branch-admin')
+      .set('Authorization', authHeader({ role: 0 }))
+      .send({ email: 'a@b.com', password: 'pw', cinema_name: 'A', code: 'A' });
+    expect(res.status).toBe(201);
+    const defaultCompany = await Company.findOne({ code: 'DEFAULT' });
+    expect(res.body.company_id).toBe(defaultCompany.id);
+  });
+
   it('POST /api/cinema forbids a branch admin (no self-service branch creation)', async () => {
     await seedCompany();
     const res = await request(app)

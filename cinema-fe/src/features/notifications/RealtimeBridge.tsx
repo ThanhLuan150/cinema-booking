@@ -51,17 +51,17 @@ export function RealtimeBridge() {
       queryClient.invalidateQueries({ queryKey: moviesQueryKey });
       toast.info(t('realtimeBridge.newMovie', { name: movie?.name ?? '' }));
     };
-    const onCinemaPending = (cinema: CinemaEvent) => {
-      dispatch(bump('cinemaPendingVersion'));
-      toast.info(t('realtimeBridge.cinemaPending', { name: cinema?.name ?? '' }));
-    };
-    const onCinemaApproved = (cinema: CinemaEvent) => {
+    const onBranchActivated = (cinema: CinemaEvent) => {
       dispatch(bump('cinemaStatusVersion'));
-      toast.success(t('realtimeBridge.cinemaApproved', { name: cinema?.name ?? '' }));
+      toast.success(t('realtimeBridge.branchActivated', { name: cinema?.name ?? '' }));
     };
-    const onCinemaBlocked = (cinema: CinemaEvent) => {
+    const onBranchDisabled = (cinema: CinemaEvent) => {
       dispatch(bump('cinemaStatusVersion'));
-      toast.error(t('realtimeBridge.cinemaBlocked', { name: cinema?.name ?? '' }));
+      toast.error(t('realtimeBridge.branchDisabled', { name: cinema?.name ?? '' }));
+    };
+    const onBranchMaintenance = (cinema: CinemaEvent) => {
+      dispatch(bump('cinemaStatusVersion'));
+      toast.info(t('realtimeBridge.branchMaintenance', { name: cinema?.name ?? '' }));
     };
     const onBookingNew = (payload: BookingEvent) => {
       dispatch(bump('ownerBookingVersion'));
@@ -69,16 +69,16 @@ export function RealtimeBridge() {
     };
 
     socket.on('movie:new', onMovieNew);
-    socket.on('cinema:pending', onCinemaPending);
-    socket.on('cinema:approved', onCinemaApproved);
-    socket.on('cinema:blocked', onCinemaBlocked);
+    socket.on('branch:activated', onBranchActivated);
+    socket.on('branch:disabled', onBranchDisabled);
+    socket.on('branch:maintenance', onBranchMaintenance);
     socket.on('booking:new', onBookingNew);
 
     return () => {
       socket.off('movie:new', onMovieNew);
-      socket.off('cinema:pending', onCinemaPending);
-      socket.off('cinema:approved', onCinemaApproved);
-      socket.off('cinema:blocked', onCinemaBlocked);
+      socket.off('branch:activated', onBranchActivated);
+      socket.off('branch:disabled', onBranchDisabled);
+      socket.off('branch:maintenance', onBranchMaintenance);
       socket.off('booking:new', onBookingNew);
     };
     // Re-register listeners when the translator changes so socket callbacks

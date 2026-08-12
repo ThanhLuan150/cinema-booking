@@ -2,18 +2,26 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const approveCinemaMock = vi.fn();
-const blockCinemaMock = vi.fn();
+const activateCinemaMock = vi.fn();
+const disableCinemaMock = vi.fn();
+const setCinemaMaintenanceMock = vi.fn();
 const deleteCinemaMock = vi.fn();
 const createBranchAdminMock = vi.fn();
 vi.mock('../api/cinemas.api', () => ({
-  approveCinema: (...args: unknown[]) => approveCinemaMock(...args),
-  blockCinema: (...args: unknown[]) => blockCinemaMock(...args),
+  activateCinema: (...args: unknown[]) => activateCinemaMock(...args),
+  disableCinema: (...args: unknown[]) => disableCinemaMock(...args),
+  setCinemaMaintenance: (...args: unknown[]) => setCinemaMaintenanceMock(...args),
   deleteCinema: (...args: unknown[]) => deleteCinemaMock(...args),
   createBranchAdmin: (...args: unknown[]) => createBranchAdminMock(...args),
 }));
 
-import { useApproveCinema, useBlockCinema, useDeleteCinema, useCreateBranchAdmin } from './useCinemaModeration';
+import {
+  useActivateCinema,
+  useDisableCinema,
+  useSetCinemaMaintenance,
+  useDeleteCinema,
+  useCreateBranchAdmin,
+} from './useCinemaModeration';
 
 function makeWrapper() {
   const client = new QueryClient();
@@ -26,29 +34,40 @@ function makeWrapper() {
 
 describe('cinema moderation hooks', () => {
   beforeEach(() => {
-    approveCinemaMock.mockReset();
-    blockCinemaMock.mockReset();
+    activateCinemaMock.mockReset();
+    disableCinemaMock.mockReset();
+    setCinemaMaintenanceMock.mockReset();
     deleteCinemaMock.mockReset();
     createBranchAdminMock.mockReset();
   });
 
-  it('useApproveCinema calls approveCinema and invalidates adminCinemas', async () => {
-    approveCinemaMock.mockResolvedValue({});
+  it('useActivateCinema calls activateCinema and invalidates adminCinemas', async () => {
+    activateCinemaMock.mockResolvedValue({});
     const { wrapper, invalidateSpy } = makeWrapper();
-    const { result } = renderHook(() => useApproveCinema(), { wrapper });
+    const { result } = renderHook(() => useActivateCinema(), { wrapper });
     result.current.mutate(1);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(approveCinemaMock).toHaveBeenCalledWith(1);
+    expect(activateCinemaMock).toHaveBeenCalledWith(1);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminCinemas'] });
   });
 
-  it('useBlockCinema calls blockCinema and invalidates adminCinemas', async () => {
-    blockCinemaMock.mockResolvedValue({});
+  it('useDisableCinema calls disableCinema and invalidates adminCinemas', async () => {
+    disableCinemaMock.mockResolvedValue({});
     const { wrapper, invalidateSpy } = makeWrapper();
-    const { result } = renderHook(() => useBlockCinema(), { wrapper });
+    const { result } = renderHook(() => useDisableCinema(), { wrapper });
     result.current.mutate(1);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(blockCinemaMock).toHaveBeenCalledWith(1);
+    expect(disableCinemaMock).toHaveBeenCalledWith(1);
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminCinemas'] });
+  });
+
+  it('useSetCinemaMaintenance calls setCinemaMaintenance and invalidates adminCinemas', async () => {
+    setCinemaMaintenanceMock.mockResolvedValue({});
+    const { wrapper, invalidateSpy } = makeWrapper();
+    const { result } = renderHook(() => useSetCinemaMaintenance(), { wrapper });
+    result.current.mutate(1);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(setCinemaMaintenanceMock).toHaveBeenCalledWith(1);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminCinemas'] });
   });
 
@@ -72,6 +91,7 @@ describe('cinema moderation hooks', () => {
       name: '',
       phone: '',
       cinema_name: 'A',
+      code: 'A',
       address: '',
       city: '',
     };

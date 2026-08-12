@@ -110,11 +110,7 @@ async function getAdminDetail(req, res) {
   res.json(req.branch);
 }
 
-// POST /api/cinema/branch-admin { email, password, name, phone, company_id, cinema_name, code,
-// address, city, phone, email, opening_time, closing_time } (branchAdmin.create permission —
-// super admin only). Provisions a Branch Admin account and their first branch together,
-// pre-approved — replaces the old self-registration + OTP + admin-approval onboarding flow
-// with direct, centralized provisioning.
+// POST /api/cinema/branch-admin { email, password, name, phone, cinema_name, code, company_id,
 async function createBranchAdmin(req, res) {
   const {
     email,
@@ -129,14 +125,26 @@ async function createBranchAdmin(req, res) {
     opening_time,
     closing_time,
   } = req.body;
-  if (!email || !password || !cinema_name || !company_id || !code) {
-    return res
-      .status(400)
-      .json({ message: 'email, password, cinema_name, company_id and code are required' });
+  if (!email || !password || !cinema_name || !code) {
+    return res.status(400).json({ message: 'email, password, cinema_name and code are required' });
   }
 
-  const company = await companyRepository.findById(company_id);
-  if (!company) return res.status(400).json({ message: 'Invalid company_id', code: 'INVALID_COMPANY' });
+  let company;
+  if (company_id !== undefined) {
+    company = await companyRepository.findById(company_id);
+    if (!company) return res.status(400).json({ message: 'Invalid company_id', code: 'INVALID_COMPANY' });
+  } else {
+    company = await companyRepository.findByCode('DEFAULT');
+    if (!company) {
+      const defaultCompanyId = await nextId('company');
+      company = await companyRepository.create({
+        id: defaultCompanyId,
+        name: 'Default Company',
+        code: 'DEFAULT',
+        status: 'ACTIVE',
+      });
+    }
+  }
 
   const normalizedEmail = String(email).toLowerCase();
   const existing = await branchRepository.findAccountByEmail(normalizedEmail);
@@ -155,7 +163,7 @@ async function createBranchAdmin(req, res) {
   const branchId = await nextId('cinema');
   const branch = await branchRepository.create({
     id: branchId,
-    company_id: Number(company_id),
+    company_id: company.id,
     owner_id: account.id,
     name: cinema_name,
     code,

@@ -244,17 +244,20 @@
       "操作"
     ],
     "status": {
-      "pending": "承認待ち",
-      "approved": "承認済み",
-      "blocked": "ブロック済み"
+      "active": "有効",
+      "inactive": "無効",
+      "maintenance": "メンテナンス中"
     },
-    "approveButton": "承認",
-    "blockButton": "ブロック",
+    "activateButton": "有効化",
+    "disableButton": "無効化",
+    "maintenanceButton": "メンテナンス",
     "deleteButton": "削除",
-    "blockConfirm": "この支店をブロックしますか?",
+    "disableConfirm": "この支店を無効化しますか?",
+    "maintenanceConfirm": "この支店をメンテナンスモードにしますか?",
     "deleteConfirm": "この支店を削除しますか?この操作は取り消せません。",
-    "approveSuccess": "支店を承認しました。",
-    "blockSuccess": "支店をブロックしました。",
+    "activateSuccess": "支店を有効化しました。",
+    "disableSuccess": "支店を無効化しました。",
+    "maintenanceSuccess": "支店をメンテナンスモードにしました。",
     "deleteSuccess": "支店を削除しました。",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

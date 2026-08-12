@@ -82,14 +82,6 @@ describe('RealtimeBridge', () => {
     expect(socketMock.disconnect).toHaveBeenCalled();
   });
 
-  it('bumps cinemaPendingVersion and toasts on cinema:pending', () => {
-    renderBridge();
-    const before = store.getState().realtime.cinemaPendingVersion;
-    emit('cinema:pending', { name: 'New Cinema' });
-    expect(store.getState().realtime.cinemaPendingVersion).toBe(before + 1);
-    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
-  });
-
   it('bumps ownerBookingVersion and toasts on booking:new', () => {
     renderBridge();
     const before = store.getState().realtime.ownerBookingVersion;
@@ -97,13 +89,18 @@ describe('RealtimeBridge', () => {
     expect(store.getState().realtime.ownerBookingVersion).toBe(before + 1);
   });
 
-  it('bumps cinemaStatusVersion on cinema:approved and cinema:blocked', () => {
+  it('bumps cinemaStatusVersion and toasts on branch:activated, branch:disabled, branch:maintenance', () => {
     renderBridge();
     const before = store.getState().realtime.cinemaStatusVersion;
-    emit('cinema:approved', { name: 'A' });
+    emit('branch:activated', { name: 'A' });
     expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 1);
-    emit('cinema:blocked', { name: 'A' });
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('success');
+    emit('branch:disabled', { name: 'A' });
     expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 2);
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('error');
+    emit('branch:maintenance', { name: 'A' });
+    expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 3);
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
   });
 
   it('refreshes the access token once for a burst of unauthorized events', async () => {

@@ -244,17 +244,20 @@
       "操作"
     ],
     "status": {
-      "pending": "待审核",
-      "approved": "已通过",
-      "blocked": "已封禁"
+      "active": "已启用",
+      "inactive": "已停用",
+      "maintenance": "维护中"
     },
-    "approveButton": "通过",
-    "blockButton": "封禁",
+    "activateButton": "启用",
+    "disableButton": "停用",
+    "maintenanceButton": "维护",
     "deleteButton": "删除",
-    "blockConfirm": "确定要封禁该分店吗？",
+    "disableConfirm": "确定要停用该分店吗？",
+    "maintenanceConfirm": "确定要将该分店设为维护状态吗？",
     "deleteConfirm": "确定要删除该分店吗？此操作不可撤销。",
-    "approveSuccess": "分店已通过审核。",
-    "blockSuccess": "分店已封禁。",
+    "activateSuccess": "分店已启用。",
+    "disableSuccess": "分店已停用。",
+    "maintenanceSuccess": "分店已设为维护状态。",
     "deleteSuccess": "分店已删除。",
     "addBranchAdmin": {
       "addButton": "Add branch + Branch Admin",
@@ -264,6 +267,7 @@
       "nameLabel": "Full name",
       "phoneLabel": "Phone",
       "cinemaNameLabel": "Branch name",
+      "codeLabel": "Branch code",
       "addressLabel": "Address",
       "cityLabel": "City",
       "submit": "Create",
@@ -271,7 +275,8 @@
       "validation": {
         "emailRequired": "Please enter an email.",
         "passwordInvalid": "Password must be at least 6 characters.",
-        "cinemaNameRequired": "Please enter a branch name."
+        "cinemaNameRequired": "Please enter a branch name.",
+        "codeRequired": "Please enter a branch code."
       }
     }
   },

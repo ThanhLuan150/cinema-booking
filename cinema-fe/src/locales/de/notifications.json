@@ -6,9 +6,9 @@
   },
   "realtimeBridge": {
     "newMovie": "Neuer Film: {{name}}",
-    "cinemaPending": "Neue Filiale registriert, Genehmigung ausstehend: {{name}}",
-    "cinemaApproved": "Filiale \"{{name}}\" wurde genehmigt.",
-    "cinemaBlocked": "Filiale \"{{name}}\" wurde gesperrt.",
+    "branchActivated": "Filiale \"{{name}}\" wurde aktiviert.",
+    "branchDisabled": "Filiale \"{{name}}\" wurde deaktiviert.",
+    "branchMaintenance": "Filiale \"{{name}}\" wurde in den Wartungsmodus versetzt.",
     "newBooking": "Neue Buchung erhalten: +{{amount}}đ"
   },
   "toastContainer": {

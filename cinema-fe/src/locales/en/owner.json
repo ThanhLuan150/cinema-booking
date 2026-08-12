@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "My Branch",
     "manageRooms": "Manage rooms",
-    "statusLabels": {
-      "0": "Pending approval",
-      "1": "Approved",
-      "2": "Blocked"
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "Under maintenance"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "Enter a value between 1-100 for a percentage, or greater than 0 for a fixed amount.",
       "minOrderValueRequired": "Please enter a minimum order value.",
       "minOrderValueInvalid": "Minimum order value cannot be negative."
+    }
+  },
+  "shifts": {
+    "breadcrumb": "Shifts",
+    "addButton": "Add shift +",
+    "addTitle": "Add shift",
+    "editTitle": "Edit shift",
+    "manageAssignments": "Manage assignments",
+    "branchLabel": "Branch",
+    "branchPlaceholder": "Select branch",
+    "nameLabel": "Shift name",
+    "startTimeLabel": "Start time",
+    "endTimeLabel": "End time",
+    "submit": "Add",
+    "saveButton": "Save",
+    "createSuccess": "Shift added.",
+    "updateSuccess": "Shift updated.",
+    "deactivateConfirm": "Deactivate this shift?",
+    "deactivateSuccess": "Shift deactivated.",
+    "activateSuccess": "Shift activated.",
+    "deleteConfirm": "Delete this shift?",
+    "deleteSuccess": "Shift deleted.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "edit": "Edit",
+    "delete": "Delete",
+    "headers": {
+      "id": "ID",
+      "name": "Shift name",
+      "time": "Time",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "branchRequired": "Please select a branch.",
+      "nameRequired": "Please enter a shift name.",
+      "startTimeRequired": "Please enter a start time.",
+      "endTimeRequired": "Please enter an end time."
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "Shift assignments",
+    "branchPlaceholder": "Select branch",
+    "assignButton": "Assign shift +",
+    "assignTitle": "Assign shift",
+    "employeeLabel": "Employee",
+    "employeePlaceholder": "Select employee",
+    "shiftLabel": "Shift",
+    "shiftPlaceholder": "Select shift",
+    "dateLabel": "Date",
+    "submit": "Assign",
+    "createSuccess": "Shift assigned.",
+    "cancelConfirm": "Cancel this shift assignment?",
+    "cancelSuccess": "Assignment cancelled.",
+    "cancel": "Cancel",
+    "deleteConfirm": "Delete this shift assignment?",
+    "deleteSuccess": "Assignment deleted.",
+    "delete": "Delete",
+    "statusActive": "Active",
+    "statusCancelled": "Cancelled",
+    "filters": {
+      "employeeLabel": "Employee",
+      "allEmployees": "All employees",
+      "dateLabel": "Date",
+      "statusLabel": "Status",
+      "allStatuses": "All statuses"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "Employee",
+      "shift": "Shift",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "employeeRequired": "Please select an employee.",
+      "shiftRequired": "Please select a shift.",
+      "dateRequired": "Please select a date."
     }
   }
 }

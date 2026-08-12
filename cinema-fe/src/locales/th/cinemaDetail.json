@@ -3,9 +3,9 @@
     "notAvailable": "ไม่มีข้อมูล",
     "addressUpdating": "ยังไม่มีที่อยู่",
     "favoriteCount": "{{count}} รายการโปรด",
-    "statusPending": "รอการอนุมัติ",
     "statusActive": "เปิดให้บริการ",
     "statusPaused": "ปิดให้บริการชั่วคราว",
+    "statusMaintenance": "อยู่ระหว่างปรับปรุง",
     "viewShowtimes": "ดูรอบฉาย",
     "breadcrumbCinemas": "สาขา"
   },

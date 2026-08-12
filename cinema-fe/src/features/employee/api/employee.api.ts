@@ -1,5 +1,5 @@
 import apiClient from 'services/apiClient';
-import type { Schedule } from '@/types/entities';
+import type { Schedule, ShiftAssignment } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type { BookedSeatTicket } from '@/features/booking/types/booking.types';
 import type { CounterSalePayload, LookedUpInvoice } from '../types/employee.types';
@@ -7,6 +7,10 @@ import type { CounterSalePayload, LookedUpInvoice } from '../types/employee.type
 // The backend auto-scopes /schedule to the caller's own cinema for an employee account.
 export const getMySchedules = (params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Schedule>>('/schedule', { params }).then((res) => res.data);
+
+// The backend resolves the caller's own employee record and returns only their assignments.
+export const getMyShiftAssignments = (params?: PaginationParams & { from?: string; to?: string; status?: string }) =>
+  apiClient.get<PaginatedResponse<ShiftAssignment>>('/shiftAssignment/me', { params }).then((res) => res.data);
 
 export const getScheduleSeats = (scheduleId: number | string) =>
   apiClient.get<BookedSeatTicket[]>(`/bookseat/${scheduleId}`).then((res) => res.data);

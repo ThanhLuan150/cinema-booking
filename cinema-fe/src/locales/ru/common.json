@@ -54,10 +54,12 @@
       "reviews": "Отзывы",
       "rooms": "Залы",
       "employees": "Employees",
+      "shifts": "Смены",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "Мой график"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

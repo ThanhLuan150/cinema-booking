@@ -25,5 +25,12 @@
   "VOUCHER_EXPIRED": "Ce code promo a expiré",
   "VOUCHER_USES_EXHAUSTED": "Ce code promo a atteint sa limite d'utilisation",
   "VOUCHER_MIN_ORDER_NOT_MET": "Un montant minimum de commande de {{minOrderValue}} est requis pour appliquer ce code",
+  "INVALID_TIME_FORMAT": "L'heure doit être au format HH:mm",
+  "INVALID_DATE_FORMAT": "La date doit être au format AAAA-MM-JJ",
+  "SHIFT_HAS_ASSIGNMENTS": "Cette équipe a des affectations et ne peut pas être supprimée",
+  "EMPLOYEE_NOT_ACTIVE": "Cet employé n'est pas actif",
+  "SHIFT_NOT_ACTIVE": "Cette équipe n'est pas active",
+  "BRANCH_MISMATCH": "L'employé et l'équipe doivent appartenir à la même succursale",
+  "DUPLICATE_ASSIGNMENT": "Cet employé est déjà affecté à cette équipe à cette date",
   "GENERIC": "Une erreur s'est produite, veuillez réessayer."
 }

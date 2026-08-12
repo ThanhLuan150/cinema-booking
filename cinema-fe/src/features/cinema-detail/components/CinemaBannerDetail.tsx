@@ -8,9 +8,9 @@ import { useCinemaFavoriteCount } from '../hooks/useCinemaFavoriteCount';
 import { CINEMA_STATUS_META } from '@/constants/cinemaStatus';
 
 const STATUS_LABEL_KEY: Record<string, string> = {
-  pending: 'bannerDetail.statusPending',
-  approved: 'bannerDetail.statusActive',
-  blocked: 'bannerDetail.statusPaused',
+  active: 'bannerDetail.statusActive',
+  inactive: 'bannerDetail.statusPaused',
+  maintenance: 'bannerDetail.statusMaintenance',
 };
 
 const CinemaBannerDetail = () => {

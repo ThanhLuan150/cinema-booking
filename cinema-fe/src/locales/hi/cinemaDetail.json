@@ -3,9 +3,9 @@
     "notAvailable": "उपलब्ध नहीं",
     "addressUpdating": "पता अभी उपलब्ध नहीं है",
     "favoriteCount": "{{count}} पसंद",
-    "statusPending": "स्वीकृति लंबित",
     "statusActive": "सक्रिय",
     "statusPaused": "अस्थायी रूप से बंद",
+    "statusMaintenance": "रखरखाव में",
     "viewShowtimes": "शो टाइम देखें",
     "breadcrumbCinemas": "शाखाएं"
   },

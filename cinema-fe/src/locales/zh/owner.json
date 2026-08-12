@@ -39,10 +39,10 @@
   "cinemas": {
     "breadcrumb": "我的分店",
     "manageRooms": "管理影厅",
-    "statusLabels": {
-      "0": "待审核",
-      "1": "已通过",
-      "2": "已封禁"
+    "status": {
+      "active": "已启用",
+      "inactive": "已停用",
+      "maintenance": "维护中"
     },
     "headers": {
       "id": "ID",
@@ -214,6 +214,88 @@
       "discountValueInvalid": "百分比类型请输入1-100之间的值，固定金额类型请输入大于0的值。",
       "minOrderValueRequired": "请输入最低订单金额。",
       "minOrderValueInvalid": "最低订单金额不能为负数。"
+    }
+  },
+  "shifts": {
+    "breadcrumb": "班次管理",
+    "addButton": "新增班次 +",
+    "addTitle": "新增班次",
+    "editTitle": "编辑班次",
+    "manageAssignments": "管理排班",
+    "branchLabel": "分店",
+    "branchPlaceholder": "选择分店",
+    "nameLabel": "班次名称",
+    "startTimeLabel": "开始时间",
+    "endTimeLabel": "结束时间",
+    "submit": "新增",
+    "saveButton": "保存",
+    "createSuccess": "班次已添加。",
+    "updateSuccess": "班次已更新。",
+    "deactivateConfirm": "确定要停用该班次吗？",
+    "deactivateSuccess": "班次已停用。",
+    "activateSuccess": "班次已启用。",
+    "deleteConfirm": "确定要删除该班次吗？",
+    "deleteSuccess": "班次已删除。",
+    "statusActive": "启用中",
+    "statusInactive": "已停用",
+    "activate": "启用",
+    "deactivate": "停用",
+    "edit": "编辑",
+    "delete": "删除",
+    "headers": {
+      "id": "ID",
+      "name": "班次名称",
+      "time": "时间",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "validation": {
+      "branchRequired": "请选择分店。",
+      "nameRequired": "请输入班次名称。",
+      "startTimeRequired": "请输入开始时间。",
+      "endTimeRequired": "请输入结束时间。"
+    }
+  },
+  "shiftAssignments": {
+    "breadcrumb": "排班管理",
+    "branchPlaceholder": "选择分店",
+    "assignButton": "分配班次 +",
+    "assignTitle": "分配班次",
+    "employeeLabel": "员工",
+    "employeePlaceholder": "选择员工",
+    "shiftLabel": "班次",
+    "shiftPlaceholder": "选择班次",
+    "dateLabel": "日期",
+    "submit": "分配",
+    "createSuccess": "班次已分配。",
+    "cancelConfirm": "确定要取消该排班吗？",
+    "cancelSuccess": "排班已取消。",
+    "cancel": "取消",
+    "deleteConfirm": "确定要删除该排班吗？",
+    "deleteSuccess": "排班已删除。",
+    "delete": "删除",
+    "statusActive": "有效",
+    "statusCancelled": "已取消",
+    "filters": {
+      "employeeLabel": "员工",
+      "allEmployees": "全部员工",
+      "dateLabel": "日期",
+      "statusLabel": "状态",
+      "allStatuses": "全部状态"
+    },
+    "headers": {
+      "id": "ID",
+      "employee": "员工",
+      "shift": "班次",
+      "date": "日期",
+      "time": "时间",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "validation": {
+      "employeeRequired": "请选择员工。",
+      "shiftRequired": "请选择班次。",
+      "dateRequired": "请选择日期。"
     }
   }
 }

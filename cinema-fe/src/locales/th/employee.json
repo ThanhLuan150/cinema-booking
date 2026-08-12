@@ -37,5 +37,18 @@
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
+  },
+  "mySchedule": {
+    "breadcrumb": "ตารางงานของฉัน",
+    "emptyTitle": "คุณยังไม่มีกะทำงานที่กำหนดไว้",
+    "shiftLabel": "กะทำงาน #{{id}}",
+    "statusActive": "ใช้งานอยู่",
+    "statusCancelled": "ยกเลิกแล้ว",
+    "headers": {
+      "shift": "กะทำงาน",
+      "date": "วันที่",
+      "time": "เวลา",
+      "status": "สถานะ"
+    }
   }
 }

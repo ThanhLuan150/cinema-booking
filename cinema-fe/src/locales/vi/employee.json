@@ -37,5 +37,18 @@
     "statusNotPaid": "Chưa thanh toán",
     "confirmCheckIn": "Xác nhận soát vé",
     "checkInSuccess": "Soát vé thành công."
+  },
+  "mySchedule": {
+    "breadcrumb": "Lịch làm việc của tôi",
+    "emptyTitle": "Bạn chưa được phân ca làm việc nào",
+    "shiftLabel": "Ca #{{id}}",
+    "statusActive": "Đang hoạt động",
+    "statusCancelled": "Đã hủy",
+    "headers": {
+      "shift": "Ca làm việc",
+      "date": "Ngày",
+      "time": "Thời gian",
+      "status": "Trạng thái"
+    }
   }
 }

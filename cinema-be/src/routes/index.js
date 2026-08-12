@@ -23,6 +23,8 @@ const reviewRoutes = require('./review.routes');
 const dashboardRoutes = require('./dashboard.routes');
 const employeeRoutes = require('./employee.routes');
 const positionRoutes = require('./position.routes');
+const shiftRoutes = require('./shift.routes');
+const shiftAssignmentRoutes = require('./shiftAssignment.routes');
 
 const router = express.Router();
 
@@ -52,6 +54,8 @@ router.use('/voucher', voucherRoutes);
 router.use('/review', reviewRoutes);
 router.use('/employee', employeeRoutes);
 router.use('/position', positionRoutes);
+router.use('/shift', shiftRoutes);
+router.use('/shiftAssignment', shiftAssignmentRoutes);
 router.use('/', dashboardRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice

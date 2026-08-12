@@ -54,10 +54,12 @@
       "reviews": "Avis",
       "rooms": "Salles",
       "employees": "Employees",
+      "shifts": "Équipes",
       "actors": "Actors",
       "directors": "Directors",
       "counterSale": "Counter sale",
-      "checkIn": "Check-in"
+      "checkIn": "Check-in",
+      "mySchedule": "Mon planning"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

@@ -42,7 +42,7 @@ describe('CinemaBannerDetail', () => {
 
   it('renders the cinema name and status once loaded', () => {
     useCinemaDetailMock.mockReturnValue({
-      data: { id: 5, name: 'Galaxy Cinema', address: 'Addr', city: 'HN', status: 1, images: [] },
+      data: { id: 5, name: 'Galaxy Cinema', address: 'Addr', city: 'HN', status: 'ACTIVE', images: [] },
     });
     renderWithId();
     expect(screen.getByText('Galaxy Cinema')).toBeInTheDocument();
