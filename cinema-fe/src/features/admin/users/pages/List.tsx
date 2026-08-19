@@ -16,7 +16,11 @@ import { ROUTES } from '@/constants/routes';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { Select } from 'components/ui/Select';
 
+// Only admin/user/theater-owner are assignable via PUT /users/:id/role (backend rejects any
+// other value) — an EMPLOYEE account is managed through the Branch Admin's employee module
+// instead, so it gets a static label below rather than a dropdown that can never save.
 const ROLE_KEY: Record<number, string> = { [ROLES.admin]: 'admin', [ROLES.customer]: 'user', [ROLES.owner]: 'theater' };
+const EMPLOYEE_ROLE_LABEL_KEY = 'employee';
 
 const List = () => {
   const { t } = useTranslation('admin');
@@ -65,12 +69,16 @@ const List = () => {
             <td>{user.phone}</td>
             <td>{user.email}</td>
             <td>
-              <Select
-                value={user.role}
-                options={roleOptions}
-                onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                className="min-w-[9rem] py-2 text-sm"
-              />
+              {user.role === ROLES.employee ? (
+                <Badge variant="default">{t(`users.list.roles.${EMPLOYEE_ROLE_LABEL_KEY}`)}</Badge>
+              ) : (
+                <Select
+                  value={user.role}
+                  options={roleOptions}
+                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                  className="min-w-[9rem] py-2 text-sm"
+                />
+              )}
             </td>
             <td>
               <div className="flex flex-wrap items-center gap-1.5">

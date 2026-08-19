@@ -7,6 +7,7 @@ const movieSchema = buildMovieSchema(t);
 const validMovie = {
   name: 'Inception',
   avatar: 'poster.jpg',
+  duration: '148',
   premiere_date: '2026-08-01',
   description: 'A mind-bending thriller.',
   country: 'USA',
@@ -34,6 +35,21 @@ describe('movieSchema', () => {
     expect(result.success).toBe(false);
   });
 
+  it('rejects a missing duration', () => {
+    const result = movieSchema.safeParse({ ...validMovie, duration: '' });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a non-numeric duration', () => {
+    const result = movieSchema.safeParse({ ...validMovie, duration: 'abc' });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a zero or negative duration', () => {
+    expect(movieSchema.safeParse({ ...validMovie, duration: '0' }).success).toBe(false);
+    expect(movieSchema.safeParse({ ...validMovie, duration: '-10' }).success).toBe(false);
+  });
+
   it('rejects an invalid premiere date format', () => {
     const result = movieSchema.safeParse({ ...validMovie, premiere_date: '08/01/2026' });
     expect(result.success).toBe(false);
@@ -59,14 +75,9 @@ describe('movieSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('rejects an invalid producerAvatar URL', () => {
-    const result = movieSchema.safeParse({ ...validMovie, producerAvatar: 'not-a-url' });
-    expect(result.success).toBe(false);
-  });
-
-  it('accepts a valid producerAvatar URL', () => {
-    const result = movieSchema.safeParse({ ...validMovie, producerAvatar: 'https://example.com/a.jpg' });
-    expect(result.success).toBe(true);
+  it('accepts any producerAvatar value (a filename once uploaded, or empty)', () => {
+    expect(movieSchema.safeParse({ ...validMovie, producerAvatar: 'photo.jpg' }).success).toBe(true);
+    expect(movieSchema.safeParse({ ...validMovie, producerAvatar: '' }).success).toBe(true);
   });
 
   it('rejects when no category is selected', () => {

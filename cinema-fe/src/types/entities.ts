@@ -6,6 +6,7 @@ export interface Movie {
   status?: 'ACTIVE' | 'INACTIVE';
   name: string;
   avatar: string;
+  duration?: number;
   premiere_date: string;
   description: string;
   country: string;

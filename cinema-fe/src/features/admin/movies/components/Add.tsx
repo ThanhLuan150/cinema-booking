@@ -25,6 +25,7 @@ interface AddMovieFormValues extends MovieFormValues {
 const emptyValues = (): AddMovieFormValues => ({
   name: '',
   avatar: '',
+  duration: '',
   premiere_date: '',
   description: '',
   country: '',
@@ -47,8 +48,10 @@ const Add = () => {
   const createMovieMutation = useCreateMovie();
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const trailerInputRef = useRef<HTMLInputElement>(null);
+  const producerAvatarInputRef = useRef<HTMLInputElement>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [trailerFile, setTrailerFile] = useState<File | null>(null);
+  const [producerAvatarFile, setProducerAvatarFile] = useState<File | null>(null);
   const movieSchema = useMemo(() => buildMovieSchema(t), [t]);
 
   const handleCloseAdd = () => dispatch(closeAddModal());
@@ -56,11 +59,21 @@ const Add = () => {
   const handleSubmit = async (values: AddMovieFormValues) => {
     const { categoryIds, directorIds, actors, ...form } = values;
     try {
-      await createMovieMutation.mutateAsync({ ...form, categoryIds, directorIds, actors, avatarFile, trailerFile });
+      await createMovieMutation.mutateAsync({
+        ...form,
+        categoryIds,
+        directorIds,
+        actors,
+        avatarFile,
+        trailerFile,
+        producerAvatarFile,
+      });
       if (avatarInputRef.current) avatarInputRef.current.value = '';
       if (trailerInputRef.current) trailerInputRef.current.value = '';
+      if (producerAvatarInputRef.current) producerAvatarInputRef.current.value = '';
       setAvatarFile(null);
       setTrailerFile(null);
+      setProducerAvatarFile(null);
       toast.success(t('movies.add.toastSuccess'));
       handleCloseAdd();
     } catch (error) {
@@ -90,6 +103,12 @@ const Add = () => {
             const file = e.target.files?.[0] ?? null;
             setTrailerFile(file);
             formik.setFieldValue('trailer', file ? file.name : '');
+          };
+
+          const handleProducerAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0] ?? null;
+            setProducerAvatarFile(file);
+            formik.setFieldValue('producerAvatar', file ? file.name : '');
           };
 
           const toggleCategory = (categoryId: number) => {
@@ -148,6 +167,15 @@ const Add = () => {
               />
               <Field
                 as={Input}
+                label={t('movies.add.fields.duration')}
+                type="number"
+                name="duration"
+                id="duration"
+                className="mt-4"
+                error={getError('duration')}
+              />
+              <Field
+                as={Input}
                 label={t('movies.add.fields.premiereDate')}
                 type="date"
                 name="premiere_date"
@@ -191,12 +219,13 @@ const Add = () => {
                 className="mt-4"
                 error={getError('producer')}
               />
-              <Field
-                as={Input}
+              <Input
                 label={t('movies.add.fields.producerAvatar')}
-                type="text"
+                type="file"
                 name="producerAvatar"
-                id="producerAvatar"
+                accept="image/*"
+                ref={producerAvatarInputRef}
+                onChange={handleProducerAvatarChange}
                 className="mt-2 border-l-2 border-border pl-3"
                 error={getError('producerAvatar')}
               />

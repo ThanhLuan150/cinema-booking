@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -29,6 +29,8 @@ function DirectorList() {
   const { showAddModal } = useAppSelector((state) => state.adminDirectors);
   const createDirectorMutation = useCreateDirector();
   const deleteDirectorMutation = useDeleteDirector();
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const handleDelete = useCallback(
     async (id: number) => {
@@ -46,7 +48,9 @@ function DirectorList() {
   const handleSubmit = useCallback(
     async (values: DirectorFormValues, { resetForm }: FormikHelpers<DirectorFormValues>) => {
       try {
-        await createDirectorMutation.mutateAsync(values);
+        await createDirectorMutation.mutateAsync({ ...values, avatarFile });
+        if (avatarInputRef.current) avatarInputRef.current.value = '';
+        setAvatarFile(null);
         toast.success(t('directors.createSuccess'));
         resetForm();
         dispatch(closeAddModal());
@@ -54,7 +58,7 @@ function DirectorList() {
         toast.error(getApiErrorMessage(error, t));
       }
     },
-    [createDirectorMutation, dispatch, t],
+    [avatarFile, createDirectorMutation, dispatch, t],
   );
 
   const validateDirector = useCallback(
@@ -78,14 +82,26 @@ function DirectorList() {
             {(formik) => {
               const showErrors = formik.submitCount > 0;
               return (
-                <Form>
+                <Form encType="multipart/form-data">
                   <Field
                     as={Input}
                     label={t('directors.fullNameLabel')}
                     name="full_name"
                     error={showErrors ? formik.errors.full_name : undefined}
                   />
-                  <Field as={Input} label={t('directors.avatarUrlLabel')} name="avatar_url" className="mt-3" />
+                  <Input
+                    label={t('directors.avatarUrlLabel')}
+                    type="file"
+                    name="avatar_url"
+                    accept="image/*"
+                    ref={avatarInputRef}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setAvatarFile(file);
+                      formik.setFieldValue('avatar_url', file ? file.name : '');
+                    }}
+                    className="mt-3"
+                  />
                   <Field as={Input} label={t('directors.nationalityLabel')} name="nationality" className="mt-3" />
                   <Field as={Input} label={t('directors.dobLabel')} name="dob" type="date" className="mt-3" />
                   <Field as={Textarea} label={t('directors.bioLabel')} name="bio" className="mt-3" />

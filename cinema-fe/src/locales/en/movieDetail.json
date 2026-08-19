@@ -4,6 +4,8 @@
     "bookNow": "Book now",
     "breadcrumbMovies": "Movies",
     "releaseDate": "Release date",
+    "duration": "Duration",
+    "durationValue": "{{count}} min",
     "genre": "Category",
     "country": "Country",
     "director": "Director",

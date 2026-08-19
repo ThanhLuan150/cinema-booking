@@ -26,10 +26,32 @@ describe('directors.api', () => {
     expect(getMock).toHaveBeenCalledWith('/director', { params: { page: 1, limit: 20 } });
   });
 
-  it('createDirector posts to /director', async () => {
-    const payload = { full_name: 'D', avatar_url: '', bio: '', dob: '', nationality: '' };
-    await directorsApi.createDirector(payload);
-    expect(postMock).toHaveBeenCalledWith('/director', payload);
+  it('createDirector posts FormData to /director', async () => {
+    const formData = new FormData();
+    await directorsApi.createDirector(formData);
+    expect(postMock).toHaveBeenCalledWith('/director', formData);
+  });
+
+  describe('buildDirectorFormData', () => {
+    it('appends scalar values and the avatar file', () => {
+      const formData = directorsApi.buildDirectorFormData(
+        { full_name: 'D', bio: '', dob: '', nationality: '' } as any,
+        new File(['x'], 'avatar.png'),
+      );
+      expect(formData.get('full_name')).toBe('D');
+      expect(formData.get('avatar_url')).toBeInstanceOf(File);
+    });
+
+    it('falls back to the plain avatar_url string when no file is given', () => {
+      const formData = directorsApi.buildDirectorFormData({
+        full_name: 'D',
+        avatar_url: 'https://example.com/d.jpg',
+        bio: '',
+        dob: '',
+        nationality: '',
+      });
+      expect(formData.get('avatar_url')).toBe('https://example.com/d.jpg');
+    });
   });
 
   it('deleteDirector deletes /director/:id', async () => {

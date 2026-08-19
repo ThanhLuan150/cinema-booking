@@ -93,6 +93,11 @@ const BannerDetail = () => {
           )}
 
           <div className="mt-5 flex flex-col gap-3">
+            {!!movie.duration && (
+              <FactRow label={t('bannerDetail.duration')}>
+                <span className="pt-1.5 text-sm text-txt">{t('bannerDetail.durationValue', { count: movie.duration })}</span>
+              </FactRow>
+            )}
             {movie.country && (
               <FactRow label={t('bannerDetail.country')}>
                 <span className="pt-1.5 text-sm text-txt">{movie.country}</span>

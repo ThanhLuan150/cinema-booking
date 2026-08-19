@@ -19,12 +19,13 @@
       "fields": {
         "name": "Tên:",
         "avatar": "Ảnh đại diện:",
+        "duration": "Thời lượng (phút):",
         "premiereDate": "Ngày công chiếu:",
         "country": "Quốc gia:",
         "description": "Mô tả:",
         "trailer": "Trailer:",
         "producer": "Nhà sản xuất:",
-        "producerAvatar": "Ảnh nhà sản xuất (URL):"
+        "producerAvatar": "Ảnh nhà sản xuất:"
       },
       "directors": {
         "label": "Đạo diễn:"
@@ -45,13 +46,15 @@
         "name": "Tên:",
         "avatar": "Ảnh đại diện:",
         "uploadNewAvatar": "Tải ảnh mới:",
+        "duration": "Thời lượng (phút):",
         "premiereDate": "Ngày công chiếu:",
         "country": "Quốc gia:",
         "description": "Mô tả:",
         "trailer": "Trailer:",
         "uploadNewTrailer": "Tải trailer mới:",
         "producer": "Nhà sản xuất:",
-        "producerAvatar": "Ảnh nhà sản xuất (URL):",
+        "producerAvatar": "Ảnh nhà sản xuất:",
+        "uploadNewProducerAvatar": "Tải ảnh nhà sản xuất mới:",
         "status": "Trạng thái:"
       },
       "directors": {
@@ -82,24 +85,27 @@
         "ID",
         "Ảnh",
         "Tên",
+        "Thời lượng",
         "Ngày công chiếu",
         "Quốc gia",
         "Mô tả",
         "Trailer",
         "Danh mục",
         "Hành động"
-      ]
+      ],
+      "durationValue": "{{count}} phút"
     },
     "validation": {
       "nameRequired": "Vui lòng nhập tên phim",
       "avatarRequired": "Vui lòng chọn ảnh đại diện",
+      "durationRequired": "Vui lòng nhập thời lượng phim",
+      "durationInvalid": "Thời lượng phim không hợp lệ",
       "premiereDateRequired": "Vui lòng chọn ngày công chiếu",
       "premiereDateInvalid": "Ngày công chiếu không hợp lệ",
       "descriptionRequired": "Vui lòng nhập mô tả",
       "countryRequired": "Vui lòng nhập quốc gia",
       "trailerRequired": "Vui lòng thêm trailer",
       "producerRequired": "Vui lòng nhập nhà sản xuất",
-      "producerAvatarInvalid": "URL ảnh nhà sản xuất không hợp lệ",
       "directorRequired": "Vui lòng chọn ít nhất một đạo diễn",
       "categoryRequired": "Vui lòng chọn ít nhất một danh mục"
     }
@@ -109,7 +115,7 @@
     "addButton": "Thêm diễn viên +",
     "addTitle": "Thêm diễn viên",
     "fullNameLabel": "Họ tên",
-    "avatarUrlLabel": "Ảnh đại diện (URL)",
+    "avatarUrlLabel": "Ảnh đại diện",
     "nationalityLabel": "Quốc tịch",
     "dobLabel": "Ngày sinh",
     "bioLabel": "Tiểu sử",
@@ -133,7 +139,7 @@
     "addButton": "Thêm đạo diễn +",
     "addTitle": "Thêm đạo diễn",
     "fullNameLabel": "Họ tên",
-    "avatarUrlLabel": "Ảnh đại diện (URL)",
+    "avatarUrlLabel": "Ảnh đại diện",
     "nationalityLabel": "Quốc tịch",
     "dobLabel": "Ngày sinh",
     "bioLabel": "Tiểu sử",
@@ -335,7 +341,8 @@
       "roles": {
         "admin": "Quản trị viên",
         "user": "Người dùng",
-        "theater": "Chủ rạp"
+        "theater": "Chủ rạp",
+        "employee": "Nhân viên"
       },
       "statusActive": "Hoạt động",
       "statusInactive": "Đã khóa",

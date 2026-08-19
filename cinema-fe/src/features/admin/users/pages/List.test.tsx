@@ -67,6 +67,19 @@ describe('Admin Users List', () => {
     expect(screen.getByText('a@b.com')).toBeInTheDocument();
   });
 
+  it('shows a static Employee label instead of a role dropdown for an employee account', () => {
+    useAdminUsersMock.mockReturnValue({
+      data: {
+        data: [{ id: 3, name: 'Staff', phone: '', email: 'staff@b.com', role: 3, status: 1, approved: true }],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.getByText('users.list.roles.employee')).toBeInTheDocument();
+    const row = screen.getByText('Staff').closest('tr');
+    expect(row?.querySelector('button[aria-haspopup="listbox"]')).not.toBeInTheDocument();
+  });
+
   it('shows an approve button for a pending theater owner', async () => {
     useAdminUsersMock.mockReturnValue({
       data: {

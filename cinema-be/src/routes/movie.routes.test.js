@@ -24,6 +24,12 @@ describe('movie.routes wiring', () => {
     expect(res.status).toBe(200);
   });
 
+  it('GET /api/movie/:id is public', async () => {
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app).get('/api/movie/1');
+    expect(res.status).toBe(200);
+  });
+
   it('GET /api/movie/mine requires auth', async () => {
     const res = await request(app).get('/api/movie/mine');
     expect(res.status).toBe(401);
@@ -79,6 +85,14 @@ describe('movie.routes wiring', () => {
     expect(res.status).toBe(403);
   });
 
+  it('POST /api/movie rejects an employee (Movie Catalog is Super Admin only)', async () => {
+    const res = await request(app)
+      .post('/api/movie')
+      .set('Authorization', authHeader({ role: 3, accountId: 42 }))
+      .send({ name: 'New Movie', premiere_date: '2026-01-01' });
+    expect(res.status).toBe(403);
+  });
+
   it('POST /api/movie allows super admin and reaches the controller', async () => {
     const res = await request(app)
       .post('/api/movie')
@@ -87,11 +101,35 @@ describe('movie.routes wiring', () => {
     expect(res.status).toBe(201);
   });
 
+  it('PUT /api/movie/:id requires auth', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app).put('/api/movie/1').send({ name: 'Hacked' });
+    expect(res.status).toBe(401);
+  });
+
   it('PUT /api/movie/:id forbids a branch admin from editing any movie', async () => {
     await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = await request(app)
       .put('/api/movie/1')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
+      .send({ name: 'Hacked' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PUT /api/movie/:id forbids an employee from editing any movie', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .put('/api/movie/1')
+      .set('Authorization', authHeader({ role: 3, accountId: 42 }))
+      .send({ name: 'Hacked' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PUT /api/movie/:id forbids a customer from editing any movie', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .put('/api/movie/1')
+      .set('Authorization', authHeader({ role: 1, accountId: 42 }))
       .send({ name: 'Hacked' });
     expect(res.status).toBe(403);
   });
@@ -105,11 +143,33 @@ describe('movie.routes wiring', () => {
     expect(res.status).toBe(200);
   });
 
+  it('DELETE /api/movie/:id requires auth', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app).delete('/api/movie/1');
+    expect(res.status).toBe(401);
+  });
+
   it('DELETE /api/movie/:id forbids a branch admin from deleting any movie', async () => {
     await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
     const res = await request(app)
       .delete('/api/movie/1')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }));
+    expect(res.status).toBe(403);
+  });
+
+  it('DELETE /api/movie/:id forbids an employee from deleting any movie', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .delete('/api/movie/1')
+      .set('Authorization', authHeader({ role: 3, accountId: 42 }));
+    expect(res.status).toBe(403);
+  });
+
+  it('DELETE /api/movie/:id forbids a customer from deleting any movie', async () => {
+    await Movie.create({ id: 1, owner_id: 1, name: 'A', premiere_date: '2026-01-01' });
+    const res = await request(app)
+      .delete('/api/movie/1')
+      .set('Authorization', authHeader({ role: 1, accountId: 42 }));
     expect(res.status).toBe(403);
   });
 

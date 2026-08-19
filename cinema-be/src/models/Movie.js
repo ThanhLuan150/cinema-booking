@@ -8,6 +8,7 @@ const movieSchema = new mongoose.Schema(
     status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE', index: true },
     name: { type: String, required: true },
     avatar: { type: String, default: '' },
+    duration: { type: Number, default: 0 }, // minutes
     premiere_date: { type: String, required: true },
     description: { type: String, default: '' },
     country: { type: String, default: '' },

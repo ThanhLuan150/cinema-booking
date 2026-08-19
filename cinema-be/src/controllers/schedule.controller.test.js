@@ -159,6 +159,23 @@ describe('schedule.controller create', () => {
     expect(created.price).toBe(5000);
     expect(created.status).toBe('ACTIVE');
   });
+
+  it('lets the same movie be scheduled at a second, unrelated branch (Movie Catalog is company-wide, not branch-owned)', async () => {
+    await seedMovieAndRoom();
+    await Branch.create({ id: 2, company_id: 1, owner_id: 99, name: 'Cinema B', code: 'B' });
+    await Room.create({ id: 2, cinema_id: 2, name: 'Room 1', status: 'ACTIVE' });
+
+    const firstBranch = mockRes();
+    await scheduleController.create(baseReq(), firstBranch);
+    expect(firstBranch.status).toHaveBeenCalledWith(201);
+
+    const secondBranch = mockRes();
+    await scheduleController.create(baseReq({ body: { room_id: 2 } }), secondBranch);
+    expect(secondBranch.status).toHaveBeenCalledWith(201);
+
+    const schedules = await Schedule.find({ movie_id: 1 });
+    expect(schedules.map((s) => s.cinema_id).sort()).toEqual([1, 2]);
+  });
 });
 
 describe('schedule.controller update', () => {

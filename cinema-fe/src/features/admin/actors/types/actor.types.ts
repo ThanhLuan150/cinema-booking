@@ -6,6 +6,10 @@ export interface ActorFormValues {
   nationality: string;
 }
 
+export interface CreateActorPayload extends ActorFormValues {
+  avatarFile?: File | null;
+}
+
 export interface AdminActorsState {
   showAddModal: boolean;
 }

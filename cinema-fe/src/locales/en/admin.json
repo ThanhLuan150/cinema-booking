@@ -19,12 +19,13 @@
       "fields": {
         "name": "Name:",
         "avatar": "Avatar:",
+        "duration": "Duration (minutes):",
         "premiereDate": "Premiere date:",
         "country": "Country:",
         "description": "Describe:",
         "trailer": "Trailer:",
         "producer": "Producer:",
-        "producerAvatar": "Producer avatar (URL):"
+        "producerAvatar": "Producer avatar:"
       },
       "directors": {
         "label": "Director(s):"
@@ -45,13 +46,15 @@
         "name": "Name:",
         "avatar": "Avatar:",
         "uploadNewAvatar": "Upload new avatar:",
+        "duration": "Duration (minutes):",
         "premiereDate": "Premiere date:",
         "country": "Country:",
         "description": "Description:",
         "trailer": "Trailer:",
         "uploadNewTrailer": "Upload new trailer:",
         "producer": "Producer:",
-        "producerAvatar": "Producer avatar (URL):",
+        "producerAvatar": "Producer avatar:",
+        "uploadNewProducerAvatar": "Upload new producer avatar:",
         "status": "Status:"
       },
       "directors": {
@@ -82,24 +85,27 @@
         "ID",
         "Avatar",
         "Name",
+        "Duration",
         "Premiere date",
         "Country",
         "Describe",
         "Trailer",
         "Category",
         "Action"
-      ]
+      ],
+      "durationValue": "{{count}} min"
     },
     "validation": {
       "nameRequired": "Name is required",
       "avatarRequired": "Avatar is required",
+      "durationRequired": "Duration is required",
+      "durationInvalid": "Duration must be a positive number",
       "premiereDateRequired": "Premiere date is required",
       "premiereDateInvalid": "Premiere date is invalid",
       "descriptionRequired": "Description is required",
       "countryRequired": "Country is required",
       "trailerRequired": "Trailer is required",
       "producerRequired": "Producer is required",
-      "producerAvatarInvalid": "Producer avatar URL is invalid",
       "directorRequired": "Select at least one director",
       "categoryRequired": "Select at least one category"
     }
@@ -109,7 +115,7 @@
     "addButton": "Add actor +",
     "addTitle": "Add actor",
     "fullNameLabel": "Full name",
-    "avatarUrlLabel": "Avatar (URL)",
+    "avatarUrlLabel": "Avatar",
     "nationalityLabel": "Nationality",
     "dobLabel": "Date of birth",
     "bioLabel": "Biography",
@@ -133,7 +139,7 @@
     "addButton": "Add director +",
     "addTitle": "Add director",
     "fullNameLabel": "Full name",
-    "avatarUrlLabel": "Avatar (URL)",
+    "avatarUrlLabel": "Avatar",
     "nationalityLabel": "Nationality",
     "dobLabel": "Date of birth",
     "bioLabel": "Biography",
@@ -335,7 +341,8 @@
       "roles": {
         "admin": "Admin",
         "user": "User",
-        "theater": "Theater owner"
+        "theater": "Theater owner",
+        "employee": "Employee"
       },
       "statusActive": "Active",
       "statusInactive": "Inactive",

@@ -4,6 +4,8 @@
     "bookNow": "Đặt vé ngay",
     "breadcrumbMovies": "Phim",
     "releaseDate": "Ngày khởi chiếu",
+    "duration": "Thời lượng",
+    "durationValue": "{{count}} phút",
     "genre": "Thể loại",
     "country": "Quốc gia",
     "director": "Đạo diễn",

@@ -1,5 +1,6 @@
 const actorRepository = require('../repositories/actor.repository');
 const nextId = require('../utils/nextId');
+const { uploadImage } = require('../utils/uploadImage');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // GET /api/actor?page=&limit=
@@ -21,11 +22,14 @@ async function create(req, res) {
   const { full_name, avatar_url, bio, dob, nationality } = req.body;
   if (!full_name) return res.status(400).json({ message: 'full_name is required' });
 
+  const avatarFile = req.files?.avatar_url?.[0];
+  const avatarUrl = avatarFile ? await uploadImage(avatarFile, 'actors') : avatar_url || '';
+
   const id = await nextId('actor');
   const actor = await actorRepository.create({
     id,
     full_name,
-    avatar_url: avatar_url || '',
+    avatar_url: avatarUrl,
     bio: bio || '',
     dob: dob || null,
     nationality: nationality || '',

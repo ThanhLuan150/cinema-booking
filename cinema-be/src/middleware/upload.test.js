@@ -48,6 +48,30 @@ describe('upload middleware fileFilter', () => {
     expect(err.message).toMatch(/Images must be image files/);
   });
 
+  it('accepts an image for the producerAvatar field', async () => {
+    const { err, accept } = await run('producerAvatar', 'image/png');
+    expect(err).toBeNull();
+    expect(accept).toBe(true);
+  });
+
+  it('rejects a non-image for the producerAvatar field', async () => {
+    const { err } = await run('producerAvatar', 'video/mp4');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.message).toMatch(/Producer avatar must be an image/);
+  });
+
+  it('accepts an image for the avatar_url field', async () => {
+    const { err, accept } = await run('avatar_url', 'image/png');
+    expect(err).toBeNull();
+    expect(accept).toBe(true);
+  });
+
+  it('rejects a non-image for the avatar_url field', async () => {
+    const { err } = await run('avatar_url', 'video/mp4');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.message).toMatch(/Avatar must be an image/);
+  });
+
   it('accepts any file for an unrecognized field', async () => {
     const { err, accept } = await run('other', 'application/pdf');
     expect(err).toBeNull();

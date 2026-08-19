@@ -72,18 +72,24 @@ async function getById(req, res) {
 
 // POST /api/movie (movie.create permission — Super Admin only; movie.create is the sole gate,
 async function create(req, res) {
-  const { name, avatar, premiere_date, description, country, trailer, producer, producerAvatar, status } = req.body;
+  const { name, avatar, premiere_date, description, country, trailer, producer, producerAvatar, status, duration } =
+    req.body;
   if (!name || !premiere_date) {
     return res.status(400).json({ message: 'name and premiere_date are required' });
   }
   if (status !== undefined && !['ACTIVE', 'INACTIVE'].includes(status)) {
     return res.status(400).json({ message: 'status must be ACTIVE or INACTIVE' });
   }
+  if (duration !== undefined && (Number.isNaN(Number(duration)) || Number(duration) < 0)) {
+    return res.status(400).json({ message: 'duration must be a non-negative number' });
+  }
 
   const avatarFile = req.files?.avatar?.[0];
   const trailerFile = req.files?.trailer?.[0];
+  const producerAvatarFile = req.files?.producerAvatar?.[0];
   const avatarUrl = avatarFile ? await uploadImage(avatarFile) : avatar || '';
   const trailerUrl = trailerFile ? await uploadTrailer(trailerFile) : trailer || '';
+  const producerAvatarUrl = producerAvatarFile ? await uploadImage(producerAvatarFile) : producerAvatar || '';
 
   const id = await nextId('movie');
   const movie = await movieRepository.create({
@@ -92,12 +98,13 @@ async function create(req, res) {
     status: status || 'ACTIVE',
     name,
     avatar: avatarUrl,
+    duration: duration !== undefined ? Number(duration) : 0,
     premiere_date,
     description: description || '',
     country: country || '',
     trailer: trailerUrl,
     producer: producer || '',
-    producerAvatar: producerAvatar || '',
+    producerAvatar: producerAvatarUrl,
   });
 
   emitPublic('movie:new', movie);
@@ -112,10 +119,14 @@ async function update(req, res) {
   if (req.body.status !== undefined && !['ACTIVE', 'INACTIVE'].includes(req.body.status)) {
     return res.status(400).json({ message: 'status must be ACTIVE or INACTIVE' });
   }
+  if (req.body.duration !== undefined && (Number.isNaN(Number(req.body.duration)) || Number(req.body.duration) < 0)) {
+    return res.status(400).json({ message: 'duration must be a non-negative number' });
+  }
 
   const fields = [
     'name',
     'avatar',
+    'duration',
     'premiere_date',
     'description',
     'country',
@@ -128,10 +139,13 @@ async function update(req, res) {
   for (const field of fields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
+  if (updates.duration !== undefined) updates.duration = Number(updates.duration);
   const avatarFile = req.files?.avatar?.[0];
   const trailerFile = req.files?.trailer?.[0];
+  const producerAvatarFile = req.files?.producerAvatar?.[0];
   if (avatarFile) updates.avatar = await uploadImage(avatarFile);
   if (trailerFile) updates.trailer = await uploadTrailer(trailerFile);
+  if (producerAvatarFile) updates.producerAvatar = await uploadImage(producerAvatarFile);
 
   const movie = await movieRepository.updateFields(req.params.id, updates);
   res.json(movie);

@@ -37,6 +37,16 @@ describe('admin movies.api', () => {
       expect(formData.get('trailer')).toBeNull();
     });
 
+    it('appends the producerAvatar file when provided', () => {
+      const formData = moviesApi.buildMovieFormData(
+        { name: 'Movie A', premiere_date: '2026-01-01' } as any,
+        null,
+        null,
+        new File(['x'], 'producer.png'),
+      );
+      expect(formData.get('producerAvatar')).toBeInstanceOf(File);
+    });
+
     it('skips undefined/null values', () => {
       const formData = moviesApi.buildMovieFormData({ name: 'A', description: undefined } as any);
       expect(formData.has('description')).toBe(false);

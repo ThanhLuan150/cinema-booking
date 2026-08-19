@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createActor, deleteActor } from '../api/actors.api';
+import { createActor, deleteActor, buildActorFormData } from '../api/actors.api';
 import { actorsQueryKey } from './useActors';
-import type { ActorFormValues } from '../types/actor.types';
+import type { CreateActorPayload } from '../types/actor.types';
 
 export function useCreateActor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: ActorFormValues) => createActor(payload),
+    mutationFn: (payload: CreateActorPayload) => {
+      const { avatarFile, ...values } = payload;
+      return createActor(buildActorFormData(values, avatarFile));
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: actorsQueryKey }),
   });
 }

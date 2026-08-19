@@ -8,8 +8,8 @@ export function useCreateMovie() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (payload: CreateMoviePayload) => {
-      const { categoryIds, directorIds, actors, avatarFile, trailerFile, ...rest } = payload;
-      const response = await createMovie(buildMovieFormData(rest, avatarFile, trailerFile));
+      const { categoryIds, directorIds, actors, avatarFile, trailerFile, producerAvatarFile, ...rest } = payload;
+      const response = await createMovie(buildMovieFormData(rest, avatarFile, trailerFile, producerAvatarFile));
       const movieId = response.data.id;
       for (const categoryId of categoryIds) {
         await addMovieCategory({ movie_id: movieId, cat_id: categoryId });

@@ -7,6 +7,7 @@ export interface MovieActorDraft {
 export interface MovieFormValues {
   name: string;
   avatar: string;
+  duration: string;
   premiere_date: string;
   description: string;
   country: string;
@@ -22,6 +23,7 @@ export interface CreateMoviePayload extends MovieFormValues {
   actors: MovieActorDraft[];
   avatarFile?: File | null;
   trailerFile?: File | null;
+  producerAvatarFile?: File | null;
 }
 
 export interface UpdateMoviePayload {
@@ -32,6 +34,7 @@ export interface UpdateMoviePayload {
   actors: MovieActorDraft[];
   avatarFile?: File | null;
   trailerFile?: File | null;
+  producerAvatarFile?: File | null;
 }
 
 export interface AdminMoviesState {
