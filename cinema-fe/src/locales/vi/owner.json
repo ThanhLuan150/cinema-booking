@@ -106,6 +106,7 @@
     "addTitle": "Thêm nhân viên",
     "cinemaLabel": "Rạp",
     "cinemaPlaceholder": "Chọn rạp",
+    "allBranches": "Tất cả chi nhánh",
     "emailLabel": "Email",
     "passwordLabel": "Mật khẩu",
     "nameLabel": "Họ tên",
@@ -126,6 +127,7 @@
     "reactivate": "Kích hoạt lại",
     "headers": {
       "id": "ID",
+      "branch": "Chi nhánh",
       "employeeCode": "Mã nhân viên",
       "name": "Họ tên",
       "email": "Email",

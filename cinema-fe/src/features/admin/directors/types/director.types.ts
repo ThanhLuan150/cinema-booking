@@ -6,6 +6,10 @@ export interface DirectorFormValues {
   nationality: string;
 }
 
+export interface CreateDirectorPayload extends DirectorFormValues {
+  avatarFile?: File | null;
+}
+
 export interface AdminDirectorsState {
   showAddModal: boolean;
 }

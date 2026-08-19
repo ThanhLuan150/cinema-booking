@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Select } from '@/components/ui/Select';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import type { MovieFilters } from '../types/movie.types';
 import { FavoriteCinemaButton } from './FavoriteCinemaButton';
 import { useCategories } from '../hooks/useCategories';
@@ -51,9 +52,9 @@ export function MovieFilterBar({ filters, onChange }: MovieFilterBarProps) {
         {filters.cinema && <FavoriteCinemaButton branchId={Number(filters.cinema)} />}
       </div>
       <div className="min-w-[160px] flex-1">
-        <Input
+        <DateInput
+          id="filterDate"
           label={t('filterBar.date')}
-          type="date"
           value={filters.date ?? ''}
           onChange={(e) => onChange({ ...filters, date: e.target.value || undefined })}
         />

@@ -1,5 +1,10 @@
+jest.mock('../utils/uploadImage', () => ({
+  uploadImage: jest.fn().mockResolvedValue('https://cdn.example.com/actor-avatar.jpg'),
+}));
+
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const actorController = require('./actor.controller');
+const uploadImage = require('../utils/uploadImage');
 const Actor = require('../models/Actor');
 
 function mockRes() {
@@ -10,7 +15,10 @@ function mockRes() {
 }
 
 beforeAll(async () => connect());
-afterEach(async () => clearDatabase());
+afterEach(async () => {
+  await clearDatabase();
+  jest.clearAllMocks();
+});
 afterAll(async () => closeDatabase());
 
 describe('actor.controller', () => {
@@ -39,6 +47,24 @@ describe('actor.controller', () => {
       await actorController.create({ body: { full_name: 'New Actor' } }, res);
       expect(res.status).toHaveBeenCalledWith(201);
       expect(await Actor.findOne({ full_name: 'New Actor' })).not.toBeNull();
+    });
+
+    it('uploads the avatar file when provided instead of using avatar_url', async () => {
+      const res = mockRes();
+      await actorController.create(
+        { body: { full_name: 'With File' }, files: { avatar_url: [{ buffer: Buffer.from('x') }] } },
+        res,
+      );
+      expect(uploadImage.uploadImage).toHaveBeenCalled();
+      const created = await Actor.findOne({ full_name: 'With File' });
+      expect(created.avatar_url).toBe('https://cdn.example.com/actor-avatar.jpg');
+    });
+
+    it('falls back to a plain avatar_url when no file is uploaded', async () => {
+      const res = mockRes();
+      await actorController.create({ body: { full_name: 'With URL', avatar_url: 'https://example.com/a.jpg' } }, res);
+      const created = await Actor.findOne({ full_name: 'With URL' });
+      expect(created.avatar_url).toBe('https://example.com/a.jpg');
     });
   });
 

@@ -14,6 +14,8 @@ import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useAuthRole } from '@/features/auth/hooks/useAuth';
+import { ROLES } from '@/constants/roles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useMyEmployees } from '../../hooks/useMyEmployees';
@@ -27,8 +29,10 @@ import {
 import { closeAddModal, openAddModal, setSelectedbranchId } from '../../store/ownerEmployeesSlice';
 import type { EmployeeFormValues } from '../../types/owner.types';
 
+const ALL_BRANCHES = 'ALL';
+
 const emptyForm = (branchId: string): EmployeeFormValues => ({
-  cinema_id: branchId,
+  cinema_id: branchId === ALL_BRANCHES ? '' : branchId,
   email: '',
   password: '',
   name: '',
@@ -40,21 +44,29 @@ function EmployeeList() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
+  const isAdmin = useAuthRole() === ROLES.admin;
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const { data: positions } = usePositions();
   const { hasPermission } = usePermissions();
   const selectedbranchId = useAppSelector((state) => state.ownerEmployees.selectedbranchId);
   const { showAddModal } = useAppSelector((state) => state.ownerEmployees);
+  const isAllBranches = selectedbranchId === ALL_BRANCHES;
 
   useEffect(() => {
-    if (!selectedbranchId && cinemas.length > 0) {
+    if (selectedbranchId) return;
+    if (isAdmin) {
+      dispatch(setSelectedbranchId(ALL_BRANCHES));
+    } else if (cinemas.length > 0) {
       dispatch(setSelectedbranchId(String(cinemas[0].id)));
     }
-  }, [cinemas, selectedbranchId, dispatch]);
+  }, [cinemas, selectedbranchId, isAdmin, dispatch]);
 
-  const { data } = useMyEmployees(selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE);
+  const { data } = useMyEmployees(isAllBranches ? undefined : selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE, {
+    enabled: Boolean(selectedbranchId),
+  });
   const employees = data?.data ?? [];
+  const branchNameById = useMemo(() => new Map(cinemas.map((c) => [c.id, c.name])), [cinemas]);
   const createEmployeeMutation = useCreateEmployee();
   const updateEmployeeMutation = useUpdateEmployee();
   const deactivateEmployeeMutation = useDeactivateEmployee();
@@ -132,7 +144,10 @@ function EmployeeList() {
             value={selectedbranchId}
             onChange={(e) => dispatch(setSelectedbranchId(e.target.value))}
             placeholder={t('employees.cinemaPlaceholder')}
-            options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
+            options={[
+              ...(isAdmin ? [{ label: t('employees.allBranches'), value: ALL_BRANCHES }] : []),
+              ...cinemas.map((c) => ({ label: c.name, value: c.id })),
+            ]}
           />
         </div>
         {hasPermission('employee.create') && (
@@ -205,6 +220,7 @@ function EmployeeList() {
         <DataTable
           headers={[
             t('employees.headers.id'),
+            ...(isAllBranches ? [t('employees.headers.branch')] : []),
             t('employees.headers.employeeCode'),
             t('employees.headers.name'),
             t('employees.headers.email'),
@@ -216,6 +232,7 @@ function EmployeeList() {
           {employees.map((employee) => (
             <tr key={employee.id}>
               <td>{employee.id}</td>
+              {isAllBranches && <td>{branchNameById.get(employee.branch_id) ?? employee.branch_id}</td>}
               <td>{employee.employee_code}</td>
               <td>{employee.name}</td>
               <td>{employee.email}</td>

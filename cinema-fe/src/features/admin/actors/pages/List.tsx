@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Formik, Field, Form, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -6,6 +6,7 @@ import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Textarea } from '@/components/ui/Textarea';
 import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
@@ -29,6 +30,8 @@ function ActorList() {
   const { showAddModal } = useAppSelector((state) => state.adminActors);
   const createActorMutation = useCreateActor();
   const deleteActorMutation = useDeleteActor();
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const handleDelete = useCallback(
     async (id: number) => {
@@ -46,7 +49,9 @@ function ActorList() {
   const handleSubmit = useCallback(
     async (values: ActorFormValues, { resetForm }: FormikHelpers<ActorFormValues>) => {
       try {
-        await createActorMutation.mutateAsync(values);
+        await createActorMutation.mutateAsync({ ...values, avatarFile });
+        if (avatarInputRef.current) avatarInputRef.current.value = '';
+        setAvatarFile(null);
         toast.success(t('actors.createSuccess'));
         resetForm();
         dispatch(closeAddModal());
@@ -54,7 +59,7 @@ function ActorList() {
         toast.error(getApiErrorMessage(error, t));
       }
     },
-    [createActorMutation, dispatch, t],
+    [avatarFile, createActorMutation, dispatch, t],
   );
 
   const validateActor = useCallback(
@@ -78,16 +83,28 @@ function ActorList() {
             {(formik) => {
               const showErrors = formik.submitCount > 0;
               return (
-                <Form>
+                <Form encType="multipart/form-data">
                   <Field
                     as={Input}
                     label={t('actors.fullNameLabel')}
                     name="full_name"
                     error={showErrors ? formik.errors.full_name : undefined}
                   />
-                  <Field as={Input} label={t('actors.avatarUrlLabel')} name="avatar_url" className="mt-3" />
+                  <Input
+                    label={t('actors.avatarUrlLabel')}
+                    type="file"
+                    name="avatar_url"
+                    accept="image/*"
+                    ref={avatarInputRef}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setAvatarFile(file);
+                      formik.setFieldValue('avatar_url', file ? file.name : '');
+                    }}
+                    className="mt-3"
+                  />
                   <Field as={Input} label={t('actors.nationalityLabel')} name="nationality" className="mt-3" />
-                  <Field as={Input} label={t('actors.dobLabel')} name="dob" type="date" className="mt-3" />
+                  <Field as={DateInput} label={t('actors.dobLabel')} name="dob" id="dob" className="mt-3" />
                   <Field as={Textarea} label={t('actors.bioLabel')} name="bio" className="mt-3" />
                   <div className="mt-6 flex justify-end">
                     <Button type="submit" variant="danger" loading={createActorMutation.isPending}>

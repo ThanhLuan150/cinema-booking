@@ -7,12 +7,23 @@ const employeeController = require('../controllers/employee.controller');
 
 const router = express.Router();
 
+function resolveEmployeeListAccess(req, res, next) {
+  if (req.query.branchId !== undefined && req.query.branchId !== '') {
+    return requireBranchAccess((r) => Number(r.query.branchId))(req, res, next);
+  }
+  if (req.permissionScope !== 'ALL') {
+    return res.status(400).json({ message: 'branchId is required' });
+  }
+  req.branchId = null;
+  next();
+}
+
 // GET /api/employee?branchId= (employee.read permission, cinema-scoped)
 router.get(
   '/',
   requireAuth,
   requirePermission('employee.read'),
-  requireBranchAccess((req) => Number(req.query.branchId)),
+  resolveEmployeeListAccess,
   asyncHandler(employeeController.list),
 );
 

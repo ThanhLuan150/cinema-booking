@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createDirector, deleteDirector } from '../api/directors.api';
+import { createDirector, deleteDirector, buildDirectorFormData } from '../api/directors.api';
 import { directorsQueryKey } from './useDirectors';
-import type { DirectorFormValues } from '../types/director.types';
+import type { CreateDirectorPayload } from '../types/director.types';
 
 export function useCreateDirector() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: DirectorFormValues) => createDirector(payload),
+    mutationFn: (payload: CreateDirectorPayload) => {
+      const { avatarFile, ...values } = payload;
+      return createDirector(buildDirectorFormData(values, avatarFile));
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: directorsQueryKey }),
   });
 }

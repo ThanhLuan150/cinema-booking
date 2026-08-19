@@ -16,8 +16,17 @@ import type { UpdateMoviePayload } from '../types/adminMovie.types';
 export function useUpdateMovie() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, values, categoryIds, directorIds, actors, avatarFile, trailerFile }: UpdateMoviePayload) => {
-      await updateMovie(id, buildMovieFormData(values, avatarFile, trailerFile));
+    mutationFn: async ({
+      id,
+      values,
+      categoryIds,
+      directorIds,
+      actors,
+      avatarFile,
+      trailerFile,
+      producerAvatarFile,
+    }: UpdateMoviePayload) => {
+      await updateMovie(id, buildMovieFormData(values, avatarFile, trailerFile, producerAvatarFile));
 
       await deleteMovieCategoryByMovieId(id);
       for (const categoryId of categoryIds) {

@@ -60,6 +60,7 @@ const ListItem = ({ movie }: { movie: Movie }) => {
           </Badge>
         )}
       </td>
+      <td>{movie.duration ? t('movies.list.durationValue', { count: movie.duration }) : '-'}</td>
       <td>{movie.premiere_date}</td>
       <td>{movie.country}</td>
       <td className="max-w-[150px] truncate">{movie.description}</td>

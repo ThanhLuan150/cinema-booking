@@ -21,6 +21,7 @@ router.get('/:id', asyncHandler(movieController.getById));
 const uploadMoviePoster = upload.fields([
   { name: 'avatar', maxCount: 1 },
   { name: 'trailer', maxCount: 1 },
+  { name: 'producerAvatar', maxCount: 1 },
 ]);
 
 // POST /api/movie (movie.create permission)

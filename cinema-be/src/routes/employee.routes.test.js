@@ -30,6 +30,44 @@ describe('employee.routes wiring', () => {
     expect(res.status).toBe(401);
   });
 
+  it('GET /api/employee without branchId rejects a branch admin (must scope to their own branch)', async () => {
+    const res = await request(app).get('/api/employee').set('Authorization', authHeader({ role: 2, accountId: 42 }));
+    expect(res.status).toBe(400);
+  });
+
+  it('GET /api/employee without branchId lets a super admin list employees across every branch', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 99, name: 'B', code: 'B' },
+    ]);
+    await Employee.create([
+      { id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() },
+      { id: 2, user_id: 8, branch_id: 2, employee_code: 'EMP-000002', position_id: await ticketStaffId() },
+    ]);
+    const res = await request(app).get('/api/employee').set('Authorization', authHeader({ role: 0, accountId: 1 }));
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(2);
+    expect(res.body.data.map((e) => e.branch_id).sort()).toEqual([1, 2]);
+  });
+
+  it('GET /api/employee with branchId still lets a super admin scope to one branch', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 99, name: 'B', code: 'B' },
+    ]);
+    await Employee.create([
+      { id: 1, user_id: 7, branch_id: 1, employee_code: 'EMP-000001', position_id: await ticketStaffId() },
+      { id: 2, user_id: 8, branch_id: 2, employee_code: 'EMP-000002', position_id: await ticketStaffId() },
+    ]);
+    const res = await request(app)
+      .get('/api/employee')
+      .query({ branchId: 1 })
+      .set('Authorization', authHeader({ role: 0, accountId: 1 }));
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(1);
+    expect(res.body.data[0].branch_id).toBe(1);
+  });
+
   it('POST /api/employee forbids a branch admin who does not own the cinema', async () => {
     await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const res = await request(app)

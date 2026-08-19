@@ -12,6 +12,12 @@ const upload = multer({
     if (file.fieldname === 'images' && !isImage) {
       return cb(new Error('Images must be image files'));
     }
+    if (file.fieldname === 'producerAvatar' && !isImage) {
+      return cb(new Error('Producer avatar must be an image file'));
+    }
+    if (file.fieldname === 'avatar_url' && !isImage) {
+      return cb(new Error('Avatar must be an image file'));
+    }
     if (file.fieldname === 'trailer' && !isImage && !isVideo) {
       return cb(new Error('Trailer must be an image or video file'));
     }

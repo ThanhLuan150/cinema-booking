@@ -4,9 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const createDirectorMock = vi.fn();
 const deleteDirectorMock = vi.fn();
+const buildDirectorFormDataMock = vi.fn();
 vi.mock('../api/directors.api', () => ({
   createDirector: (...args: unknown[]) => createDirectorMock(...args),
   deleteDirector: (...args: unknown[]) => deleteDirectorMock(...args),
+  buildDirectorFormData: (...args: unknown[]) => buildDirectorFormDataMock(...args),
 }));
 
 import { useCreateDirector, useDeleteDirector } from './useDirectorMutations';
@@ -24,14 +26,18 @@ describe('director mutation hooks', () => {
   beforeEach(() => {
     createDirectorMock.mockReset();
     deleteDirectorMock.mockReset();
+    buildDirectorFormDataMock.mockReset();
   });
 
   it('useCreateDirector creates and invalidates directors', async () => {
+    const formData = new FormData();
+    buildDirectorFormDataMock.mockReturnValue(formData);
     createDirectorMock.mockResolvedValue({});
     const { wrapper, invalidateSpy } = makeWrapper();
     const { result } = renderHook(() => useCreateDirector(), { wrapper });
     result.current.mutate({ full_name: 'D', avatar_url: '', bio: '', dob: '', nationality: '' });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(createDirectorMock).toHaveBeenCalledWith(formData);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['directors'] });
   });
 

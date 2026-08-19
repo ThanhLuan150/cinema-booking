@@ -2,6 +2,7 @@ import { Formik, Field, Form, type FormikProps, type FormikHelpers } from 'formi
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -131,9 +132,8 @@ function ScheduleFields({
         )}
       </div>
       <Field
-        as={Input}
+        as={DateInput}
         label={t('schedules.add.date')}
-        type="date"
         id="date"
         name="movie_date"
         className="mt-3"

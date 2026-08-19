@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
@@ -32,6 +33,7 @@ interface EditMovieFormValues extends MovieFormValues {
 const emptyValues = (): EditMovieFormValues => ({
   name: '',
   avatar: '',
+  duration: '',
   premiere_date: '',
   description: '',
   country: '',
@@ -60,6 +62,7 @@ function Edit() {
   const updateMovieMutation = useUpdateMovie();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [trailerFile, setTrailerFile] = useState<File | null>(null);
+  const [producerAvatarFile, setProducerAvatarFile] = useState<File | null>(null);
   const movieSchema = useMemo(() => buildMovieSchema(t), [t]);
 
   const handleCloseEdit = () => dispatch(closeEditModal());
@@ -68,6 +71,7 @@ function Edit() {
     ? {
         name: movie.name,
         avatar: movie.avatar,
+        duration: movie.duration ? String(movie.duration) : '',
         premiere_date: movie.premiere_date,
         description: movie.description,
         country: movie.country,
@@ -90,7 +94,16 @@ function Edit() {
     if (!id) return;
     const { categoryIds, directorIds, actors, ...form } = values;
     try {
-      await updateMovieMutation.mutateAsync({ id, values: form, categoryIds, directorIds, actors, avatarFile, trailerFile });
+      await updateMovieMutation.mutateAsync({
+        id,
+        values: form,
+        categoryIds,
+        directorIds,
+        actors,
+        avatarFile,
+        trailerFile,
+        producerAvatarFile,
+      });
       toast.success(t('movies.edit.toastSuccess'));
       handleCloseEdit();
       setTimeout(() => {
@@ -177,8 +190,16 @@ function Edit() {
               />
               <Field
                 as={Input}
+                label={t('movies.edit.fields.duration')}
+                type="number"
+                name="duration"
+                id="duration"
+                className="mt-4"
+                error={getError('duration')}
+              />
+              <Field
+                as={DateInput}
                 label={t('movies.edit.fields.premiereDate')}
-                type="date"
                 name="premiere_date"
                 id="premiere_date"
                 className="mt-4"
@@ -230,14 +251,23 @@ function Edit() {
                 className="mt-4"
                 error={getError('producer')}
               />
-              <Field
-                as={Input}
+              <Input
                 label={t('movies.edit.fields.producerAvatar')}
                 type="text"
-                name="producerAvatar"
                 id="producerAvatar"
+                name="producerAvatar"
+                disabled
+                value={formik.values.producerAvatar}
                 className="mt-2 border-l-2 border-border pl-3"
                 error={getError('producerAvatar')}
+              />
+              <Input
+                label={t('movies.edit.fields.uploadNewProducerAvatar')}
+                type="file"
+                name="up_producerAvatar"
+                accept="image/*"
+                className="mt-2 border-l-2 border-border pl-3"
+                onChange={(e) => setProducerAvatarFile(e.target.files?.[0] ?? null)}
               />
               <Select
                 label={t('movies.edit.fields.status')}

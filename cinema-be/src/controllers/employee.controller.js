@@ -18,9 +18,9 @@ function toEmployeeJson(employee, account, position) {
   };
 }
 
-// GET /api/employee?branchId=&page=&limit= (branch admin/super admin, cinema-scoped)
+// GET /api/employee?branchId=&page=&limit= (branch admin: cinema-scoped; super admin: may omit
 async function list(req, res) {
-  const filter = { branch_id: req.branchId };
+  const filter = req.branchId ? { branch_id: req.branchId } : {};
   const { page, limit, skip } = parsePagination(req.query);
   const { data, total } = await employeeRepository.findAll(filter, { skip, limit });
 

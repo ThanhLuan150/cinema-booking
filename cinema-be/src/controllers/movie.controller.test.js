@@ -119,7 +119,36 @@ describe('movie.controller create', () => {
     expect(res.status).toHaveBeenCalledWith(201);
     const created = await Movie.findOne({ name: 'New Movie' });
     expect(created.owner_id).toBe(42);
+    expect(created.duration).toBe(0);
     expect(socket.emitPublic).toHaveBeenCalledWith('movie:new', expect.objectContaining({ name: 'New Movie' }));
+  });
+
+  it('stores the provided duration in minutes', async () => {
+    const res = mockRes();
+    await movieController.create(
+      { body: { name: 'Timed Movie', premiere_date: '2026-01-01', duration: '128' }, account: { accountId: 1 } },
+      res,
+    );
+    const created = await Movie.findOne({ name: 'Timed Movie' });
+    expect(created.duration).toBe(128);
+  });
+
+  it('rejects a negative duration', async () => {
+    const res = mockRes();
+    await movieController.create(
+      { body: { name: 'Bad Movie', premiere_date: '2026-01-01', duration: '-5' }, account: { accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('rejects a non-numeric duration', async () => {
+    const res = mockRes();
+    await movieController.create(
+      { body: { name: 'Bad Movie', premiere_date: '2026-01-01', duration: 'abc' }, account: { accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it('uploads the avatar file when provided instead of using the avatar url', async () => {
@@ -135,6 +164,37 @@ describe('movie.controller create', () => {
     expect(uploadImage.uploadImage).toHaveBeenCalled();
     const created = await Movie.findOne({ name: 'With File' });
     expect(created.avatar).toBe('https://cdn.example.com/avatar.jpg');
+  });
+
+  it('uploads the producerAvatar file when provided instead of using the producerAvatar url', async () => {
+    const res = mockRes();
+    await movieController.create(
+      {
+        body: { name: 'With Producer File', premiere_date: '2026-01-01' },
+        account: { accountId: 1 },
+        files: { producerAvatar: [{ buffer: Buffer.from('x') }] },
+      },
+      res,
+    );
+    const created = await Movie.findOne({ name: 'With Producer File' });
+    expect(created.producerAvatar).toBe('https://cdn.example.com/avatar.jpg');
+  });
+
+  it('falls back to a plain producerAvatar url when no file is uploaded', async () => {
+    const res = mockRes();
+    await movieController.create(
+      {
+        body: {
+          name: 'With Producer URL',
+          premiere_date: '2026-01-01',
+          producerAvatar: 'https://example.com/p.jpg',
+        },
+        account: { accountId: 1 },
+      },
+      res,
+    );
+    const created = await Movie.findOne({ name: 'With Producer URL' });
+    expect(created.producerAvatar).toBe('https://example.com/p.jpg');
   });
 });
 
@@ -176,6 +236,43 @@ describe('movie.controller update/remove', () => {
     );
     const updated = await Movie.findOne({ id: 1 });
     expect(updated.status).toBe('INACTIVE');
+  });
+
+  it('updates the duration', async () => {
+    await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01', duration: 90 });
+    const res = mockRes();
+    await movieController.update(
+      { params: { id: 1 }, body: { duration: '150' }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    const updated = await Movie.findOne({ id: 1 });
+    expect(updated.duration).toBe(150);
+  });
+
+  it('uploads a new producerAvatar file on update', async () => {
+    await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01', producerAvatar: 'https://old.example.com/p.jpg' });
+    const res = mockRes();
+    await movieController.update(
+      {
+        params: { id: 1 },
+        body: {},
+        account: { role: 0, accountId: 1 },
+        files: { producerAvatar: [{ buffer: Buffer.from('x') }] },
+      },
+      res,
+    );
+    const updated = await Movie.findOne({ id: 1 });
+    expect(updated.producerAvatar).toBe('https://cdn.example.com/avatar.jpg');
+  });
+
+  it('rejects an invalid duration on update', async () => {
+    await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01' });
+    const res = mockRes();
+    await movieController.update(
+      { params: { id: 1 }, body: { duration: '-1' }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it('remove deletes the movie', async () => {
