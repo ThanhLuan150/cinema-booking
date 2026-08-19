@@ -4,8 +4,11 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
-const swalFireMock = vi.fn();
-vi.mock('sweetalert2', () => ({ default: { fire: (...args: unknown[]) => swalFireMock(...args) } }));
+const toastSuccessMock = vi.fn();
+const toastErrorMock = vi.fn();
+vi.mock('@/features/notifications/toast', () => ({
+  toast: { success: (...args: unknown[]) => toastSuccessMock(...args), error: (...args: unknown[]) => toastErrorMock(...args) },
+}));
 
 const useAdminUserByIdMock = vi.fn();
 vi.mock('../hooks/useAdminUserById', () => ({ useAdminUserById: (...args: unknown[]) => useAdminUserByIdMock(...args) }));
@@ -30,7 +33,8 @@ describe('Admin BlockUser', () => {
   beforeEach(() => {
     useAdminUserByIdMock.mockReset();
     blockMutate.mockReset();
-    swalFireMock.mockReset();
+    toastSuccessMock.mockReset();
+    toastErrorMock.mockReset();
     useAdminUserByIdMock.mockReturnValue({ data: { id: 5, name: 'Alice' } });
   });
 
@@ -39,12 +43,20 @@ describe('Admin BlockUser', () => {
     expect(screen.getByText('users.block.confirmTitle')).toBeInTheDocument();
   });
 
-  it('blocks the user and navigates back to the list on confirm', async () => {
+  it('blocks the user, shows a success toast, and navigates back to the list on confirm', async () => {
     blockMutate.mockResolvedValue({});
     renderPage();
     fireEvent.click(screen.getByText('users.block.confirmLabel'));
     expect(await screen.findByText('Users List Page')).toBeInTheDocument();
     expect(blockMutate).toHaveBeenCalledWith('5');
+    expect(toastSuccessMock).toHaveBeenCalledWith('users.block.toastSuccess');
+  });
+
+  it('shows an error toast when blocking fails', async () => {
+    blockMutate.mockRejectedValue(new Error('fail'));
+    renderPage();
+    fireEvent.click(screen.getByText('users.block.confirmLabel'));
+    await vi.waitFor(() => expect(toastErrorMock).toHaveBeenCalled());
   });
 
   it('navigates back without blocking on cancel', () => {

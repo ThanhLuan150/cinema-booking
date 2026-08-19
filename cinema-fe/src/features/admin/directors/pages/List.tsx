@@ -6,6 +6,7 @@ import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Textarea } from '@/components/ui/Textarea';
 import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
@@ -103,7 +104,7 @@ function DirectorList() {
                     className="mt-3"
                   />
                   <Field as={Input} label={t('directors.nationalityLabel')} name="nationality" className="mt-3" />
-                  <Field as={Input} label={t('directors.dobLabel')} name="dob" type="date" className="mt-3" />
+                  <Field as={DateInput} label={t('directors.dobLabel')} name="dob" id="dob" className="mt-3" />
                   <Field as={Textarea} label={t('directors.bioLabel')} name="bio" className="mt-3" />
                   <div className="mt-6 flex justify-end">
                     <Button type="submit" variant="danger" loading={createDirectorMutation.isPending}>

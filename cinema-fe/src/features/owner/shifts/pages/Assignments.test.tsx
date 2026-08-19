@@ -194,6 +194,20 @@ describe('Owner Shift Assignments List', () => {
     expect(screen.getByText('shiftAssignments.assignTitle')).toBeInTheDocument();
   });
 
+  // DateInput has no value to seed the calendar with in the empty Add form, so it opens on the
+  // real current month; picking "1" from the following month keeps the target date deterministic
+  // without depending on which day the suite happens to run on.
+  function pickNextMonthFirstFromCalendar() {
+    const today = new Date();
+    const target = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    fireEvent.click(screen.getByLabelText('shiftAssignments.dateLabel'));
+    fireEvent.click(screen.getByLabelText('Next month'));
+    fireEvent.click(screen.getByRole('gridcell', { name: '1' }));
+    const y = target.getFullYear();
+    const m = String(target.getMonth() + 1).padStart(2, '0');
+    return `${y}-${m}-01`;
+  }
+
   it('shows a toast error surfacing a documented API error code on create failure', async () => {
     useShiftAssignmentsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
     createAssignmentMutate.mockRejectedValue({
@@ -206,12 +220,11 @@ describe('Owner Shift Assignments List', () => {
     fireEvent.click(screen.getByText('Staff A'));
     fireEvent.click(screen.getByText('shiftAssignments.shiftPlaceholder'));
     fireEvent.click(screen.getByText('Morning (08:00-16:00)'));
-    const dateInput = document.body.querySelector('input[name="date"]') as HTMLInputElement;
-    fireEvent.change(dateInput, { target: { value: '2026-08-12' } });
+    const expectedDate = pickNextMonthFirstFromCalendar();
 
     fireEvent.click(screen.getByText('shiftAssignments.submit'));
     await waitFor(() =>
-      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: '2026-08-12' }),
+      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: expectedDate }),
     );
   });
 
@@ -225,12 +238,11 @@ describe('Owner Shift Assignments List', () => {
     fireEvent.click(screen.getByText('Staff A'));
     fireEvent.click(screen.getByText('shiftAssignments.shiftPlaceholder'));
     fireEvent.click(screen.getByText('Morning (08:00-16:00)'));
-    const dateInput = document.body.querySelector('input[name="date"]') as HTMLInputElement;
-    fireEvent.change(dateInput, { target: { value: '2026-08-12' } });
+    const expectedDate = pickNextMonthFirstFromCalendar();
 
     fireEvent.click(screen.getByText('shiftAssignments.submit'));
     await waitFor(() =>
-      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: '2026-08-12' }),
+      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: expectedDate }),
     );
   });
 

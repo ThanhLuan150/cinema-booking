@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { toast } from '@/features/notifications/toast';
+import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminUserById } from '../hooks/useAdminUserById';
 import { useUnblockUser } from '../hooks/useUnblockUser';
 import { ROUTES } from '@/constants/routes';
@@ -17,10 +18,10 @@ const UnblockUser = () => {
     if (!id) return;
     try {
       await unblockUserMutation.mutateAsync({ id, status: 1 });
-      Swal.fire(t('users.unblock.swalTitle'), t('users.unblock.swalText'));
+      toast.success(t('users.unblock.toastSuccess'));
       navigate(ROUTES.adminUsers, { replace: true });
     } catch (error) {
-      console.error('Error unblocking user:', error);
+      toast.error(getApiErrorMessage(error, t));
     }
   };
 

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { toast } from '@/features/notifications/toast';
+import { getApiErrorMessage } from '@/lib/apiError';
 import { useDeleteUser } from '../hooks/useDeleteUser';
 import { ROUTES } from '@/constants/routes';
 
@@ -15,10 +16,10 @@ const AdminUsersDelete = () => {
     if (!id) return;
     try {
       await deleteUserMutation.mutateAsync(id);
-      Swal.fire(t('users.delete.swalTitle'), t('users.delete.swalText'));
+      toast.success(t('users.delete.toastSuccess'));
       navigate(ROUTES.adminUsers, { replace: true });
     } catch (error) {
-      console.error('Error deleting user:', error);
+      toast.error(getApiErrorMessage(error, t));
     }
   };
 

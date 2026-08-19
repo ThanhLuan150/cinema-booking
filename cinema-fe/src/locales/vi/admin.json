@@ -307,22 +307,22 @@
   },
   "users": {
     "block": {
-      "swalTitle": "Đã khóa người dùng",
-      "swalText": "Thành công",
+      "toastSuccess": "Đã khóa người dùng.",
+      "toastError": "Không thể khóa người dùng.",
       "confirmTitle": "Xác nhận khóa",
       "confirmMessage": "Bạn có chắc muốn khóa {{name}}?",
       "confirmLabel": "Khóa"
     },
     "unblock": {
-      "swalTitle": "Đã mở khóa người dùng",
-      "swalText": "Thành công",
+      "toastSuccess": "Đã mở khóa người dùng.",
+      "toastError": "Không thể mở khóa người dùng.",
       "confirmTitle": "Xác nhận mở khóa",
       "confirmMessage": "Bạn có chắc muốn mở khóa {{name}}?",
       "confirmLabel": "Mở khóa"
     },
     "delete": {
-      "swalTitle": "Đã xóa người dùng",
-      "swalText": "Thành công",
+      "toastSuccess": "Đã xóa người dùng.",
+      "toastError": "Không thể xóa người dùng.",
       "confirmTitle": "Xác nhận xóa",
       "confirmMessage": "Bạn có chắc muốn xóa người dùng này?",
       "confirmLabel": "Xóa"
@@ -346,7 +346,6 @@
       },
       "statusActive": "Hoạt động",
       "statusInactive": "Đã khóa",
-      "roleChangeSuccess": "Đã đổi quyền.",
       "pendingApproval": "Chờ duyệt",
       "approveButton": "Duyệt",
       "approveSuccess": "Đã duyệt tài khoản chủ rạp."

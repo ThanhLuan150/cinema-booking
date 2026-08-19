@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -175,9 +176,8 @@ const Add = () => {
                 error={getError('duration')}
               />
               <Field
-                as={Input}
+                as={DateInput}
                 label={t('movies.add.fields.premiereDate')}
-                type="date"
                 name="premiere_date"
                 id="premiere_date"
                 className="mt-4"

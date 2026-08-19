@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -9,38 +9,24 @@ import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminUsers } from '../hooks/useAdminUsers';
-import { useUpdateUserRole } from '../hooks/useUpdateUserRole';
 import { useApproveUser } from '../hooks/useApproveUser';
 import { ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
-import { Select } from 'components/ui/Select';
 
-// Only admin/user/theater-owner are assignable via PUT /users/:id/role (backend rejects any
-// other value) — an EMPLOYEE account is managed through the Branch Admin's employee module
-// instead, so it gets a static label below rather than a dropdown that can never save.
-const ROLE_KEY: Record<number, string> = { [ROLES.admin]: 'admin', [ROLES.customer]: 'user', [ROLES.owner]: 'theater' };
-const EMPLOYEE_ROLE_LABEL_KEY = 'employee';
+const ROLE_KEY: Record<number, string> = {
+  [ROLES.admin]: 'admin',
+  [ROLES.customer]: 'user',
+  [ROLES.owner]: 'theater',
+  [ROLES.employee]: 'employee',
+};
 
 const List = () => {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
   const { data } = useAdminUsers(page, DEFAULT_PAGE_SIZE);
   const users = data?.data ?? [];
-  const updateUserRoleMutation = useUpdateUserRole();
   const approveUserMutation = useApproveUser();
-
-  const handleRoleChange = useCallback(
-    async (userId: number, role: string) => {
-      try {
-        await updateUserRoleMutation.mutateAsync({ userId, role: Number(role) });
-        toast.success(t('users.list.roleChangeSuccess'));
-      } catch (error) {
-        toast.error(getApiErrorMessage(error, t));
-      }
-    },
-    [updateUserRoleMutation, t],
-  );
 
   const handleApprove = useCallback(
     async (userId: number) => {
@@ -54,11 +40,6 @@ const List = () => {
     [approveUserMutation, t],
   );
 
-  const roleOptions = useMemo(
-    () => Object.entries(ROLE_KEY).map(([value, key]) => ({ value, label: t(`users.list.roles.${key}`) })),
-    [t],
-  );
-
   return (
     <AdminLayout breadcrumb={t('users.list.breadcrumb')}>
       <DataTable headers={t('users.list.headers', { returnObjects: true }) as unknown as string[]}>
@@ -69,16 +50,7 @@ const List = () => {
             <td>{user.phone}</td>
             <td>{user.email}</td>
             <td>
-              {user.role === ROLES.employee ? (
-                <Badge variant="default">{t(`users.list.roles.${EMPLOYEE_ROLE_LABEL_KEY}`)}</Badge>
-              ) : (
-                <Select
-                  value={user.role}
-                  options={roleOptions}
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  className="min-w-[9rem] py-2 text-sm"
-                />
-              )}
+              <Badge variant="default">{t(`users.list.roles.${ROLE_KEY[user.role] ?? 'user'}`)}</Badge>
             </td>
             <td>
               <div className="flex flex-wrap items-center gap-1.5">

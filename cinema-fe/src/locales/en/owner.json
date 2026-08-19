@@ -106,6 +106,7 @@
     "addTitle": "Add employee",
     "cinemaLabel": "Cinema",
     "cinemaPlaceholder": "Select cinema",
+    "allBranches": "All branches",
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "nameLabel": "Full name",
@@ -126,6 +127,7 @@
     "reactivate": "Reactivate",
     "headers": {
       "id": "ID",
+      "branch": "Branch",
       "employeeCode": "Employee code",
       "name": "Full name",
       "email": "Email",

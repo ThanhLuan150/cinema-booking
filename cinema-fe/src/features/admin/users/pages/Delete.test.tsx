@@ -4,8 +4,11 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
-const swalFireMock = vi.fn();
-vi.mock('sweetalert2', () => ({ default: { fire: (...args: unknown[]) => swalFireMock(...args) } }));
+const toastSuccessMock = vi.fn();
+const toastErrorMock = vi.fn();
+vi.mock('@/features/notifications/toast', () => ({
+  toast: { success: (...args: unknown[]) => toastSuccessMock(...args), error: (...args: unknown[]) => toastErrorMock(...args) },
+}));
 
 const deleteMutate = vi.fn();
 vi.mock('../hooks/useDeleteUser', () => ({ useDeleteUser: () => ({ mutateAsync: deleteMutate }) }));
@@ -26,15 +29,24 @@ function renderPage() {
 describe('Admin Users Delete', () => {
   beforeEach(() => {
     deleteMutate.mockReset();
-    swalFireMock.mockReset();
+    toastSuccessMock.mockReset();
+    toastErrorMock.mockReset();
   });
 
-  it('deletes the user and navigates back to the list', async () => {
+  it('deletes the user, shows a success toast, and navigates back to the list', async () => {
     deleteMutate.mockResolvedValue({});
     renderPage();
     fireEvent.click(screen.getByText('users.delete.confirmLabel'));
     expect(await screen.findByText('Users List Page')).toBeInTheDocument();
     expect(deleteMutate).toHaveBeenCalledWith('5');
+    expect(toastSuccessMock).toHaveBeenCalledWith('users.delete.toastSuccess');
+  });
+
+  it('shows an error toast when deletion fails', async () => {
+    deleteMutate.mockRejectedValue(new Error('fail'));
+    renderPage();
+    fireEvent.click(screen.getByText('users.delete.confirmLabel'));
+    await vi.waitFor(() => expect(toastErrorMock).toHaveBeenCalled());
   });
 
   it('navigates back without deleting on cancel', () => {

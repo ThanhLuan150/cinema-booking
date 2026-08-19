@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Select } from '@/components/ui/Select';
 import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
@@ -160,9 +161,9 @@ function ShiftAssignmentList() {
             options={employees.map((employee) => ({ label: employee.name || employee.employee_code, value: employee.id }))}
           />
         </div>
-        <Input
+        <DateInput
+          id="dateFilter"
           label={t('shiftAssignments.filters.dateLabel')}
-          type="date"
           value={dateFilter}
           onChange={(e) => {
             setDateFilter(e.target.value);
@@ -217,10 +218,10 @@ function ShiftAssignmentList() {
                     error={showErrors ? formik.errors.shift_id : undefined}
                   />
                   <Field
-                    as={Input}
+                    as={DateInput}
                     label={t('shiftAssignments.dateLabel')}
                     name="date"
-                    type="date"
+                    id="date"
                     className="mt-3"
                     error={showErrors ? formik.errors.date : undefined}
                   />

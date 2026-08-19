@@ -68,7 +68,8 @@ export const getOwnerDashboard = (branchId?: number | string) =>
 export const lookupInvoiceByCode = (code: string) =>
   apiClient.get<LookedUpInvoice>(`/invoice/lookup/${code}`).then((res) => res.data);
 
-export const getMyEmployees = (branchId: number | string, params?: PaginationParams) =>
+// branchId omitted (Super Admin only, backend enforces this) lists employees across every branch.
+export const getMyEmployees = (branchId: number | string | undefined, params?: PaginationParams) =>
   apiClient
     .get<PaginatedResponse<Employee>>('/employee', { params: { branchId, ...params } })
     .then((res) => res.data);

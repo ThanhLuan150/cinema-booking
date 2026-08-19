@@ -46,11 +46,6 @@ describe('admin users.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/users/5');
   });
 
-  it('updateUserRole puts /users/:id/role', async () => {
-    await usersApi.updateUserRole(5, 2);
-    expect(putMock).toHaveBeenCalledWith('/users/5/role', { role: 2 });
-  });
-
   it('approveUser puts /users/:id/approve', async () => {
     await usersApi.approveUser(5);
     expect(putMock).toHaveBeenCalledWith('/users/5/approve');

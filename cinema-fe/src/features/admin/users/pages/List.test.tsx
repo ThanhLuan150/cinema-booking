@@ -26,9 +26,6 @@ vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => (
 const useAdminUsersMock = vi.fn();
 vi.mock('../hooks/useAdminUsers', () => ({ useAdminUsers: (...args: unknown[]) => useAdminUsersMock(...args) }));
 
-const updateRoleMutate = vi.fn();
-vi.mock('../hooks/useUpdateUserRole', () => ({ useUpdateUserRole: () => ({ mutateAsync: updateRoleMutate }) }));
-
 const approveMutate = vi.fn();
 vi.mock('../hooks/useApproveUser', () => ({ useApproveUser: () => ({ mutateAsync: approveMutate, isPending: false }) }));
 
@@ -51,7 +48,6 @@ function renderPage() {
 describe('Admin Users List', () => {
   beforeEach(() => {
     useAdminUsersMock.mockReset();
-    updateRoleMutate.mockReset();
     approveMutate.mockReset();
   });
 
@@ -67,17 +63,23 @@ describe('Admin Users List', () => {
     expect(screen.getByText('a@b.com')).toBeInTheDocument();
   });
 
-  it('shows a static Employee label instead of a role dropdown for an employee account', () => {
+  it('shows every role as a static label, not an editable dropdown', () => {
     useAdminUsersMock.mockReturnValue({
       data: {
-        data: [{ id: 3, name: 'Staff', phone: '', email: 'staff@b.com', role: 3, status: 1, approved: true }],
+        data: [
+          { id: 1, name: 'Admin', phone: '', email: 'admin@b.com', role: 0, status: 1, approved: true },
+          { id: 2, name: 'Owner', phone: '', email: 'owner@b.com', role: 2, status: 1, approved: true },
+          { id: 3, name: 'Staff', phone: '', email: 'staff@b.com', role: 3, status: 1, approved: true },
+        ],
         totalPages: 1,
       },
     });
     renderPage();
+    expect(screen.getByText('users.list.roles.admin')).toBeInTheDocument();
+    expect(screen.getByText('users.list.roles.theater')).toBeInTheDocument();
     expect(screen.getByText('users.list.roles.employee')).toBeInTheDocument();
-    const row = screen.getByText('Staff').closest('tr');
-    expect(row?.querySelector('button[aria-haspopup="listbox"]')).not.toBeInTheDocument();
+    const table = screen.getByText('Admin').closest('table');
+    expect(table?.querySelector('button[aria-haspopup="listbox"]')).not.toBeInTheDocument();
   });
 
   it('shows an approve button for a pending theater owner', async () => {

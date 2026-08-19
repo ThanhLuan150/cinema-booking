@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { toast } from '@/features/notifications/toast';
+import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminUserById } from '../hooks/useAdminUserById';
 import { useBlockUser } from '../hooks/useBlockUser';
 import { ROUTES } from '@/constants/routes';
@@ -17,10 +18,10 @@ const BlockUser = () => {
     if (!id) return;
     try {
       await blockUserMutation.mutateAsync(id);
-      Swal.fire(t('users.block.swalTitle'), t('users.block.swalText'));
+      toast.success(t('users.block.toastSuccess'));
       navigate(ROUTES.adminUsers, { replace: true });
     } catch (error) {
-      console.error('Error blocking user:', error);
+      toast.error(getApiErrorMessage(error, t));
     }
   };
 

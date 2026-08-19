@@ -14,6 +14,4 @@ export const unblockUser = (id: number | string, payload: { status: number }) =>
 
 export const deleteUser = (id: number | string) => apiClient.delete(`/users/${id}`);
 
-export const updateUserRole = (id: number | string, role: number) => apiClient.put(`/users/${id}/role`, { role });
-
 export const approveUser = (id: number | string) => apiClient.put(`/users/${id}/approve`);
