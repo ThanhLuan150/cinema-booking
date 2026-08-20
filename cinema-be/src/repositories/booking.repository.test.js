@@ -246,6 +246,75 @@ describe('booking.repository', () => {
     expect(await bookingRepository.findCinemaIdByInvoiceId(999)).toBeNull();
   });
 
+  describe('seat holds', () => {
+    it('holdTickets claims an available seat and leaves others untouched', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 0 },
+      ]);
+      const until = new Date(Date.now() + 60000);
+      const result = await bookingRepository.holdTickets({ scheduleId: 1, seatCodes: ['A1', 'A2'], accountId: 42, until });
+      const byCode = new Map(result.map((t) => [t.seat_code, t]));
+      expect(byCode.get('A1').status).toBe(2);
+      expect(byCode.get('A1').held_by).toBe(42);
+      expect(byCode.get('A2').status).toBe(0);
+    });
+
+    it('holdTickets does not steal a seat already held by another account', async () => {
+      await Ticket.create({
+        id: 1,
+        schedule_id: 1,
+        seat_index: 0,
+        seat_code: 'A1',
+        status: 2,
+        held_by: 7,
+        held_until: new Date(Date.now() + 60000),
+      });
+      const result = await bookingRepository.holdTickets({
+        scheduleId: 1,
+        seatCodes: ['A1'],
+        accountId: 42,
+        until: new Date(Date.now() + 60000),
+      });
+      expect(result[0].held_by).toBe(7);
+    });
+
+    it('releaseTickets only releases seats held by the given account', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) },
+      ]);
+      const result = await bookingRepository.releaseTickets({ scheduleId: 1, seatCodes: ['A1', 'A2'], accountId: 42 });
+      const byCode = new Map(result.map((t) => [t.seat_code, t]));
+      expect(byCode.get('A1').status).toBe(1);
+      expect(byCode.get('A1').held_by).toBeNull();
+      expect(byCode.get('A2').status).toBe(2);
+      expect(byCode.get('A2').held_by).toBe(7);
+    });
+
+    it('expireHeldTickets releases only holds whose TTL has passed', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() - 1000) },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+      ]);
+      await bookingRepository.expireHeldTickets(1);
+      const tickets = await Ticket.find({ schedule_id: 1 }).sort({ seat_code: 1 });
+      expect(tickets[0].status).toBe(1);
+      expect(tickets[0].held_by).toBeNull();
+      expect(tickets[1].status).toBe(2);
+    });
+
+    it('findTicketsBySeatCodes scopes to the given schedule and seat codes', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' },
+        { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'A1' },
+      ]);
+      const result = await bookingRepository.findTicketsBySeatCodes(1, ['A1']);
+      expect(result).toHaveLength(1);
+      expect(result[0].schedule_id).toBe(1);
+    });
+  });
+
   it('createCounterSale records a paid invoice with created_by set', async () => {
     await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });

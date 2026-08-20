@@ -27,6 +27,7 @@
   "VOUCHER_MIN_ORDER_NOT_MET": "Minimum order of {{minOrderValue}} required to apply this code",
   "MOVIE_NOT_ACTIVE": "This movie is not active and cannot be scheduled",
   "ROOM_NOT_ACTIVE": "This room is not active",
+  "ROOM_HAS_NO_SEAT_MAP": "This room has no seat map yet. Set up seats for this room before creating a showtime.",
   "BEFORE_PREMIERE": "The showtime cannot be scheduled before the movie is released",
   "SCHEDULE_OVERLAP": "This room already has a showtime in the given time range",
   "INVALID_TIME_RANGE": "Start time must be before end time",
@@ -39,5 +40,7 @@
   "SHIFT_NOT_ACTIVE": "This shift is not active",
   "BRANCH_MISMATCH": "Employee and shift must belong to the same branch",
   "DUPLICATE_ASSIGNMENT": "This employee is already assigned to this shift on this date",
+  "SEAT_UNAVAILABLE": "One or more selected seats are no longer available",
+  "NOT_YOUR_HOLD": "This seat is held by another customer",
   "GENERIC": "Something went wrong, please try again."
 }

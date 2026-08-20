@@ -20,4 +20,21 @@ describe('Input', () => {
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Alice' } });
     expect(onChange).toHaveBeenCalled();
   });
+
+  it('does not render a show/hide toggle for a non-password input', () => {
+    render(<Input id="email" label="Email" type="email" />);
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('toggles a password field between hidden and visible', () => {
+    render(<Input id="pwd" label="Password" type="password" />);
+    const input = screen.getByLabelText('Password');
+    expect(input).toHaveAttribute('type', 'password');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show password' }));
+    expect(input).toHaveAttribute('type', 'text');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Hide password' }));
+    expect(input).toHaveAttribute('type', 'password');
+  });
 });

@@ -4,6 +4,7 @@ const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
+const Seat = require('../models/Seat');
 
 function mockRes() {
   const res = {};
@@ -16,10 +17,17 @@ beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
-async function seedMovieAndRoom({ movieStatus = 'ACTIVE', roomStatus = 'ACTIVE', premiere_date = '2026-01-01' } = {}) {
+async function seedMovieAndRoom({
+  movieStatus = 'ACTIVE',
+  roomStatus = 'ACTIVE',
+  premiere_date = '2026-01-01',
+  // A showtime can only exist for a room that has a bookable seat map, so the happy path seeds one.
+  seats = [{ id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' }],
+} = {}) {
   await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
   await Movie.create({ id: 1, name: 'A', premiere_date, status: movieStatus });
   await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', status: roomStatus });
+  if (seats.length > 0) await Seat.create(seats);
 }
 
 describe('schedule.controller list', () => {
@@ -145,6 +153,29 @@ describe('schedule.controller create', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ROOM_NOT_ACTIVE' }));
   });
 
+  // Ticket generation is a separate call the client makes after this one, so creating a
+  // showtime for a seatless room used to leave behind a persisted showtime with no tickets —
+  // a "ghost" showtime the booking page renders as an empty seat map.
+  it('rejects a room with no seat map, without persisting the showtime', async () => {
+    await seedMovieAndRoom({ seats: [] });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ROOM_HAS_NO_SEAT_MAP' }));
+    expect(await Schedule.countDocuments()).toBe(0);
+  });
+
+  it('rejects a room whose seats are all DISABLED', async () => {
+    await seedMovieAndRoom({
+      seats: [{ id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', status: 'DISABLED' }],
+    });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ROOM_HAS_NO_SEAT_MAP' }));
+    expect(await Schedule.countDocuments()).toBe(0);
+  });
+
   it('rejects a CLOSED room', async () => {
     await seedMovieAndRoom({ roomStatus: 'CLOSED' });
     const res = mockRes();
@@ -186,6 +217,7 @@ describe('schedule.controller create', () => {
     await seedMovieAndRoom();
     await Branch.create({ id: 2, company_id: 1, owner_id: 99, name: 'Cinema B', code: 'B' });
     await Room.create({ id: 2, cinema_id: 2, name: 'Room 1', status: 'ACTIVE' });
+    await Seat.create({ id: 2, room_id: 2, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' });
 
     const firstBranch = mockRes();
     await scheduleController.create(baseReq(), firstBranch);

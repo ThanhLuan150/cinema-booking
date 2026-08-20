@@ -13,7 +13,9 @@
       "vip": "VIP",
       "couple": "Duo",
       "selecting": "Sélectionné",
-      "sold": "Vendu"
+      "held": "Réservé temporairement",
+      "sold": "Vendu",
+      "disabled": "Verrouillé"
     },
     "noSeatMap": {
       "title": "Cette séance n'a pas encore de plan de salle",

@@ -13,7 +13,9 @@
       "vip": "VIP",
       "couple": "Đôi",
       "selecting": "Đang chọn",
-      "sold": "Đã bán"
+      "held": "Đang giữ",
+      "sold": "Đã bán",
+      "disabled": "Đã khóa"
     },
     "noSeatMap": {
       "title": "Suất chiếu này chưa có sơ đồ ghế",

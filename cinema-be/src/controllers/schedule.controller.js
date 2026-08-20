@@ -1,6 +1,7 @@
 const scheduleRepository = require('../repositories/schedule.repository');
 const movieRepository = require('../repositories/movie.repository');
 const roomRepository = require('../repositories/room.repository');
+const seatRepository = require('../repositories/seat.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
@@ -65,6 +66,16 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
     res
       .status(400)
       .json({ message: `Room is ${room.status.toLowerCase()} and cannot receive new showtimes`, code: 'ROOM_NOT_ACTIVE' });
+    return null;
+  }
+  // Ticket generation (POST /api/ticket) is a separate call the client makes right after this
+  // one, so a room with no seat map would leave a persisted showtime with no tickets behind —
+  // a "ghost" showtime the booking page renders as an empty seat map. Fail here, before any write.
+  if ((await seatRepository.countActiveByRoomId(room.id)) === 0) {
+    res.status(400).json({
+      message: 'This room has no seat map yet. Set up seats for this room first.',
+      code: 'ROOM_HAS_NO_SEAT_MAP',
+    });
     return null;
   }
   // BRANCH scope: the room must belong to the branch the requireCinemaOwnership middleware

@@ -32,5 +32,7 @@
   "SHIFT_NOT_ACTIVE": "Cette équipe n'est pas active",
   "BRANCH_MISMATCH": "L'employé et l'équipe doivent appartenir à la même succursale",
   "DUPLICATE_ASSIGNMENT": "Cet employé est déjà affecté à cette équipe à cette date",
+  "SEAT_UNAVAILABLE": "Un ou plusieurs sièges sélectionnés ne sont plus disponibles",
+  "NOT_YOUR_HOLD": "Ce siège est réservé par un autre client",
   "GENERIC": "Une erreur s'est produite, veuillez réessayer."
 }

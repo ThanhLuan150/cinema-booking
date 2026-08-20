@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { cn } from '@/lib/cn';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -18,6 +20,9 @@ import { getMoviePosterUrl } from '@/utils';
 import { BookingSteps } from '../components/BookingSteps';
 import { useScheduleId } from '../hooks/useScheduleId';
 import { useBookedSeats } from '../hooks/useBookedSeats';
+import { useRoomSeats } from '../hooks/useRoomSeats';
+import { useHoldSeats } from '../hooks/useHoldSeats';
+import { useReleaseSeats } from '../hooks/useReleaseSeats';
 import { useScheduleDetail } from '../hooks/useScheduleDetail';
 import { useRoomsList } from '../hooks/useRoomsList';
 import { useCombos } from '../hooks/useCombos';
@@ -44,16 +49,75 @@ import {
 } from '@/constants/seatType';
 import { TICKET_STATUS } from '@/constants/ticketStatus';
 import { ROUTES } from '@/constants/routes';
+import { Seat } from 'types/entities';
 
 function priceForSeatType(basePrice: number, seatType: number) {
   return Math.round(basePrice * (SEAT_TYPE_MULTIPLIER[seatType] ?? 1));
 }
 
-function SeatGrid({ scheduleId }: { scheduleId: number | null }) {
+type SeatCellStatus = 'AVAILABLE' | 'HELD' | 'BOOKED' | 'DISABLED';
+
+interface SeatCell {
+  seatCode: string;
+  seatType: number;
+  status: SeatCellStatus;
+  // null only for a DISABLED seat, which has no ticket to select
+  ticket: BookedSeatTicket | null;
+}
+
+
+function buildSeatCells(tickets: BookedSeatTicket[], roomSeats: Seat[]): SeatCell[] {
+  const ticketBySeatCode = new Map(tickets.map((ticket) => [ticket.seat_code, ticket]));
+  // Room seat map hasn't loaded yet (or the room has none on record) — fall back to laying out
+  // purely from tickets so the grid still renders once schedule data arrives.
+  const seatSlots =
+    roomSeats.length > 0
+      ? roomSeats.map((seat) => ({ seat_code: seat.seat_code, seat_type: seat.seat_type, isDisabled: seat.status === 'DISABLED' }))
+      : tickets.map((ticket) => ({ seat_code: ticket.seat_code, seat_type: ticket.seat_type, isDisabled: false }));
+
+  const cells: SeatCell[] = [];
+  for (const seat of seatSlots) {
+    if (seat.isDisabled) {
+      cells.push({ seatCode: seat.seat_code, seatType: seat.seat_type, status: 'DISABLED', ticket: null });
+      continue;
+    }
+    const ticket = ticketBySeatCode.get(seat.seat_code);
+    if (!ticket) continue;
+    const status: SeatCellStatus =
+      ticket.status === TICKET_STATUS.sold ? 'BOOKED' : ticket.status === TICKET_STATUS.held ? 'HELD' : 'AVAILABLE';
+    cells.push({ seatCode: seat.seat_code, seatType: ticket.seat_type, status, ticket });
+  }
+  return cells;
+}
+
+function seatCellClass(cell: SeatCell, isSelected: boolean) {
+  if (cell.status === 'DISABLED') return 'cursor-not-allowed bg-white/10 text-white/30 line-through';
+  if (cell.status === 'BOOKED') return 'cursor-not-allowed bg-white/25';
+  if (cell.status === 'HELD' && !cell.ticket?.held_by_me) return 'cursor-not-allowed bg-white/40';
+  return cn(
+    'cursor-pointer hover:scale-110',
+    SEAT_TYPE_CLASS[cell.seatType] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard],
+    isSelected && 'scale-110 bg-emerald-500 text-white ring-2 ring-white',
+  );
+}
+
+function seatCellTitle(cell: SeatCell, t: TFunction) {
+  if (cell.status === 'DISABLED') return t('bookSeat.legend.disabled');
+  if (cell.status === 'BOOKED') return t('bookSeat.legend.sold');
+  if (cell.status === 'HELD') return t(cell.ticket?.held_by_me ? 'bookSeat.legend.selecting' : 'bookSeat.legend.held');
+  return t(`bookSeat.legend.${SEAT_TYPE_KEY[cell.seatType] ?? 'standard'}`);
+}
+
+function SeatGrid({ scheduleId, roomId }: { scheduleId: number | null; roomId: number | null }) {
   const { t } = useTranslation('booking');
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const selectedSeatCodes = useAppSelector((state) => state.booking.selectedSeatCodes);
   const { data: ticketList = [], isLoading } = useBookedSeats(scheduleId);
+  const { data: roomSeats = [] } = useRoomSeats(roomId);
+  const holdSeatsMutation = useHoldSeats(scheduleId);
+  const releaseSeatsMutation = useReleaseSeats(scheduleId);
+  const isMutating = holdSeatsMutation.isPending || releaseSeatsMutation.isPending;
 
   if (!scheduleId || isLoading) {
     return (
@@ -72,20 +136,40 @@ function SeatGrid({ scheduleId }: { scheduleId: number | null }) {
     );
   }
 
-  const rows: Record<string, BookedSeatTicket[]> = {};
-  for (const ticket of ticketList) {
-    const match = ticket.seat_code.match(/^([A-Za-z]+)(\d+)$/);
+  const cells = buildSeatCells(ticketList, roomSeats);
+  const rows: Record<string, SeatCell[]> = {};
+  for (const cell of cells) {
+    const match = cell.seatCode.match(/^([A-Za-z]+)(\d+)$/);
     if (!match) continue;
     const rowLetter = match[1];
     if (!rows[rowLetter]) rows[rowLetter] = [];
-    rows[rowLetter].push(ticket);
+    rows[rowLetter].push(cell);
   }
   for (const rowLetter of Object.keys(rows)) {
     rows[rowLetter].sort(
       (a, b) =>
-        Number(a.seat_code.slice(rowLetter.length)) - Number(b.seat_code.slice(rowLetter.length)),
+        Number(a.seatCode.slice(rowLetter.length)) - Number(b.seatCode.slice(rowLetter.length)),
     );
   }
+
+  const handleSelect = (cell: SeatCell) => {
+    if (!cell.ticket) return;
+    const ticket = cell.ticket;
+    const isSelected = selectedSeatCodes.includes(cell.seatCode);
+    if (isSelected) {
+      // Release optimistically — worst case the hold simply expires on its own TTL.
+      dispatch(toggleSeat(ticket));
+      releaseSeatsMutation.mutate([cell.seatCode]);
+      return;
+    }
+    holdSeatsMutation.mutate([cell.seatCode], {
+      onSuccess: () => dispatch(toggleSeat(ticket)),
+      onError: (error) => {
+        toast.error(getApiErrorMessage(error, t));
+        queryClient.invalidateQueries({ queryKey: ['bookedSeats', scheduleId] });
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -93,30 +177,22 @@ function SeatGrid({ scheduleId }: { scheduleId: number | null }) {
         .sort()
         .map((rowLetter) => (
           <div className="flex gap-1" key={rowLetter}>
-            {rows[rowLetter].map((ticket) => {
-              const isSelected = selectedSeatCodes.includes(ticket.seat_code);
-              const isSold = ticket.status === TICKET_STATUS.sold;
+            {rows[rowLetter].map((cell) => {
+              const isSelected = selectedSeatCodes.includes(cell.seatCode);
+              const isSelectable =
+                !isMutating && cell.ticket && (cell.status === 'AVAILABLE' || (cell.status === 'HELD' && cell.ticket.held_by_me));
               return (
                 <button
                   type="button"
-                  key={ticket.seat_code}
-                  title={t(`bookSeat.legend.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)}
+                  key={cell.seatCode}
+                  title={seatCellTitle(cell, t)}
                   className={cn(
                     'flex h-8 w-9 items-center justify-center rounded-t-lg text-[10px] font-semibold text-black transition-transform',
-                    isSold
-                      ? 'cursor-not-allowed bg-white/25'
-                      : cn(
-                          'cursor-pointer hover:scale-110',
-                          SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard],
-                        ),
-                    isSelected && 'scale-110 bg-emerald-500 text-white ring-2 ring-white',
+                    seatCellClass(cell, isSelected),
                   )}
-                  onClick={() => {
-                    if (isSold) return;
-                    dispatch(toggleSeat(ticket));
-                  }}
+                  onClick={() => isSelectable && handleSelect(cell)}
                 >
-                  {ticket.seat_code}
+                  {cell.seatCode}
                 </button>
               );
             })}
@@ -253,7 +329,7 @@ function BookSeatPage() {
                   {t('bookSeat.screen')}
                 </p>
 
-                <SeatGrid scheduleId={scheduleId} />
+                <SeatGrid scheduleId={scheduleId} roomId={scheduleDetail?.room_id ?? null} />
 
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-4 border-t border-border pt-5 text-xs text-txt/80">
                   <span className="flex items-center gap-2">
@@ -275,8 +351,16 @@ function BookSeatPage() {
                     {t('bookSeat.legend.selecting')}
                   </span>
                   <span className="flex items-center gap-2">
+                    <span className="h-5 w-6 rounded-t bg-white/40" />
+                    {t('bookSeat.legend.held')}
+                  </span>
+                  <span className="flex items-center gap-2">
                     <span className="h-5 w-6 rounded-t bg-white/25" />
                     {t('bookSeat.legend.sold')}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-5 w-6 rounded-t bg-white/10 line-through" />
+                    {t('bookSeat.legend.disabled')}
                   </span>
                 </div>
               </div>

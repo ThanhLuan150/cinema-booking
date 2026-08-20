@@ -4,8 +4,9 @@ const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
-// True if the caller may act on bookings for `branch`: ALL scope (super admin) bypasses;
-// otherwise the caller must own the branch or be an active employee staffed there.
+// How long a seat selection is reserved for a customer before it's released back to AVAILABLE.
+const HOLD_TTL_MS = 5 * 60 * 1000;
+
 async function canAccessCinema(req, branch) {
   if (req.permissionScope === 'ALL') return true;
   if (!branch) return false;
@@ -22,10 +23,77 @@ async function resolveScheduleId(req, res) {
   res.json({ id: schedule.id });
 }
 
-// GET /api/bookseat/:scheduleId -> seat grid for that schedule (auth required)
+// GET /api/bookseat/:scheduleId -> seat grid for that schedule (auth required). Status is always
 async function bookseat(req, res) {
+  await bookingRepository.expireHeldTickets(req.params.scheduleId);
   const tickets = await bookingRepository.findTicketsByScheduleId(req.params.scheduleId);
-  res.json(tickets);
+  const accountId = req.account ? req.account.accountId : null;
+  res.json(
+    tickets.map((t) => ({
+      id: t.id,
+      seat_code: t.seat_code,
+      seat_type: t.seat_type,
+      status: t.status,
+      held_by_me: t.status === 2 && t.held_by === accountId,
+    })),
+  );
+}
+
+// POST /api/bookseat/:scheduleId/hold { seatCodes } -> reserves seats for the caller for
+async function holdSeats(req, res) {
+  const { seatCodes } = req.body;
+  if (!Array.isArray(seatCodes) || seatCodes.length === 0) {
+    return res.status(400).json({ message: 'seatCodes is required' });
+  }
+
+  await bookingRepository.expireHeldTickets(req.params.scheduleId);
+  const heldUntil = new Date(Date.now() + HOLD_TTL_MS);
+  const accountId = req.account.accountId;
+  const tickets = await bookingRepository.holdTickets({
+    scheduleId: req.params.scheduleId,
+    seatCodes,
+    accountId,
+    until: heldUntil,
+  });
+
+  const ticketBySeatCode = new Map(tickets.map((t) => [t.seat_code, t]));
+  const conflicts = [];
+  const held = [];
+  for (const seatCode of seatCodes) {
+    const ticket = ticketBySeatCode.get(seatCode);
+    if (ticket && ticket.status === 2 && ticket.held_by === accountId) {
+      held.push({ id: ticket.id, seat_code: ticket.seat_code, status: ticket.status });
+    } else {
+      conflicts.push(seatCode);
+    }
+  }
+
+  if (conflicts.length > 0) {
+    return res.status(409).json({ message: 'One or more seats are no longer available', code: 'SEAT_UNAVAILABLE', seatCodes: conflicts });
+  }
+  res.json({ held, held_until: heldUntil });
+}
+
+// POST /api/bookseat/:scheduleId/release { seatCodes } -> releases the caller's own held seats
+async function releaseSeats(req, res) {
+  const { seatCodes } = req.body;
+  if (!Array.isArray(seatCodes) || seatCodes.length === 0) {
+    return res.status(400).json({ message: 'seatCodes is required' });
+  }
+
+  const accountId = req.account.accountId;
+  const existing = await bookingRepository.findTicketsBySeatCodes(req.params.scheduleId, seatCodes);
+  const heldByOthers = existing.filter((t) => t.status === 2 && t.held_by !== accountId);
+  if (heldByOthers.length > 0) {
+    return res.status(403).json({
+      message: 'Cannot release seats held by another customer',
+      code: 'NOT_YOUR_HOLD',
+      seatCodes: heldByOthers.map((t) => t.seat_code),
+    });
+  }
+
+  await bookingRepository.releaseTickets({ scheduleId: req.params.scheduleId, seatCodes, accountId });
+  res.json({ released: seatCodes });
 }
 
 // GET /api/bookticket/:movieId -> schedules for a movie, grouped by date (auth required)
@@ -51,6 +119,30 @@ async function createMomoPayment(req, res) {
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
     return res.status(400).json({ message: 'ticketIds is required' });
   }
+
+  const accountId = req.account.accountId;
+  const tickets = await bookingRepository.findTicketsByIds(ticketIds);
+  const ticketById = new Map(tickets.map((t) => [t.id, t]));
+  const unavailable = ticketIds.filter((id) => {
+    const ticket = ticketById.get(Number(id));
+    if (!ticket) return true;
+    return !(ticket.status === 1 || (ticket.status === 2 && ticket.held_by === accountId));
+  });
+  if (unavailable.length > 0) {
+    return res.status(409).json({
+      message: 'One or more selected seats are no longer available',
+      code: 'SEAT_UNAVAILABLE',
+      ticketIds: unavailable,
+    });
+  }
+
+  // Re-hold (or extend the hold on) these seats for the duration of the MoMo redirect so they
+  await bookingRepository.holdTickets({
+    scheduleId: tickets[0].schedule_id,
+    seatCodes: tickets.map((t) => t.seat_code),
+    accountId,
+    until: new Date(Date.now() + HOLD_TTL_MS),
+  });
 
   const payUrl = await createMomoPaymentUrl(totalPrice, {
     ticketIds,
@@ -299,6 +391,8 @@ async function createCounterSale(req, res) {
 module.exports = {
   resolveScheduleId,
   bookseat,
+  holdSeats,
+  releaseSeats,
   bookticket,
   createMomoPayment,
   momoIpn,
