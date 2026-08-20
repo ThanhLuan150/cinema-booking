@@ -10,6 +10,7 @@ const Movie = require('../models/Movie');
 const Schedule = require('../models/Schedule');
 const Employee = require('../models/Employee');
 const Position = require('../models/Position');
+const Seat = require('../models/Seat');
 
 const app = buildTestApp('/api/schedule', scheduleRoutes);
 
@@ -29,6 +30,11 @@ async function seedBranches() {
   await Room.create([
     { id: 1, cinema_id: 1, name: 'Room A1' },
     { id: 2, cinema_id: 2, name: 'Room B1' },
+  ]);
+  // A showtime can only be created for a room that has a bookable seat map.
+  await Seat.create([
+    { id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' },
+    { id: 2, room_id: 2, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' },
   ]);
   await Movie.create({ id: 1, name: 'Avengers', premiere_date: '2026-01-01', status: 'ACTIVE' });
 }

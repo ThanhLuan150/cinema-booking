@@ -20,6 +20,20 @@ vi.mock('../hooks/useScheduleId', () => ({ useScheduleId: (...args: unknown[]) =
 const useBookedSeatsMock = vi.fn();
 vi.mock('../hooks/useBookedSeats', () => ({ useBookedSeats: (...args: unknown[]) => useBookedSeatsMock(...args) }));
 
+const useRoomSeatsMock = vi.fn();
+vi.mock('../hooks/useRoomSeats', () => ({ useRoomSeats: (...args: unknown[]) => useRoomSeatsMock(...args) }));
+
+const holdSeatsMutate = vi.fn(
+  (_seatCodes: string[], opts?: { onSuccess?: () => void; onError?: (error: unknown) => void }) =>
+    opts?.onSuccess?.(),
+);
+vi.mock('../hooks/useHoldSeats', () => ({ useHoldSeats: () => ({ mutate: holdSeatsMutate, isPending: false }) }));
+
+const releaseSeatsMutate = vi.fn();
+vi.mock('../hooks/useReleaseSeats', () => ({
+  useReleaseSeats: () => ({ mutate: releaseSeatsMutate, isPending: false }),
+}));
+
 const useScheduleDetailMock = vi.fn();
 vi.mock('../hooks/useScheduleDetail', () => ({
   useScheduleDetail: (...args: unknown[]) => useScheduleDetailMock(...args),
@@ -62,15 +76,20 @@ describe('BookSeatPage', () => {
   beforeEach(() => {
     useScheduleIdMock.mockReset();
     useBookedSeatsMock.mockReset();
+    useRoomSeatsMock.mockReset();
     useScheduleDetailMock.mockReset();
     useRoomsListMock.mockReset();
     useCombosMock.mockReset();
     validateVoucherMutate.mockReset();
     momoPaymentMutate.mockReset();
+    holdSeatsMutate.mockReset();
+    holdSeatsMutate.mockImplementation((_seatCodes: string[], opts?: { onSuccess?: () => void }) => opts?.onSuccess?.());
+    releaseSeatsMutate.mockReset();
 
     useScheduleIdMock.mockReturnValue({ data: { id: 7 } });
     useScheduleDetailMock.mockReturnValue({ data: { id: 7, room_id: 1, price: 100000 } });
     useRoomsListMock.mockReturnValue({ data: [{ id: 1, cinema_id: 3 }] });
+    useRoomSeatsMock.mockReturnValue({ data: [] });
     useCombosMock.mockReturnValue({ data: [] });
   });
 
@@ -80,19 +99,76 @@ describe('BookSeatPage', () => {
     expect(screen.getByText('This showtime has no seat map yet')).toBeInTheDocument();
   });
 
-  it('renders the seat grid and updates the total when a seat is selected', () => {
+  it('renders the seat grid and holds + selects a seat from the backend, updating the total', () => {
     useBookedSeatsMock.mockReturnValue({
       data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
       isLoading: false,
     });
     renderPage();
     fireEvent.click(screen.getByText('A1'));
+    expect(holdSeatsMutate).toHaveBeenCalledWith(['A1'], expect.anything());
     expect(screen.getByText((_, el) => el?.textContent === '100,000đ')).toBeInTheDocument();
+  });
+
+  it('deselecting a held seat releases it', () => {
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
+      isLoading: false,
+    });
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'A1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'A1' }));
+    expect(releaseSeatsMutate).toHaveBeenCalledWith(['A1']);
+    expect(screen.getByText('0đ')).toBeInTheDocument();
   });
 
   it('does not allow selecting a sold seat', () => {
     useBookedSeatsMock.mockReturnValue({
       data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 0 }],
+      isLoading: false,
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('A1'));
+    expect(screen.getByText('0đ')).toBeInTheDocument();
+    expect(holdSeatsMutate).not.toHaveBeenCalled();
+  });
+
+  it('does not allow selecting a seat held by another customer, even though it renders in the grid', () => {
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 2, held_by_me: false }],
+      isLoading: false,
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('A1'));
+    expect(screen.getByText('0đ')).toBeInTheDocument();
+    expect(holdSeatsMutate).not.toHaveBeenCalled();
+  });
+
+  it('does not allow selecting a seat the room map marks DISABLED, even without a ticket for it', () => {
+    useRoomSeatsMock.mockReturnValue({
+      data: [
+        { id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', seat_type: 0, status: 'DISABLED' },
+        { id: 2, room_id: 1, row: 'A', number: 2, seat_code: 'A2', seat_type: 0, status: 'ACTIVE' },
+      ],
+    });
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 2, seat_code: 'A2', seat_type: 0, status: 1 }],
+      isLoading: false,
+    });
+    renderPage();
+    expect(screen.getByText('A1')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('A1'));
+    expect(holdSeatsMutate).not.toHaveBeenCalled();
+    expect(screen.getByText('0đ')).toBeInTheDocument();
+  });
+
+  it('rejects the selection when the backend reports the seat is no longer available', () => {
+    holdSeatsMutate.mockImplementation(
+      (_seatCodes: string[], opts?: { onError?: (error: unknown) => void }) =>
+        opts?.onError?.(new Error('conflict')),
+    );
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
       isLoading: false,
     });
     renderPage();

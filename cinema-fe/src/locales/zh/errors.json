@@ -32,5 +32,7 @@
   "SHIFT_NOT_ACTIVE": "该班次当前未启用",
   "BRANCH_MISMATCH": "员工与班次必须属于同一分店",
   "DUPLICATE_ASSIGNMENT": "该员工在这一天已被分配到此班次",
+  "SEAT_UNAVAILABLE": "一个或多个已选座位已不可用",
+  "NOT_YOUR_HOLD": "该座位正被其他顾客锁定",
   "GENERIC": "出了点问题，请重试。"
 }

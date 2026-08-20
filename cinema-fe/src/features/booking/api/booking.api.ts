@@ -2,8 +2,10 @@ import apiClient from 'services/apiClient';
 import type { Combo, Room, Schedule } from '@/types/entities';
 import type { PaginatedResponse } from '@/types/pagination';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
+import type { Seat } from '@/types/entities';
 import type {
   BookedSeatTicket,
+  HoldSeatsResult,
   Invoice,
   MomoConfirmParams,
   MomoPaymentPayload,
@@ -17,6 +19,15 @@ export const getScheduleId = (payload: { movie_id: string; movie_date: string; t
 
 export const getBookedSeats = (scheduleId: number | string) =>
   apiClient.get<BookedSeatTicket[]>(`/bookseat/${scheduleId}`).then((res) => res.data);
+
+export const getRoomSeats = (roomId: number | string) =>
+  apiClient.get<Seat[]>(`/seat/room/${roomId}`).then((res) => res.data);
+
+export const holdSeats = (scheduleId: number | string, seatCodes: string[]) =>
+  apiClient.post<HoldSeatsResult>(`/bookseat/${scheduleId}/hold`, { seatCodes }).then((res) => res.data);
+
+export const releaseSeats = (scheduleId: number | string, seatCodes: string[]) =>
+  apiClient.post(`/bookseat/${scheduleId}/release`, { seatCodes }).then((res) => res.data);
 
 export const getSchedule = (scheduleId: number | string) =>
   apiClient.get<Schedule>(`/schedule/${scheduleId}`).then((res) => res.data);

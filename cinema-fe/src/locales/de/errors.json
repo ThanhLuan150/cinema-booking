@@ -32,5 +32,7 @@
   "SHIFT_NOT_ACTIVE": "Diese Schicht ist nicht aktiv",
   "BRANCH_MISMATCH": "Mitarbeiter und Schicht müssen zur selben Filiale gehören",
   "DUPLICATE_ASSIGNMENT": "Dieser Mitarbeiter ist dieser Schicht an diesem Tag bereits zugewiesen",
+  "SEAT_UNAVAILABLE": "Ein oder mehrere ausgewählte Plätze sind nicht mehr verfügbar",
+  "NOT_YOUR_HOLD": "Dieser Platz wird von einem anderen Kunden reserviert",
   "GENERIC": "Etwas ist schiefgelaufen, bitte versuchen Sie es erneut."
 }

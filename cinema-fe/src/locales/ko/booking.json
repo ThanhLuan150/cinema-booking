@@ -13,7 +13,9 @@
       "vip": "VIP석",
       "couple": "커플석",
       "selecting": "선택 중",
-      "sold": "판매 완료"
+      "held": "임시 선점",
+      "sold": "판매 완료",
+      "disabled": "잠김"
     },
     "noSeatMap": {
       "title": "이 상영 시간은 아직 좌석 배치도가 없습니다",

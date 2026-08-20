@@ -13,7 +13,9 @@
       "vip": "VIP座",
       "couple": "情侣座",
       "selecting": "已选",
-      "sold": "已售"
+      "held": "临时锁定",
+      "sold": "已售",
+      "disabled": "已停用"
     },
     "noSeatMap": {
       "title": "该场次暂无座位图",

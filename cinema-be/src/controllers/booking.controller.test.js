@@ -87,6 +87,10 @@ describe('POST /api/MomoPayment', () => {
   });
 
   it('returns the mock payUrl as plain text', async () => {
+    await Ticket.create([
+      { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
+      { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 1 },
+    ]);
     const res = mockRes();
     await bookingController.createMomoPayment(
       { body: { ticketIds: [1, 2], totalPrice: 50000 }, account: { accountId: 42 } },
@@ -94,6 +98,199 @@ describe('POST /api/MomoPayment', () => {
     );
     expect(res.type).toHaveBeenCalledWith('text/plain');
     expect(res.send).toHaveBeenCalledWith(expect.stringContaining('resultCode=0'));
+  });
+
+  it('rejects when a selected seat has already been sold', async () => {
+    await Ticket.create([
+      { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
+      { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 0 },
+    ]);
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1, 2], totalPrice: 50000 }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SEAT_UNAVAILABLE', ticketIds: [2] }));
+  });
+
+  it('rejects when a selected seat is held by a different account', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 999,
+      held_until: new Date(Date.now() + 60000),
+    });
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], totalPrice: 50000 }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SEAT_UNAVAILABLE' }));
+  });
+
+  it('allows checkout when the seat is held by the same account', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 42,
+      held_until: new Date(Date.now() + 60000),
+    });
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], totalPrice: 50000 }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(409);
+    expect(res.send).toHaveBeenCalledWith(expect.stringContaining('resultCode=0'));
+  });
+});
+
+describe('POST /api/bookseat/:scheduleId/hold', () => {
+  it('rejects a missing seatCodes', async () => {
+    const res = mockRes();
+    await bookingController.holdSeats({ params: { scheduleId: 1 }, body: {}, account: { accountId: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('holds available seats for the caller', async () => {
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(409);
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(2);
+    expect(ticket.held_by).toBe(42);
+  });
+
+  it('rejects holding a seat already held by another account (authorization)', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 7,
+      held_until: new Date(Date.now() + 60000),
+    });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SEAT_UNAVAILABLE', seatCodes: ['A1'] }));
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.held_by).toBe(7);
+  });
+
+  it('rejects holding an already-sold seat', async () => {
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('re-holding your own already-held seat extends the TTL instead of conflicting', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 42,
+      held_until: new Date(Date.now() + 1000),
+    });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(409);
+  });
+
+  it('picks up a seat whose hold has already expired', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 7,
+      held_until: new Date(Date.now() - 1000),
+    });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(409);
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.held_by).toBe(42);
+  });
+});
+
+describe('POST /api/bookseat/:scheduleId/release', () => {
+  it('rejects a missing seatCodes', async () => {
+    const res = mockRes();
+    await bookingController.releaseSeats({ params: { scheduleId: 1 }, body: {}, account: { accountId: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('releases the caller\'s own held seat back to available', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 42,
+      held_until: new Date(Date.now() + 60000),
+    });
+    const res = mockRes();
+    await bookingController.releaseSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(403);
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(1);
+    expect(ticket.held_by).toBeNull();
+  });
+
+  it('forbids releasing a seat held by another account (authorization)', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 7,
+      held_until: new Date(Date.now() + 60000),
+    });
+    const res = mockRes();
+    await bookingController.releaseSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'NOT_YOUR_HOLD' }));
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(2);
+    expect(ticket.held_by).toBe(7);
   });
 });
 

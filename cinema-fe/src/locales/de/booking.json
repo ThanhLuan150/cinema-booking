@@ -13,7 +13,9 @@
       "vip": "VIP",
       "couple": "Paar",
       "selecting": "Ausgewählt",
-      "sold": "Verkauft"
+      "held": "Reserviert",
+      "sold": "Verkauft",
+      "disabled": "Gesperrt"
     },
     "noSeatMap": {
       "title": "Für diese Vorstellung gibt es noch keinen Saalplan",

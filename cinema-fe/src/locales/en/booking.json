@@ -13,7 +13,9 @@
       "vip": "VIP",
       "couple": "Couple",
       "selecting": "Selecting",
-      "sold": "Sold"
+      "held": "Held",
+      "sold": "Sold",
+      "disabled": "Locked"
     },
     "noSeatMap": {
       "title": "This showtime has no seat map yet",

@@ -13,6 +13,12 @@ router.post('/scheduleId', requireAuth, asyncHandler(bookingController.resolveSc
 // GET /api/bookseat/:scheduleId -> seat grid for that schedule (auth required)
 router.get('/bookseat/:scheduleId', requireAuth, asyncHandler(bookingController.bookseat));
 
+// POST /api/bookseat/:scheduleId/hold { seatCodes } -> reserves seats for the caller (auth required)
+router.post('/bookseat/:scheduleId/hold', requireAuth, asyncHandler(bookingController.holdSeats));
+
+// POST /api/bookseat/:scheduleId/release { seatCodes } -> releases the caller's own held seats (auth required)
+router.post('/bookseat/:scheduleId/release', requireAuth, asyncHandler(bookingController.releaseSeats));
+
 // GET /api/bookticket/:movieId -> schedules for a movie, grouped by date (auth required)
 router.get('/bookticket/:movieId', requireAuth, asyncHandler(bookingController.bookticket));
 

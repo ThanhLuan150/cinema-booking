@@ -31,6 +31,21 @@ describe('booking.api', () => {
     expect(getMock).toHaveBeenCalledWith('/bookseat/5');
   });
 
+  it('getRoomSeats gets /seat/room/:id', async () => {
+    await bookingApi.getRoomSeats(1);
+    expect(getMock).toHaveBeenCalledWith('/seat/room/1');
+  });
+
+  it('holdSeats posts to /bookseat/:id/hold', async () => {
+    await bookingApi.holdSeats(5, ['A1', 'A2']);
+    expect(postMock).toHaveBeenCalledWith('/bookseat/5/hold', { seatCodes: ['A1', 'A2'] });
+  });
+
+  it('releaseSeats posts to /bookseat/:id/release', async () => {
+    await bookingApi.releaseSeats(5, ['A1']);
+    expect(postMock).toHaveBeenCalledWith('/bookseat/5/release', { seatCodes: ['A1'] });
+  });
+
   it('getSchedule gets /schedule/:id', async () => {
     await bookingApi.getSchedule(5);
     expect(getMock).toHaveBeenCalledWith('/schedule/5');

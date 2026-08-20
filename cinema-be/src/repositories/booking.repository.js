@@ -74,7 +74,10 @@ async function finalizeMomoOrder(orderId, orderPayload) {
       status: 1,
       created_by: createdBy,
     });
-    await Ticket.updateOne({ id: Number(ticketIds[index]) }, { $set: { status: 0 } });
+    await Ticket.updateOne(
+      { id: Number(ticketIds[index]) },
+      { $set: { status: 0, held_by: null, held_until: null } },
+    );
   }
 
   const account = await Account.findOne({ id: Number(accountId) });
@@ -129,6 +132,37 @@ async function findScheduleById(id) {
 
 async function updateTicketStatus(id, status) {
   return Ticket.updateOne({ id }, { $set: { status } });
+}
+
+async function findTicketsBySeatCodes(scheduleId, seatCodes) {
+  return Ticket.find({ schedule_id: Number(scheduleId), seat_code: { $in: seatCodes } });
+}
+
+async function expireHeldTickets(scheduleId) {
+  return Ticket.updateMany(
+    { schedule_id: Number(scheduleId), status: Ticket.STATUS.HELD, held_until: { $lt: new Date() } },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+}
+
+async function holdTickets({ scheduleId, seatCodes, accountId, until }) {
+  await Ticket.updateMany(
+    {
+      schedule_id: Number(scheduleId),
+      seat_code: { $in: seatCodes },
+      $or: [{ status: Ticket.STATUS.AVAILABLE }, { status: Ticket.STATUS.HELD, held_by: accountId }],
+    },
+    { $set: { status: Ticket.STATUS.HELD, held_by: accountId, held_until: until } },
+  );
+  return findTicketsBySeatCodes(scheduleId, seatCodes);
+}
+
+async function releaseTickets({ scheduleId, seatCodes, accountId }) {
+  await Ticket.updateMany(
+    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+  return findTicketsBySeatCodes(scheduleId, seatCodes);
 }
 
 async function saveInvoice(invoice) {
@@ -206,6 +240,10 @@ module.exports = {
   findTicketById,
   findScheduleById,
   updateTicketStatus,
+  findTicketsBySeatCodes,
+  expireHeldTickets,
+  holdTickets,
+  releaseTickets,
   saveInvoice,
   findAllInvoices,
   findAccountsByIds,

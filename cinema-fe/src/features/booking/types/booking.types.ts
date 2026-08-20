@@ -3,6 +3,12 @@ export interface BookedSeatTicket {
   seat_code: string;
   seat_type: number;
   status: number;
+  held_by_me?: boolean;
+}
+
+export interface HoldSeatsResult {
+  held: { id: number; seat_code: string; status: number }[];
+  held_until: string;
 }
 
 export type PaymentStatus = 'confirming' | 'success' | 'failed';

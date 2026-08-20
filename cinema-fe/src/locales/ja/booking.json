@@ -13,7 +13,9 @@
       "vip": "VIP",
       "couple": "カップルシート",
       "selecting": "選択中",
-      "sold": "販売済み"
+      "held": "確保中",
+      "sold": "販売済み",
+      "disabled": "利用不可"
     },
     "noSeatMap": {
       "title": "この上映回にはまだ座席表がありません",

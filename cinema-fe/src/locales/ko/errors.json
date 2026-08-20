@@ -32,5 +32,7 @@
   "SHIFT_NOT_ACTIVE": "이 근무조는 활성 상태가 아닙니다",
   "BRANCH_MISMATCH": "직원과 근무조는 같은 지점에 속해야 합니다",
   "DUPLICATE_ASSIGNMENT": "이 직원은 해당 날짜에 이미 이 근무조에 배정되어 있습니다",
+  "SEAT_UNAVAILABLE": "선택한 좌석 중 일부를 더 이상 사용할 수 없습니다",
+  "NOT_YOUR_HOLD": "이 좌석은 다른 고객이 선점하고 있습니다",
   "GENERIC": "문제가 발생했습니다. 다시 시도해 주세요."
 }
