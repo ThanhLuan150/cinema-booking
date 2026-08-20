@@ -10,9 +10,11 @@ afterAll(async () => closeDatabase());
 
 describe('Seat model', () => {
   it('creates a valid seat and applies defaults', async () => {
-    const seat = await Seat.create({ id: 1, room_id: 1, seat_code: 'A1' });
+    const seat = await Seat.create({ id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1' });
+    expect(seat.row).toBe('A');
+    expect(seat.number).toBe(1);
     expect(seat.seat_type).toBe(0);
-    expect(seat.is_locked).toBe(false);
+    expect(seat.status).toBe('ACTIVE');
     expect(seat.createdAt).toBeInstanceOf(Date);
   });
 
@@ -21,6 +23,15 @@ describe('Seat model', () => {
     expect(err.errors.id).toBeDefined();
     expect(err.errors.room_id).toBeDefined();
     expect(err.errors.seat_code).toBeDefined();
+  });
+
+  it('rejects an invalid status', () => {
+    const err = new Seat({ id: 1, room_id: 1, seat_code: 'A1', status: 'LOCKED' }).validateSync();
+    expect(err.errors.status).toBeDefined();
+  });
+
+  it('accepts DISABLED as a status', () => {
+    expect(new Seat({ id: 1, room_id: 1, seat_code: 'A1', status: 'DISABLED' }).validateSync()).toBeUndefined();
   });
 
   it('enforces unique id', async () => {

@@ -86,6 +86,7 @@ const EMPLOYEE_PERMISSIONS = {
   'category.read': 'ALL',
   'combo.read': 'ALL',
   'review.read': 'ALL',
+  'room.read': 'ALL', 'seat.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
   // Own work schedule only — see the Ticket 04 note against auto-restricting this per Position.
   'shiftAssignment.read': 'OWN',
@@ -94,6 +95,7 @@ const EMPLOYEE_PERMISSIONS = {
 const CUSTOMER_PERMISSIONS = {
   'movie.read': 'ALL',
   'category.read': 'ALL',
+  'room.read': 'ALL', 'seat.read': 'ALL',
   'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN',
   'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',

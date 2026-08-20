@@ -43,4 +43,22 @@ describe('room.repository', () => {
     await roomRepository.remove(1);
     expect(await Room.countDocuments()).toBe(0);
   });
+
+  describe('findByCinemaAndCode', () => {
+    it('finds a room by branch and code', async () => {
+      await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', code: 'R1' });
+      const found = await roomRepository.findByCinemaAndCode(1, 'R1');
+      expect(found.id).toBe(1);
+    });
+
+    it('does not match the same code in a different branch', async () => {
+      await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', code: 'R1' });
+      expect(await roomRepository.findByCinemaAndCode(2, 'R1')).toBeNull();
+    });
+
+    it('excludes the given id (for update collision checks)', async () => {
+      await Room.create({ id: 1, cinema_id: 1, name: 'Room 1', code: 'R1' });
+      expect(await roomRepository.findByCinemaAndCode(1, 'R1', { excludeId: 1 })).toBeNull();
+    });
+  });
 });

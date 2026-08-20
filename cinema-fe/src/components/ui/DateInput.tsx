@@ -206,11 +206,24 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
             </span>
             <i className={cn('fa-regular fa-calendar ml-2 shrink-0 text-xs text-txt/50', displayValue && !disabled && 'mr-5')} />
           </button>
+          {displayValue && !disabled && (
+            <button
+              type="button"
+              aria-label="Clear date"
+              onClick={(event) => {
+                event.stopPropagation();
+                onChange?.({ target: { name, value: '' } });
+              }}
+              className="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded text-txt/50 transition-colors hover:bg-white/10 hover:text-txt"
+            >
+              <i className="fa-solid fa-xmark text-xs" />
+            </button>
+          )}
           {isOpen && (
             <div
               role="dialog"
               aria-label="Choose a date"
-              className="absolute z-20 mt-1 rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised w-full"
+              className="absolute z-20 mt-1 w-full min-w-[280px] rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised"
             >
               <div className="mb-2 flex items-center justify-between">
                 <button

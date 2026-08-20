@@ -42,8 +42,8 @@ describe('seat.repository', () => {
   });
 
   it('updateFields updates and returns the seat', async () => {
-    await Seat.create({ id: 1, room_id: 1, seat_code: 'A1', is_locked: false });
-    const updated = await seatRepository.updateFields(1, { is_locked: true });
-    expect(updated.is_locked).toBe(true);
+    await Seat.create({ id: 1, room_id: 1, seat_code: 'A1', status: 'ACTIVE' });
+    const updated = await seatRepository.updateFields(1, { status: 'DISABLED' });
+    expect(updated.status).toBe('DISABLED');
   });
 });

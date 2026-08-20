@@ -57,21 +57,41 @@
     "breadcrumb": "Phòng chiếu",
     "addButton": "Thêm phòng +",
     "addTitle": "Thêm phòng",
+    "editTitle": "Sửa phòng",
     "nameLabel": "Tên phòng",
+    "codeLabel": "Mã phòng",
+    "typeLabel": "Loại phòng chiếu",
+    "capacityLabel": "Sức chứa",
+    "statusLabel": "Trạng thái",
     "submit": "Thêm",
+    "saveButton": "Lưu",
     "createSuccess": "Đã thêm phòng.",
     "createError": "Không thể thêm phòng.",
+    "updateSuccess": "Đã cập nhật phòng.",
+    "updateError": "Không thể cập nhật phòng.",
     "deleteConfirm": "Xóa phòng này?",
     "deleteSuccess": "Đã xóa phòng.",
     "deleteError": "Không thể xóa phòng.",
     "seatMapAction": "Sơ đồ ghế",
+    "edit": "Sửa",
     "delete": "Xóa",
+    "statusLabels": {
+      "ACTIVE": "Hoạt động",
+      "MAINTENANCE": "Bảo trì",
+      "CLOSED": "Đóng cửa"
+    },
     "validation": {
-      "nameRequired": "Vui lòng nhập tên phòng."
+      "nameRequired": "Vui lòng nhập tên phòng.",
+      "codeRequired": "Vui lòng nhập mã phòng.",
+      "capacityRequired": "Vui lòng nhập sức chứa lớn hơn 0."
     },
     "headers": {
       "id": "ID",
       "name": "Tên phòng",
+      "code": "Mã",
+      "type": "Loại",
+      "capacity": "Sức chứa",
+      "status": "Trạng thái",
       "actions": "Hành động"
     },
     "seatMapModal": {
@@ -84,8 +104,8 @@
       "regenerateConfirm": "Tạo lại sơ đồ ghế sẽ xóa sơ đồ hiện tại. Tiếp tục?",
       "generateSuccess": "Đã tạo sơ đồ ghế.",
       "generateError": "Không thể tạo sơ đồ ghế.",
-      "lockedSuffix": " - Đã khóa bảo trì",
-      "clickHint": "Click vào ghế để khóa/mở khóa bảo trì.",
+      "disabledSuffix": " - Đã vô hiệu hóa",
+      "clickHint": "Click vào ghế để bật/tắt trạng thái sử dụng. Ghế vô hiệu hóa sẽ không thể đặt.",
       "emptyTitle": "Phòng này chưa có sơ đồ ghế",
       "emptyDescription": "Điền form ở trên để tạo.",
       "seatTypeLabels": {

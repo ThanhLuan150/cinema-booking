@@ -35,6 +35,9 @@ vi.mock('../../hooks/useRoomsByCinema', () => ({
 const createRoomMutate = vi.fn();
 vi.mock('../../hooks/useCreateRoom', () => ({ useCreateRoom: () => ({ mutateAsync: createRoomMutate, isPending: false }) }));
 
+const updateRoomMutate = vi.fn();
+vi.mock('../../hooks/useUpdateRoom', () => ({ useUpdateRoom: () => ({ mutateAsync: updateRoomMutate, isPending: false }) }));
+
 const deleteRoomMutate = vi.fn();
 vi.mock('../../hooks/useDeleteRoom', () => ({ useDeleteRoom: () => ({ mutateAsync: deleteRoomMutate }) }));
 
@@ -53,6 +56,8 @@ const confirmDialogMock = vi.fn();
 vi.mock('@/features/notifications/confirm', () => ({ confirmDialog: (...args: unknown[]) => confirmDialogMock(...args) }));
 
 import Rooms from './Rooms';
+
+const baseRoom = { id: 10, name: 'Room 1', code: 'R1', type: '2D', capacity: 40, status: 'ACTIVE' as const };
 
 function renderPage() {
   const queryClient = new QueryClient();
@@ -73,6 +78,7 @@ describe('Owner Rooms', () => {
     useMyCinemasMock.mockReset();
     useRoomsByCinemaMock.mockReset();
     createRoomMutate.mockReset();
+    updateRoomMutate.mockReset();
     deleteRoomMutate.mockReset();
     useSeatsByRoomMock.mockReset();
     generateSeatMapMutate.mockReset();
@@ -83,13 +89,15 @@ describe('Owner Rooms', () => {
   });
 
   it('renders rooms for the auto-selected cinema', () => {
-    useRoomsByCinemaMock.mockReturnValue({ data: { data: [{ id: 10, name: 'Room 1' }] } });
+    useRoomsByCinemaMock.mockReturnValue({ data: { data: [baseRoom] } });
     renderPage();
     expect(screen.getByText('Room 1')).toBeInTheDocument();
+    expect(screen.getByText('R1')).toBeInTheDocument();
+    expect(screen.getByText('40')).toBeInTheDocument();
   });
 
   it('deletes a room after confirming', async () => {
-    useRoomsByCinemaMock.mockReturnValue({ data: { data: [{ id: 10, name: 'Room 1' }] } });
+    useRoomsByCinemaMock.mockReturnValue({ data: { data: [baseRoom] } });
     confirmDialogMock.mockResolvedValue(true);
     deleteRoomMutate.mockResolvedValue({});
     renderPage();
@@ -106,15 +114,55 @@ describe('Owner Rooms', () => {
     expect(screen.getByText('rooms.addTitle')).toBeInTheDocument();
 
     fireEvent.change(document.querySelector('input[name="name"]')!, { target: { value: 'Room 2' } });
+    fireEvent.change(document.querySelector('input[name="code"]')!, { target: { value: 'R2' } });
+    fireEvent.change(document.querySelector('input[name="capacity"]')!, { target: { value: '50' } });
     fireEvent.click(screen.getByText('rooms.submit'));
 
-    await waitFor(() => expect(createRoomMutate).toHaveBeenCalledWith({ name: 'Room 2', cinema_id: 1 }));
+    await waitFor(() =>
+      expect(createRoomMutate).toHaveBeenCalledWith({ name: 'Room 2', cinema_id: 1, code: 'R2', type: '2D', capacity: 50 }),
+    );
   });
 
-  it('opens the seat map modal and toggles a seat lock', async () => {
-    useRoomsByCinemaMock.mockReturnValue({ data: { data: [{ id: 10, name: 'Room 1' }] } });
+  it('rejects submitting the add-room form without a code', async () => {
+    useRoomsByCinemaMock.mockReturnValue({ data: { data: [] } });
+    renderPage();
+
+    fireEvent.click(screen.getByText('rooms.addButton'));
+    fireEvent.change(document.querySelector('input[name="name"]')!, { target: { value: 'Room 2' } });
+    fireEvent.change(document.querySelector('input[name="capacity"]')!, { target: { value: '50' } });
+    fireEvent.click(screen.getByText('rooms.submit'));
+
+    await waitFor(() => expect(screen.getByText('rooms.validation.codeRequired')).toBeInTheDocument());
+    expect(createRoomMutate).not.toHaveBeenCalled();
+  });
+
+  it('opens the edit-room modal and submits changes, including status', async () => {
+    useRoomsByCinemaMock.mockReturnValue({ data: { data: [baseRoom] } });
+    updateRoomMutate.mockResolvedValue({});
+    renderPage();
+
+    fireEvent.click(screen.getByText('rooms.edit'));
+    expect(screen.getByText('rooms.editTitle')).toBeInTheDocument();
+
+    fireEvent.change(document.querySelector('input[name="capacity"]')!, { target: { value: '60' } });
+    fireEvent.click(screen.getByText('rooms.saveButton'));
+
+    await waitFor(() =>
+      expect(updateRoomMutate).toHaveBeenCalledWith({
+        id: 10,
+        name: 'Room 1',
+        code: 'R1',
+        type: '2D',
+        capacity: 60,
+        status: 'ACTIVE',
+      }),
+    );
+  });
+
+  it('opens the seat map modal and disables a seat', async () => {
+    useRoomsByCinemaMock.mockReturnValue({ data: { data: [baseRoom] } });
     useSeatsByRoomMock.mockReturnValue({
-      data: [{ id: 99, seat_code: 'A1', seat_type: 0, is_locked: false }],
+      data: [{ id: 99, seat_code: 'A1', seat_type: 0, status: 'ACTIVE' }],
     });
     updateSeatMutate.mockResolvedValue({});
     renderPage();
@@ -123,6 +171,6 @@ describe('Owner Rooms', () => {
     expect(screen.getByText('A1')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('A1'));
-    await waitFor(() => expect(updateSeatMutate).toHaveBeenCalledWith({ id: 99, isLocked: true }));
+    await waitFor(() => expect(updateSeatMutate).toHaveBeenCalledWith({ id: 99, status: 'DISABLED' }));
   });
 });

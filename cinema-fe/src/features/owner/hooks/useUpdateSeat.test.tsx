@@ -10,7 +10,7 @@ import { useUpdateSeat } from './useUpdateSeat';
 describe('useUpdateSeat', () => {
   beforeEach(() => updateSeatMock.mockReset());
 
-  it('updates the seat lock state and invalidates seatsByRoom', async () => {
+  it('updates the seat status and invalidates seatsByRoom', async () => {
     updateSeatMock.mockResolvedValue({});
     const client = new QueryClient();
     const invalidateSpy = vi.spyOn(client, 'invalidateQueries');
@@ -18,9 +18,9 @@ describe('useUpdateSeat', () => {
       return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
     }
     const { result } = renderHook(() => useUpdateSeat(), { wrapper });
-    result.current.mutate({ id: 5, isLocked: true });
+    result.current.mutate({ id: 5, status: 'DISABLED' });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(updateSeatMock).toHaveBeenCalledWith(5, { is_locked: true });
+    expect(updateSeatMock).toHaveBeenCalledWith(5, { status: 'DISABLED' });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['seatsByRoom'] });
   });
 });

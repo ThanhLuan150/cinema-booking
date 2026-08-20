@@ -46,6 +46,13 @@ async function findCinemaIdByScheduleId(id) {
   return schedule ? schedule.cinema_id : null;
 }
 
+// True if `room_id` still has any non-cancelled showtime. Used to block deleting a Room that
+// showtimes still depend on.
+async function existsActiveByRoomId(room_id) {
+  const schedule = await Schedule.findOne({ room_id: Number(room_id), status: { $ne: 'CANCELLED' } });
+  return Boolean(schedule);
+}
+
 // True if `room_id` already has a non-cancelled showtime overlapping [time_begin, time_end)
 // on `movie_date`. `excludeId` skips the schedule being edited so an update doesn't collide
 // with itself.
@@ -78,6 +85,7 @@ module.exports = {
   findFiltered,
   findById,
   findCinemaIdByScheduleId,
+  existsActiveByRoomId,
   findOverlapping,
   create,
   updateFields,

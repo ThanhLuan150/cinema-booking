@@ -67,6 +67,14 @@ export interface SeatMapFormValues {
   coupleRows: string;
 }
 
+export interface RoomFormValues {
+  name: string;
+  code: string;
+  type: string;
+  capacity: string;
+  status?: string;
+}
+
 export interface OwnerDashboardState {
   selectedbranchId: string;
 }
@@ -74,6 +82,7 @@ export interface OwnerDashboardState {
 export interface OwnerCinemasState {
   showAddRoomModal: boolean;
   seatMapRoomId: number | null;
+  editingRoomId: number | null;
 }
 
 export interface OwnerCombosState {

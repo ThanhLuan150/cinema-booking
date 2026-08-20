@@ -51,7 +51,10 @@ export interface Room {
   id: number;
   cinema_id: number;
   name: string;
-  status?: 'ACTIVE' | 'INACTIVE';
+  code: string;
+  type: '2D' | '3D' | 'IMAX' | 'VIP';
+  capacity: number;
+  status: 'ACTIVE' | 'MAINTENANCE' | 'CLOSED';
 }
 
 export interface Cinema {
@@ -70,9 +73,11 @@ export interface Cinema {
 export interface Seat {
   id: number;
   room_id: number;
+  row: string;
+  number: number;
   seat_code: string;
   seat_type: number; // 0 = regular, 1 = vip, 2 = couple
-  is_locked: boolean;
+  status: 'ACTIVE' | 'DISABLED';
 }
 
 export interface Combo {

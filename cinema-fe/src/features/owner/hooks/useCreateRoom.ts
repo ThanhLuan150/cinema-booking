@@ -5,7 +5,8 @@ import { roomsByCinemaQueryKey } from './useRoomsByCinema';
 export function useCreateRoom() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { name: string; cinema_id: number }) => createRoom(payload),
+    mutationFn: (payload: { name: string; cinema_id: number; code: string; type: string; capacity: number }) =>
+      createRoom(payload),
     onSuccess: (_data, payload) => {
       queryClient.invalidateQueries({ queryKey: roomsByCinemaQueryKey(payload.cinema_id) });
     },

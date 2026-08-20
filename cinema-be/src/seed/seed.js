@@ -77,11 +77,11 @@ async function seed() {
   }
 
   // Rooms
-  for (const name of ROOMS) {
+  for (const [index, name] of ROOMS.entries()) {
     const exists = await Room.findOne({ name, cinema_id: defaultCinema.id });
     if (!exists) {
       const id = await nextId('room');
-      await Room.create({ id, cinema_id: defaultCinema.id, name });
+      await Room.create({ id, cinema_id: defaultCinema.id, name, code: `R${index + 1}`, type: '2D', capacity: 40 });
       console.log(`Created room: ${name}`);
     }
   }

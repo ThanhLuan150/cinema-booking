@@ -15,7 +15,7 @@ async function list(req, res) {
   const { data, total } = await scheduleRepository.findFiltered({
     scope: req.permissionScope,
     accessibleCinemaIds,
-    branchId: req.query.branchId,
+    cinemaId: req.query.branchId,
     roomId: req.query.roomId,
     skip,
     limit,
@@ -61,8 +61,10 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
     res.status(404).json({ message: 'Room not found' });
     return null;
   }
-  if (room.status === 'INACTIVE') {
-    res.status(400).json({ message: 'Room is not active', code: 'ROOM_NOT_ACTIVE' });
+  if (room.status !== 'ACTIVE') {
+    res
+      .status(400)
+      .json({ message: `Room is ${room.status.toLowerCase()} and cannot receive new showtimes`, code: 'ROOM_NOT_ACTIVE' });
     return null;
   }
   // BRANCH scope: the room must belong to the branch the requireCinemaOwnership middleware

@@ -20,7 +20,8 @@ export const updateCinema = (id: number | string, payload: Partial<CinemaFormVal
 export const getRoomsByCinema = (branchId: number | string | undefined, params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Room>>('/room', { params: { branchId, ...params } }).then((res) => res.data);
 
-export const createRoom = (payload: { name: string; cinema_id: number }) => apiClient.post('/room', payload);
+export const createRoom = (payload: { name: string; cinema_id: number; code: string; type: string; capacity: number }) =>
+  apiClient.post('/room', payload);
 
 export const updateRoom = (id: number | string, payload: Record<string, unknown>) =>
   apiClient.put(`/room/${id}`, payload);
@@ -33,7 +34,7 @@ export const getSeatsByRoom = (roomId: number | string) =>
 export const generateSeatMap = (roomId: number | string, payload: GenerateSeatMapPayload) =>
   apiClient.post(`/seat/room/${roomId}/generate`, payload);
 
-export const updateSeat = (id: number | string, payload: { is_locked: boolean }) =>
+export const updateSeat = (id: number | string, payload: { status: 'ACTIVE' | 'DISABLED' }) =>
   apiClient.put(`/seat/${id}`, payload);
 
 export const getOwnerCombos = (branchId?: number | string, params?: PaginationParams) =>
