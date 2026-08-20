@@ -4,6 +4,7 @@ import type { OwnerCinemasState } from '../types/owner.types';
 const initialState: OwnerCinemasState = {
   showAddRoomModal: false,
   seatMapRoomId: null,
+  editingRoomId: null,
 };
 
 const ownerCinemasSlice = createSlice({
@@ -22,9 +23,21 @@ const ownerCinemasSlice = createSlice({
     closeSeatMapModal(state) {
       state.seatMapRoomId = null;
     },
+    openEditRoomModal(state, action: PayloadAction<number>) {
+      state.editingRoomId = action.payload;
+    },
+    closeEditRoomModal(state) {
+      state.editingRoomId = null;
+    },
   },
 });
 
-export const { openAddRoomModal, closeAddRoomModal, openSeatMapModal, closeSeatMapModal } =
-  ownerCinemasSlice.actions;
+export const {
+  openAddRoomModal,
+  closeAddRoomModal,
+  openSeatMapModal,
+  closeSeatMapModal,
+  openEditRoomModal,
+  closeEditRoomModal,
+} = ownerCinemasSlice.actions;
 export default ownerCinemasSlice.reducer;

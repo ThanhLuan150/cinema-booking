@@ -2,7 +2,7 @@ const ticketRepository = require('../repositories/ticket.repository');
 const nextId = require('../utils/nextId');
 
 // POST /api/ticket { schedule_id } -> generates the seat grid for a schedule from the room's seat map
-// (admin only, since schedules are now admin-managed). Maintenance-locked seats are excluded from
+// (admin only, since schedules are now admin-managed). DISABLED seats are excluded from
 // the bookable grid.
 async function create(req, res) {
   const { schedule_id } = req.body;
@@ -28,7 +28,7 @@ async function create(req, res) {
   const tickets = [];
   let seatIndex = 0;
   for (const seat of seatMap) {
-    if (seat.is_locked) continue;
+    if (seat.status === 'DISABLED') continue;
     const id = await nextId('ticket');
     tickets.push({
       id,

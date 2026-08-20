@@ -57,21 +57,41 @@
     "breadcrumb": "Rooms",
     "addButton": "Add room +",
     "addTitle": "Add room",
+    "editTitle": "Edit room",
     "nameLabel": "Room name",
+    "codeLabel": "Room code",
+    "typeLabel": "Screen type",
+    "capacityLabel": "Capacity",
+    "statusLabel": "Status",
     "submit": "Add",
+    "saveButton": "Save",
     "createSuccess": "Room added.",
     "createError": "Unable to add room.",
+    "updateSuccess": "Room updated.",
+    "updateError": "Unable to update room.",
     "deleteConfirm": "Delete this room?",
     "deleteSuccess": "Room deleted.",
     "deleteError": "Unable to delete room.",
     "seatMapAction": "Seat map",
+    "edit": "Edit",
     "delete": "Delete",
+    "statusLabels": {
+      "ACTIVE": "Active",
+      "MAINTENANCE": "Maintenance",
+      "CLOSED": "Closed"
+    },
     "validation": {
-      "nameRequired": "Please enter a room name."
+      "nameRequired": "Please enter a room name.",
+      "codeRequired": "Please enter a room code.",
+      "capacityRequired": "Please enter a capacity greater than 0."
     },
     "headers": {
       "id": "ID",
       "name": "Room name",
+      "code": "Code",
+      "type": "Type",
+      "capacity": "Capacity",
+      "status": "Status",
       "actions": "Actions"
     },
     "seatMapModal": {
@@ -84,8 +104,8 @@
       "regenerateConfirm": "Regenerating the seat map will erase the current one. Continue?",
       "generateSuccess": "Seat map generated.",
       "generateError": "Unable to generate seat map.",
-      "lockedSuffix": " - Locked for maintenance",
-      "clickHint": "Click a seat to lock/unlock it for maintenance.",
+      "disabledSuffix": " - Disabled",
+      "clickHint": "Click a seat to enable/disable it. Disabled seats cannot be booked.",
       "emptyTitle": "This room has no seat map yet",
       "emptyDescription": "Fill in the form above to create one.",
       "seatTypeLabels": {

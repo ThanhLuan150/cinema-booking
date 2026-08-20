@@ -103,11 +103,11 @@ async function run() {
   }
 
   const rooms = [];
-  for (const name of ROOMS) {
+  for (const [index, name] of ROOMS.entries()) {
     let room = await Room.findOne({ name, cinema_id: defaultCinema.id });
     if (!room) {
       const id = await nextId('room');
-      room = await Room.create({ id, cinema_id: defaultCinema.id, name });
+      room = await Room.create({ id, cinema_id: defaultCinema.id, name, code: `R${index + 1}`, type: '2D', capacity: 40 });
       console.log(`Created room: ${name}`);
     }
     rooms.push(room);

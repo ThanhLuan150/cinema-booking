@@ -19,7 +19,7 @@ async function ensureDefaultSeatMap(room) {
   for (const row of ROWS) {
     for (let col = 1; col <= SEATS_PER_ROW; col += 1) {
       const id = await nextId('seat');
-      seats.push({ id, room_id: room.id, seat_code: `${row}${col}`, seat_type: 0, is_locked: false });
+      seats.push({ id, room_id: room.id, row, number: col, seat_code: `${row}${col}`, seat_type: 0, status: 'ACTIVE' });
     }
   }
   await Seat.insertMany(seats);

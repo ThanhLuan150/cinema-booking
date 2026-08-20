@@ -9,7 +9,8 @@ const seatController = require('../controllers/seat.controller');
 
 const router = express.Router();
 
-// GET /api/seat/room/:roomId -> seat map for a room (public — needed to render the seat picker)
+// GET /api/seat/room/:roomId -> seat map for a room (public — lets customers view seat
+// availability/status and employees view the seat map, in addition to rendering the seat picker)
 router.get('/room/:roomId', asyncHandler(seatController.listByRoom));
 
 // POST /api/seat/room/:roomId/generate { rows, seatsPerRow, vipRows, coupleRows } -> (re)creates the seat map
@@ -21,7 +22,7 @@ router.post(
   asyncHandler(seatController.generate),
 );
 
-// PUT /api/seat/:id { seat_type, is_locked } (seat.update permission, owner-scoped)
+// PUT /api/seat/:id { seat_type, status } (seat.update permission, owner-scoped)
 router.put(
   '/:id',
   requireAuth,

@@ -97,6 +97,33 @@ describe('schedule.repository', () => {
     expect(await scheduleRepository.findCinemaIdByScheduleId(2)).toBe(2);
   });
 
+  describe('existsActiveByRoomId', () => {
+    it('is true when the room has a non-cancelled showtime', async () => {
+      await seedShowtimes();
+      expect(await scheduleRepository.existsActiveByRoomId(1)).toBe(true);
+    });
+
+    it('is false when the room has no showtimes', async () => {
+      await seedShowtimes();
+      expect(await scheduleRepository.existsActiveByRoomId(999)).toBe(false);
+    });
+
+    it('is false when the room\'s only showtimes are cancelled', async () => {
+      await Schedule.create({
+        id: 5,
+        movie_id: 1,
+        room_id: 3,
+        cinema_id: 1,
+        movie_date: '2026-03-01',
+        time_begin: '10:00',
+        time_end: '12:00',
+        price: 1,
+        status: 'CANCELLED',
+      });
+      expect(await scheduleRepository.existsActiveByRoomId(3)).toBe(false);
+    });
+  });
+
   describe('findOverlapping', () => {
     it('detects an overlapping time range in the same room', async () => {
       await seedShowtimes();

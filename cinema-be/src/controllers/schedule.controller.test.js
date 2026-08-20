@@ -46,6 +46,20 @@ describe('schedule.controller list', () => {
     await scheduleController.list({ query: {}, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1 }));
   });
+
+  it('filters by branchId for ALL scope (super admin picking a specific branch)', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 99, name: 'B', code: 'B' },
+    ]);
+    await Schedule.create([
+      { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+      { id: 2, movie_id: 1, room_id: 2, cinema_id: 2, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+    ]);
+    const res = mockRes();
+    await scheduleController.list({ query: { branchId: '2' }, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1, data: [expect.objectContaining({ cinema_id: 2 })] }));
+  });
 });
 
 describe('schedule.controller getById', () => {
@@ -123,8 +137,16 @@ describe('schedule.controller create', () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it('rejects an INACTIVE room', async () => {
-    await seedMovieAndRoom({ roomStatus: 'INACTIVE' });
+  it('rejects a MAINTENANCE room', async () => {
+    await seedMovieAndRoom({ roomStatus: 'MAINTENANCE' });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ROOM_NOT_ACTIVE' }));
+  });
+
+  it('rejects a CLOSED room', async () => {
+    await seedMovieAndRoom({ roomStatus: 'CLOSED' });
     const res = mockRes();
     await scheduleController.create(baseReq(), res);
     expect(res.status).toHaveBeenCalledWith(400);

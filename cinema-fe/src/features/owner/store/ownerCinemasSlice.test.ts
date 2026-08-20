@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import reducer, {
   closeAddRoomModal,
   closeSeatMapModal,
+  closeEditRoomModal,
   openAddRoomModal,
   openSeatMapModal,
+  openEditRoomModal,
 } from './ownerCinemasSlice';
 
 const initialState = reducer(undefined, { type: '@@INIT' });
@@ -21,5 +23,12 @@ describe('ownerCinemasSlice', () => {
     expect(opened.seatMapRoomId).toBe(3);
     const closed = reducer(opened, closeSeatMapModal());
     expect(closed.seatMapRoomId).toBeNull();
+  });
+
+  it('opens the edit room modal with a room id and closes it', () => {
+    const opened = reducer(initialState, openEditRoomModal(3));
+    expect(opened.editingRoomId).toBe(3);
+    const closed = reducer(opened, closeEditRoomModal());
+    expect(closed.editingRoomId).toBeNull();
   });
 });

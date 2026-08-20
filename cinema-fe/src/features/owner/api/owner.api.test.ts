@@ -41,7 +41,7 @@ describe('owner.api', () => {
   });
 
   it('createRoom posts to /room', async () => {
-    const payload = { name: 'Room 1', cinema_id: 1 };
+    const payload = { name: 'Room 1', cinema_id: 1, code: 'R1', type: '2D', capacity: 40 };
     await ownerApi.createRoom(payload);
     expect(postMock).toHaveBeenCalledWith('/room', payload);
   });
@@ -68,8 +68,8 @@ describe('owner.api', () => {
   });
 
   it('updateSeat puts /seat/:id', async () => {
-    await ownerApi.updateSeat(1, { is_locked: true });
-    expect(putMock).toHaveBeenCalledWith('/seat/1', { is_locked: true });
+    await ownerApi.updateSeat(1, { status: 'DISABLED' });
+    expect(putMock).toHaveBeenCalledWith('/seat/1', { status: 'DISABLED' });
   });
 
   it('getOwnerCombos gets /combo with branchId param', async () => {

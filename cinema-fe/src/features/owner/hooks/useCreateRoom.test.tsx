@@ -17,7 +17,7 @@ describe('useCreateRoom', () => {
     function wrapper({ children }: { children: React.ReactNode }) {
       return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
     }
-    const payload = { name: 'Room 1', cinema_id: 5 };
+    const payload = { name: 'Room 1', cinema_id: 5, code: 'R1', type: '2D', capacity: 40 };
     const { result } = renderHook(() => useCreateRoom(), { wrapper });
     result.current.mutate(payload);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

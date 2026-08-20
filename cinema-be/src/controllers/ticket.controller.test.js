@@ -51,12 +51,12 @@ describe('ticket.controller create', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('generates tickets from the room\'s seat map, skipping locked seats', async () => {
+  it('generates tickets from the room\'s seat map, skipping disabled seats', async () => {
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
     await Seat.create([
-      { id: 1, room_id: 1, seat_code: 'A1', seat_type: 0, is_locked: false },
-      { id: 2, room_id: 1, seat_code: 'A2', seat_type: 0, is_locked: true },
-      { id: 3, room_id: 1, seat_code: 'A3', seat_type: 1, is_locked: false },
+      { id: 1, room_id: 1, seat_code: 'A1', seat_type: 0, status: 'ACTIVE' },
+      { id: 2, room_id: 1, seat_code: 'A2', seat_type: 0, status: 'DISABLED' },
+      { id: 3, room_id: 1, seat_code: 'A3', seat_type: 1, status: 'ACTIVE' },
     ]);
     const res = mockRes();
     await ticketController.create({ body: { schedule_id: 1 } }, res);

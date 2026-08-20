@@ -161,15 +161,17 @@ function ShiftAssignmentList() {
             options={employees.map((employee) => ({ label: employee.name || employee.employee_code, value: employee.id }))}
           />
         </div>
-        <DateInput
-          id="dateFilter"
-          label={t('shiftAssignments.filters.dateLabel')}
-          value={dateFilter}
-          onChange={(e) => {
-            setDateFilter(e.target.value);
-            setPage(1);
-          }}
-        />
+        <div className="w-48">
+          <DateInput
+            id="dateFilter"
+            label={t('shiftAssignments.filters.dateLabel')}
+            value={dateFilter}
+            onChange={(e) => {
+              setDateFilter(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
         <div className="w-40">
           <Select
             label={t('shiftAssignments.filters.statusLabel')}
