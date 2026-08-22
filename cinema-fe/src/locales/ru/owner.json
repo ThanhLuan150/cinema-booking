@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "Минимальная сумма заказа не может быть отрицательной."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "Правила ценообразования",
+    "branchFilterPlaceholder": "Все филиалы",
+    "addButton": "Добавить правило +",
+    "addTitle": "Добавить правило цены",
+    "editTitle": "Редактировать правило цены",
+    "nameLabel": "Название",
+    "priceLabel": "Цена",
+    "priorityLabel": "Приоритет",
+    "priorityHint": "При конфликте побеждает правило с более высоким числом.",
+    "branchLabel": "Филиал",
+    "branchPlaceholder": "Выберите филиал",
+    "allBranchesOption": "Все филиалы (для всей системы)",
+    "roomTypeLabel": "Тип зала",
+    "seatTypeLabel": "Тип места",
+    "categoryLabel": "Жанр фильма",
+    "dayTypeLabel": "Тип дня",
+    "timeStartLabel": "Сеанс с",
+    "timeEndLabel": "Сеанс до",
+    "membershipLabel": "Уровень членства",
+    "effectiveFromLabel": "Действует с",
+    "effectiveToLabel": "Действует по",
+    "anyOption": "Любой",
+    "submit": "Сохранить",
+    "createSuccess": "Правило цены добавлено.",
+    "updateSuccess": "Правило цены обновлено.",
+    "deleteConfirm": "Удалить это правило цены?",
+    "deleteSuccess": "Правило цены удалено.",
+    "statusActive": "Активно",
+    "statusInactive": "Неактивно",
+    "activate": "Включить",
+    "deactivate": "Отключить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "matchAny": "Любой",
+    "headers": {
+      "id": "ID",
+      "name": "Название",
+      "branch": "Филиал",
+      "match": "Условия",
+      "price": "Цена",
+      "priority": "Приоритет",
+      "effective": "Срок действия",
+      "status": "Статус",
+      "actions": "Действия"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "Будний день",
+      "WEEKEND": "Выходной",
+      "HOLIDAY": "Праздник"
+    },
+    "seatTypeLabels": {
+      "standard": "Стандарт",
+      "vip": "VIP",
+      "couple": "Для пар"
+    },
+    "membershipLabels": {
+      "NONE": "Не участник",
+      "SILVER": "Серебряный",
+      "GOLD": "Золотой",
+      "PLATINUM": "Платиновый"
+    },
+    "validation": {
+      "nameRequired": "Пожалуйста, введите название.",
+      "priceRequired": "Пожалуйста, введите цену.",
+      "priceInvalid": "Цена не может быть отрицательной.",
+      "branchRequired": "Пожалуйста, выберите филиал.",
+      "timePairRequired": "Укажите время начала и окончания сеанса или оставьте оба поля пустыми.",
+      "timeRangeInvalid": "Время начала не может быть позже времени окончания.",
+      "effectiveRangeInvalid": "Дата начала действия не может быть позже даты окончания."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "Праздники",
+    "addButton": "Добавить праздник +",
+    "addTitle": "Добавить праздник",
+    "dateLabel": "Дата",
+    "nameLabel": "Название",
+    "branchLabel": "Филиал",
+    "allBranchesOption": "Все филиалы (для всей системы)",
+    "submit": "Добавить",
+    "createSuccess": "Праздник добавлен.",
+    "deleteConfirm": "Удалить этот праздник?",
+    "deleteSuccess": "Праздник удалён.",
+    "delete": "Удалить",
+    "headers": {
+      "id": "ID",
+      "date": "Дата",
+      "name": "Название",
+      "branch": "Филиал",
+      "actions": "Действия"
+    },
+    "validation": {
+      "dateRequired": "Пожалуйста, введите дату."
+    }
+  },
   "shifts": {
     "breadcrumb": "Смены",
     "addButton": "Добавить смену +",

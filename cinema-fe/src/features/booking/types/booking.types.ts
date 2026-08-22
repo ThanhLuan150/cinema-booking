@@ -4,6 +4,7 @@ export interface BookedSeatTicket {
   seat_type: number;
   status: number;
   held_by_me?: boolean;
+  price: number | null;
 }
 
 export interface HoldSeatsResult {

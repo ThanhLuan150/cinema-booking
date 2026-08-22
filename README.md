@@ -127,7 +127,7 @@ The frontend mirrors this: `GET /api/user/permissions` returns the caller's reso
 1. Browse: **Home**, **Playing now** (`/Playing`), **Upcoming** (`/Upcoming`), **Cinemas** (`/Cinemas`), movie detail (`/Detail/:id`), branch detail (`/Cinema/:id`) — filter by search/category/country/date/branch. Like a movie (♥) and favorite a branch while browsing.
 2. **Movie detail** → reviews & star ratings (create/edit own review, reply, react 👍/❤️, report someone else's) and actor/director cast info.
 3. Click **Book Now** on a movie → `/BookTicket/:id` — pick a date, then an available showtime for that date (login required; redirected to `/Login` otherwise).
-4. → `/BookSeat` — interactive seat grid (Standard/VIP/Couple pricing multipliers), select seat(s), optionally add **Combos** (popcorn/drinks) and apply a **Voucher** code (validated live, discount previewed).
+4. → `/BookSeat` — interactive seat grid (Standard/VIP/Couple), select seat(s), optionally add **Combos** (popcorn/drinks) and apply a **Voucher** code (validated live, discount previewed). Every seat's price comes from the backend's Pricing Rule engine (branch/room type/seat type/movie category/day type/holiday/showtime/membership) — the frontend never computes it.
 5. **Checkout** via MoMo — creates a pending invoice, redirects to MoMo, and on return (`/PaymentResult`) confirms/finalizes the booking (also confirmed asynchronously via MoMo's IPN webhook). A QR code (ticket code) is generated for check-in.
 6. **My Bookings** (`/MyBookings`) — booking history, ticket QR/print, **cancel** a booking (only allowed if the showtime is more than 2 hours away).
 
@@ -192,6 +192,7 @@ Socket.IO pushes live updates without polling: Super Admin sockets join an `admi
 | Org | `/api/company`, `/api/cinema` (alias `/api/branch`), `/api/room`, `/api/seat`, `/api/employee`, `/api/position` | Company → Branch → Room → Seat, staffing |
 | Scheduling & booking | `/api/schedule`, `/api/ticket`, `/api/scheduleId`, `/api/bookseat/:id`, `/api/bookticket/:id`, `/api/MomoPayment`, `/api/invoice/*` | Showtime → ticket generation → booking → payment → check-in |
 | Commerce | `/api/combo`, `/api/voucher` | Concessions and discounts, branch-scoped |
+| Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price |
 | Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions, movie likes, branch favorites |
 | Ops | `/api/users`, `/api/block/:id`, `/api/owner/dashboard`, `/api/admin/dashboard`, `/api/admin/invoices` | Admin/owner back-office data |
 

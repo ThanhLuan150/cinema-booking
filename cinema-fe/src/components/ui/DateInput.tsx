@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
+import { useFloatingPosition, type FloatingPosition } from './useFloatingPosition';
 
 export interface DateInputProps {
   label?: string;
@@ -31,7 +33,11 @@ function parseISODate(value?: string): Date | null {
 }
 
 function isSameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 
 function addDays(date: Date, delta: number) {
@@ -62,7 +68,9 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
     const { i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const dayRefs = useRef(new Map<string, HTMLButtonElement>());
+    const [position, setPosition] = useState<FloatingPosition | null>(null);
 
     const selectedDate = useMemo(() => parseISODate(value), [value]);
     const today = useMemo(() => new Date(), []);
@@ -84,12 +92,16 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
     useEffect(() => {
       if (!isOpen) return;
       const handleClickOutside = (event: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(event.target as Node)) close();
+        const target = event.target as Node;
+        if (containerRef.current?.contains(target)) return;
+        if (dropdownRef.current?.contains(target)) return;
+        close();
       };
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
+    useFloatingPosition(isOpen, containerRef, dropdownRef, position, setPosition, [viewDate]);
 
     useEffect(() => {
       if (!isOpen) return;
@@ -111,7 +123,11 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
     const weeks = useMemo(() => getMonthWeeks(viewDate), [viewDate]);
 
     const displayValue = selectedDate
-      ? new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(selectedDate)
+      ? new Intl.DateTimeFormat(locale, {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(selectedDate)
       : '';
 
     const selectDay = (day: Date) => {
@@ -175,7 +191,7 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
     };
 
     return (
-      <div className={cn('relative flex flex-col gap-1.5', isOpen ? 'z-30' : 'z-10')}>
+      <div className="relative flex flex-col gap-1.5">
         {label && (
           <label htmlFor={id} className="text-sm font-medium text-txt/90">
             {label}
@@ -204,7 +220,12 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
             <span className={cn('truncate', !displayValue && 'text-txt/35')}>
               {displayValue || placeholder || ''}
             </span>
-            <i className={cn('fa-regular fa-calendar ml-2 shrink-0 text-xs text-txt/50', displayValue && !disabled && 'mr-5')} />
+            <i
+              className={cn(
+                'fa-regular fa-calendar ml-2 shrink-0 text-xs text-txt/50',
+                displayValue && !disabled && 'mr-5',
+              )}
+            />
           </button>
           {displayValue && !disabled && (
             <button
@@ -219,77 +240,86 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
               <i className="fa-solid fa-xmark text-xs" />
             </button>
           )}
-          {isOpen && (
-            <div
-              role="dialog"
-              aria-label="Choose a date"
-              className="absolute z-20 mt-1 w-full min-w-[280px] rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised"
-            >
-              <div className="mb-2 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => goToMonth(-1)}
-                  aria-label="Previous month"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
-                >
-                  <i className="fa-solid fa-chevron-left text-xs" />
-                </button>
-                <span className="text-sm font-medium text-txt">{monthLabel}</span>
-                <button
-                  type="button"
-                  onClick={() => goToMonth(1)}
-                  aria-label="Next month"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
-                >
-                  <i className="fa-solid fa-chevron-right text-xs" />
-                </button>
-              </div>
+          {isOpen &&
+            position &&
+            createPortal(
+              <div
+                ref={dropdownRef}
+                role="dialog"
+                aria-label="Choose a date"
+                style={{
+                  top: position.top,
+                  left: position.left,
+                  width: Math.max(position.width, 280),
+                }}
+                className="fixed z-[60] rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => goToMonth(-1)}
+                    aria-label="Previous month"
+                    className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
+                  >
+                    <i className="fa-solid fa-chevron-left text-xs" />
+                  </button>
+                  <span className="text-sm font-medium text-txt">{monthLabel}</span>
+                  <button
+                    type="button"
+                    onClick={() => goToMonth(1)}
+                    aria-label="Next month"
+                    className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
+                  >
+                    <i className="fa-solid fa-chevron-right text-xs" />
+                  </button>
+                </div>
 
-              <div className="grid grid-cols-7 gap-1 text-center text-xs text-txt/50">
-                {weekdayLabels.map((wd) => (
-                  <span key={wd} className="py-1">
-                    {wd}
-                  </span>
-                ))}
-              </div>
+                <div className="grid grid-cols-7 gap-1 text-center text-xs text-txt/50">
+                  {weekdayLabels.map((wd) => (
+                    <span key={wd} className="py-1">
+                      {wd}
+                    </span>
+                  ))}
+                </div>
 
-              <div role="grid" className="grid grid-cols-7 gap-1">
-                {weeks.flatMap((week, wi) =>
-                  week.map((day, di) => {
-                    if (!day) return <span key={`${wi}-${di}`} />;
-                    const iso = toISODate(day);
-                    const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
-                    const isToday = isSameDay(day, today);
-                    const isFocused = isSameDay(day, focusedDate);
-                    return (
-                      <button
-                        key={iso}
-                        ref={(el) => {
-                          if (el) dayRefs.current.set(iso, el);
-                          else dayRefs.current.delete(iso);
-                        }}
-                        type="button"
-                        role="gridcell"
-                        tabIndex={isFocused ? 0 : -1}
-                        onClick={() => selectDay(day)}
-                        onKeyDown={handleGridKeyDown}
-                        onFocus={() => setFocusedDate(day)}
-                        aria-selected={isSelected}
-                        className={cn(
-                          'flex h-8 w-8 items-center justify-center rounded-md text-sm text-txt transition-colors hover:bg-accent/15',
-                          'focus:outline-none focus:ring-2 focus:ring-accent/50',
-                          isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
-                          !isSelected && isToday && 'ring-1 ring-accent/60',
-                        )}
-                      >
-                        {day.getDate()}
-                      </button>
-                    );
-                  }),
-                )}
-              </div>
-            </div>
-          )}
+                <div role="grid" className="grid grid-cols-7 gap-1">
+                  {weeks.flatMap((week, wi) =>
+                    week.map((day, di) => {
+                      if (!day) return <span key={`${wi}-${di}`} />;
+                      const iso = toISODate(day);
+                      const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
+                      const isToday = isSameDay(day, today);
+                      const isFocused = isSameDay(day, focusedDate);
+                      return (
+                        <button
+                          key={iso}
+                          ref={(el) => {
+                            if (el) dayRefs.current.set(iso, el);
+                            else dayRefs.current.delete(iso);
+                          }}
+                          type="button"
+                          role="gridcell"
+                          tabIndex={isFocused ? 0 : -1}
+                          onClick={() => selectDay(day)}
+                          onKeyDown={handleGridKeyDown}
+                          onFocus={() => setFocusedDate(day)}
+                          aria-selected={isSelected}
+                          className={cn(
+                            'flex h-8 w-8 items-center justify-center rounded-md text-sm text-txt transition-colors hover:bg-accent/15',
+                            'focus:outline-none focus:ring-2 focus:ring-accent/50',
+                            isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
+                            !isSelected && isToday && 'ring-1 ring-accent/60',
+                          )}
+                        >
+                          {day.getDate()}
+                        </button>
+                      );
+                    }),
+                  )}
+                </div>
+              </div>,
+              document.body,
+            )}
         </div>
         {error && (
           <span className="flex items-center gap-1 text-sm text-red-400">

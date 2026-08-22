@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "Der Mindestbestellwert darf nicht negativ sein."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "Preisregeln",
+    "branchFilterPlaceholder": "Alle Filialen",
+    "addButton": "Regel hinzufügen +",
+    "addTitle": "Preisregel hinzufügen",
+    "editTitle": "Preisregel bearbeiten",
+    "nameLabel": "Name",
+    "priceLabel": "Preis",
+    "priorityLabel": "Priorität",
+    "priorityHint": "Bei einem Konflikt gewinnt die höhere Zahl.",
+    "branchLabel": "Filiale",
+    "branchPlaceholder": "Filiale auswählen",
+    "allBranchesOption": "Alle Filialen (systemweit)",
+    "roomTypeLabel": "Saaltyp",
+    "seatTypeLabel": "Sitzplatztyp",
+    "categoryLabel": "Filmkategorie",
+    "dayTypeLabel": "Tagestyp",
+    "timeStartLabel": "Vorstellung ab",
+    "timeEndLabel": "Vorstellung bis",
+    "membershipLabel": "Mitgliedschaftsstufe",
+    "effectiveFromLabel": "Gültig ab",
+    "effectiveToLabel": "Gültig bis",
+    "anyOption": "Beliebig",
+    "submit": "Speichern",
+    "createSuccess": "Preisregel hinzugefügt.",
+    "updateSuccess": "Preisregel aktualisiert.",
+    "deleteConfirm": "Diese Preisregel löschen?",
+    "deleteSuccess": "Preisregel gelöscht.",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "matchAny": "Beliebig",
+    "headers": {
+      "id": "ID",
+      "name": "Name",
+      "branch": "Filiale",
+      "match": "Übereinstimmung",
+      "price": "Preis",
+      "priority": "Priorität",
+      "effective": "Gültigkeit",
+      "status": "Status",
+      "actions": "Aktionen"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "Wochentag",
+      "WEEKEND": "Wochenende",
+      "HOLIDAY": "Feiertag"
+    },
+    "seatTypeLabels": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Paar"
+    },
+    "membershipLabels": {
+      "NONE": "Kein Mitglied",
+      "SILVER": "Silber",
+      "GOLD": "Gold",
+      "PLATINUM": "Platin"
+    },
+    "validation": {
+      "nameRequired": "Bitte geben Sie einen Namen ein.",
+      "priceRequired": "Bitte geben Sie einen Preis ein.",
+      "priceInvalid": "Der Preis darf nicht negativ sein.",
+      "branchRequired": "Bitte wählen Sie eine Filiale aus.",
+      "timePairRequired": "Legen Sie sowohl Vorstellung ab als auch bis fest, oder lassen Sie beide leer.",
+      "timeRangeInvalid": "Vorstellung ab darf nicht nach Vorstellung bis liegen.",
+      "effectiveRangeInvalid": "Gültig ab darf nicht nach Gültig bis liegen."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "Feiertage",
+    "addButton": "Feiertag hinzufügen +",
+    "addTitle": "Feiertag hinzufügen",
+    "dateLabel": "Datum",
+    "nameLabel": "Name",
+    "branchLabel": "Filiale",
+    "allBranchesOption": "Alle Filialen (systemweit)",
+    "submit": "Hinzufügen",
+    "createSuccess": "Feiertag hinzugefügt.",
+    "deleteConfirm": "Diesen Feiertag löschen?",
+    "deleteSuccess": "Feiertag gelöscht.",
+    "delete": "Löschen",
+    "headers": {
+      "id": "ID",
+      "date": "Datum",
+      "name": "Name",
+      "branch": "Filiale",
+      "actions": "Aktionen"
+    },
+    "validation": {
+      "dateRequired": "Bitte geben Sie ein Datum ein."
+    }
+  },
   "shifts": {
     "breadcrumb": "Schichten",
     "addButton": "Schicht hinzufügen +",

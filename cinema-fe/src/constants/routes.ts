@@ -37,6 +37,8 @@ export const ROUTES = {
   ownerRooms: '/OwnerCinemas/Rooms',
   ownerCombos: '/OwnerCombos',
   ownerVouchers: '/OwnerVouchers',
+  ownerPricingRules: '/OwnerPricingRules',
+  ownerHolidays: '/OwnerHolidays',
   ownerBookings: '/OwnerBookings',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',

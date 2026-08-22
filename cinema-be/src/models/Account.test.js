@@ -19,7 +19,17 @@ describe('Account model', () => {
     expect(account.status).toBe(1);
     expect(account.approved).toBe(true);
     expect(account.verified).toBe(false);
+    expect(account.membership_level).toBe('NONE');
     expect(account.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('rejects an out-of-enum membership_level', () => {
+    const err = new Account({ id: 1, email: 'a@b.com', password: 'x', membership_level: 'BOGUS' }).validateSync();
+    expect(err.errors.membership_level).toBeDefined();
+  });
+
+  it('exposes its membership level enum table', () => {
+    expect(Account.MEMBERSHIP_LEVELS).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM']);
   });
 
   it('fails validation when required fields are missing', () => {

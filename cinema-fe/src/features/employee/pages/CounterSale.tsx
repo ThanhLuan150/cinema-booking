@@ -11,16 +11,12 @@ import { getApiErrorMessage } from '@/lib/apiError';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { useMovies } from '@/features/movies/hooks/useMovies';
 import { cn } from '@/lib/cn';
-import { SEAT_TYPE_CLASS, SEAT_TYPE_MULTIPLIER, SEAT_TYPES } from '@/constants/seatType';
+import { SEAT_TYPE_CLASS, SEAT_TYPES } from '@/constants/seatType';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMySchedules } from '../hooks/useMySchedules';
 import { useScheduleSeats } from '../hooks/useScheduleSeats';
 import { useCreateCounterSale } from '../hooks/useCounterSale';
 import { findAccountByEmail } from '../api/employee.api';
-
-function priceForSeatType(basePrice: number, seatType: number) {
-  return Math.round(basePrice * (SEAT_TYPE_MULTIPLIER[seatType] ?? 1));
-}
 
 function CounterSale() {
   const { t } = useTranslation('employee');
@@ -42,11 +38,6 @@ function CounterSale() {
   const { data: tickets } = useScheduleSeats(scheduleId || null);
   const createCounterSaleMutation = useCreateCounterSale();
 
-  const schedule = useMemo(
-    () => (schedulesPage?.data ?? []).find((s) => String(s.id) === scheduleId),
-    [schedulesPage, scheduleId],
-  );
-
   const scheduleOptions = useMemo(
     () =>
       (schedulesPage?.data ?? []).map((s) => ({
@@ -56,12 +47,14 @@ function CounterSale() {
     [schedulesPage, movieNameById],
   );
 
+  // Seat prices come from the backend (Pricing Rule engine) via the scheduleSeats response —
+  // never recomputed here, so the frontend never hardcodes a seat-type price multiplier.
   const totalPrice = useMemo(() => {
-    if (!schedule || !tickets) return 0;
+    if (!tickets) return 0;
     return tickets
       .filter((ticket) => selectedTicketIds.includes(ticket.id))
-      .reduce((sum, ticket) => sum + priceForSeatType(schedule.price, ticket.seat_type), 0);
-  }, [schedule, tickets, selectedTicketIds]);
+      .reduce((sum, ticket) => sum + (ticket.price ?? 0), 0);
+  }, [tickets, selectedTicketIds]);
 
   const toggleTicket = useCallback((ticketId: number) => {
     setSelectedTicketIds((current) =>

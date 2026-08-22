@@ -93,11 +93,11 @@ Lưới thẻ có phân trang, `Upcoming` không cho bấm đặt vé (chưa m�
 - Nút "Đặt vé" disable tới khi chọn đủ ngày + giờ.
 
 **Bước 2 — `/BookSeat`**
-- **Sơ đồ ghế**: hàng theo chữ cái, ghế đánh số, màu theo loại (Standard/VIP/Couple — hệ số giá `SEAT_TYPE_MULTIPLIER`), ghế đã bán mờ + không click được, ghế đang chọn viền trắng + phóng to nhẹ. Hover hiện tooltip loại ghế.
+- **Sơ đồ ghế**: hàng theo chữ cái, ghế đánh số, màu theo loại (Standard/VIP/Couple), ghế đã bán mờ + không click được, ghế đang chọn viền trắng + phóng to nhẹ. Hover hiện tooltip loại ghế. Giá mỗi ghế (`price`) do backend trả về trong `GET /bookseat/:scheduleId`, tính bởi Pricing Rule engine (branch, room type, seat type, thể loại phim, ngày trong tuần/weekend/holiday, khung giờ chiếu, membership level) — Frontend không tự tính giá.
 - **Panel bên phải**:
   - Danh sách **combo** (ảnh, tên, giá, nút +/− số lượng).
   - Ô **mã voucher** — nút "Áp dụng" gọi validate realtime (`POST /voucher/validate`); đúng → hiện số tiền giảm màu accent; sai → lỗi đỏ dưới ô.
-  - Tổng tiền = (giá ghế theo hệ số loại) + combo − giảm giá voucher.
+  - Tổng tiền hiển thị = tổng giá ghế (từ backend) + combo − giảm giá voucher. Khi thanh toán, backend tính lại toàn bộ (giá ghế + combo + voucher) từ dữ liệu server-side và bỏ qua mọi `totalPrice`/`discountAmount` mà client gửi lên.
   - Nút "Thanh toán" → mở **Modal MoMo**: hiện QR/nút chuyển sang MoMo; sau khi quay lại app tự gọi xác nhận (`/MomoPayment/confirm`).
 - Chưa chọn ghế nào → nút Thanh toán disable, toast nhắc "Chọn ghế trước".
 

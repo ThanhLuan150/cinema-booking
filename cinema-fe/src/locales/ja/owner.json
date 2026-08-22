@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "最低注文金額はマイナスにできません。"
     }
   },
+  "pricingRules": {
+    "breadcrumb": "料金ルール",
+    "branchFilterPlaceholder": "すべての支店",
+    "addButton": "ルールを追加 +",
+    "addTitle": "料金ルールを追加",
+    "editTitle": "料金ルールを編集",
+    "nameLabel": "名前",
+    "priceLabel": "価格",
+    "priorityLabel": "優先度",
+    "priorityHint": "競合した場合は数値が高いルールが優先されます。",
+    "branchLabel": "支店",
+    "branchPlaceholder": "支店を選択",
+    "allBranchesOption": "全支店共通（システム全体）",
+    "roomTypeLabel": "シアタータイプ",
+    "seatTypeLabel": "座席タイプ",
+    "categoryLabel": "映画カテゴリー",
+    "dayTypeLabel": "曜日タイプ",
+    "timeStartLabel": "上映開始時刻",
+    "timeEndLabel": "上映終了時刻",
+    "membershipLabel": "会員ランク",
+    "effectiveFromLabel": "適用開始日",
+    "effectiveToLabel": "適用終了日",
+    "anyOption": "指定なし",
+    "submit": "保存",
+    "createSuccess": "料金ルールを追加しました。",
+    "updateSuccess": "料金ルールを更新しました。",
+    "deleteConfirm": "この料金ルールを削除しますか？",
+    "deleteSuccess": "料金ルールを削除しました。",
+    "statusActive": "有効",
+    "statusInactive": "無効",
+    "activate": "有効化",
+    "deactivate": "無効化",
+    "edit": "編集",
+    "delete": "削除",
+    "matchAny": "指定なし",
+    "headers": {
+      "id": "ID",
+      "name": "名前",
+      "branch": "支店",
+      "match": "条件",
+      "price": "価格",
+      "priority": "優先度",
+      "effective": "適用期間",
+      "status": "状態",
+      "actions": "操作"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "平日",
+      "WEEKEND": "週末",
+      "HOLIDAY": "祝日"
+    },
+    "seatTypeLabels": {
+      "standard": "スタンダード",
+      "vip": "VIP",
+      "couple": "カップル"
+    },
+    "membershipLabels": {
+      "NONE": "非会員",
+      "SILVER": "シルバー",
+      "GOLD": "ゴールド",
+      "PLATINUM": "プラチナ"
+    },
+    "validation": {
+      "nameRequired": "名前を入力してください。",
+      "priceRequired": "価格を入力してください。",
+      "priceInvalid": "価格はマイナスにできません。",
+      "branchRequired": "支店を選択してください。",
+      "timePairRequired": "開始時刻と終了時刻の両方を設定するか、両方とも空にしてください。",
+      "timeRangeInvalid": "開始時刻は終了時刻より後にできません。",
+      "effectiveRangeInvalid": "適用開始日は適用終了日より後にできません。"
+    }
+  },
+  "holidays": {
+    "breadcrumb": "祝日",
+    "addButton": "祝日を追加 +",
+    "addTitle": "祝日を追加",
+    "dateLabel": "日付",
+    "nameLabel": "名前",
+    "branchLabel": "支店",
+    "allBranchesOption": "全支店共通（システム全体）",
+    "submit": "追加",
+    "createSuccess": "祝日を追加しました。",
+    "deleteConfirm": "この祝日を削除しますか？",
+    "deleteSuccess": "祝日を削除しました。",
+    "delete": "削除",
+    "headers": {
+      "id": "ID",
+      "date": "日付",
+      "name": "名前",
+      "branch": "支店",
+      "actions": "操作"
+    },
+    "validation": {
+      "dateRequired": "日付を入力してください。"
+    }
+  },
   "shifts": {
     "breadcrumb": "シフト",
     "addButton": "シフトを追加 +",

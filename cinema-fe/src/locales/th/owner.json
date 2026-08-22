@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "มูลค่าการสั่งซื้อขั้นต่ำต้องไม่ติดลบ"
     }
   },
+  "pricingRules": {
+    "breadcrumb": "กฎการตั้งราคา",
+    "branchFilterPlaceholder": "ทุกสาขา",
+    "addButton": "เพิ่มกฎ +",
+    "addTitle": "เพิ่มกฎการตั้งราคา",
+    "editTitle": "แก้ไขกฎการตั้งราคา",
+    "nameLabel": "ชื่อ",
+    "priceLabel": "ราคา",
+    "priorityLabel": "ลำดับความสำคัญ",
+    "priorityHint": "หากมีความขัดแย้ง กฎที่มีตัวเลขสูงกว่าจะมีผลก่อน",
+    "branchLabel": "สาขา",
+    "branchPlaceholder": "เลือกสาขา",
+    "allBranchesOption": "ทุกสาขา (ทั้งระบบ)",
+    "roomTypeLabel": "ประเภทโรง",
+    "seatTypeLabel": "ประเภทที่นั่ง",
+    "categoryLabel": "หมวดหมู่ภาพยนตร์",
+    "dayTypeLabel": "ประเภทวัน",
+    "timeStartLabel": "รอบฉายตั้งแต่",
+    "timeEndLabel": "รอบฉายถึง",
+    "membershipLabel": "ระดับสมาชิก",
+    "effectiveFromLabel": "มีผลตั้งแต่",
+    "effectiveToLabel": "มีผลถึง",
+    "anyOption": "ทั้งหมด",
+    "submit": "บันทึก",
+    "createSuccess": "เพิ่มกฎการตั้งราคาแล้ว",
+    "updateSuccess": "อัปเดตกฎการตั้งราคาแล้ว",
+    "deleteConfirm": "ลบกฎการตั้งราคานี้หรือไม่?",
+    "deleteSuccess": "ลบกฎการตั้งราคาแล้ว",
+    "statusActive": "ใช้งาน",
+    "statusInactive": "ไม่ใช้งาน",
+    "activate": "เปิดใช้งาน",
+    "deactivate": "ปิดใช้งาน",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "matchAny": "ทั้งหมด",
+    "headers": {
+      "id": "ไอดี",
+      "name": "ชื่อ",
+      "branch": "สาขา",
+      "match": "เงื่อนไข",
+      "price": "ราคา",
+      "priority": "ลำดับความสำคัญ",
+      "effective": "ระยะเวลาบังคับใช้",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "วันธรรมดา",
+      "WEEKEND": "วันหยุดสุดสัปดาห์",
+      "HOLIDAY": "วันหยุดนักขัตฤกษ์"
+    },
+    "seatTypeLabels": {
+      "standard": "มาตรฐาน",
+      "vip": "วีไอพี",
+      "couple": "คู่รัก"
+    },
+    "membershipLabels": {
+      "NONE": "ไม่ใช่สมาชิก",
+      "SILVER": "ซิลเวอร์",
+      "GOLD": "โกลด์",
+      "PLATINUM": "แพลตินัม"
+    },
+    "validation": {
+      "nameRequired": "กรุณากรอกชื่อ",
+      "priceRequired": "กรุณากรอกราคา",
+      "priceInvalid": "ราคาต้องไม่ติดลบ",
+      "branchRequired": "กรุณาเลือกสาขา",
+      "timePairRequired": "กรุณาตั้งเวลาเริ่มและสิ้นสุดทั้งคู่ หรือเว้นว่างทั้งคู่",
+      "timeRangeInvalid": "เวลาเริ่มต้องไม่อยู่หลังเวลาสิ้นสุด",
+      "effectiveRangeInvalid": "วันที่เริ่มมีผลต้องไม่อยู่หลังวันที่สิ้นสุด"
+    }
+  },
+  "holidays": {
+    "breadcrumb": "วันหยุด",
+    "addButton": "เพิ่มวันหยุด +",
+    "addTitle": "เพิ่มวันหยุด",
+    "dateLabel": "วันที่",
+    "nameLabel": "ชื่อ",
+    "branchLabel": "สาขา",
+    "allBranchesOption": "ทุกสาขา (ทั้งระบบ)",
+    "submit": "เพิ่ม",
+    "createSuccess": "เพิ่มวันหยุดแล้ว",
+    "deleteConfirm": "ลบวันหยุดนี้หรือไม่?",
+    "deleteSuccess": "ลบวันหยุดแล้ว",
+    "delete": "ลบ",
+    "headers": {
+      "id": "ไอดี",
+      "date": "วันที่",
+      "name": "ชื่อ",
+      "branch": "สาขา",
+      "actions": "การดำเนินการ"
+    },
+    "validation": {
+      "dateRequired": "กรุณากรอกวันที่"
+    }
+  },
   "shifts": {
     "breadcrumb": "กะทำงาน",
     "addButton": "เพิ่มกะทำงาน +",

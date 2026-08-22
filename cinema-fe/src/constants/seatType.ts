@@ -15,9 +15,3 @@ export const SEAT_TYPE_CLASS: Record<number, string> = {
   [SEAT_TYPES.vip]: 'bg-[#F7BB07]',
   [SEAT_TYPES.couple]: 'bg-pink-400',
 };
-
-export const SEAT_TYPE_MULTIPLIER: Record<number, number> = {
-  [SEAT_TYPES.standard]: 1,
-  [SEAT_TYPES.vip]: 1.2,
-  [SEAT_TYPES.couple]: 1.5,
-};

@@ -101,7 +101,7 @@ describe('BookSeatPage', () => {
 
   it('renders the seat grid and holds + selects a seat from the backend, updating the total', () => {
     useBookedSeatsMock.mockReturnValue({
-      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1, price: 100000 }],
       isLoading: false,
     });
     renderPage();

@@ -53,6 +53,8 @@ const PERMISSIONS = [
   ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
   ['shiftAssignment.create', 'shiftAssignment'], ['shiftAssignment.read', 'shiftAssignment'],
   ['shiftAssignment.update', 'shiftAssignment'], ['shiftAssignment.delete', 'shiftAssignment'],
+  ['pricingRule.create', 'pricingRule'], ['pricingRule.read', 'pricingRule'],
+  ['pricingRule.update', 'pricingRule'], ['pricingRule.delete', 'pricingRule'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -79,6 +81,8 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'shift.create': 'BRANCH', 'shift.read': 'BRANCH', 'shift.update': 'BRANCH', 'shift.delete': 'BRANCH',
   'shiftAssignment.create': 'BRANCH', 'shiftAssignment.read': 'BRANCH',
   'shiftAssignment.update': 'BRANCH', 'shiftAssignment.delete': 'BRANCH',
+  'pricingRule.create': 'BRANCH', 'pricingRule.read': 'BRANCH',
+  'pricingRule.update': 'BRANCH', 'pricingRule.delete': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {

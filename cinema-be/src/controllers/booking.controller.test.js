@@ -87,6 +87,7 @@ describe('POST /api/MomoPayment', () => {
   });
 
   it('returns the mock payUrl as plain text', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 50000 });
     await Ticket.create([
       { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
       { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 1 },
@@ -134,6 +135,7 @@ describe('POST /api/MomoPayment', () => {
   });
 
   it('allows checkout when the seat is held by the same account', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 50000 });
     await Ticket.create({
       id: 1,
       schedule_id: 1,
