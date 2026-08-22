@@ -26,6 +26,8 @@ import OwnerCinemas from '@/features/owner/cinemas/pages/List';
 import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
+import OwnerPricingRules from '@/features/owner/pricingRules/pages/List';
+import OwnerHolidays from '@/features/owner/holidays/pages/List';
 import OwnerBookingLookup from '@/features/owner/pages/Lookup';
 import OwnerEmployees from '@/features/owner/employees/pages/List';
 import OwnerShifts from '@/features/owner/shifts/pages/List';
@@ -165,6 +167,22 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerVouchers />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerPricingRules}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerPricingRules />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerHolidays}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerHolidays />
           </RequireRole>
         }
       />

@@ -6,9 +6,13 @@ const Voucher = require('../models/Voucher');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
+const MovieCategory = require('../models/MovieCategory');
+const Combo = require('../models/Combo');
 const nextId = require('../utils/nextId');
 const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
+const pricingEngine = require('../services/pricingEngine');
+const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
 
 async function findScheduleByMovieDateTime({ movie_id, movie_date, time_begin }) {
   return Schedule.findOne({ movie_id: Number(movie_id), movie_date, time_begin, status: { $ne: 'CANCELLED' } });
@@ -227,6 +231,65 @@ async function createCounterSale({ ticketIds, comboIds, voucherCode, discountAmo
   return finalizeMomoOrder(orderId, { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy });
 }
 
+async function buildPricingContext(schedule, accountId) {
+  const room = await Room.findOne({ id: schedule.room_id });
+  const categoryMappings = await MovieCategory.find({ movie_id: schedule.movie_id });
+  const account = accountId ? await Account.findOne({ id: Number(accountId) }) : null;
+  return {
+    branchId: room ? room.cinema_id : (schedule.cinema_id ?? null),
+    roomType: room ? room.type : null,
+    categoryIds: categoryMappings.map((m) => m.cat_id),
+    date: schedule.movie_date,
+    timeBegin: schedule.time_begin,
+    membershipLevel: account ? account.membership_level : 'NONE',
+    basePrice: schedule.price,
+  };
+}
+
+async function calculateTicketPrices(schedule, tickets, accountId) {
+  const ctx = await buildPricingContext(schedule, accountId);
+  const bySeatType = new Map();
+  const results = new Map();
+  for (const ticket of tickets) {
+    if (!bySeatType.has(ticket.seat_type)) {
+      bySeatType.set(ticket.seat_type, await pricingEngine.calculateSeatPrice({ ...ctx, seatType: ticket.seat_type }));
+    }
+    results.set(ticket.id, bySeatType.get(ticket.seat_type));
+  }
+  return results;
+}
+
+async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, accountId }) {
+  const tickets = await findTicketsByIds(ticketIds);
+  if (tickets.length === 0) return null;
+
+  const scheduleId = tickets[0].schedule_id;
+  const schedule = await findScheduleById(scheduleId);
+  if (!schedule) return null;
+
+  const priceByTicketId = await calculateTicketPrices(schedule, tickets, accountId);
+  const ticketPrices = tickets.map((t) => ({ ticketId: t.id, price: priceByTicketId.get(t.id)?.price ?? 0 }));
+  const seatTotal = ticketPrices.reduce((sum, t) => sum + t.price, 0);
+
+  const combos = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
+  const comboTotal = combos.reduce((sum, c) => sum + c.price, 0);
+
+  let discountAmount = 0;
+  let appliedVoucherCode = null;
+  if (voucherCode) {
+    const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase(), active: true });
+    const orderValue = seatTotal + comboTotal;
+    const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue });
+    if (eligibility.eligible) {
+      discountAmount = computeVoucherDiscount(voucher, orderValue);
+      appliedVoucherCode = voucher.code;
+    }
+  }
+
+  const totalPrice = Math.max(seatTotal + comboTotal - discountAmount, 0);
+  return { scheduleId, seatTotal, comboTotal, discountAmount, totalPrice, voucherCode: appliedVoucherCode, ticketPrices };
+}
+
 module.exports = {
   findScheduleByMovieDateTime,
   findTicketsByScheduleId,
@@ -254,4 +317,7 @@ module.exports = {
   findCinemaIdByInvoiceId,
   findCinemaIdByTicketId,
   createCounterSale,
+  buildPricingContext,
+  calculateTicketPrices,
+  computeOrderPricing,
 };

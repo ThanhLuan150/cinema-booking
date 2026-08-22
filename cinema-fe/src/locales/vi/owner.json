@@ -238,6 +238,102 @@
       "minOrderValueInvalid": "Giá trị đơn hàng tối thiểu không được âm."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "Quy tắc giá vé",
+    "branchFilterPlaceholder": "Tất cả chi nhánh",
+    "addButton": "Thêm quy tắc +",
+    "addTitle": "Thêm quy tắc giá",
+    "editTitle": "Chỉnh sửa quy tắc giá",
+    "nameLabel": "Tên",
+    "priceLabel": "Giá",
+    "priorityLabel": "Độ ưu tiên",
+    "priorityHint": "Khi xung đột, quy tắc có số cao hơn sẽ được áp dụng.",
+    "branchLabel": "Chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranchesOption": "Tất cả chi nhánh (toàn hệ thống)",
+    "roomTypeLabel": "Loại phòng chiếu",
+    "seatTypeLabel": "Loại ghế",
+    "categoryLabel": "Thể loại phim",
+    "dayTypeLabel": "Loại ngày",
+    "timeStartLabel": "Suất chiếu từ",
+    "timeEndLabel": "Suất chiếu đến",
+    "membershipLabel": "Hạng thành viên",
+    "effectiveFromLabel": "Hiệu lực từ",
+    "effectiveToLabel": "Hiệu lực đến",
+    "anyOption": "Bất kỳ",
+    "submit": "Lưu",
+    "createSuccess": "Đã thêm quy tắc giá.",
+    "updateSuccess": "Đã cập nhật quy tắc giá.",
+    "deleteConfirm": "Xóa quy tắc giá này?",
+    "deleteSuccess": "Đã xóa quy tắc giá.",
+    "statusActive": "Đang hoạt động",
+    "statusInactive": "Ngừng hoạt động",
+    "activate": "Kích hoạt",
+    "deactivate": "Vô hiệu hóa",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "matchAny": "Bất kỳ",
+    "headers": {
+      "id": "ID",
+      "name": "Tên",
+      "branch": "Chi nhánh",
+      "match": "Điều kiện",
+      "price": "Giá",
+      "priority": "Độ ưu tiên",
+      "effective": "Hiệu lực",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "Ngày thường",
+      "WEEKEND": "Cuối tuần",
+      "HOLIDAY": "Ngày lễ"
+    },
+    "seatTypeLabels": {
+      "standard": "Thường",
+      "vip": "VIP",
+      "couple": "Đôi"
+    },
+    "membershipLabels": {
+      "NONE": "Không phải thành viên",
+      "SILVER": "Bạc",
+      "GOLD": "Vàng",
+      "PLATINUM": "Bạch kim"
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên.",
+      "priceRequired": "Vui lòng nhập giá.",
+      "priceInvalid": "Giá không được âm.",
+      "branchRequired": "Vui lòng chọn chi nhánh.",
+      "timePairRequired": "Nhập cả giờ bắt đầu và kết thúc suất chiếu, hoặc để trống cả hai.",
+      "timeRangeInvalid": "Giờ bắt đầu không được sau giờ kết thúc.",
+      "effectiveRangeInvalid": "Ngày hiệu lực từ không được sau ngày hiệu lực đến."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "Ngày lễ",
+    "addButton": "Thêm ngày lễ +",
+    "addTitle": "Thêm ngày lễ",
+    "dateLabel": "Ngày",
+    "nameLabel": "Tên",
+    "branchLabel": "Chi nhánh",
+    "allBranchesOption": "Tất cả chi nhánh (toàn hệ thống)",
+    "submit": "Thêm",
+    "createSuccess": "Đã thêm ngày lễ.",
+    "deleteConfirm": "Xóa ngày lễ này?",
+    "deleteSuccess": "Đã xóa ngày lễ.",
+    "delete": "Xóa",
+    "headers": {
+      "id": "ID",
+      "date": "Ngày",
+      "name": "Tên",
+      "branch": "Chi nhánh",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "dateRequired": "Vui lòng nhập ngày."
+    }
+  },
   "shifts": {
     "breadcrumb": "Ca làm việc",
     "addButton": "Thêm ca làm việc +",

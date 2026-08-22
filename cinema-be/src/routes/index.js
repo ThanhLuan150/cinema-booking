@@ -25,6 +25,8 @@ const employeeRoutes = require('./employee.routes');
 const positionRoutes = require('./position.routes');
 const shiftRoutes = require('./shift.routes');
 const shiftAssignmentRoutes = require('./shiftAssignment.routes');
+const pricingRuleRoutes = require('./pricingRule.routes');
+const holidayRoutes = require('./holiday.routes');
 
 const router = express.Router();
 
@@ -56,6 +58,8 @@ router.use('/employee', employeeRoutes);
 router.use('/position', positionRoutes);
 router.use('/shift', shiftRoutes);
 router.use('/shiftAssignment', shiftAssignmentRoutes);
+router.use('/pricingRule', pricingRuleRoutes);
+router.use('/pricingHoliday', holidayRoutes);
 router.use('/', dashboardRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice

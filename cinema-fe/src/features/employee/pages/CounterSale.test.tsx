@@ -86,14 +86,18 @@ describe('CounterSale', () => {
   });
 
   it('toggles an available seat and updates the total price', () => {
-    useScheduleSeatsMock.mockReturnValue({ data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 1 }] });
+    useScheduleSeatsMock.mockReturnValue({
+      data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 1, price: 100000 }],
+    });
     renderPage();
     fireEvent.click(screen.getByText('A1'));
     expect(screen.getByText(/counterSale.total/)).toHaveTextContent('100,000');
   });
 
   it('does not select an already-booked seat', () => {
-    useScheduleSeatsMock.mockReturnValue({ data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 0 }] });
+    useScheduleSeatsMock.mockReturnValue({
+      data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 0, price: 100000 }],
+    });
     renderPage();
     fireEvent.click(screen.getByText('A1'));
     expect(screen.getByText(/counterSale.total/)).toHaveTextContent('0');
@@ -111,7 +115,9 @@ describe('CounterSale', () => {
   });
 
   it('submits a counter sale with the resolved seats, customer and cinema', async () => {
-    useScheduleSeatsMock.mockReturnValue({ data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 1 }] });
+    useScheduleSeatsMock.mockReturnValue({
+      data: [{ id: 10, seat_code: 'A1', seat_type: 0, status: 1, price: 100000 }],
+    });
     findAccountByEmailMock.mockResolvedValue({ id: 42, email: 'a@b.com' });
     createCounterSaleMutate.mockResolvedValue({ id: 1 });
     renderPage();

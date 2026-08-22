@@ -104,6 +104,31 @@ export interface Voucher {
   active: boolean;
 }
 
+export interface PricingRule {
+  id: number;
+  name: string;
+  price: number;
+  priority: number;
+  active: boolean;
+  effective_from: string | null;
+  effective_to: string | null;
+  branch_id: number | null;
+  room_type: string | null;
+  seat_type: number | null;
+  category_id: number | null;
+  day_type: string | null;
+  time_start: string | null;
+  time_end: string | null;
+  membership_level: string | null;
+}
+
+export interface Holiday {
+  id: number;
+  date: string;
+  name: string;
+  branch_id: number | null;
+}
+
 export interface Review {
   id: number;
   movie_id: number;

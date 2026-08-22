@@ -41,19 +41,10 @@ import {
   toggleSeat,
 } from '../store/bookingSlice';
 import type { BookedSeatTicket } from '../types/booking.types';
-import {
-  SEAT_TYPE_CLASS,
-  SEAT_TYPE_KEY,
-  SEAT_TYPE_MULTIPLIER,
-  SEAT_TYPES,
-} from '@/constants/seatType';
+import { SEAT_TYPE_CLASS, SEAT_TYPE_KEY, SEAT_TYPES } from '@/constants/seatType';
 import { TICKET_STATUS } from '@/constants/ticketStatus';
 import { ROUTES } from '@/constants/routes';
 import { Seat } from 'types/entities';
-
-function priceForSeatType(basePrice: number, seatType: number) {
-  return Math.round(basePrice * (SEAT_TYPE_MULTIPLIER[seatType] ?? 1));
-}
 
 type SeatCellStatus = 'AVAILABLE' | 'HELD' | 'BOOKED' | 'DISABLED';
 
@@ -262,13 +253,10 @@ function BookSeatPage() {
   const validateVoucherMutation = useValidateVoucher();
   const momoPaymentMutation = useMomoPayment();
 
-  const seatTotal = useMemo(() => {
-    if (!scheduleDetail) return 0;
-    return selectedTickets.reduce(
-      (sum, ticket) => sum + priceForSeatType(scheduleDetail.price, ticket.seat_type),
-      0,
-    );
-  }, [scheduleDetail, selectedTickets]);
+  const seatTotal = useMemo(
+    () => selectedTickets.reduce((sum, ticket) => sum + (ticket.price ?? 0), 0),
+    [selectedTickets],
+  );
 
   const comboTotal = combos
     .filter((c) => selectedComboIds.includes(c.id))

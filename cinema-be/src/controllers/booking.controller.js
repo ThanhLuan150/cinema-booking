@@ -28,6 +28,12 @@ async function bookseat(req, res) {
   await bookingRepository.expireHeldTickets(req.params.scheduleId);
   const tickets = await bookingRepository.findTicketsByScheduleId(req.params.scheduleId);
   const accountId = req.account ? req.account.accountId : null;
+
+  const schedule = tickets.length > 0 ? await bookingRepository.findScheduleById(req.params.scheduleId) : null;
+  const priceByTicketId = schedule
+    ? await bookingRepository.calculateTicketPrices(schedule, tickets, accountId)
+    : new Map();
+
   res.json(
     tickets.map((t) => ({
       id: t.id,
@@ -35,6 +41,7 @@ async function bookseat(req, res) {
       seat_type: t.seat_type,
       status: t.status,
       held_by_me: t.status === 2 && t.held_by === accountId,
+      price: priceByTicketId.get(t.id)?.price ?? null,
     })),
   );
 }
@@ -112,10 +119,8 @@ async function bookticket(req, res) {
 }
 
 // POST /api/MomoPayment { ticketIds, comboIds, voucherCode, discountAmount, totalPrice }
-// -> returns the MoMo payment redirect URL as a raw string (auth required). The booking
-// details ride along in MoMo's extraData so the callback can finalize the exact order.
 async function createMomoPayment(req, res) {
-  const { ticketIds, comboIds, voucherCode, discountAmount, totalPrice } = req.body;
+  const { ticketIds, comboIds, voucherCode } = req.body;
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
     return res.status(400).json({ message: 'ticketIds is required' });
   }
@@ -136,6 +141,17 @@ async function createMomoPayment(req, res) {
     });
   }
 
+  // Backend computes the authoritative order total here — any totalPrice/discountAmount the
+  const pricing = await bookingRepository.computeOrderPricing({
+    ticketIds,
+    comboIds: comboIds || [],
+    voucherCode: voucherCode || null,
+    accountId,
+  });
+  if (!pricing) {
+    return res.status(400).json({ message: 'Unable to price this order', code: 'PRICING_FAILED' });
+  }
+
   // Re-hold (or extend the hold on) these seats for the duration of the MoMo redirect so they
   await bookingRepository.holdTickets({
     scheduleId: tickets[0].schedule_id,
@@ -144,12 +160,12 @@ async function createMomoPayment(req, res) {
     until: new Date(Date.now() + HOLD_TTL_MS),
   });
 
-  const payUrl = await createMomoPaymentUrl(totalPrice, {
+  const payUrl = await createMomoPaymentUrl(pricing.totalPrice, {
     ticketIds,
     comboIds: comboIds || [],
-    voucherCode: voucherCode || null,
-    discountAmount: discountAmount || 0,
-    totalPrice: Number(totalPrice) || 0,
+    voucherCode: pricing.voucherCode,
+    discountAmount: pricing.discountAmount,
+    totalPrice: pricing.totalPrice,
     accountId: req.account.accountId,
   });
   res.type('text/plain').send(payUrl);
@@ -354,12 +370,9 @@ async function checkInInvoice(req, res) {
   res.json(invoice);
 }
 
-// POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, cinema_id }
-// -> immediate, paid booking sold in person (cash/POS); requireCinemaAccess already
-// confirmed the caller may act for cinema_id — this cross-checks the tickets actually
-// belong to that cinema before writing anything.
+// POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, accountId, cinema_id }
 async function createCounterSale(req, res) {
-  const { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId } = req.body;
+  const { ticketIds, comboIds, voucherCode, accountId } = req.body;
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
     return res.status(400).json({ message: 'ticketIds is required' });
   }
@@ -374,12 +387,22 @@ async function createCounterSale(req, res) {
     }
   }
 
-  const result = await bookingRepository.createCounterSale({
+  const pricing = await bookingRepository.computeOrderPricing({
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: voucherCode || null,
-    discountAmount: discountAmount || 0,
-    totalPrice: Number(totalPrice) || 0,
+    accountId: Number(accountId),
+  });
+  if (!pricing) {
+    return res.status(400).json({ message: 'Invalid counter sale payload' });
+  }
+
+  const result = await bookingRepository.createCounterSale({
+    ticketIds,
+    comboIds: comboIds || [],
+    voucherCode: pricing.voucherCode,
+    discountAmount: pricing.discountAmount,
+    totalPrice: pricing.totalPrice,
     accountId: Number(accountId),
     createdBy: req.account.accountId,
   });

@@ -115,6 +115,14 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <ion-icon name="pricetag" />
                 {t('adminLayout.nav.vouchers')}
               </NavLink>
+              <NavLink to={ROUTES.ownerPricingRules} className={navLinkClass}>
+                <ion-icon name="cash" />
+                {t('adminLayout.nav.pricingRules')}
+              </NavLink>
+              <NavLink to={ROUTES.ownerHolidays} className={navLinkClass}>
+                <ion-icon name="flag" />
+                {t('adminLayout.nav.holidays')}
+              </NavLink>
               <NavLink to={ROUTES.ownerBookings} className={navLinkClass}>
                 <ion-icon name="qr-code" />
                 {t('adminLayout.nav.bookings')}

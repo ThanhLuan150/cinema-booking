@@ -114,6 +114,43 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/voucher/1');
   });
 
+  it('getOwnerPricingRules gets /pricingRule with branchId param', async () => {
+    await ownerApi.getOwnerPricingRules(1, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/pricingRule', { params: { branchId: 1, page: 1 } });
+  });
+
+  it('createPricingRule posts to /pricingRule', async () => {
+    const payload = { name: 'A', price: 80000 } as any;
+    await ownerApi.createPricingRule(payload);
+    expect(postMock).toHaveBeenCalledWith('/pricingRule', payload);
+  });
+
+  it('updatePricingRule puts /pricingRule/:id', async () => {
+    await ownerApi.updatePricingRule(1, { active: false });
+    expect(putMock).toHaveBeenCalledWith('/pricingRule/1', { active: false });
+  });
+
+  it('deletePricingRule deletes /pricingRule/:id', async () => {
+    await ownerApi.deletePricingRule(1);
+    expect(deleteMock).toHaveBeenCalledWith('/pricingRule/1');
+  });
+
+  it('getOwnerHolidays gets /pricingHoliday with branchId param', async () => {
+    await ownerApi.getOwnerHolidays(1, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/pricingHoliday', { params: { branchId: 1, page: 1 } });
+  });
+
+  it('createHoliday posts to /pricingHoliday', async () => {
+    const payload = { date: '2026-12-25', name: 'Christmas', branch_id: null } as any;
+    await ownerApi.createHoliday(payload);
+    expect(postMock).toHaveBeenCalledWith('/pricingHoliday', payload);
+  });
+
+  it('deleteHoliday deletes /pricingHoliday/:id', async () => {
+    await ownerApi.deleteHoliday(1);
+    expect(deleteMock).toHaveBeenCalledWith('/pricingHoliday/1');
+  });
+
   it('getOwnerDashboard gets /owner/dashboard with branchId param', async () => {
     await ownerApi.getOwnerDashboard(1);
     expect(getMock).toHaveBeenCalledWith('/owner/dashboard', { params: { branchId: 1 } });

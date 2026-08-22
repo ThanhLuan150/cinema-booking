@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "न्यूनतम ऑर्डर मूल्य ऋणात्मक नहीं हो सकता।"
     }
   },
+  "pricingRules": {
+    "breadcrumb": "मूल्य नियम",
+    "branchFilterPlaceholder": "सभी शाखाएँ",
+    "addButton": "नियम जोड़ें +",
+    "addTitle": "मूल्य नियम जोड़ें",
+    "editTitle": "मूल्य नियम संपादित करें",
+    "nameLabel": "नाम",
+    "priceLabel": "कीमत",
+    "priorityLabel": "प्राथमिकता",
+    "priorityHint": "टकराव होने पर अधिक संख्या वाला नियम लागू होता है।",
+    "branchLabel": "शाखा",
+    "branchPlaceholder": "शाखा चुनें",
+    "allBranchesOption": "सभी शाखाएँ (सिस्टम-व्यापी)",
+    "roomTypeLabel": "रूम प्रकार",
+    "seatTypeLabel": "सीट प्रकार",
+    "categoryLabel": "फिल्म श्रेणी",
+    "dayTypeLabel": "दिन का प्रकार",
+    "timeStartLabel": "शो समय से",
+    "timeEndLabel": "शो समय तक",
+    "membershipLabel": "सदस्यता स्तर",
+    "effectiveFromLabel": "प्रभावी तिथि से",
+    "effectiveToLabel": "प्रभावी तिथि तक",
+    "anyOption": "कोई भी",
+    "submit": "सहेजें",
+    "createSuccess": "मूल्य नियम जोड़ा गया।",
+    "updateSuccess": "मूल्य नियम अपडेट किया गया।",
+    "deleteConfirm": "क्या इस मूल्य नियम को हटाना है?",
+    "deleteSuccess": "मूल्य नियम हटा दिया गया।",
+    "statusActive": "सक्रिय",
+    "statusInactive": "निष्क्रिय",
+    "activate": "सक्षम करें",
+    "deactivate": "अक्षम करें",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "matchAny": "कोई भी",
+    "headers": {
+      "id": "आईडी",
+      "name": "नाम",
+      "branch": "शाखा",
+      "match": "मिलान",
+      "price": "कीमत",
+      "priority": "प्राथमिकता",
+      "effective": "प्रभावी",
+      "status": "स्थिति",
+      "actions": "कार्रवाई"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "सप्ताह के दिन",
+      "WEEKEND": "सप्ताहांत",
+      "HOLIDAY": "अवकाश"
+    },
+    "seatTypeLabels": {
+      "standard": "स्टैंडर्ड",
+      "vip": "वीआईपी",
+      "couple": "कपल"
+    },
+    "membershipLabels": {
+      "NONE": "गैर-सदस्य",
+      "SILVER": "सिल्वर",
+      "GOLD": "गोल्ड",
+      "PLATINUM": "प्लैटिनम"
+    },
+    "validation": {
+      "nameRequired": "कृपया एक नाम दर्ज करें।",
+      "priceRequired": "कृपया कीमत दर्ज करें।",
+      "priceInvalid": "कीमत नकारात्मक नहीं होनी चाहिए।",
+      "branchRequired": "कृपया एक शाखा चुनें।",
+      "timePairRequired": "शो समय से और तक दोनों सेट करें, या दोनों खाली छोड़ दें।",
+      "timeRangeInvalid": "शो समय 'से', 'तक' के बाद नहीं होना चाहिए।",
+      "effectiveRangeInvalid": "'प्रभावी तिथि से', 'प्रभावी तिथि तक' के बाद नहीं होनी चाहिए।"
+    }
+  },
+  "holidays": {
+    "breadcrumb": "अवकाश",
+    "addButton": "अवकाश जोड़ें +",
+    "addTitle": "अवकाश जोड़ें",
+    "dateLabel": "तिथि",
+    "nameLabel": "नाम",
+    "branchLabel": "शाखा",
+    "allBranchesOption": "सभी शाखाएँ (सिस्टम-व्यापी)",
+    "submit": "जोड़ें",
+    "createSuccess": "अवकाश जोड़ा गया।",
+    "deleteConfirm": "क्या इस अवकाश को हटाना है?",
+    "deleteSuccess": "अवकाश हटा दिया गया।",
+    "delete": "हटाएं",
+    "headers": {
+      "id": "आईडी",
+      "date": "तिथि",
+      "name": "नाम",
+      "branch": "शाखा",
+      "actions": "कार्रवाई"
+    },
+    "validation": {
+      "dateRequired": "कृपया एक तिथि दर्ज करें।"
+    }
+  },
   "shifts": {
     "breadcrumb": "शिफ्ट",
     "addButton": "शिफ्ट जोड़ें +",

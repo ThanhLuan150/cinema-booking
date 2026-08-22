@@ -1,13 +1,27 @@
 import apiClient from 'services/apiClient';
-import type { Cinema, Combo, Employee, Position, Room, Seat, Shift, ShiftAssignment, Voucher } from '@/types/entities';
+import type {
+  Cinema,
+  Combo,
+  Employee,
+  Holiday,
+  Position,
+  PricingRule,
+  Room,
+  Seat,
+  Shift,
+  ShiftAssignment,
+  Voucher,
+} from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
   ComboFormValues,
   EmployeeFormValues,
   GenerateSeatMapPayload,
+  HolidayFormValues,
   LookedUpInvoice,
   OwnerDashboardStats,
+  PricingRuleFormValues,
   VoucherFormValues,
 } from '../types/owner.types';
 
@@ -62,6 +76,43 @@ export const updateVoucher = (id: number | string, payload: Record<string, unkno
   apiClient.put(`/voucher/${id}`, payload);
 
 export const deleteVoucher = (id: number | string) => apiClient.delete(`/voucher/${id}`);
+
+export const getOwnerPricingRules = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<PricingRule>>('/pricingRule', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export type PricingRulePayload = Pick<PricingRuleFormValues, 'name'> & {
+  price: number;
+  priority: number;
+  branch_id: number | null;
+  room_type: string | null;
+  seat_type: number | null;
+  category_id: number | null;
+  day_type: string | null;
+  time_start: string | null;
+  time_end: string | null;
+  membership_level: string | null;
+  effective_from: string | null;
+  effective_to: string | null;
+};
+
+export const createPricingRule = (payload: PricingRulePayload) => apiClient.post('/pricingRule', payload);
+
+export const updatePricingRule = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/pricingRule/${id}`, payload);
+
+export const deletePricingRule = (id: number | string) => apiClient.delete(`/pricingRule/${id}`);
+
+export const getOwnerHolidays = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<Holiday>>('/pricingHoliday', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export const createHoliday = (payload: Omit<HolidayFormValues, 'branch_id'> & { branch_id: number | null }) =>
+  apiClient.post('/pricingHoliday', payload);
+
+export const deleteHoliday = (id: number | string) => apiClient.delete(`/pricingHoliday/${id}`);
 
 export const getOwnerDashboard = (branchId?: number | string) =>
   apiClient.get<OwnerDashboardStats>('/owner/dashboard', { params: { branchId } }).then((res) => res.data);

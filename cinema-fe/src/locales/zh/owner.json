@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "最低订单金额不能为负数。"
     }
   },
+  "pricingRules": {
+    "breadcrumb": "定价规则",
+    "branchFilterPlaceholder": "所有分店",
+    "addButton": "添加规则 +",
+    "addTitle": "添加定价规则",
+    "editTitle": "编辑定价规则",
+    "nameLabel": "名称",
+    "priceLabel": "价格",
+    "priorityLabel": "优先级",
+    "priorityHint": "发生冲突时，数值较高的规则优先生效。",
+    "branchLabel": "分店",
+    "branchPlaceholder": "选择分店",
+    "allBranchesOption": "所有分店（全系统）",
+    "roomTypeLabel": "影厅类型",
+    "seatTypeLabel": "座位类型",
+    "categoryLabel": "影片类型",
+    "dayTypeLabel": "日期类型",
+    "timeStartLabel": "场次开始时间",
+    "timeEndLabel": "场次结束时间",
+    "membershipLabel": "会员等级",
+    "effectiveFromLabel": "生效开始日期",
+    "effectiveToLabel": "生效结束日期",
+    "anyOption": "不限",
+    "submit": "保存",
+    "createSuccess": "定价规则已添加。",
+    "updateSuccess": "定价规则已更新。",
+    "deleteConfirm": "确定删除此定价规则吗？",
+    "deleteSuccess": "定价规则已删除。",
+    "statusActive": "启用",
+    "statusInactive": "停用",
+    "activate": "启用",
+    "deactivate": "停用",
+    "edit": "编辑",
+    "delete": "删除",
+    "matchAny": "不限",
+    "headers": {
+      "id": "ID",
+      "name": "名称",
+      "branch": "分店",
+      "match": "匹配条件",
+      "price": "价格",
+      "priority": "优先级",
+      "effective": "生效期间",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "工作日",
+      "WEEKEND": "周末",
+      "HOLIDAY": "节假日"
+    },
+    "seatTypeLabels": {
+      "standard": "标准",
+      "vip": "VIP",
+      "couple": "情侣座"
+    },
+    "membershipLabels": {
+      "NONE": "非会员",
+      "SILVER": "银卡",
+      "GOLD": "金卡",
+      "PLATINUM": "白金卡"
+    },
+    "validation": {
+      "nameRequired": "请输入名称。",
+      "priceRequired": "请输入价格。",
+      "priceInvalid": "价格不能为负数。",
+      "branchRequired": "请选择分店。",
+      "timePairRequired": "请同时设置开始和结束时间，或都留空。",
+      "timeRangeInvalid": "开始时间不能晚于结束时间。",
+      "effectiveRangeInvalid": "生效开始日期不能晚于生效结束日期。"
+    }
+  },
+  "holidays": {
+    "breadcrumb": "节假日",
+    "addButton": "添加节假日 +",
+    "addTitle": "添加节假日",
+    "dateLabel": "日期",
+    "nameLabel": "名称",
+    "branchLabel": "分店",
+    "allBranchesOption": "所有分店（全系统）",
+    "submit": "添加",
+    "createSuccess": "节假日已添加。",
+    "deleteConfirm": "确定删除此节假日吗？",
+    "deleteSuccess": "节假日已删除。",
+    "delete": "删除",
+    "headers": {
+      "id": "ID",
+      "date": "日期",
+      "name": "名称",
+      "branch": "分店",
+      "actions": "操作"
+    },
+    "validation": {
+      "dateRequired": "请输入日期。"
+    }
+  },
   "shifts": {
     "breadcrumb": "班次管理",
     "addButton": "新增班次 +",

@@ -238,6 +238,102 @@
       "minOrderValueInvalid": "Minimum order value cannot be negative."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "Pricing Rules",
+    "branchFilterPlaceholder": "All branches",
+    "addButton": "Add rule +",
+    "addTitle": "Add pricing rule",
+    "editTitle": "Edit pricing rule",
+    "nameLabel": "Name",
+    "priceLabel": "Price",
+    "priorityLabel": "Priority",
+    "priorityHint": "Higher number wins when rules conflict.",
+    "branchLabel": "Branch",
+    "branchPlaceholder": "Select branch",
+    "allBranchesOption": "All branches (system-wide)",
+    "roomTypeLabel": "Room type",
+    "seatTypeLabel": "Seat type",
+    "categoryLabel": "Movie category",
+    "dayTypeLabel": "Day type",
+    "timeStartLabel": "Showtime from",
+    "timeEndLabel": "Showtime to",
+    "membershipLabel": "Membership level",
+    "effectiveFromLabel": "Effective from",
+    "effectiveToLabel": "Effective to",
+    "anyOption": "Any",
+    "submit": "Save",
+    "createSuccess": "Pricing rule added.",
+    "updateSuccess": "Pricing rule updated.",
+    "deleteConfirm": "Delete this pricing rule?",
+    "deleteSuccess": "Pricing rule deleted.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Enable",
+    "deactivate": "Disable",
+    "edit": "Edit",
+    "delete": "Delete",
+    "matchAny": "Any",
+    "headers": {
+      "id": "ID",
+      "name": "Name",
+      "branch": "Branch",
+      "match": "Match",
+      "price": "Price",
+      "priority": "Priority",
+      "effective": "Effective",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "Weekday",
+      "WEEKEND": "Weekend",
+      "HOLIDAY": "Holiday"
+    },
+    "seatTypeLabels": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Couple"
+    },
+    "membershipLabels": {
+      "NONE": "Non-member",
+      "SILVER": "Silver",
+      "GOLD": "Gold",
+      "PLATINUM": "Platinum"
+    },
+    "validation": {
+      "nameRequired": "Please enter a name.",
+      "priceRequired": "Please enter a price.",
+      "priceInvalid": "Price must not be negative.",
+      "branchRequired": "Please select a branch.",
+      "timePairRequired": "Set both showtime from and to, or leave both empty.",
+      "timeRangeInvalid": "Showtime from must not be after showtime to.",
+      "effectiveRangeInvalid": "Effective from must not be after effective to."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "Holidays",
+    "addButton": "Add holiday +",
+    "addTitle": "Add holiday",
+    "dateLabel": "Date",
+    "nameLabel": "Name",
+    "branchLabel": "Branch",
+    "allBranchesOption": "All branches (system-wide)",
+    "submit": "Add",
+    "createSuccess": "Holiday added.",
+    "deleteConfirm": "Delete this holiday?",
+    "deleteSuccess": "Holiday deleted.",
+    "delete": "Delete",
+    "headers": {
+      "id": "ID",
+      "date": "Date",
+      "name": "Name",
+      "branch": "Branch",
+      "actions": "Actions"
+    },
+    "validation": {
+      "dateRequired": "Please enter a date."
+    }
+  },
   "shifts": {
     "breadcrumb": "Shifts",
     "addButton": "Add shift +",

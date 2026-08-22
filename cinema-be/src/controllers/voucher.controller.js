@@ -1,6 +1,14 @@
 const voucherRepository = require('../repositories/voucher.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
+
+const INELIGIBILITY_MESSAGES = {
+  VOUCHER_WRONG_CINEMA: 'Voucher is not applicable to this cinema',
+  VOUCHER_NOT_YET_VALID: 'Voucher is not valid yet',
+  VOUCHER_EXPIRED: 'Voucher has expired',
+  VOUCHER_USES_EXHAUSTED: 'Voucher has reached its usage limit',
+};
 
 // A BRANCH-scope caller may only touch vouchers on a cinema they own; ALL scope always passes.
 async function assertCinemaOwnership(req, branchId) {
@@ -36,33 +44,16 @@ async function validate(req, res) {
   const voucher = await voucherRepository.findByCode(code);
   if (!voucher) return res.status(404).json({ message: 'Voucher code does not exist', code: 'VOUCHER_NOT_FOUND' });
 
-  if (voucher.cinema_id !== null && Number(cinema_id) !== voucher.cinema_id) {
-    return res
-      .status(400)
-      .json({ message: 'Voucher is not applicable to this cinema', code: 'VOUCHER_WRONG_CINEMA' });
-  }
-  const now = new Date();
-  if (voucher.valid_from && now < voucher.valid_from) {
-    return res.status(400).json({ message: 'Voucher is not valid yet', code: 'VOUCHER_NOT_YET_VALID' });
-  }
-  if (voucher.valid_to && now > voucher.valid_to) {
-    return res.status(400).json({ message: 'Voucher has expired', code: 'VOUCHER_EXPIRED' });
-  }
-  if (voucher.max_uses !== null && voucher.used_count >= voucher.max_uses) {
-    return res.status(400).json({ message: 'Voucher has reached its usage limit', code: 'VOUCHER_USES_EXHAUSTED' });
-  }
-  if (Number(order_value || 0) < voucher.min_order_value) {
+  const eligibility = isVoucherEligible(voucher, { cinemaId: cinema_id, orderValue: order_value });
+  if (!eligibility.eligible) {
     return res.status(400).json({
-      message: `Minimum order of ${voucher.min_order_value} required to apply this code`,
-      code: 'VOUCHER_MIN_ORDER_NOT_MET',
-      minOrderValue: voucher.min_order_value,
+      message: INELIGIBILITY_MESSAGES[eligibility.reason] || `Minimum order of ${voucher.min_order_value} required to apply this code`,
+      code: eligibility.reason,
+      ...(eligibility.reason === 'VOUCHER_MIN_ORDER_NOT_MET' ? { minOrderValue: voucher.min_order_value } : {}),
     });
   }
 
-  const discount =
-    voucher.discount_type === 'percent'
-      ? Math.round((Number(order_value || 0) * voucher.discount_value) / 100)
-      : voucher.discount_value;
+  const discount = computeVoucherDiscount(voucher, order_value);
 
   res.json({
     code: voucher.code,

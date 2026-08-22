@@ -78,4 +78,61 @@ describe('DateInput', () => {
     fireEvent.mouseDown(screen.getByText('Outside'));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
+
+  // Regression: an ancestor with clipping/scrolling overflow (e.g. a Modal body using
+  // overflow-y-auto) must not be able to clip the dropdown or count its overflow into its own
+  // scrollable area — both would happen if the dropdown were an `absolute` descendant instead
+  // of a portal, and would show up as the surrounding layout getting pushed/reflowed open.
+  it('portals the calendar dropdown to document.body instead of nesting it inside a clipping ancestor', () => {
+    const { container } = render(
+      <div data-testid="clipping-ancestor" style={{ overflow: 'hidden' }}>
+        <DateInput id="dob" label="Date of birth" />
+      </div>,
+    );
+    fireEvent.click(screen.getByLabelText('Date of birth'));
+    const dialog = screen.getByRole('dialog');
+    const clippingAncestor = container.querySelector('[data-testid="clipping-ancestor"]');
+    expect(clippingAncestor?.contains(dialog)).toBe(false);
+    expect(dialog.parentElement).toBe(document.body);
+  });
+
+  it('does not close the calendar on mousedown inside the portaled dropdown itself', () => {
+    render(<DateInput id="dob" label="Date of birth" value="2026-01-15" />);
+    fireEvent.click(screen.getByLabelText('Date of birth'));
+    fireEvent.mouseDown(screen.getByText(/January 2026/i));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  // Regression: a trigger near the bottom of a short viewport, with a calendar tall enough
+  // that it wouldn't fit below, must flip to render above the trigger instead of overflowing
+  // past the bottom of the screen.
+  it('flips the calendar above the trigger when there is not enough room below it', () => {
+    const rectSpy = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function (this: HTMLElement) {
+        const isDropdown = this.getAttribute('role') === 'dialog';
+        return {
+          top: isDropdown ? 0 : 550,
+          bottom: isDropdown ? 300 : 590,
+          left: isDropdown ? 0 : 20,
+          right: isDropdown ? 280 : 320,
+          width: isDropdown ? 280 : 300,
+          height: isDropdown ? 300 : 40,
+          x: isDropdown ? 0 : 20,
+          y: isDropdown ? 0 : 550,
+          toJSON() {},
+        } as DOMRect;
+      });
+    const innerHeightSpy = vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(600);
+
+    render(<DateInput id="dob" label="Date of birth" />);
+    fireEvent.click(screen.getByLabelText('Date of birth'));
+    const dialog = screen.getByRole('dialog');
+    // Trigger bottom is 590 with only 10px of the 600px-tall viewport left below it, nowhere
+    // near enough for a 300px calendar — it should flip to top = triggerTop(550) - height(300) - 4.
+    expect(dialog.style.top).toBe('246px');
+
+    rectSpy.mockRestore();
+    innerHeightSpy.mockRestore();
+  });
 });

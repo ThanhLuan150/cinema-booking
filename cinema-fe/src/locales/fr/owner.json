@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "La valeur de commande minimale ne peut pas être négative."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "Règles tarifaires",
+    "branchFilterPlaceholder": "Toutes les salles",
+    "addButton": "Ajouter une règle +",
+    "addTitle": "Ajouter une règle tarifaire",
+    "editTitle": "Modifier la règle tarifaire",
+    "nameLabel": "Nom",
+    "priceLabel": "Prix",
+    "priorityLabel": "Priorité",
+    "priorityHint": "En cas de conflit, le nombre le plus élevé l'emporte.",
+    "branchLabel": "Cinéma",
+    "branchPlaceholder": "Sélectionner un cinéma",
+    "allBranchesOption": "Tous les cinémas (global)",
+    "roomTypeLabel": "Type de salle",
+    "seatTypeLabel": "Type de siège",
+    "categoryLabel": "Catégorie de film",
+    "dayTypeLabel": "Type de jour",
+    "timeStartLabel": "Séance à partir de",
+    "timeEndLabel": "Séance jusqu'à",
+    "membershipLabel": "Niveau de fidélité",
+    "effectiveFromLabel": "Valide à partir du",
+    "effectiveToLabel": "Valide jusqu'au",
+    "anyOption": "Tous",
+    "submit": "Enregistrer",
+    "createSuccess": "Règle tarifaire ajoutée.",
+    "updateSuccess": "Règle tarifaire mise à jour.",
+    "deleteConfirm": "Supprimer cette règle tarifaire ?",
+    "deleteSuccess": "Règle tarifaire supprimée.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "matchAny": "Tous",
+    "headers": {
+      "id": "ID",
+      "name": "Nom",
+      "branch": "Cinéma",
+      "match": "Correspondance",
+      "price": "Prix",
+      "priority": "Priorité",
+      "effective": "Validité",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "Jour de semaine",
+      "WEEKEND": "Week-end",
+      "HOLIDAY": "Jour férié"
+    },
+    "seatTypeLabels": {
+      "standard": "Standard",
+      "vip": "VIP",
+      "couple": "Duo"
+    },
+    "membershipLabels": {
+      "NONE": "Non-membre",
+      "SILVER": "Argent",
+      "GOLD": "Or",
+      "PLATINUM": "Platine"
+    },
+    "validation": {
+      "nameRequired": "Veuillez saisir un nom.",
+      "priceRequired": "Veuillez saisir un prix.",
+      "priceInvalid": "Le prix ne doit pas être négatif.",
+      "branchRequired": "Veuillez sélectionner un cinéma.",
+      "timePairRequired": "Définissez à la fois l'heure de début et de fin de séance, ou laissez les deux vides.",
+      "timeRangeInvalid": "L'heure de début ne doit pas être postérieure à l'heure de fin.",
+      "effectiveRangeInvalid": "La date de début ne doit pas être postérieure à la date de fin."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "Jours fériés",
+    "addButton": "Ajouter un jour férié +",
+    "addTitle": "Ajouter un jour férié",
+    "dateLabel": "Date",
+    "nameLabel": "Nom",
+    "branchLabel": "Cinéma",
+    "allBranchesOption": "Tous les cinémas (global)",
+    "submit": "Ajouter",
+    "createSuccess": "Jour férié ajouté.",
+    "deleteConfirm": "Supprimer ce jour férié ?",
+    "deleteSuccess": "Jour férié supprimé.",
+    "delete": "Supprimer",
+    "headers": {
+      "id": "ID",
+      "date": "Date",
+      "name": "Nom",
+      "branch": "Cinéma",
+      "actions": "Actions"
+    },
+    "validation": {
+      "dateRequired": "Veuillez saisir une date."
+    }
+  },
   "shifts": {
     "breadcrumb": "Équipes",
     "addButton": "Ajouter une équipe +",

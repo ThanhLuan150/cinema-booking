@@ -51,6 +51,30 @@ export interface VoucherFormValues {
   min_order_value: string;
 }
 
+// branch_id === 'ALL' means a system-wide (branch_id: null) rule — admin only. Every other
+// match field uses '' as its "any / wildcard" value, mapped to null on submit.
+export interface PricingRuleFormValues {
+  name: string;
+  price: string;
+  priority: string;
+  branch_id: string;
+  room_type: string;
+  seat_type: string;
+  category_id: string;
+  day_type: string;
+  time_start: string;
+  time_end: string;
+  membership_level: string;
+  effective_from: string;
+  effective_to: string;
+}
+
+export interface HolidayFormValues {
+  date: string;
+  name: string;
+  branch_id: string;
+}
+
 export interface EmployeeFormValues {
   cinema_id: string;
   email: string;
@@ -90,6 +114,15 @@ export interface OwnerCombosState {
 }
 
 export interface OwnerVouchersState {
+  showAddModal: boolean;
+}
+
+export interface OwnerPricingRulesState {
+  showAddModal: boolean;
+  editingRuleId: number | null;
+}
+
+export interface OwnerHolidaysState {
   showAddModal: boolean;
 }
 

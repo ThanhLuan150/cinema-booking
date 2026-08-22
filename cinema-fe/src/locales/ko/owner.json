@@ -216,6 +216,102 @@
       "minOrderValueInvalid": "최소 주문 금액은 음수가 될 수 없습니다."
     }
   },
+  "pricingRules": {
+    "breadcrumb": "가격 규칙",
+    "branchFilterPlaceholder": "전체 지점",
+    "addButton": "규칙 추가 +",
+    "addTitle": "가격 규칙 추가",
+    "editTitle": "가격 규칙 수정",
+    "nameLabel": "이름",
+    "priceLabel": "가격",
+    "priorityLabel": "우선순위",
+    "priorityHint": "충돌 시 숫자가 높은 규칙이 우선 적용됩니다.",
+    "branchLabel": "지점",
+    "branchPlaceholder": "지점 선택",
+    "allBranchesOption": "전체 지점 (시스템 전체)",
+    "roomTypeLabel": "상영관 유형",
+    "seatTypeLabel": "좌석 유형",
+    "categoryLabel": "영화 장르",
+    "dayTypeLabel": "요일 유형",
+    "timeStartLabel": "상영 시작 시간",
+    "timeEndLabel": "상영 종료 시간",
+    "membershipLabel": "멤버십 등급",
+    "effectiveFromLabel": "적용 시작일",
+    "effectiveToLabel": "적용 종료일",
+    "anyOption": "전체",
+    "submit": "저장",
+    "createSuccess": "가격 규칙이 추가되었습니다.",
+    "updateSuccess": "가격 규칙이 수정되었습니다.",
+    "deleteConfirm": "이 가격 규칙을 삭제하시겠습니까?",
+    "deleteSuccess": "가격 규칙이 삭제되었습니다.",
+    "statusActive": "활성",
+    "statusInactive": "비활성",
+    "activate": "활성화",
+    "deactivate": "비활성화",
+    "edit": "수정",
+    "delete": "삭제",
+    "matchAny": "전체",
+    "headers": {
+      "id": "ID",
+      "name": "이름",
+      "branch": "지점",
+      "match": "조건",
+      "price": "가격",
+      "priority": "우선순위",
+      "effective": "적용 기간",
+      "status": "상태",
+      "actions": "작업"
+    },
+    "dayTypeLabels": {
+      "WEEKDAY": "평일",
+      "WEEKEND": "주말",
+      "HOLIDAY": "공휴일"
+    },
+    "seatTypeLabels": {
+      "standard": "스탠다드",
+      "vip": "VIP",
+      "couple": "커플석"
+    },
+    "membershipLabels": {
+      "NONE": "비회원",
+      "SILVER": "실버",
+      "GOLD": "골드",
+      "PLATINUM": "플래티넘"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력해 주세요.",
+      "priceRequired": "가격을 입력해 주세요.",
+      "priceInvalid": "가격은 음수가 될 수 없습니다.",
+      "branchRequired": "지점을 선택해 주세요.",
+      "timePairRequired": "시작 시간과 종료 시간을 모두 설정하거나, 둘 다 비워두세요.",
+      "timeRangeInvalid": "시작 시간은 종료 시간보다 늦을 수 없습니다.",
+      "effectiveRangeInvalid": "적용 시작일은 적용 종료일보다 늦을 수 없습니다."
+    }
+  },
+  "holidays": {
+    "breadcrumb": "공휴일",
+    "addButton": "공휴일 추가 +",
+    "addTitle": "공휴일 추가",
+    "dateLabel": "날짜",
+    "nameLabel": "이름",
+    "branchLabel": "지점",
+    "allBranchesOption": "전체 지점 (시스템 전체)",
+    "submit": "추가",
+    "createSuccess": "공휴일이 추가되었습니다.",
+    "deleteConfirm": "이 공휴일을 삭제하시겠습니까?",
+    "deleteSuccess": "공휴일이 삭제되었습니다.",
+    "delete": "삭제",
+    "headers": {
+      "id": "ID",
+      "date": "날짜",
+      "name": "이름",
+      "branch": "지점",
+      "actions": "작업"
+    },
+    "validation": {
+      "dateRequired": "날짜를 입력해 주세요."
+    }
+  },
   "shifts": {
     "breadcrumb": "근무조",
     "addButton": "근무조 추가 +",

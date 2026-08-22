@@ -49,6 +49,8 @@
       "cinemas": "สาขา",
       "combos": "คอมโบ",
       "vouchers": "คูปองส่วนลด",
+      "pricingRules": "กฎการตั้งราคา",
+      "holidays": "วันหยุด",
       "bookings": "การจอง",
       "transactions": "ธุรกรรม",
       "reviews": "รีวิว",
