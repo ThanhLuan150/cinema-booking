@@ -185,7 +185,8 @@
       "slot": {
         "label": "Showtime:",
         "placeholder": "Select showtime",
-        "required": "Please select a showtime."
+        "required": "Please select a showtime.",
+        "unavailable": "Unavailable"
       },
       "price": "Ticket price:",
       "priceRequired": "Please enter a ticket price.",

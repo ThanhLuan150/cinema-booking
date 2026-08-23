@@ -11,6 +11,7 @@ import { cn } from '@/lib/cn';
 export interface SelectOption {
   label: string;
   value: string | number;
+  disabled?: boolean;
 }
 
 export interface SelectProps
@@ -73,6 +74,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
     }, [isOpen]);
 
     const selectOption = (option: SelectOption) => {
+      if (option.disabled) return;
       onChange?.({ target: { name, value: String(option.value) } });
       setIsOpen(false);
       onBlur?.({ target: { name } });
@@ -150,11 +152,13 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
                     key={option.value}
                     role="option"
                     aria-selected={isSelected}
-                    onMouseEnter={() => setActiveIndex(index)}
+                    aria-disabled={option.disabled}
+                    onMouseEnter={() => !option.disabled && setActiveIndex(index)}
                     onClick={() => selectOption(option)}
                     className={cn(
-                      'flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-txt',
-                      index === activeIndex && 'bg-accent/15',
+                      'flex items-center justify-between px-3 py-2 text-sm text-txt',
+                      option.disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
+                      index === activeIndex && !option.disabled && 'bg-accent/15',
                       isSelected && 'font-medium text-accent',
                     )}
                   >

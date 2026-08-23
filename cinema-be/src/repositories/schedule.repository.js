@@ -2,10 +2,13 @@ const Schedule = require('../models/Schedule');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 
-// The set of branch ids this account may act on under BRANCH scope: any branch it owns,
-// plus the single branch it's actively staffed at (if any). Used to filter showtime
-// listings for a Branch Admin/Employee without hardcoding a role check — the caller decides
-// whether BRANCH scope applies (via req.permissionScope) and only then asks "which branches".
+const SHOWTIME_BUFFER_MINUTES = 15;
+
+function timeToMinutes(hhmm) {
+  const [hours, minutes] = hhmm.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
 async function resolveAccessibleCinemaIds(accountId) {
   const [ownedBranches, employee] = await Promise.all([
     Branch.find({ owner_id: accountId }, 'id'),
@@ -68,6 +71,24 @@ async function findOverlapping({ room_id, movie_date, time_begin, time_end, excl
   return Schedule.findOne(filter);
 }
 
+async function findBufferViolation({ room_id, movie_date, time_begin, time_end, excludeId, bufferMinutes = SHOWTIME_BUFFER_MINUTES }) {
+  const filter = { room_id: Number(room_id), movie_date, status: { $ne: 'CANCELLED' } };
+  if (excludeId !== undefined) filter.id = { $ne: Number(excludeId) };
+  const candidates = await Schedule.find(filter);
+
+  const beginMinutes = timeToMinutes(time_begin);
+  const endMinutes = timeToMinutes(time_end);
+
+  return (
+    candidates.find((schedule) => {
+      const otherBegin = timeToMinutes(schedule.time_begin);
+      const otherEnd = timeToMinutes(schedule.time_end);
+      const gap = otherEnd <= beginMinutes ? beginMinutes - otherEnd : endMinutes <= otherBegin ? otherBegin - endMinutes : 0;
+      return gap < bufferMinutes;
+    }) || null
+  );
+}
+
 async function create(data) {
   return Schedule.create(data);
 }
@@ -81,12 +102,14 @@ async function remove(id) {
 }
 
 module.exports = {
+  SHOWTIME_BUFFER_MINUTES,
   resolveAccessibleCinemaIds,
   findFiltered,
   findById,
   findCinemaIdByScheduleId,
   existsActiveByRoomId,
   findOverlapping,
+  findBufferViolation,
   create,
   updateFields,
   remove,

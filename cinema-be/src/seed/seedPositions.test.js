@@ -75,6 +75,13 @@ describe('seedPositions', () => {
     expect(await scopeFor('TICKET_STAFF', 'payment.create')).toBe('BRANCH');
   });
 
+  it('grants Ticket Staff and Customer Service schedule.read at BRANCH scope (the "EMPLOYEE showtime.view" role from the RBAC doc, applied per-Position)', async () => {
+    await seedRbac();
+    await seedPositions();
+    expect(await scopeFor('TICKET_STAFF', 'schedule.read')).toBe('BRANCH');
+    expect(await scopeFor('CUSTOMER_SERVICE', 'schedule.read')).toBe('BRANCH');
+  });
+
   it('grants Ticket Checker only ticket.read and ticket.checkin', async () => {
     await seedRbac();
     await seedPositions();

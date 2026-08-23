@@ -40,4 +40,13 @@ describe('Select', () => {
     render(<Select options={options} error="Required" />);
     expect(screen.getByText('Required')).toBeInTheDocument();
   });
+
+  it('does not call onChange when clicking a disabled option', () => {
+    const onChange = vi.fn();
+    const withDisabled = [...options, { label: 'Three', value: '3', disabled: true }];
+    render(<Select options={withDisabled} onChange={onChange} name="field" />);
+    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByText('Three'));
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

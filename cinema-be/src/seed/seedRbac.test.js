@@ -108,6 +108,19 @@ describe('seedRbac', () => {
     }
   });
 
+  it('grants customer schedule.read (ALL scope) so any logged-in customer can browse showtimes to book', async () => {
+    await seedRbac();
+    const customer = await Role.findOne({ code: 'CUSTOMER' });
+    const permission = await Permission.findOne({ code: 'schedule.read' });
+    const link = await RolePermission.findOne({ role_id: customer.id, permission_id: permission.id });
+    expect(link).not.toBeNull();
+    expect(link.scope).toBe('ALL');
+
+    const employeeRole = await Role.findOne({ code: 'EMPLOYEE' });
+    const employeeLink = await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id });
+    expect(employeeLink).toBeNull();
+  });
+
   it('does not grant branch admin branch.activate, branch.disable, branch.delete or branch.assignAdmin (Super Admin only lifecycle actions)', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });

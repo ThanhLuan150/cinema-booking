@@ -30,6 +30,7 @@
   "ROOM_HAS_NO_SEAT_MAP": "Phòng chiếu này chưa có sơ đồ ghế. Vui lòng tạo sơ đồ ghế cho phòng trước khi thêm suất chiếu.",
   "BEFORE_PREMIERE": "Không thể tạo suất chiếu trước ngày công chiếu của phim",
   "SCHEDULE_OVERLAP": "Phòng chiếu này đã có suất chiếu trong khoảng thời gian này",
+  "SCHEDULE_BUFFER_TOO_SHORT": "Phòng chiếu cần tối thiểu 15 phút giữa các suất chiếu để dọn dẹp",
   "INVALID_TIME_RANGE": "Giờ bắt đầu phải trước giờ kết thúc",
   "SCHEDULE_CANCELLED": "Suất chiếu này đã bị hủy",
   "ALREADY_CANCELLED": "Suất chiếu này đã được hủy trước đó",

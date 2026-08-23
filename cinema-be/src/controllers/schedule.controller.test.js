@@ -200,6 +200,23 @@ describe('schedule.controller create', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_OVERLAP' }));
   });
 
+  it('rejects a showtime that starts too soon after another one ends in the same room', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create({ id: 5, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '08:00', time_end: '09:55', price: 1 });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_BUFFER_TOO_SHORT' }));
+  });
+
+  it('allows a showtime with at least the required buffer after the previous one ends', async () => {
+    await seedMovieAndRoom();
+    await Schedule.create({ id: 5, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '08:00', time_end: '09:45', price: 1 });
+    const res = mockRes();
+    await scheduleController.create(baseReq(), res);
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
+
   it('creates a schedule and stamps cinema_id from the room', async () => {
     await seedMovieAndRoom();
     const res = mockRes();
