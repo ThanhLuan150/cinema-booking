@@ -245,6 +245,37 @@ describe('POST /api/bookseat/:scheduleId/hold', () => {
   });
 });
 
+describe('POST /api/bookseat/:scheduleId/hold — concurrency', () => {
+  it('two customers racing for the same seat: exactly one gets HELD, the other gets 409 SEAT_UNAVAILABLE', async () => {
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A10', status: 1 });
+
+    const resA = mockRes();
+    const resB = mockRes();
+    await Promise.all([
+      bookingController.holdSeats(
+        { params: { scheduleId: 1 }, body: { seatCodes: ['A10'] }, account: { accountId: 1 } },
+        resA,
+      ),
+      bookingController.holdSeats(
+        { params: { scheduleId: 1 }, body: { seatCodes: ['A10'] }, account: { accountId: 2 } },
+        resB,
+      ),
+    ]);
+
+    const statuses = [resA, resB].map((res) => (res.status.mock.calls[0] ? res.status.mock.calls[0][0] : 200));
+    expect(statuses.filter((s) => s === 409)).toHaveLength(1);
+    expect(statuses.filter((s) => s === 200)).toHaveLength(1);
+
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(2);
+    expect([1, 2]).toContain(ticket.held_by);
+    
+    const winnerRes = statuses[0] === 200 ? resA : resB;
+    const [winnerBody] = winnerRes.json.mock.calls[0];
+    expect(winnerBody.held[0].seat_code).toBe('A10');
+  });
+});
+
 describe('POST /api/bookseat/:scheduleId/release', () => {
   it('rejects a missing seatCodes', async () => {
     const res = mockRes();
@@ -304,6 +335,24 @@ describe('POST /api/MomoPayment/ipn', () => {
     expect(await Invoice.countDocuments()).toBe(0);
   });
 
+  it('releases the held seats immediately on payment failure, instead of waiting for the TTL', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 42,
+      held_until: new Date(Date.now() + 300000),
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 42 })).toString('base64');
+    const res = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '1', orderId: 'X', extraData } }, res);
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(1);
+    expect(ticket.held_by).toBeNull();
+  });
+
   it('finalizes the order on a successful result', async () => {
     await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
     await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
@@ -336,6 +385,28 @@ describe('POST /api/MomoPayment/confirm', () => {
     );
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'PAYMENT_FAILED' }));
+  });
+
+  it('releases the held seats immediately on payment failure, instead of waiting for the TTL', async () => {
+    await Ticket.create({
+      id: 1,
+      schedule_id: 1,
+      seat_index: 0,
+      seat_code: 'A1',
+      status: 2,
+      held_by: 10,
+      held_until: new Date(Date.now() + 300000),
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10 })).toString('base64');
+    const res = mockRes();
+    await bookingController.momoConfirm(
+      { body: { resultCode: '1', message: 'Cancelled', extraData }, account: { accountId: 10 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(1);
+    expect(ticket.held_by).toBeNull();
   });
 
   it('finalizes and returns success for a matching account', async () => {

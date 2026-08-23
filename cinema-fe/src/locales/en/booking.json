@@ -30,6 +30,10 @@
     "notLoggedIn": "You are not logged in. Please log in or register to use this feature.",
     "selectSeatFirst": "Please select at least one seat",
     "checkoutFailed": "Could not initiate payment.",
+    "holdCountdown": {
+      "label": "Seats held for:"
+    },
+    "holdExpired": "Your seat hold has expired. Please select your seats again.",
     "momoModal": {
       "title": "Choose how to pay with MoMo",
       "qrTitle": "Scan QR code",

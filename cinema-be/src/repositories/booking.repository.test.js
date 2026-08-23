@@ -304,6 +304,100 @@ describe('booking.repository', () => {
       expect(tickets[1].status).toBe(2);
     });
 
+    it('expireHeldTickets ends with a ticket in AVAILABLE, not stuck in TIMEOUT', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() - 1000) });
+      await bookingRepository.expireHeldTickets(1);
+      const ticket = await Ticket.findOne({ id: 1 });
+      expect(ticket.status).toBe(Ticket.STATUS.AVAILABLE);
+      expect(ticket.status).not.toBe(Ticket.STATUS.TIMEOUT);
+    });
+
+    it('expireHeldTickets self-heals a ticket already stuck in TIMEOUT from a previous crashed sweep', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: Ticket.STATUS.TIMEOUT, held_by: 42, held_until: new Date(Date.now() + 60000) });
+      await bookingRepository.expireHeldTickets(1);
+      const ticket = await Ticket.findOne({ id: 1 });
+      expect(ticket.status).toBe(Ticket.STATUS.AVAILABLE);
+      expect(ticket.held_by).toBeNull();
+    });
+
+    it('expireAllHeldTickets releases expired holds across every schedule', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() - 1000) },
+        { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'A1', status: 2, held_by: 7, held_until: new Date(Date.now() - 1000) },
+        { id: 3, schedule_id: 3, seat_index: 0, seat_code: 'A1', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) },
+      ]);
+      await bookingRepository.expireAllHeldTickets();
+      const tickets = await Ticket.find().sort({ id: 1 });
+      expect(tickets[0].status).toBe(1);
+      expect(tickets[0].held_by).toBeNull();
+      expect(tickets[1].status).toBe(1);
+      expect(tickets[1].held_by).toBeNull();
+      expect(tickets[2].status).toBe(2);
+      expect(tickets[2].held_by).toBe(7);
+    });
+
+    it('holdTickets is transaction-safe under real concurrency: only one of two simultaneous holders wins the same seat', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+      const until = new Date(Date.now() + 60000);
+
+      const [resultA, resultB] = await Promise.all([
+        bookingRepository.holdTickets({ scheduleId: 1, seatCodes: ['A1'], accountId: 1, until }),
+        bookingRepository.holdTickets({ scheduleId: 1, seatCodes: ['A1'], accountId: 2, until }),
+      ]);
+
+      const winners = new Set([resultA[0].held_by, resultB[0].held_by]);
+      expect(winners.size).toBe(1);
+      const [winner] = winners;
+      expect([1, 2]).toContain(winner);
+
+      const ticket = await Ticket.findOne({ id: 1 });
+      expect(ticket.status).toBe(2);
+      expect(ticket.held_by).toBe(winner);
+    });
+
+    it('holdTickets under N-way concurrency: exactly one of many simultaneous holders wins', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+      const until = new Date(Date.now() + 60000);
+      const accountIds = [1, 2, 3, 4, 5];
+
+      await Promise.all(
+        accountIds.map((accountId) =>
+          bookingRepository.holdTickets({ scheduleId: 1, seatCodes: ['A1'], accountId, until }),
+        ),
+      );
+
+      const ticket = await Ticket.findOne({ id: 1 });
+      expect(ticket.status).toBe(2);
+      expect(accountIds).toContain(ticket.held_by);
+    });
+
+    describe('timeoutTicketsByIds', () => {
+      it('immediately releases specific held tickets regardless of schedule', async () => {
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+          { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+        ]);
+        await bookingRepository.timeoutTicketsByIds([1, 2]);
+        const tickets = await Ticket.find().sort({ id: 1 });
+        expect(tickets.every((t) => t.status === Ticket.STATUS.AVAILABLE && t.held_by === null)).toBe(true);
+      });
+
+      it('leaves a ticket that is not currently HELD untouched', async () => {
+        await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+        await bookingRepository.timeoutTicketsByIds([1]);
+        expect((await Ticket.findOne({ id: 1 })).status).toBe(0);
+      });
+
+      it('leaves tickets not in the given id list untouched', async () => {
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+          { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+        ]);
+        await bookingRepository.timeoutTicketsByIds([1]);
+        expect((await Ticket.findOne({ id: 2 })).held_by).toBe(42);
+      });
+    });
+
     it('findTicketsBySeatCodes scopes to the given schedule and seat codes', async () => {
       await Ticket.create([
         { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' },

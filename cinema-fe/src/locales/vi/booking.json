@@ -30,6 +30,10 @@
     "notLoggedIn": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
     "selectSeatFirst": "Vui lòng chọn ít nhất một ghế",
     "checkoutFailed": "Không thể khởi tạo thanh toán.",
+    "holdCountdown": {
+      "label": "Giữ ghế trong:"
+    },
+    "holdExpired": "Thời gian giữ ghế đã hết. Vui lòng chọn lại ghế.",
     "momoModal": {
       "title": "Chọn cách thanh toán MoMo",
       "qrTitle": "Quét mã QR",

@@ -30,6 +30,10 @@
     "notLoggedIn": "로그인이 필요합니다. 이 기능을 사용하려면 로그인하거나 회원가입해 주세요.",
     "selectSeatFirst": "좌석을 하나 이상 선택해 주세요",
     "checkoutFailed": "결제를 시작할 수 없습니다.",
+    "holdCountdown": {
+      "label": "좌석 선점 남은 시간:"
+    },
+    "holdExpired": "좌석 선점 시간이 만료되었습니다. 좌석을 다시 선택해 주세요.",
     "momoModal": {
       "title": "MoMo 결제 방법 선택",
       "qrTitle": "QR 코드 스캔",

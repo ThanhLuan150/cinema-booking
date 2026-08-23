@@ -24,6 +24,7 @@ export interface BookingState {
   selectedTime: string;
   selectedSeatCodes: string[];
   selectedTickets: BookedSeatTicket[];
+  heldUntilBySeat: Record<string, string>;
   selectedComboIds: number[];
   voucherCode: string;
   voucherResult: VoucherValidationResult | null;

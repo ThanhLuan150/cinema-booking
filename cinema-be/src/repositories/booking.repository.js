@@ -142,9 +142,32 @@ async function findTicketsBySeatCodes(scheduleId, seatCodes) {
   return Ticket.find({ schedule_id: Number(scheduleId), seat_code: { $in: seatCodes } });
 }
 
-async function expireHeldTickets(scheduleId) {
+async function timeoutExpiredHolds(filter) {
+  await Ticket.updateMany(
+    { ...filter, status: Ticket.STATUS.HELD, held_until: { $lt: new Date() } },
+    { $set: { status: Ticket.STATUS.TIMEOUT } },
+  );
   return Ticket.updateMany(
-    { schedule_id: Number(scheduleId), status: Ticket.STATUS.HELD, held_until: { $lt: new Date() } },
+    { ...filter, status: Ticket.STATUS.TIMEOUT },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+}
+
+async function expireHeldTickets(scheduleId) {
+  return timeoutExpiredHolds({ schedule_id: Number(scheduleId) });
+}
+
+async function expireAllHeldTickets() {
+  return timeoutExpiredHolds({});
+}
+
+async function timeoutTicketsByIds(ticketIds) {
+  await Ticket.updateMany(
+    { id: { $in: ticketIds.map(Number) }, status: Ticket.STATUS.HELD },
+    { $set: { status: Ticket.STATUS.TIMEOUT } },
+  );
+  return Ticket.updateMany(
+    { id: { $in: ticketIds.map(Number) }, status: Ticket.STATUS.TIMEOUT },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
 }
@@ -305,6 +328,8 @@ module.exports = {
   updateTicketStatus,
   findTicketsBySeatCodes,
   expireHeldTickets,
+  expireAllHeldTickets,
+  timeoutTicketsByIds,
   holdTickets,
   releaseTickets,
   saveInvoice,

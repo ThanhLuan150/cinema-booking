@@ -30,6 +30,10 @@
     "notLoggedIn": "您尚未登录，请登录或注册后使用此功能。",
     "selectSeatFirst": "请至少选择一个座位",
     "checkoutFailed": "无法发起支付。",
+    "holdCountdown": {
+      "label": "座位保留剩余时间："
+    },
+    "holdExpired": "座位保留时间已过期，请重新选择座位。",
     "momoModal": {
       "title": "选择 MoMo 支付方式",
       "qrTitle": "扫描二维码",
