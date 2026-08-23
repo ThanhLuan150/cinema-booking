@@ -7,6 +7,7 @@ const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 const Account = require('../models/Account');
+const Booking = require('../models/Booking');
 
 function mockRes() {
   const res = {};
@@ -364,6 +365,25 @@ describe('POST /api/MomoPayment/ipn', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ resultCode: 0, message: 'Confirm Success' }));
     expect(await Invoice.countDocuments()).toBe(1);
   });
+
+  it('cancels the pending booking on payment failure', async () => {
+    await Booking.create({
+      id: 1,
+      code: 'ORDER-FAIL',
+      account_id: 42,
+      schedule_id: 1,
+      branch_id: 1,
+      ticket_ids: [1],
+      total_price: 50000,
+      status: 'PENDING',
+      expires_at: new Date(Date.now() + 60000),
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 42 })).toString('base64');
+    const res = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '1', orderId: 'ORDER-FAIL', extraData } }, res);
+    const booking = await Booking.findOne({ id: 1 });
+    expect(booking.status).toBe('CANCELLED');
+  });
 });
 
 describe('POST /api/MomoPayment/confirm', () => {
@@ -671,5 +691,166 @@ describe('POST /api/invoice/counter-sale', () => {
     const invoice = await Invoice.findOne({ ticket_id: 1 });
     expect(invoice.created_by).toBe(7);
     expect(invoice.status).toBe(1);
+  });
+});
+
+describe('GET /api/bookings', () => {
+  it('OWN scope only returns the caller\'s own bookings', async () => {
+    await Booking.create([
+      { id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1 },
+      { id: 2, code: 'BK-2', account_id: 2, schedule_id: 1, branch_id: 1, total_price: 1 },
+    ]);
+    const res = mockRes();
+    await bookingController.listBookings(
+      { query: {}, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    const [result] = res.json.mock.calls[0];
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].id).toBe(1);
+  });
+
+  it('BRANCH scope only returns bookings for branches the caller owns', async () => {
+    await Branch.create([
+      { id: 1, company_id: 1, owner_id: 5, name: 'C1', code: 'A' },
+      { id: 2, company_id: 1, owner_id: 6, name: 'C2', code: 'B' },
+    ]);
+    await Booking.create([
+      { id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1 },
+      { id: 2, code: 'BK-2', account_id: 2, schedule_id: 1, branch_id: 2, total_price: 1 },
+    ]);
+    const res = mockRes();
+    await bookingController.listBookings(
+      { query: {}, account: { accountId: 5 }, permissionScope: 'BRANCH' },
+      res,
+    );
+    const [result] = res.json.mock.calls[0];
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].branch_id).toBe(1);
+  });
+
+  it('ALL scope returns every booking and supports a status filter', async () => {
+    await Booking.create([
+      { id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PENDING' },
+      { id: 2, code: 'BK-2', account_id: 2, schedule_id: 1, branch_id: 2, total_price: 1, status: 'PAID' },
+    ]);
+    const res = mockRes();
+    await bookingController.listBookings(
+      { query: { status: 'PAID' }, account: { accountId: 99 }, permissionScope: 'ALL' },
+      res,
+    );
+    const [result] = res.json.mock.calls[0];
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].id).toBe(2);
+  });
+
+  it('joins each booking with its seats, movie and schedule', async () => {
+    await Movie.create({ id: 1, name: 'Movie A', premiere_date: '2026-01-01' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1 });
+
+    const res = mockRes();
+    await bookingController.listBookings({ query: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    const [result] = res.json.mock.calls[0];
+    expect(result.data[0].movie.name).toBe('Movie A');
+    expect(result.data[0].tickets[0].seat_code).toBe('A1');
+  });
+});
+
+describe('GET /api/bookings/:id', () => {
+  it('returns 404 for an unknown booking', async () => {
+    const res = mockRes();
+    await bookingController.getBookingById({ params: { id: 999 }, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('forbids an OWN-scope caller from viewing another account\'s booking', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 2, schedule_id: 1, branch_id: 1, total_price: 1 });
+    const res = mockRes();
+    await bookingController.getBookingById({ params: { id: 1 }, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('forbids a BRANCH-scope caller whose branch does not match', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 5, name: 'C1', code: 'A' });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 2, schedule_id: 1, branch_id: 2, total_price: 1 });
+    const res = mockRes();
+    await bookingController.getBookingById({ params: { id: 1 }, account: { accountId: 5 }, permissionScope: 'BRANCH' }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('allows the owning customer to view their own booking', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1 });
+    const res = mockRes();
+    await bookingController.getBookingById({ params: { id: 1 }, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).not.toHaveBeenCalledWith(403);
+    const [result] = res.json.mock.calls[0];
+    expect(result.id).toBe(1);
+  });
+});
+
+describe('POST /api/bookings/:id/cancel', () => {
+  it('returns 404 when the booking does not exist', async () => {
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 999 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("forbids cancelling another account's booking", async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 2, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('rejects cancelling a booking that is already CANCELLED/EXPIRED/COMPLETED', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'EXPIRED' });
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'BOOKING_NOT_CANCELLABLE' }));
+  });
+
+  it('rejects cancelling within 2 hours of showtime', async () => {
+    const { movie_date, time_begin } = dateAt(1);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCEL_WINDOW_EXPIRED' }));
+    expect((await Booking.findOne({ id: 1 })).status).toBe('PAID');
+  });
+
+  it('cancels the booking, releases its tickets and cancels sibling invoices when more than 2 hours away', async () => {
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PAID' });
+    await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1 });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+    expect((await Invoice.findOne({ id: 1 })).status).toBe(0);
+  });
+
+  it('a Branch Admin can cancel a booking for their own branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 5, name: 'C1', code: 'A' });
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 5 }, permissionScope: 'BRANCH' }, res);
+
+    expect(res.status).not.toHaveBeenCalledWith(403);
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
   });
 });

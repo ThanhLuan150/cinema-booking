@@ -35,12 +35,32 @@ router.post('/MomoPayment/confirm', requireAuth, asyncHandler(bookingController.
 // GET /api/my-invoices -> booking history for the caller, joined with ticket/schedule/movie details
 router.get('/my-invoices', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.myInvoices));
 
-// POST /api/invoice/:id/cancel -> cancels a booking if the showtime is more than 2h away
+// POST /api/invoice/:id/cancel -> cancels a single ticket's invoice if the showtime is
+// more than 2h away
 router.post(
   '/invoice/:id/cancel',
   requireAuth,
-  requirePermission('booking.read'),
+  requirePermission('booking.cancel'),
   asyncHandler(bookingController.cancelInvoice),
+);
+
+// GET /api/bookings -> bookings visible to the caller, scoped by booking.read's OWN/BRANCH/ALL
+router.get('/bookings', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.listBookings));
+
+// GET /api/bookings/:id -> booking detail (same scope check as the list)
+router.get(
+  '/bookings/:id',
+  requireAuth,
+  requirePermission('booking.read'),
+  asyncHandler(bookingController.getBookingById),
+);
+
+// POST /api/bookings/:id/cancel -> cancels the whole booking (all seats/combos), releasing seats
+router.post(
+  '/bookings/:id/cancel',
+  requireAuth,
+  requirePermission('booking.cancel'),
+  asyncHandler(bookingController.cancelBooking),
 );
 
 // GET /api/admin/invoices -> all transactions system-wide, newest first (booking.admin permission — super admin only)

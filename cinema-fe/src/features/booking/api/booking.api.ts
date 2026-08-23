@@ -5,6 +5,8 @@ import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import type { Seat } from '@/types/entities';
 import type {
   BookedSeatTicket,
+  Booking,
+  BookingListParams,
   HoldSeatsResult,
   Invoice,
   MomoConfirmParams,
@@ -59,3 +61,11 @@ export const getRoomsList = () =>
   apiClient
     .get<PaginatedResponse<Room>>('/room', { params: { limit: FULL_LIST_FETCH_LIMIT } })
     .then((res) => res.data.data);
+
+export const getBookings = (params?: BookingListParams) =>
+  apiClient.get<PaginatedResponse<Booking>>('/bookings', { params }).then((res) => res.data);
+
+export const getBookingById = (id: number | string) =>
+  apiClient.get<Booking>(`/bookings/${id}`).then((res) => res.data);
+
+export const cancelBooking = (id: number | string) => apiClient.post(`/bookings/${id}/cancel`);

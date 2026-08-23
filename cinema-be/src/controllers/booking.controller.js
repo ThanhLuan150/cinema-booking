@@ -4,6 +4,31 @@ const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { HOLD_TTL_MS } = require('../config/seatHold');
+const nextId = require('../utils/nextId');
+
+const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
+
+// ≥2h before showtime, matching the same policy cancelInvoice already enforces for a
+// single ticket. Returns null (no restriction) when the schedule can't be resolved.
+async function assertCancellableBeforeShowtime(scheduleId) {
+  const schedule = await bookingRepository.findScheduleById(scheduleId);
+  if (!schedule) return null;
+  const showtime = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`);
+  const hoursUntilShowtime = (showtime.getTime() - Date.now()) / (1000 * 60 * 60);
+  return hoursUntilShowtime < 2 ? 'CANCEL_WINDOW_EXPIRED' : null;
+}
+
+// OWN: caller must be the booking's own account. BRANCH: caller must have access to the
+// booking's branch. ALL: no restriction. Mirrors requireBranchAccess's own-vs-staffed logic.
+async function canAccessBooking(req, booking) {
+  if (req.permissionScope === 'ALL') return true;
+  if (req.permissionScope === 'OWN') return booking.account_id === req.account.accountId;
+  if (req.permissionScope === 'BRANCH') {
+    const branchIds = await bookingRepository.resolveAccessibleBranchIds(req.account.accountId);
+    return branchIds.includes(booking.branch_id);
+  }
+  return false;
+}
 
 async function canAccessCinema(req, branch) {
   if (req.permissionScope === 'ALL') return true;
@@ -151,20 +176,39 @@ async function createMomoPayment(req, res) {
   }
 
   // Re-hold (or extend the hold on) these seats for the duration of the MoMo redirect so they
+  const heldUntil = new Date(Date.now() + HOLD_TTL_MS);
   await bookingRepository.holdTickets({
     scheduleId: tickets[0].schedule_id,
     seatCodes: tickets.map((t) => t.seat_code),
     accountId,
-    until: new Date(Date.now() + HOLD_TTL_MS),
+    until: heldUntil,
   });
 
-  const payUrl = await createMomoPaymentUrl(pricing.totalPrice, {
+  const branchId = await bookingRepository.findCinemaIdByTicketId(tickets[0].id);
+  const orderId = `BK-${await nextId('bookingOrder')}`;
+  const booking = await bookingRepository.createPendingBooking({
+    code: orderId,
+    accountId,
+    scheduleId: tickets[0].schedule_id,
+    branchId,
+    ticketIds,
+    comboIds: comboIds || [],
+    voucherCode: pricing.voucherCode,
+    discountAmount: pricing.discountAmount,
+    seatTotal: pricing.seatTotal,
+    comboTotal: pricing.comboTotal,
+    totalPrice: pricing.totalPrice,
+    expiresAt: heldUntil,
+  });
+
+  const payUrl = await createMomoPaymentUrl(pricing.totalPrice, orderId, {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: pricing.voucherCode,
     discountAmount: pricing.discountAmount,
     totalPrice: pricing.totalPrice,
     accountId: req.account.accountId,
+    bookingId: booking.id,
   });
   res.type('text/plain').send(payUrl);
 }
@@ -181,6 +225,7 @@ async function momoIpn(req, res) {
     if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
+    await bookingRepository.cancelPendingBookingByCode(req.body.orderId);
     return res.json({ resultCode: 0, message: 'Acknowledged (payment not successful)' });
   }
 
@@ -201,6 +246,7 @@ async function momoConfirm(req, res) {
     if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
+    await bookingRepository.cancelPendingBookingByCode(req.body.orderId);
     return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
   }
 
@@ -372,8 +418,107 @@ async function checkInInvoice(req, res) {
 
   invoice.checked_in = true;
   await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.maybeCompleteBooking(invoice.booking_id);
 
   res.json(invoice);
+}
+
+// Joins each Booking with its seats, movie, showtime and branch for list/detail responses.
+async function enrichBookings(bookings) {
+  const ticketIds = [...new Set(bookings.flatMap((b) => b.ticket_ids))];
+  const tickets = await bookingRepository.findTicketsByIds(ticketIds);
+  const ticketById = new Map(tickets.map((t) => [t.id, t]));
+
+  const scheduleIds = [...new Set(bookings.map((b) => b.schedule_id))];
+  const schedules = await bookingRepository.findSchedulesByIds(scheduleIds);
+  const scheduleById = new Map(schedules.map((s) => [s.id, s]));
+
+  const movieIds = [...new Set(schedules.map((s) => s.movie_id))];
+  const movies = await bookingRepository.findMoviesByIds(movieIds);
+  const movieById = new Map(movies.map((m) => [m.id, m]));
+
+  const branchIds = [...new Set(bookings.map((b) => b.branch_id))];
+  const branches = await Promise.all(branchIds.map((id) => bookingRepository.findCinemaById(id)));
+  const branchById = new Map(branches.filter(Boolean).map((b) => [b.id, b]));
+
+  const accountIds = [...new Set(bookings.map((b) => b.account_id))];
+  const accounts = await bookingRepository.findAccountsByIds(accountIds);
+  const accountById = new Map(accounts.map((a) => [a.id, a]));
+
+  return bookings.map((booking) => {
+    const schedule = scheduleById.get(booking.schedule_id);
+    const movie = schedule ? movieById.get(schedule.movie_id) : null;
+    const branch = branchById.get(booking.branch_id);
+    const account = accountById.get(booking.account_id);
+    return {
+      ...booking.toJSON(),
+      tickets: booking.ticket_ids
+        .map((id) => ticketById.get(id))
+        .filter(Boolean)
+        .map((t) => ({ id: t.id, seat_code: t.seat_code, seat_type: t.seat_type })),
+      schedule: schedule ? { id: schedule.id, movie_date: schedule.movie_date, time_begin: schedule.time_begin } : null,
+      movie: movie ? { id: movie.id, name: movie.name, avatar: movie.avatar } : null,
+      branch: branch ? { id: branch.id, name: branch.name } : null,
+      account: account ? { id: account.id, email: account.email, name: account.name } : null,
+    };
+  });
+}
+
+// GET /api/bookings?status=&page=&limit= -> bookings visible to the caller, scoped by their
+// booking.read permission scope (OWN: their own; BRANCH: their branch(es); ALL: everything)
+async function listBookings(req, res) {
+  const { page, limit, skip } = parsePagination(req.query);
+  const filter = {};
+  if (req.permissionScope === 'OWN') {
+    filter.account_id = req.account.accountId;
+  } else if (req.permissionScope === 'BRANCH') {
+    const branchIds = await bookingRepository.resolveAccessibleBranchIds(req.account.accountId);
+    filter.branch_id = { $in: branchIds };
+  }
+  if (req.query.status) filter.status = req.query.status;
+
+  const { data: bookings, total } = await bookingRepository.findBookings(filter, { skip, limit });
+  const result = await enrichBookings(bookings);
+  res.json(buildPaginatedResult({ data: result, total, page, limit }));
+}
+
+// GET /api/bookings/:id -> booking detail, scope-checked the same way as listBookings
+async function getBookingById(req, res) {
+  const booking = await bookingRepository.findBookingById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  if (!(await canAccessBooking(req, booking))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  const [result] = await enrichBookings([booking]);
+  res.json(result);
+}
+
+// POST /api/bookings/:id/cancel -> cancels the whole booking (all seats + combos), releasing
+// its tickets, if it's still cancellable (PENDING/PAID) and at least 2h before showtime.
+async function cancelBooking(req, res) {
+  const booking = await bookingRepository.findBookingById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  if (!(await canAccessBooking(req, booking))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  if (!CANCELLABLE_BOOKING_STATUSES.includes(booking.status)) {
+    return res.status(400).json({
+      message: `This booking cannot be cancelled from status ${booking.status}`,
+      code: 'BOOKING_NOT_CANCELLABLE',
+    });
+  }
+
+  const windowError = await assertCancellableBeforeShowtime(booking.schedule_id);
+  if (windowError) {
+    return res.status(400).json({
+      message: 'Bookings can only be cancelled at least 2 hours before showtime',
+      code: windowError,
+    });
+  }
+
+  const cancelled = await bookingRepository.cancelBooking(booking, { reason: req.body?.reason || null });
+  res.json(cancelled);
 }
 
 // POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, accountId, cinema_id }
@@ -409,6 +554,8 @@ async function createCounterSale(req, res) {
     voucherCode: pricing.voucherCode,
     discountAmount: pricing.discountAmount,
     totalPrice: pricing.totalPrice,
+    seatTotal: pricing.seatTotal,
+    comboTotal: pricing.comboTotal,
     accountId: Number(accountId),
     createdBy: req.account.accountId,
   });
@@ -428,6 +575,9 @@ module.exports = {
   momoConfirm,
   myInvoices,
   cancelInvoice,
+  listBookings,
+  getBookingById,
+  cancelBooking,
   adminInvoices,
   refundInvoice,
   lookupInvoice,

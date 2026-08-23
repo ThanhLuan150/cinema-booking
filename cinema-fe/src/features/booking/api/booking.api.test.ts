@@ -93,4 +93,19 @@ describe('booking.api', () => {
     await bookingApi.getRoomsList();
     expect(getMock).toHaveBeenCalledWith('/room', { params: { limit: FULL_LIST_FETCH_LIMIT } });
   });
+
+  it('getBookings gets /bookings with the given params', async () => {
+    await bookingApi.getBookings({ page: 2, status: 'PAID' });
+    expect(getMock).toHaveBeenCalledWith('/bookings', { params: { page: 2, status: 'PAID' } });
+  });
+
+  it('getBookingById gets /bookings/:id', async () => {
+    await bookingApi.getBookingById(5);
+    expect(getMock).toHaveBeenCalledWith('/bookings/5');
+  });
+
+  it('cancelBooking posts to /bookings/:id/cancel', async () => {
+    await bookingApi.cancelBooking(5);
+    expect(postMock).toHaveBeenCalledWith('/bookings/5/cancel');
+  });
 });

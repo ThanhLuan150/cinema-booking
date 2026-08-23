@@ -63,18 +63,29 @@
       "couple": "情侣座"
     },
     "status": {
-      "booked": "已预订",
+      "pending": "待支付",
+      "paid": "已支付",
       "cancelled": "已取消",
-      "refunded": "已退款"
+      "expired": "已过期",
+      "completed": "已完成"
     },
     "empty": "您还没有任何票券",
     "movieFallback": "电影",
-    "seatLabel": "座位 {{code}}（{{type}}）",
-    "ticketCode": "票号：{{code}}",
+    "seatsLabel": "座位：{{codes}}",
+    "bookingCode": "订单号：{{code}}",
     "discount": "优惠：-{{amount}}",
     "print": "打印票券",
     "cancel": "取消订单",
-    "confirmCancel": "确定要取消这张票吗？",
+    "confirmCancel": "确定要取消此订单吗？",
+    "cancelSuccess": "订单取消成功。",
+    "cancelFailed": "无法取消该订单。"
+  },
+  "bookingManagement": {
+    "pageTitle": "订单管理",
+    "breadcrumb": "订单",
+    "headers": ["ID", "订单号", "客户", "电影", "座位", "总计", "状态", "操作"],
+    "cancel": "取消",
+    "confirmCancel": "确定要取消此订单吗？",
     "cancelSuccess": "订单取消成功。",
     "cancelFailed": "无法取消该订单。"
   },

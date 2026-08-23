@@ -43,7 +43,7 @@ describe('momo utils', () => {
   describe('createMomoPaymentUrl (mock mode, no credentials configured)', () => {
     it('returns a mock redirect url carrying the encoded order payload', async () => {
       const { createMomoPaymentUrl, decodeExtraData } = require('./momo');
-      const url = await createMomoPaymentUrl(50000, { scheduleId: 7 });
+      const url = await createMomoPaymentUrl(50000, 'BK-1', { scheduleId: 7 });
 
       expect(url).toContain('resultCode=0');
       expect(url).toContain('Mock+payment+success');
@@ -52,11 +52,12 @@ describe('momo utils', () => {
       const extraData = parsed.searchParams.get('extraData');
       expect(decodeExtraData(extraData)).toEqual({ scheduleId: 7 });
       expect(parsed.searchParams.get('amount')).toBe('50000');
+      expect(parsed.searchParams.get('orderId')).toBe('BK-1');
     });
 
     it('clamps the amount to a minimum of 1000', async () => {
       const { createMomoPaymentUrl } = require('./momo');
-      const url = await createMomoPaymentUrl(1, {});
+      const url = await createMomoPaymentUrl(1, 'BK-2', {});
       const parsed = new URL(url);
       expect(parsed.searchParams.get('amount')).toBe('1000');
     });

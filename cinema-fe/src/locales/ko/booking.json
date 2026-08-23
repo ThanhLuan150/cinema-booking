@@ -63,20 +63,31 @@
       "couple": "커플석"
     },
     "status": {
-      "booked": "예매 완료",
+      "pending": "결제 대기중",
+      "paid": "결제 완료",
       "cancelled": "취소됨",
-      "refunded": "환불됨"
+      "expired": "만료됨",
+      "completed": "완료됨"
     },
     "empty": "아직 예매한 티켓이 없습니다",
     "movieFallback": "영화",
-    "seatLabel": "좌석 {{code}} ({{type}})",
-    "ticketCode": "티켓 코드: {{code}}",
+    "seatsLabel": "좌석: {{codes}}",
+    "bookingCode": "예매 코드: {{code}}",
     "discount": "할인: -{{amount}}",
     "print": "티켓 인쇄",
-    "cancel": "티켓 취소",
-    "confirmCancel": "이 티켓을 취소하시겠습니까?",
-    "cancelSuccess": "티켓이 취소되었습니다.",
-    "cancelFailed": "티켓을 취소할 수 없습니다."
+    "cancel": "예매 취소",
+    "confirmCancel": "이 예매를 취소하시겠습니까?",
+    "cancelSuccess": "예매가 취소되었습니다.",
+    "cancelFailed": "예매를 취소할 수 없습니다."
+  },
+  "bookingManagement": {
+    "pageTitle": "예매 관리",
+    "breadcrumb": "예매",
+    "headers": ["ID", "코드", "고객", "영화", "좌석", "합계", "상태", "작업"],
+    "cancel": "취소",
+    "confirmCancel": "이 예매를 취소하시겠습니까?",
+    "cancelSuccess": "예매가 취소되었습니다.",
+    "cancelFailed": "예매를 취소할 수 없습니다."
   },
   "voucher": {
     "title": "할인 코드",

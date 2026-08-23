@@ -1,10 +1,12 @@
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 const Invoice = require('../models/Invoice');
+const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
+const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
 const Combo = require('../models/Combo');
@@ -49,6 +51,8 @@ async function finalizeMomoOrder(orderId, orderPayload) {
     totalPrice = 0,
     accountId,
     createdBy = null,
+    seatTotal = 0,
+    comboTotal = 0,
   } = orderPayload;
   if (!accountId || ticketIds.length === 0) return { alreadyProcessed: false, skipped: true };
 
@@ -57,6 +61,35 @@ async function finalizeMomoOrder(orderId, orderPayload) {
     if (voucher) {
       await Voucher.updateOne({ id: voucher.id }, { $inc: { used_count: 1 } });
     }
+  }
+
+  // Upsert the parent Booking: a PENDING one created by createMomoPayment gets flipped to
+  // PAID here; a counter sale never had a PENDING phase, so it's created PAID directly.
+  let booking = await Booking.findOne({ code: orderId });
+  if (booking) {
+    booking.status = Booking.STATUS.PAID;
+    booking.paid_at = new Date();
+    await booking.save();
+  } else {
+    const branchId = await findCinemaIdByTicketId(ticketIds[0]);
+    const firstTicketForSchedule = await Ticket.findOne({ id: Number(ticketIds[0]) });
+    booking = await Booking.create({
+      id: await nextId('booking'),
+      code: orderId,
+      account_id: Number(accountId),
+      schedule_id: firstTicketForSchedule ? firstTicketForSchedule.schedule_id : 0,
+      branch_id: branchId ?? 0,
+      ticket_ids: ticketIds.map(Number),
+      combo_ids: comboIds.map(Number),
+      voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
+      discount_amount: Number(discountAmount),
+      seat_total: Number(seatTotal),
+      combo_total: Number(comboTotal),
+      total_price: totalPrice,
+      status: Booking.STATUS.PAID,
+      paid_at: new Date(),
+      created_by: createdBy,
+    });
   }
 
   const ticketCount = ticketIds.length;
@@ -68,6 +101,7 @@ async function finalizeMomoOrder(orderId, orderPayload) {
     const id = await nextId('invoice');
     await Invoice.create({
       id,
+      booking_id: booking.id,
       ticket_id: Number(ticketIds[index]),
       account_id: Number(accountId),
       code: orderId,
@@ -103,7 +137,7 @@ async function finalizeMomoOrder(orderId, orderPayload) {
     }
   }
 
-  return { alreadyProcessed: false };
+  return { alreadyProcessed: false, bookingId: booking.id };
 }
 
 async function findInvoicesByAccountId(accountId) {
@@ -249,9 +283,134 @@ async function findCinemaIdByTicketId(ticketId) {
 
 // Records a paid, immediate booking sold in person (cash/POS at the counter), reusing
 // finalizeMomoOrder's invoice/ticket-writing logic with a synthetic, unique order code.
-async function createCounterSale({ ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy }) {
+async function createCounterSale({
+  ticketIds,
+  comboIds,
+  voucherCode,
+  discountAmount,
+  totalPrice,
+  accountId,
+  createdBy,
+  seatTotal,
+  comboTotal,
+}) {
   const orderId = `CTR-${await nextId('counterOrder')}`;
-  return finalizeMomoOrder(orderId, { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy });
+  return finalizeMomoOrder(orderId, {
+    ticketIds,
+    comboIds,
+    voucherCode,
+    discountAmount,
+    totalPrice,
+    accountId,
+    createdBy,
+    seatTotal,
+    comboTotal,
+  });
+}
+
+// Creates the PENDING Booking a MoMo redirect is issued against; finalizeMomoOrder flips
+// it to PAID (or expireStalePendingBookings flips it to EXPIRED if payment never completes).
+async function createPendingBooking({
+  code,
+  accountId,
+  scheduleId,
+  branchId,
+  ticketIds,
+  comboIds = [],
+  voucherCode = null,
+  discountAmount = 0,
+  seatTotal = 0,
+  comboTotal = 0,
+  totalPrice,
+  expiresAt,
+}) {
+  return Booking.create({
+    id: await nextId('booking'),
+    code,
+    account_id: Number(accountId),
+    schedule_id: Number(scheduleId),
+    branch_id: Number(branchId),
+    ticket_ids: ticketIds.map(Number),
+    combo_ids: comboIds.map(Number),
+    voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
+    discount_amount: Number(discountAmount),
+    seat_total: Number(seatTotal),
+    combo_total: Number(comboTotal),
+    total_price: totalPrice,
+    status: Booking.STATUS.PENDING,
+    expires_at: expiresAt,
+  });
+}
+
+// Explicit payment failure (MoMo reported a non-zero resultCode) — a definite outcome,
+// not a timeout, so it's cancelled rather than left for the expiry sweep.
+async function cancelPendingBookingByCode(code) {
+  return Booking.findOneAndUpdate(
+    { code, status: Booking.STATUS.PENDING },
+    { $set: { status: Booking.STATUS.CANCELLED, cancelled_at: new Date(), cancel_reason: 'Payment failed' } },
+    { new: true },
+  );
+}
+
+// Cancels a Booking and everything under it: releases its tickets back to AVAILABLE and
+// cancels its sibling Invoice rows. Caller is responsible for authorization + cancellation
+// window policy checks.
+async function cancelBooking(booking, { reason = null } = {}) {
+  await Ticket.updateMany(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+  await Invoice.updateMany({ booking_id: booking.id }, { $set: { status: 0 } });
+  booking.status = Booking.STATUS.CANCELLED;
+  booking.cancelled_at = new Date();
+  if (reason) booking.cancel_reason = reason;
+  await booking.save();
+  return booking;
+}
+
+// Sweep-job counterpart to expireAllHeldTickets: a Booking whose payment window has lapsed
+// while still PENDING is expired and its held tickets are released.
+async function expireStalePendingBookings() {
+  const stale = await Booking.find({ status: Booking.STATUS.PENDING, expires_at: { $lt: new Date() } });
+  for (const booking of stale) {
+    await timeoutTicketsByIds(booking.ticket_ids);
+    booking.status = Booking.STATUS.EXPIRED;
+    await booking.save();
+  }
+  return stale.length;
+}
+
+// Once every sibling Invoice under a Booking has been checked in, the booking itself is done.
+async function maybeCompleteBooking(bookingId) {
+  if (!bookingId) return null;
+  const invoices = await Invoice.find({ booking_id: Number(bookingId) });
+  if (invoices.length === 0 || !invoices.every((inv) => inv.checked_in && inv.status === 1)) return null;
+  return Booking.findOneAndUpdate(
+    { id: Number(bookingId), status: Booking.STATUS.PAID },
+    { $set: { status: Booking.STATUS.COMPLETED } },
+    { new: true },
+  );
+}
+
+// Branch Admin: every branch they own. Employee: their single assigned branch. Used to scope
+// BRANCH-permission-scope booking list/detail/cancel to the caller's own branch(es).
+async function resolveAccessibleBranchIds(accountId) {
+  const ownedBranches = await Branch.find({ owner_id: Number(accountId) }, { id: 1 });
+  if (ownedBranches.length > 0) return ownedBranches.map((b) => b.id);
+  const employee = await Employee.findOne({ user_id: Number(accountId), status: 1 });
+  return employee ? [employee.branch_id] : [];
+}
+
+async function findBookings(filter, { skip = 0, limit = 20 } = {}) {
+  const [data, total] = await Promise.all([
+    Booking.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Booking.countDocuments(filter),
+  ]);
+  return { data, total };
+}
+
+async function findBookingById(id) {
+  return Booking.findOne({ id: Number(id) });
 }
 
 async function buildPricingContext(schedule, accountId) {
@@ -345,4 +504,12 @@ module.exports = {
   buildPricingContext,
   calculateTicketPrices,
   computeOrderPricing,
+  createPendingBooking,
+  cancelPendingBookingByCode,
+  cancelBooking,
+  expireStalePendingBookings,
+  maybeCompleteBooking,
+  resolveAccessibleBranchIds,
+  findBookings,
+  findBookingById,
 };

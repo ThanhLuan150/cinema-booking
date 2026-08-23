@@ -152,6 +152,23 @@ describe('seedRbac', () => {
     }
   });
 
+  it('grants booking.cancel to customer (OWN) and branch admin (BRANCH)', async () => {
+    await seedRbac();
+    const permission = await Permission.findOne({ code: 'booking.cancel' });
+    const expected = { SUPER_ADMIN: 'ALL', BRANCH_ADMIN: 'BRANCH', CUSTOMER: 'OWN' };
+    for (const [roleCode, scope] of Object.entries(expected)) {
+      const role = await Role.findOne({ code: roleCode });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      expect(link).not.toBeNull();
+      expect(link.scope).toBe(scope);
+    }
+
+    // EMPLOYEE gets booking.cancel per-Position (TICKET_STAFF/CASHIER), not as a blanket role grant.
+    const employeeRole = await Role.findOne({ code: 'EMPLOYEE' });
+    const employeeLink = await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id });
+    expect(employeeLink).toBeNull();
+  });
+
   it('prunes a role-permission link that is no longer in the map on the next run', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });

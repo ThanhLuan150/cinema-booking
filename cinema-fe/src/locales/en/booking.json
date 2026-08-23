@@ -63,20 +63,31 @@
       "couple": "Couple"
     },
     "status": {
-      "booked": "Booked",
+      "pending": "Pending payment",
+      "paid": "Paid",
       "cancelled": "Cancelled",
-      "refunded": "Refunded"
+      "expired": "Expired",
+      "completed": "Completed"
     },
     "empty": "You have no tickets yet",
     "movieFallback": "Movie",
-    "seatLabel": "Seat {{code}} ({{type}})",
-    "ticketCode": "Ticket code: {{code}}",
+    "seatsLabel": "Seats: {{codes}}",
+    "bookingCode": "Booking code: {{code}}",
     "discount": "Discount: -{{amount}}",
     "print": "Print ticket",
-    "cancel": "Cancel ticket",
-    "confirmCancel": "Are you sure you want to cancel this ticket?",
-    "cancelSuccess": "Ticket cancelled successfully.",
-    "cancelFailed": "Could not cancel the ticket."
+    "cancel": "Cancel booking",
+    "confirmCancel": "Are you sure you want to cancel this booking?",
+    "cancelSuccess": "Booking cancelled successfully.",
+    "cancelFailed": "Could not cancel the booking."
+  },
+  "bookingManagement": {
+    "pageTitle": "Booking management",
+    "breadcrumb": "Bookings",
+    "headers": ["ID", "Code", "Customer", "Movie", "Seats", "Total", "Status", "Actions"],
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this booking?",
+    "cancelSuccess": "Booking cancelled successfully.",
+    "cancelFailed": "Could not cancel the booking."
   },
   "voucher": {
     "title": "Discount code",

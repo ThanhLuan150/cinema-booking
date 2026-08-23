@@ -74,8 +74,15 @@ describe('AdminLayout', () => {
     renderLayout();
     expect(screen.getByText('adminLayout.nav.counterSale')).toBeInTheDocument();
     expect(screen.getByText('adminLayout.nav.checkIn')).toBeInTheDocument();
+    expect(screen.getByText('adminLayout.nav.bookingManagement')).toBeInTheDocument();
     expect(screen.queryByText('adminLayout.nav.films')).not.toBeInTheDocument();
     expect(screen.queryByText('adminLayout.nav.employees')).not.toBeInTheDocument();
+  });
+
+  it('shows the booking management link for a theater owner too', () => {
+    useCurrentUserMock.mockReturnValue({ data: { role: 2, name: 'Owner' } });
+    renderLayout();
+    expect(screen.getByText('adminLayout.nav.bookingManagement')).toBeInTheDocument();
   });
 
   it('falls back to a generic display name when there is no user', () => {

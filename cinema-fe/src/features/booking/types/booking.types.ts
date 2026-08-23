@@ -91,3 +91,41 @@ export interface MomoConfirmParams {
   message?: string;
   [key: string]: string | undefined;
 }
+
+export type BookingStatus = 'PENDING' | 'PAID' | 'CANCELLED' | 'EXPIRED' | 'COMPLETED';
+
+export interface BookingTicket {
+  id: number;
+  seat_code: string;
+  seat_type: number;
+}
+
+export interface Booking {
+  id: number;
+  code: string;
+  account_id: number;
+  schedule_id: number;
+  branch_id: number;
+  status: BookingStatus;
+  tickets: BookingTicket[];
+  combo_ids: number[];
+  voucher_code: string | null;
+  discount_amount: number;
+  seat_total: number;
+  combo_total: number;
+  total_price: number;
+  expires_at: string | null;
+  paid_at: string | null;
+  cancelled_at: string | null;
+  movie?: InvoiceMovie | null;
+  schedule?: InvoiceSchedule | null;
+  branch?: { id: number; name: string } | null;
+  account?: { id: number; email: string; name?: string } | null;
+  createdAt: string;
+}
+
+export interface BookingListParams {
+  page?: number;
+  limit?: number;
+  status?: BookingStatus;
+}

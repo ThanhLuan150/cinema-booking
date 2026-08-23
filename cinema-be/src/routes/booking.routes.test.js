@@ -85,4 +85,42 @@ describe('booking.routes wiring', () => {
     const res = await request(app).post('/api/invoice/1/checkin').send({});
     expect(res.status).toBe(401);
   });
+
+  it('GET /api/bookings requires auth', async () => {
+    const res = await request(app).get('/api/bookings');
+    expect(res.status).toBe(401);
+  });
+
+  it('GET /api/bookings is reachable for a plain customer (booking.read OWN)', async () => {
+    const res = await request(app).get('/api/bookings').set('Authorization', authHeader({ role: 1 }));
+    expect(res.status).toBe(200);
+  });
+
+  it('GET /api/bookings/:id requires auth', async () => {
+    const res = await request(app).get('/api/bookings/1');
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/bookings/:id/cancel requires auth', async () => {
+    const res = await request(app).post('/api/bookings/1/cancel').send({});
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/bookings/:id/cancel is reachable for a plain customer (booking.cancel OWN)', async () => {
+    const res = await request(app)
+      .post('/api/bookings/1/cancel')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({});
+    // Reaches the controller (past the permission gate) and 404s since booking 1 doesn't exist.
+    expect(res.status).toBe(404);
+  });
+
+  it('POST /api/invoice/:id/cancel now requires the booking.cancel permission', async () => {
+    const res = await request(app)
+      .post('/api/invoice/1/cancel')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({});
+    // Reaches the controller (past the permission gate) and 404s since invoice 1 doesn't exist.
+    expect(res.status).toBe(404);
+  });
 });

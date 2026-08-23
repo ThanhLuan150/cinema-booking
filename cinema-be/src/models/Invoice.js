@@ -4,6 +4,7 @@ const { withCleanJSON } = require('./plugins');
 const invoiceSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
+    booking_id: { type: Number, default: null, index: true },
     ticket_id: { type: Number, required: true, index: true },
     account_id: { type: Number, required: true, index: true },
     code: { type: String, required: true },

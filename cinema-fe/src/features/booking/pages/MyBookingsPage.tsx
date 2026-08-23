@@ -8,20 +8,21 @@ import { getMoviePosterUrl } from '@/utils';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
-import { useMyInvoices } from '../hooks/useMyInvoices';
-import { useCancelInvoice } from '../hooks/useCancelInvoice';
+import { useBookings } from '../hooks/useBookings';
+import { useCancelBooking } from '../hooks/useCancelBooking';
 import { SEAT_TYPE_KEY } from '@/constants/seatType';
-import { INVOICE_STATUS, INVOICE_STATUS_META } from '@/constants/invoiceStatus';
+import { BOOKING_STATUS_META, CANCELLABLE_BOOKING_STATUSES } from '@/constants/bookingStatus';
 
 function MyBookingsPage() {
   const { t } = useTranslation('booking');
-  const { data: invoices = [], isLoading } = useMyInvoices();
-  const cancelInvoiceMutation = useCancelInvoice();
+  const { data, isLoading } = useBookings();
+  const bookings = data?.data ?? [];
+  const cancelBookingMutation = useCancelBooking();
 
-  const handleCancel = async (invoiceId: number) => {
+  const handleCancel = async (bookingId: number) => {
     if (!(await confirmDialog(t('myBookings.confirmCancel')))) return;
     try {
-      await cancelInvoiceMutation.mutateAsync(invoiceId);
+      await cancelBookingMutation.mutateAsync(bookingId);
       toast.success(t('myBookings.cancelSuccess'));
     } catch (error) {
       toast.error(getApiErrorMessage(error, t) || t('myBookings.cancelFailed'));
@@ -41,29 +42,31 @@ function MyBookingsPage() {
           <Spinner size="lg" />
         </div>
       )}
-      {!isLoading && invoices.length === 0 && (
+      {!isLoading && bookings.length === 0 && (
         <EmptyState title={t('myBookings.empty')} icon="fa-solid fa-ticket" />
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {invoices.map((inv) => {
-          const status =
-            INVOICE_STATUS_META[inv.status] || INVOICE_STATUS_META[INVOICE_STATUS.booked];
-          const canCancel = inv.status === INVOICE_STATUS.booked;
+        {bookings.map((booking) => {
+          const status = BOOKING_STATUS_META[booking.status] || BOOKING_STATUS_META.PENDING;
+          const canCancel = CANCELLABLE_BOOKING_STATUSES.includes(booking.status);
+          const seatsSummary = booking.tickets
+            .map((ticket) => `${ticket.seat_code} (${t(`myBookings.seatType.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)})`)
+            .join(', ');
           return (
             <div
-              key={inv.id}
+              key={booking.id}
               className="booking-card flex gap-4 rounded-xl border border-border bg-surface p-4 shadow-card"
             >
               <img
-                src={getMoviePosterUrl(inv.movie?.avatar)}
-                alt={inv.movie?.name}
+                src={getMoviePosterUrl(booking.movie?.avatar)}
+                alt={booking.movie?.name}
                 className="h-[140px] w-[100px] shrink-0 rounded-lg object-cover shadow-card"
               />
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <h6 className="text-lg font-semibold text-white">
-                    {inv.movie?.name || t('myBookings.movieFallback')}
+                    {booking.movie?.name || t('myBookings.movieFallback')}
                   </h6>
                   <span
                     className={cn(
@@ -75,30 +78,21 @@ function MyBookingsPage() {
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-txt/70">
-                  {inv.schedule?.movie_date} · {inv.schedule?.time_begin}
+                  {booking.schedule?.movie_date} · {booking.schedule?.time_begin}
                 </p>
-                <p className="text-sm text-txt/70">
-                  {t('myBookings.seatLabel', {
-                    code: inv.ticket?.seat_code,
-                    type: t(
-                      `myBookings.seatType.${SEAT_TYPE_KEY[inv.ticket?.seat_type ?? 0] ?? 'standard'}`,
-                    ),
-                  })}
-                </p>
-                <p className="text-sm text-txt/70">
-                  {t('myBookings.ticketCode', { code: inv.code })}
-                </p>
-                {inv.discount_amount > 0 && (
+                <p className="text-sm text-txt/70">{t('myBookings.seatsLabel', { codes: seatsSummary })}</p>
+                <p className="text-sm text-txt/70">{t('myBookings.bookingCode', { code: booking.code })}</p>
+                {booking.discount_amount > 0 && (
                   <p className="text-sm text-accent">
                     {t('myBookings.discount', {
-                      amount: `${inv.discount_amount.toLocaleString()}đ`,
+                      amount: `${booking.discount_amount.toLocaleString()}đ`,
                     })}
                   </p>
                 )}
-                <p className="mt-1 font-semibold text-white">{inv.total_price.toLocaleString()}đ</p>
+                <p className="mt-1 font-semibold text-white">{booking.total_price.toLocaleString()}đ</p>
 
                 <div className="mt-3 flex items-center gap-3">
-                  <QRCodeSVG value={inv.code} size={64} />
+                  <QRCodeSVG value={booking.code} size={64} />
                   <div className="no-print flex flex-col gap-2">
                     <button
                       type="button"
@@ -112,7 +106,7 @@ function MyBookingsPage() {
                       <button
                         type="button"
                         className="rounded-lg border border-red-800/60 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10"
-                        onClick={() => handleCancel(inv.id)}
+                        onClick={() => handleCancel(booking.id)}
                       >
                         {t('myBookings.cancel')}
                       </button>

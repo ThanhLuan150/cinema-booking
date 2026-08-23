@@ -63,20 +63,31 @@
       "couple": "Paar"
     },
     "status": {
-      "booked": "Gebucht",
+      "pending": "Zahlung ausstehend",
+      "paid": "Bezahlt",
       "cancelled": "Storniert",
-      "refunded": "Erstattet"
+      "expired": "Abgelaufen",
+      "completed": "Abgeschlossen"
     },
     "empty": "Sie haben noch keine Tickets",
     "movieFallback": "Film",
-    "seatLabel": "Sitzplatz {{code}} ({{type}})",
-    "ticketCode": "Ticketcode: {{code}}",
+    "seatsLabel": "Sitzplätze: {{codes}}",
+    "bookingCode": "Buchungscode: {{code}}",
     "discount": "Rabatt: -{{amount}}",
     "print": "Ticket drucken",
-    "cancel": "Ticket stornieren",
-    "confirmCancel": "Möchten Sie dieses Ticket wirklich stornieren?",
-    "cancelSuccess": "Ticket erfolgreich storniert.",
-    "cancelFailed": "Das Ticket konnte nicht storniert werden."
+    "cancel": "Buchung stornieren",
+    "confirmCancel": "Möchten Sie diese Buchung wirklich stornieren?",
+    "cancelSuccess": "Buchung erfolgreich storniert.",
+    "cancelFailed": "Die Buchung konnte nicht storniert werden."
+  },
+  "bookingManagement": {
+    "pageTitle": "Buchungsverwaltung",
+    "breadcrumb": "Buchungen",
+    "headers": ["ID", "Code", "Kunde", "Film", "Sitzplätze", "Gesamt", "Status", "Aktionen"],
+    "cancel": "Stornieren",
+    "confirmCancel": "Möchten Sie diese Buchung wirklich stornieren?",
+    "cancelSuccess": "Buchung erfolgreich storniert.",
+    "cancelFailed": "Die Buchung konnte nicht storniert werden."
   },
   "voucher": {
     "title": "Gutscheincode",

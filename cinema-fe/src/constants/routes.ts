@@ -40,6 +40,7 @@ export const ROUTES = {
   ownerPricingRules: '/OwnerPricingRules',
   ownerHolidays: '/OwnerHolidays',
   ownerBookings: '/OwnerBookings',
+  bookingManagement: '/BookingManagement',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',
   ownerShiftAssignments: '/OwnerShifts/Assignments',
