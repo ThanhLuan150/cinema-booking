@@ -93,6 +93,21 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
     return null;
   }
 
+  const bufferViolation = await scheduleRepository.findBufferViolation({
+    room_id,
+    movie_date,
+    time_begin,
+    time_end,
+    excludeId,
+  });
+  if (bufferViolation) {
+    res.status(409).json({
+      message: `This room needs at least ${scheduleRepository.SHOWTIME_BUFFER_MINUTES} minutes between showtimes for cleaning/turnover`,
+      code: 'SCHEDULE_BUFFER_TOO_SHORT',
+    });
+    return null;
+  }
+
   return { movie, room };
 }
 

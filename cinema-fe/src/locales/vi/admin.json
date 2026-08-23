@@ -185,7 +185,8 @@
       "slot": {
         "label": "Suất chiếu:",
         "placeholder": "Chọn suất chiếu",
-        "required": "Vui lòng chọn suất chiếu."
+        "required": "Vui lòng chọn suất chiếu.",
+        "unavailable": "Không khả dụng"
       },
       "price": "Giá vé:",
       "priceRequired": "Vui lòng nhập giá vé.",

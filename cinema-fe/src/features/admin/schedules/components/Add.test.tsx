@@ -20,6 +20,9 @@ vi.mock('../hooks/useCreateSchedule', () => ({
   useCreateSchedule: () => ({ mutateAsync: createScheduleMutate, isPending: false }),
 }));
 
+const useSchedulesMock = vi.fn();
+vi.mock('../hooks/useSchedules', () => ({ useSchedules: (...args: unknown[]) => useSchedulesMock(...args) }));
+
 import Add from './Add';
 
 function renderModal(id: number | string | null = 5) {
@@ -36,9 +39,11 @@ describe('admin schedules Add', () => {
     useRoomsByCinemaMock.mockReset();
     useMyMoviesMock.mockReset();
     createScheduleMutate.mockReset();
+    useSchedulesMock.mockReset();
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A', owner_id: 42 }] } });
     useRoomsByCinemaMock.mockReturnValue({ data: { data: [] }, isFetching: false, isFetched: true });
     useMyMoviesMock.mockReturnValue({ data: { data: [{ id: 7, name: 'Active Movie' }] } });
+    useSchedulesMock.mockReturnValue({ data: { data: [] } });
   });
 
   it('renders the add-schedule modal', () => {

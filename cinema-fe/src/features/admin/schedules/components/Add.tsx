@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Formik, Field, Form, type FormikProps, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -14,6 +15,8 @@ import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMyMovies } from '../../movies/hooks/useMyMovies';
 import { SHOWTIME_SLOTS } from '../constants';
 import { useCreateSchedule } from '../hooks/useCreateSchedule';
+import { useSchedules } from '../hooks/useSchedules';
+import { isSlotBlocked } from '../utils/slotConflict';
 import type { ScheduleFormValues } from '../types/adminSchedule.types';
 import { ROUTES } from '@/constants/routes';
 
@@ -64,9 +67,37 @@ function ScheduleFields({
 
   const showNoRoomsHint = Boolean(formik.values.cinema_id) && roomsFetched && !roomsFetching && rooms.length === 0;
 
+  const { data: roomSchedulesPage } = useSchedules(
+    { roomId: formik.values.room_id || undefined },
+    1,
+    FULL_LIST_FETCH_LIMIT,
+    Boolean(formik.values.room_id),
+  );
+  const schedulesOnDate = (roomSchedulesPage?.data ?? []).filter(
+    (schedule) => schedule.movie_date === formik.values.movie_date,
+  );
+
+  const slotOptions = SHOWTIME_SLOTS.map((slot, index) => {
+    const blocked = isSlotBlocked(slot.time_begin, slot.time_end, schedulesOnDate);
+    return {
+      label: `${slot.time_begin} - ${slot.time_end}${blocked ? ` (${t('schedules.add.slot.unavailable')})` : ''}`,
+      value: index,
+      disabled: blocked,
+    };
+  });
+
   const selectedSlotIndex = SHOWTIME_SLOTS.findIndex(
     (slot) => slot.time_begin === formik.values.time_begin && slot.time_end === formik.values.time_end,
   );
+
+  useEffect(() => {
+    if (selectedSlotIndex < 0) return;
+    if (isSlotBlocked(formik.values.time_begin, formik.values.time_end, schedulesOnDate)) {
+      formik.setFieldValue('time_begin', '');
+      formik.setFieldValue('time_end', '');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formik.values.room_id, formik.values.movie_date]);
 
   const showErrors = formik.submitCount > 0;
 
@@ -145,10 +176,7 @@ function ScheduleFields({
           name="slot"
           value={selectedSlotIndex >= 0 ? selectedSlotIndex : ''}
           onChange={handleSlotChange}
-          options={SHOWTIME_SLOTS.map((slot, index) => ({
-            label: `${slot.time_begin} - ${slot.time_end}`,
-            value: index,
-          }))}
+          options={slotOptions}
           placeholder={t('schedules.add.slot.placeholder')}
           error={showErrors && formik.errors.time_begin ? t('schedules.add.slot.required') : undefined}
         />

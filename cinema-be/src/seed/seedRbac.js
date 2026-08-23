@@ -100,6 +100,7 @@ const CUSTOMER_PERMISSIONS = {
   'movie.read': 'ALL',
   'category.read': 'ALL',
   'room.read': 'ALL', 'seat.read': 'ALL',
+  'schedule.read': 'ALL',
   'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN',
   'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',

@@ -181,6 +181,86 @@ describe('schedule.repository', () => {
     });
   });
 
+  describe('findBufferViolation', () => {
+    it('flags a gap smaller than the buffer', async () => {
+      await seedShowtimes();
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-01-01',
+        time_begin: '12:10',
+        time_end: '14:00',
+      });
+      expect(violation).not.toBeNull();
+    });
+
+    it('allows a gap at least as large as the buffer', async () => {
+      await seedShowtimes();
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-01-01',
+        time_begin: '12:15',
+        time_end: '14:00',
+      });
+      expect(violation).toBeNull();
+    });
+
+    it('checks the gap before an existing showtime too', async () => {
+      await seedShowtimes();
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-01-01',
+        time_begin: '08:00',
+        time_end: '09:50',
+      });
+      expect(violation).not.toBeNull();
+    });
+
+    it('excludes the schedule being edited', async () => {
+      await seedShowtimes();
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-01-01',
+        time_begin: '12:05',
+        time_end: '14:00',
+        excludeId: 1,
+      });
+      expect(violation).toBeNull();
+    });
+
+    it('ignores a cancelled schedule in the same room', async () => {
+      await Schedule.create({
+        id: 5,
+        movie_id: 1,
+        room_id: 1,
+        cinema_id: 1,
+        movie_date: '2026-03-01',
+        time_begin: '10:00',
+        time_end: '12:00',
+        price: 1,
+        status: 'CANCELLED',
+      });
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-03-01',
+        time_begin: '12:05',
+        time_end: '14:00',
+      });
+      expect(violation).toBeNull();
+    });
+
+    it('respects a custom bufferMinutes override', async () => {
+      await seedShowtimes();
+      const violation = await scheduleRepository.findBufferViolation({
+        room_id: 1,
+        movie_date: '2026-01-01',
+        time_begin: '12:05',
+        time_end: '14:00',
+        bufferMinutes: 30,
+      });
+      expect(violation).not.toBeNull();
+    });
+  });
+
   it('create persists a new schedule', async () => {
     const schedule = await scheduleRepository.create({
       id: 10,
