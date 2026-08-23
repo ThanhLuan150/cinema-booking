@@ -11,6 +11,7 @@ const initialState: BookingState = {
   selectedTime: '',
   selectedSeatCodes: [],
   selectedTickets: [],
+  heldUntilBySeat: {},
   selectedComboIds: [],
   voucherCode: '',
   voucherResult: null,
@@ -52,6 +53,15 @@ const bookingSlice = createSlice({
       state.selectedTickets = isSelected
         ? state.selectedTickets.filter((t) => t.id !== ticket.id)
         : [...state.selectedTickets, ticket];
+      if (isSelected) delete state.heldUntilBySeat[ticket.seat_code];
+    },
+    setSeatHoldExpiry(state, action: PayloadAction<{ seatCode: string; heldUntil: string }>) {
+      state.heldUntilBySeat[action.payload.seatCode] = action.payload.heldUntil;
+    },
+    clearExpiredSelection(state) {
+      state.selectedSeatCodes = [];
+      state.selectedTickets = [];
+      state.heldUntilBySeat = {};
     },
     toggleCombo(state, action: PayloadAction<number>) {
       const comboId = action.payload;
@@ -94,6 +104,8 @@ export const {
   setSelectedDay,
   setSelectedTime,
   toggleSeat,
+  setSeatHoldExpiry,
+  clearExpiredSelection,
   toggleCombo,
   setVoucherCode,
   applyVoucherSuccess,

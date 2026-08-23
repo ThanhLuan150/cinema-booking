@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail';
 import { getMoviePosterUrl } from '@/utils';
 import { BookingSteps } from '../components/BookingSteps';
+import { SeatHoldCountdown } from '../components/SeatHoldCountdown';
 import { useScheduleId } from '../hooks/useScheduleId';
 import { useBookedSeats } from '../hooks/useBookedSeats';
 import { useRoomSeats } from '../hooks/useRoomSeats';
@@ -31,10 +32,12 @@ import { useMomoPayment } from '../hooks/useMomoPayment';
 import {
   applyVoucherFailure,
   applyVoucherSuccess,
+  clearExpiredSelection,
   resetBookingSelection,
   setbranchId,
   setMomoPayUrl,
   setScheduleId,
+  setSeatHoldExpiry,
   setShowtime,
   setVoucherCode,
   toggleCombo,
@@ -154,7 +157,12 @@ function SeatGrid({ scheduleId, roomId }: { scheduleId: number | null; roomId: n
       return;
     }
     holdSeatsMutation.mutate([cell.seatCode], {
-      onSuccess: () => dispatch(toggleSeat(ticket)),
+      onSuccess: (result) => {
+        dispatch(toggleSeat(ticket));
+        if (result?.held_until) {
+          dispatch(setSeatHoldExpiry({ seatCode: cell.seatCode, heldUntil: result.held_until }));
+        }
+      },
       onError: (error) => {
         toast.error(getApiErrorMessage(error, t));
         queryClient.invalidateQueries({ queryKey: ['bookedSeats', scheduleId] });
@@ -196,6 +204,7 @@ function SeatGrid({ scheduleId, roomId }: { scheduleId: number | null; roomId: n
 function BookSeatPage() {
   const { t } = useTranslation('booking');
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const isLoggedIn = useIsAuthenticated();
 
@@ -207,6 +216,7 @@ function BookSeatPage() {
     scheduleId,
     selectedSeatCodes,
     selectedTickets,
+    heldUntilBySeat,
     selectedComboIds,
     branchId,
     voucherCode,
@@ -214,6 +224,18 @@ function BookSeatPage() {
     voucherError,
     momoPayUrl,
   } = useAppSelector((state) => state.booking);
+
+  const earliestHoldExpiry = useMemo(() => {
+    const expiries = selectedSeatCodes.map((code) => heldUntilBySeat[code]).filter(Boolean);
+    if (expiries.length === 0) return null;
+    return expiries.reduce((earliest, current) => (current < earliest ? current : earliest));
+  }, [selectedSeatCodes, heldUntilBySeat]);
+
+  const handleHoldExpire = useCallback(() => {
+    dispatch(clearExpiredSelection());
+    queryClient.invalidateQueries({ queryKey: ['bookedSeats', scheduleId] });
+    toast.error(t('bookSeat.holdExpired'));
+  }, [dispatch, queryClient, scheduleId, t]);
 
   // Each visit to this page starts a fresh selection — nothing should carry over from a previous booking attempt.
   useEffect(() => {
@@ -419,6 +441,11 @@ function BookSeatPage() {
                     ? selectedSeatCodes.join(', ')
                     : t('bookSeat.noneSelected')}
                 </p>
+                {earliestHoldExpiry && (
+                  <div className="mt-3">
+                    <SeatHoldCountdown expiresAt={earliestHoldExpiry} onExpire={handleHoldExpire} />
+                  </div>
+                )}
               </div>
 
               <div className="border-b border-border py-4">

@@ -30,6 +30,10 @@
     "notLoggedIn": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
     "selectSeatFirst": "Bitte wählen Sie mindestens einen Sitzplatz aus",
     "checkoutFailed": "Zahlung konnte nicht gestartet werden.",
+    "holdCountdown": {
+      "label": "Sitzplätze reserviert für:"
+    },
+    "holdExpired": "Ihre Sitzplatzreservierung ist abgelaufen. Bitte wählen Sie erneut Sitzplätze aus.",
     "momoModal": {
       "title": "Wählen Sie, wie Sie mit MoMo bezahlen möchten",
       "qrTitle": "QR-Code scannen",

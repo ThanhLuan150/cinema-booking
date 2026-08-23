@@ -3,9 +3,7 @@ const employeeRepository = require('../repositories/employee.repository');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
-
-// How long a seat selection is reserved for a customer before it's released back to AVAILABLE.
-const HOLD_TTL_MS = 5 * 60 * 1000;
+const { HOLD_TTL_MS } = require('../config/seatHold');
 
 async function canAccessCinema(req, branch) {
   if (req.permissionScope === 'ALL') return true;
@@ -177,11 +175,15 @@ async function momoIpn(req, res) {
   if (!verifyMomoSignature(req.body)) {
     return res.status(400).json({ resultCode: 1, message: 'Invalid signature' });
   }
+
+  const orderPayload = decodeExtraData(req.body.extraData);
   if (String(req.body.resultCode) !== '0') {
+    if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
+      await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
+    }
     return res.json({ resultCode: 0, message: 'Acknowledged (payment not successful)' });
   }
 
-  const orderPayload = decodeExtraData(req.body.extraData);
   await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
   res.json({ resultCode: 0, message: 'Confirm Success' });
 }
@@ -193,11 +195,15 @@ async function momoConfirm(req, res) {
   if (!verifyMomoSignature(req.body)) {
     return res.status(400).json({ message: 'Invalid signature' });
   }
+
+  const orderPayload = decodeExtraData(req.body.extraData);
   if (String(req.body.resultCode) !== '0') {
+    if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
+      await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
+    }
     return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
   }
 
-  const orderPayload = decodeExtraData(req.body.extraData);
   if (orderPayload.accountId && Number(orderPayload.accountId) !== req.account.accountId) {
     return res.status(403).json({ message: 'Forbidden' });
   }
