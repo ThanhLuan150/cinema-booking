@@ -38,6 +38,7 @@ vi.mock('@/features/owner/employees/pages/List', () => ({ default: () => <div>Ow
 vi.mock('@/features/employee/pages/EmployeeDashboard', () => ({ default: () => <div>EmployeeDashboard</div> }));
 vi.mock('@/features/employee/pages/CounterSale', () => ({ default: () => <div>EmployeeCounterSale</div> }));
 vi.mock('@/features/employee/pages/CheckIn', () => ({ default: () => <div>EmployeeCheckIn</div> }));
+vi.mock('@/features/booking/pages/BookingManagementPage', () => ({ default: () => <div>BookingManagement</div> }));
 vi.mock('@/features/admin/actors/pages/List', () => ({ default: () => <div>AdminActors</div> }));
 vi.mock('@/features/admin/directors/pages/List', () => ({ default: () => <div>AdminDirectors</div> }));
 vi.mock('@/features/admin/dashboard/pages/AdminDashboard', () => ({ default: () => <div>AdminDashboard</div> }));
@@ -182,5 +183,17 @@ describe('AppRouter', () => {
     store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
     renderAt(ROUTES.employeeCounterSale);
     expect(screen.getByText('EmployeeCounterSale')).toBeInTheDocument();
+  });
+
+  it('allows any staff role onto the shared booking management route', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.employee), account: {} as Account }));
+    renderAt(ROUTES.bookingManagement);
+    expect(screen.getByText('BookingManagement')).toBeInTheDocument();
+  });
+
+  it('redirects a customer away from the booking management route', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.customer), account: {} as Account }));
+    renderAt(ROUTES.bookingManagement);
+    expect(screen.getByText('Home')).toBeInTheDocument();
   });
 });

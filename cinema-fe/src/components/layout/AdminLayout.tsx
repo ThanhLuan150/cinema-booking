@@ -78,6 +78,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.checkIn')}
                 </NavLink>
               )}
+              {hasPermission('booking.read') && (
+                <NavLink to={ROUTES.bookingManagement} className={navLinkClass}>
+                  <ion-icon name="receipt" />
+                  {t('adminLayout.nav.bookingManagement')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.employeeMySchedule} className={navLinkClass}>
                 <ion-icon name="calendar" />
                 {t('adminLayout.nav.mySchedule')}
@@ -127,6 +133,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <ion-icon name="qr-code" />
                 {t('adminLayout.nav.bookings')}
               </NavLink>
+              {hasPermission('booking.read') && (
+                <NavLink to={ROUTES.bookingManagement} className={navLinkClass}>
+                  <ion-icon name="receipt" />
+                  {t('adminLayout.nav.bookingManagement')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.ownerEmployees} className={navLinkClass}>
                 <ion-icon name="people" />
                 {t('adminLayout.nav.employees')}

@@ -38,6 +38,7 @@ import EmployeeDashboard from '@/features/employee/pages/EmployeeDashboard';
 import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
 import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
+import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -247,6 +248,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={STAFF_ROLES}>
             <EmployeeCheckIn />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.bookingManagement}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <BookingManagement />
           </RequireRole>
         }
       />

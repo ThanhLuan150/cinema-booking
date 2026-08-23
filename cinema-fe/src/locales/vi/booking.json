@@ -63,20 +63,31 @@
       "couple": "Đôi"
     },
     "status": {
-      "booked": "Đã đặt vé",
+      "pending": "Chờ thanh toán",
+      "paid": "Đã thanh toán",
       "cancelled": "Đã hủy",
-      "refunded": "Đã hoàn tiền"
+      "expired": "Đã hết hạn",
+      "completed": "Đã hoàn thành"
     },
     "empty": "Bạn chưa có vé nào",
     "movieFallback": "Phim",
-    "seatLabel": "Ghế {{code}} ({{type}})",
-    "ticketCode": "Mã vé: {{code}}",
+    "seatsLabel": "Ghế: {{codes}}",
+    "bookingCode": "Mã đặt vé: {{code}}",
     "discount": "Giảm giá: -{{amount}}đ",
     "print": "In vé",
-    "cancel": "Hủy vé",
-    "confirmCancel": "Bạn có chắc muốn hủy vé này?",
-    "cancelSuccess": "Hủy vé thành công.",
-    "cancelFailed": "Không thể hủy vé."
+    "cancel": "Hủy đặt vé",
+    "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
+    "cancelSuccess": "Hủy đặt vé thành công.",
+    "cancelFailed": "Không thể hủy đặt vé."
+  },
+  "bookingManagement": {
+    "pageTitle": "Quản lý đặt vé",
+    "breadcrumb": "Đặt vé",
+    "headers": ["ID", "Mã", "Khách hàng", "Phim", "Ghế", "Tổng tiền", "Trạng thái", "Thao tác"],
+    "cancel": "Hủy",
+    "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
+    "cancelSuccess": "Hủy đặt vé thành công.",
+    "cancelFailed": "Không thể hủy đặt vé."
   },
   "voucher": {
     "title": "Mã giảm giá",

@@ -63,20 +63,31 @@
       "couple": "カップルシート"
     },
     "status": {
-      "booked": "予約済み",
+      "pending": "支払い待ち",
+      "paid": "支払い済み",
       "cancelled": "キャンセル済み",
-      "refunded": "返金済み"
+      "expired": "期限切れ",
+      "completed": "完了"
     },
     "empty": "まだチケットがありません",
     "movieFallback": "映画",
-    "seatLabel": "座席 {{code}}({{type}})",
-    "ticketCode": "チケットコード: {{code}}",
+    "seatsLabel": "座席: {{codes}}",
+    "bookingCode": "予約コード: {{code}}",
     "discount": "割引: -{{amount}}",
     "print": "チケットを印刷",
-    "cancel": "チケットをキャンセル",
-    "confirmCancel": "このチケットをキャンセルしてもよろしいですか?",
-    "cancelSuccess": "チケットをキャンセルしました。",
-    "cancelFailed": "チケットをキャンセルできませんでした。"
+    "cancel": "予約をキャンセル",
+    "confirmCancel": "この予約をキャンセルしてもよろしいですか?",
+    "cancelSuccess": "予約をキャンセルしました。",
+    "cancelFailed": "予約をキャンセルできませんでした。"
+  },
+  "bookingManagement": {
+    "pageTitle": "予約管理",
+    "breadcrumb": "予約",
+    "headers": ["ID", "コード", "顧客", "映画", "座席", "合計", "状態", "操作"],
+    "cancel": "キャンセル",
+    "confirmCancel": "この予約をキャンセルしてもよろしいですか?",
+    "cancelSuccess": "予約をキャンセルしました。",
+    "cancelFailed": "予約をキャンセルできませんでした。"
   },
   "voucher": {
     "title": "割引コード",

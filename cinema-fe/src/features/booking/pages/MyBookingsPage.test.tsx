@@ -9,11 +9,11 @@ import authReducer from '@/features/auth/store/authSlice';
 
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
 
-const useMyInvoicesMock = vi.fn();
-vi.mock('../hooks/useMyInvoices', () => ({ useMyInvoices: () => useMyInvoicesMock() }));
+const useBookingsMock = vi.fn();
+vi.mock('../hooks/useBookings', () => ({ useBookings: () => useBookingsMock() }));
 
 const cancelMutate = vi.fn();
-vi.mock('../hooks/useCancelInvoice', () => ({ useCancelInvoice: () => ({ mutateAsync: cancelMutate }) }));
+vi.mock('../hooks/useCancelBooking', () => ({ useCancelBooking: () => ({ mutateAsync: cancelMutate }) }));
 
 const confirmDialogMock = vi.fn();
 vi.mock('@/features/notifications/confirm', () => ({ confirmDialog: (...args: unknown[]) => confirmDialogMock(...args) }));
@@ -34,59 +34,65 @@ function renderPage() {
   );
 }
 
+function booking(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 1,
+    code: 'BK-1',
+    status: 'PAID',
+    total_price: 100000,
+    discount_amount: 0,
+    tickets: [{ id: 1, seat_code: 'A1', seat_type: 0 }],
+    movie: { name: 'Movie A', avatar: '' },
+    schedule: { movie_date: '2026-01-01', time_begin: '10:00' },
+    ...overrides,
+  };
+}
+
 describe('MyBookingsPage', () => {
   beforeEach(() => {
-    useMyInvoicesMock.mockReset();
+    useBookingsMock.mockReset();
     cancelMutate.mockReset();
     confirmDialogMock.mockReset();
   });
 
   it('shows an empty state when there are no bookings', () => {
-    useMyInvoicesMock.mockReturnValue({ data: [], isLoading: false });
+    useBookingsMock.mockReturnValue({ data: { data: [], total: 0 }, isLoading: false });
     renderPage();
     expect(screen.getByText('You have no tickets yet')).toBeInTheDocument();
   });
 
-  it('renders a booking card', () => {
-    useMyInvoicesMock.mockReturnValue({
-      data: [
-        {
-          id: 1,
-          code: 'ABC123',
-          status: 1,
-          total_price: 100000,
-          discount_amount: 0,
-          movie: { name: 'Movie A', avatar: '' },
-          schedule: { movie_date: '2026-01-01', time_begin: '10:00' },
-          ticket: { seat_code: 'A1', seat_type: 0 },
-        },
-      ],
+  it('renders a booking card grouping all of its seats', () => {
+    useBookingsMock.mockReturnValue({
+      data: {
+        data: [
+          booking({
+            tickets: [
+              { id: 1, seat_code: 'A1', seat_type: 0 },
+              { id: 2, seat_code: 'A2', seat_type: 1 },
+            ],
+          }),
+        ],
+      },
       isLoading: false,
     });
     renderPage();
     expect(screen.getByText('Movie A')).toBeInTheDocument();
+    expect(screen.getByText('Seats: A1 (Standard), A2 (VIP)')).toBeInTheDocument();
+    expect(screen.getByText('Paid')).toBeInTheDocument();
   });
 
-  it('cancels a booking after confirming', async () => {
-    useMyInvoicesMock.mockReturnValue({
-      data: [
-        {
-          id: 1,
-          code: 'ABC123',
-          status: 1,
-          total_price: 100000,
-          discount_amount: 0,
-          movie: { name: 'Movie A', avatar: '' },
-          schedule: { movie_date: '2026-01-01', time_begin: '10:00' },
-          ticket: { seat_code: 'A1', seat_type: 0 },
-        },
-      ],
-      isLoading: false,
-    });
+  it('shows the cancel button for a PENDING/PAID booking and cancels after confirming', async () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'PAID' })] }, isLoading: false });
     confirmDialogMock.mockResolvedValue(true);
     cancelMutate.mockResolvedValue({});
     renderPage();
-    fireEvent.click(screen.getByText('Cancel ticket'));
+    fireEvent.click(screen.getByText('Cancel booking'));
     await vi.waitFor(() => expect(cancelMutate).toHaveBeenCalledWith(1));
+  });
+
+  it('hides the cancel button for a booking that is already CANCELLED', () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'CANCELLED' })] }, isLoading: false });
+    renderPage();
+    expect(screen.queryByText('Cancel booking')).not.toBeInTheDocument();
   });
 });

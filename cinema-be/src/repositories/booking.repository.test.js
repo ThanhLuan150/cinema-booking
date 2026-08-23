@@ -8,10 +8,12 @@ const socket = require('../utils/socket');
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 const Invoice = require('../models/Invoice');
+const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
+const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
 
 beforeAll(async () => connect());
@@ -123,12 +125,13 @@ describe('booking.repository', () => {
         accountId: 10,
       });
 
-      expect(result).toEqual({ alreadyProcessed: false });
+      expect(result).toEqual({ alreadyProcessed: false, bookingId: expect.any(Number) });
       const invoices = await Invoice.find().sort({ ticket_id: 1 });
       expect(invoices).toHaveLength(2);
       expect(invoices[0].total_price + invoices[1].total_price).toBe(100001);
       expect(invoices[0].total_price).toBe(50001);
       expect(invoices[1].total_price).toBe(50000);
+      expect(invoices.every((inv) => inv.booking_id === result.bookingId)).toBe(true);
 
       const tickets = await Ticket.find().sort({ id: 1 });
       expect(tickets.every((t) => t.status === 0)).toBe(true);
@@ -427,5 +430,242 @@ describe('booking.repository', () => {
     expect(invoice.created_by).toBe(42);
     expect(invoice.status).toBe(1);
     expect((await Ticket.findOne({ id: 1 })).status).toBe(0);
+  });
+
+  describe('Booking aggregate', () => {
+    it('createPendingBooking creates a PENDING booking with the given fields', async () => {
+      const booking = await bookingRepository.createPendingBooking({
+        code: 'BK-1',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1, 2],
+        comboIds: [5],
+        voucherCode: 'save10',
+        discountAmount: 1000,
+        seatTotal: 20000,
+        comboTotal: 5000,
+        totalPrice: 24000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+      expect(booking.status).toBe('PENDING');
+      expect(booking.voucher_code).toBe('SAVE10');
+      expect(booking.ticket_ids).toEqual([1, 2]);
+    });
+
+    it('finalizeMomoOrder flips a pre-created PENDING booking to PAID and stamps booking_id on every invoice', async () => {
+      await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2 },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2 },
+      ]);
+      const pending = await bookingRepository.createPendingBooking({
+        code: 'BK-2',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1, 2],
+        totalPrice: 100000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+
+      const result = await bookingRepository.finalizeMomoOrder('BK-2', {
+        ticketIds: [1, 2],
+        totalPrice: 100000,
+        accountId: 10,
+      });
+
+      expect(result.bookingId).toBe(pending.id);
+      const booking = await Booking.findOne({ id: pending.id });
+      expect(booking.status).toBe('PAID');
+      expect(booking.paid_at).toBeInstanceOf(Date);
+      const invoices = await Invoice.find({ booking_id: pending.id });
+      expect(invoices).toHaveLength(2);
+    });
+
+    it('finalizeMomoOrder creates a PAID booking directly when none was pre-created (counter sale)', async () => {
+      await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
+      await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+      await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+
+      const result = await bookingRepository.createCounterSale({
+        ticketIds: [1],
+        comboIds: [],
+        voucherCode: null,
+        discountAmount: 0,
+        totalPrice: 100000,
+        accountId: 1,
+        createdBy: 42,
+      });
+
+      const booking = await Booking.findOne({ id: result.bookingId });
+      expect(booking.status).toBe('PAID');
+      expect(booking.branch_id).toBe(1);
+    });
+
+    it('cancelBooking releases tickets and cancels sibling invoices', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 0 },
+      ]);
+      const booking = await Booking.create({
+        id: 1,
+        code: 'BK-3',
+        account_id: 1,
+        schedule_id: 1,
+        branch_id: 1,
+        ticket_ids: [1, 2],
+        total_price: 100000,
+        status: 'PAID',
+      });
+      await Invoice.create([
+        { id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-3', total_price: 50000, status: 1 },
+        { id: 2, booking_id: 1, ticket_id: 2, account_id: 1, code: 'BK-3', total_price: 50000, status: 1 },
+      ]);
+
+      const cancelled = await bookingRepository.cancelBooking(booking, { reason: 'customer request' });
+      expect(cancelled.status).toBe('CANCELLED');
+      expect(cancelled.cancel_reason).toBe('customer request');
+
+      const tickets = await Ticket.find().sort({ id: 1 });
+      expect(tickets.every((t) => t.status === 1)).toBe(true);
+      const invoices = await Invoice.find({ booking_id: 1 });
+      expect(invoices.every((inv) => inv.status === 0)).toBe(true);
+    });
+
+    it('expireStalePendingBookings flips lapsed PENDING bookings to EXPIRED and releases their held tickets', async () => {
+      await Ticket.create({
+        id: 1,
+        schedule_id: 1,
+        seat_index: 0,
+        seat_code: 'A1',
+        status: 2,
+        held_by: 10,
+        held_until: new Date(Date.now() - 1000),
+      });
+      await Booking.create({
+        id: 1,
+        code: 'BK-4',
+        account_id: 10,
+        schedule_id: 1,
+        branch_id: 1,
+        ticket_ids: [1],
+        total_price: 50000,
+        status: 'PENDING',
+        expires_at: new Date(Date.now() - 1000),
+      });
+      await Booking.create({
+        id: 2,
+        code: 'BK-5',
+        account_id: 10,
+        schedule_id: 1,
+        branch_id: 1,
+        ticket_ids: [],
+        total_price: 50000,
+        status: 'PENDING',
+        expires_at: new Date(Date.now() + 60000),
+      });
+
+      const expiredCount = await bookingRepository.expireStalePendingBookings();
+      expect(expiredCount).toBe(1);
+
+      expect((await Booking.findOne({ id: 1 })).status).toBe('EXPIRED');
+      expect((await Booking.findOne({ id: 2 })).status).toBe('PENDING');
+      const ticket = await Ticket.findOne({ id: 1 });
+      expect(ticket.status).toBe(Ticket.STATUS.AVAILABLE);
+      expect(ticket.held_by).toBeNull();
+    });
+
+    describe('maybeCompleteBooking', () => {
+      it('marks a PAID booking COMPLETED once every sibling invoice is checked in', async () => {
+        await Booking.create({
+          id: 1,
+          code: 'BK-6',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1, 2],
+          total_price: 100000,
+          status: 'PAID',
+        });
+        await Invoice.create([
+          { id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-6', total_price: 50000, status: 1, checked_in: true },
+          { id: 2, booking_id: 1, ticket_id: 2, account_id: 1, code: 'BK-6', total_price: 50000, status: 1, checked_in: true },
+        ]);
+
+        await bookingRepository.maybeCompleteBooking(1);
+        expect((await Booking.findOne({ id: 1 })).status).toBe('COMPLETED');
+      });
+
+      it('leaves the booking PAID while any sibling invoice is not yet checked in', async () => {
+        await Booking.create({
+          id: 1,
+          code: 'BK-7',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1, 2],
+          total_price: 100000,
+          status: 'PAID',
+        });
+        await Invoice.create([
+          { id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-7', total_price: 50000, status: 1, checked_in: true },
+          { id: 2, booking_id: 1, ticket_id: 2, account_id: 1, code: 'BK-7', total_price: 50000, status: 1, checked_in: false },
+        ]);
+
+        await bookingRepository.maybeCompleteBooking(1);
+        expect((await Booking.findOne({ id: 1 })).status).toBe('PAID');
+      });
+
+      it('is a no-op for a null bookingId', async () => {
+        await expect(bookingRepository.maybeCompleteBooking(null)).resolves.toBeNull();
+      });
+    });
+
+    describe('resolveAccessibleBranchIds', () => {
+      it('returns every branch owned by a Branch Admin', async () => {
+        await Branch.create([
+          { id: 1, company_id: 1, owner_id: 5, name: 'C1', code: 'A' },
+          { id: 2, company_id: 1, owner_id: 5, name: 'C2', code: 'B' },
+          { id: 3, company_id: 1, owner_id: 6, name: 'C3', code: 'C' },
+        ]);
+        const branchIds = await bookingRepository.resolveAccessibleBranchIds(5);
+        expect(branchIds.sort()).toEqual([1, 2]);
+      });
+
+      it("returns an Employee's single assigned branch", async () => {
+        await Employee.create({ id: 1, user_id: 20, branch_id: 3, employee_code: 'E1', position_id: 1, status: 1 });
+        const branchIds = await bookingRepository.resolveAccessibleBranchIds(20);
+        expect(branchIds).toEqual([3]);
+      });
+
+      it('returns an empty list for an account that is neither a branch owner nor an active employee', async () => {
+        expect(await bookingRepository.resolveAccessibleBranchIds(999)).toEqual([]);
+      });
+    });
+
+    describe('findBookings / findBookingById', () => {
+      it('paginates newest first and supports a filter', async () => {
+        await Booking.create([
+          { id: 1, code: 'BK-8', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PENDING', createdAt: new Date('2026-01-01') },
+          { id: 2, code: 'BK-9', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID', createdAt: new Date('2026-01-02') },
+        ]);
+        const result = await bookingRepository.findBookings({}, { skip: 0, limit: 20 });
+        expect(result.total).toBe(2);
+        expect(result.data[0].id).toBe(2);
+
+        const paidOnly = await bookingRepository.findBookings({ status: 'PAID' }, { skip: 0, limit: 20 });
+        expect(paidOnly.total).toBe(1);
+        expect(paidOnly.data[0].id).toBe(2);
+      });
+
+      it('findBookingById fetches a single booking', async () => {
+        await Booking.create({ id: 1, code: 'BK-10', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1 });
+        expect(await bookingRepository.findBookingById('1')).not.toBeNull();
+        expect(await bookingRepository.findBookingById('999')).toBeNull();
+      });
+    });
   });
 });

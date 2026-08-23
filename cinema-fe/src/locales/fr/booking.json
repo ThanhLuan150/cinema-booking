@@ -63,20 +63,31 @@
       "couple": "Duo"
     },
     "status": {
-      "booked": "Réservé",
+      "pending": "Paiement en attente",
+      "paid": "Payé",
       "cancelled": "Annulé",
-      "refunded": "Remboursé"
+      "expired": "Expiré",
+      "completed": "Terminé"
     },
     "empty": "Vous n'avez encore aucun billet",
     "movieFallback": "Film",
-    "seatLabel": "Siège {{code}} ({{type}})",
-    "ticketCode": "Code du billet : {{code}}",
+    "seatsLabel": "Sièges : {{codes}}",
+    "bookingCode": "Code de réservation : {{code}}",
     "discount": "Remise : -{{amount}}",
     "print": "Imprimer le billet",
-    "cancel": "Annuler le billet",
-    "confirmCancel": "Êtes-vous sûr de vouloir annuler ce billet ?",
-    "cancelSuccess": "Billet annulé avec succès.",
-    "cancelFailed": "Impossible d'annuler le billet."
+    "cancel": "Annuler la réservation",
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler cette réservation ?",
+    "cancelSuccess": "Réservation annulée avec succès.",
+    "cancelFailed": "Impossible d'annuler la réservation."
+  },
+  "bookingManagement": {
+    "pageTitle": "Gestion des réservations",
+    "breadcrumb": "Réservations",
+    "headers": ["ID", "Code", "Client", "Film", "Sièges", "Total", "Statut", "Actions"],
+    "cancel": "Annuler",
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler cette réservation ?",
+    "cancelSuccess": "Réservation annulée avec succès.",
+    "cancelFailed": "Impossible d'annuler la réservation."
   },
   "voucher": {
     "title": "Code promo",

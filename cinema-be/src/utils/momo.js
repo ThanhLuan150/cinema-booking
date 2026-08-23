@@ -18,7 +18,7 @@ function decodeExtraData(extraData) {
 // browser should redirect to. `orderPayload` is round-tripped through MoMo's
 // `extraData` field so the IPN/redirect callback can recover what was being purchased
 // without needing a separate "pending order" table.
-async function createMomoPaymentUrl(amount, orderPayload) {
+async function createMomoPaymentUrl(amount, orderId, orderPayload) {
   const partnerCode = process.env.MOMO_PARTNER_CODE;
   const accessKey = process.env.MOMO_ACCESS_KEY;
   const secretKey = process.env.MOMO_SECRET_KEY;
@@ -32,12 +32,11 @@ async function createMomoPaymentUrl(amount, orderPayload) {
   if (!partnerCode || !accessKey || !secretKey) {
     // No sandbox credentials configured: fall back to a mock redirect so the flow can
     // still be exercised locally, carrying the same extraData the real flow would.
-    const mockUrl = `${redirectUrl}?resultCode=0&message=Mock+payment+success&amount=${safeAmount}&extraData=${encodeURIComponent(extraData)}&orderId=MOCK-${Date.now()}`;
+    const mockUrl = `${redirectUrl}?resultCode=0&message=Mock+payment+success&amount=${safeAmount}&extraData=${encodeURIComponent(extraData)}&orderId=${encodeURIComponent(orderId)}`;
     return mockUrl;
   }
 
   const requestId = `${partnerCode}-${Date.now()}`;
-  const orderId = requestId;
   const orderInfo = 'Pay for cinema ticket';
   const requestType = 'captureWallet';
 

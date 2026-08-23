@@ -63,20 +63,31 @@
       "couple": "कपल"
     },
     "status": {
-      "booked": "बुक की गई",
+      "pending": "भुगतान लंबित",
+      "paid": "भुगतान हो गया",
       "cancelled": "रद्द",
-      "refunded": "रिफंड की गई"
+      "expired": "समय समाप्त",
+      "completed": "पूर्ण"
     },
     "empty": "आपके पास अभी तक कोई टिकट नहीं है",
     "movieFallback": "फिल्म",
-    "seatLabel": "सीट {{code}} ({{type}})",
-    "ticketCode": "टिकट कोड: {{code}}",
+    "seatsLabel": "सीटें: {{codes}}",
+    "bookingCode": "बुकिंग कोड: {{code}}",
     "discount": "छूट: -{{amount}}",
     "print": "टिकट प्रिंट करें",
-    "cancel": "टिकट रद्द करें",
-    "confirmCancel": "क्या आप वाकई इस टिकट को रद्द करना चाहते हैं?",
-    "cancelSuccess": "टिकट सफलतापूर्वक रद्द कर दिया गया।",
-    "cancelFailed": "टिकट रद्द नहीं किया जा सका।"
+    "cancel": "बुकिंग रद्द करें",
+    "confirmCancel": "क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?",
+    "cancelSuccess": "बुकिंग सफलतापूर्वक रद्द कर दी गई।",
+    "cancelFailed": "बुकिंग रद्द नहीं की जा सकी।"
+  },
+  "bookingManagement": {
+    "pageTitle": "बुकिंग प्रबंधन",
+    "breadcrumb": "बुकिंग",
+    "headers": ["ID", "कोड", "ग्राहक", "फिल्म", "सीटें", "कुल", "स्थिति", "कार्रवाई"],
+    "cancel": "रद्द करें",
+    "confirmCancel": "क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?",
+    "cancelSuccess": "बुकिंग सफलतापूर्वक रद्द कर दी गई।",
+    "cancelFailed": "बुकिंग रद्द नहीं की जा सकी।"
   },
   "voucher": {
     "title": "डिस्काउंट कोड",
