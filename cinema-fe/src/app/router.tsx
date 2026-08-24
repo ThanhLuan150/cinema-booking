@@ -15,6 +15,7 @@ import ForgotPassword from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPassword from '@/features/auth/pages/ResetPasswordPage';
 import ChangePassword from '@/features/auth/pages/ChangePasswordPage';
 import MyBookings from '@/features/booking/pages/MyBookingsPage';
+import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -42,6 +43,7 @@ import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
+import AdminPayments from '@/features/admin/payments/pages/List';
 import AdminReviews from '@/features/admin/reviews/pages/List';
 import Upcoming from '@/features/movies/pages/Upcoming';
 import Playing from '@/features/movies/pages/Playing';
@@ -75,6 +77,7 @@ export function AppRouter() {
       <Route path={ROUTES.resetPassword} element={<ResetPassword />} />
       <Route path={ROUTES.changePassword} element={<ChangePassword />} />
       <Route path={ROUTES.myBookings} element={<MyBookings />} />
+      <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route
         path={ROUTES.adminUsers}
         element={
@@ -296,6 +299,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={ADMIN_ONLY_ROLES}>
             <AdminTransactions />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.adminPayments}
+        element={
+          <RequireRole roles={ADMIN_ONLY_ROLES}>
+            <AdminPayments />
           </RequireRole>
         }
       />

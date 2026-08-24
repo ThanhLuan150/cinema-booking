@@ -8,6 +8,8 @@ const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 const Account = require('../models/Account');
 const Booking = require('../models/Booking');
+const Payment = require('../models/Payment');
+const paymentRepository = require('../repositories/payment.repository');
 
 function mockRes() {
   const res = {};
@@ -366,6 +368,70 @@ describe('POST /api/MomoPayment/ipn', () => {
     expect(await Invoice.countDocuments()).toBe(1);
   });
 
+  it('does not create duplicate Booking/Ticket/Invoice rows on a retried (duplicate) IPN call', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Booking.create({
+      id: 1,
+      code: 'ORDER-DUP',
+      account_id: 10,
+      schedule_id: 1,
+      branch_id: 1,
+      ticket_ids: [1],
+      total_price: 1000,
+      status: 'PENDING',
+    });
+    await Payment.create({
+      id: 1,
+      code: 'ORDER-DUP',
+      booking_id: 1,
+      account_id: 10,
+      type: 'ONLINE',
+      method: 'MOMO',
+      amount: 1000,
+    });
+
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10, totalPrice: 1000 })).toString(
+      'base64',
+    );
+
+    const res1 = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-DUP', extraData, transId: 'tx-1' } }, res1);
+    expect(await Invoice.countDocuments()).toBe(1);
+    expect(await Booking.countDocuments()).toBe(1);
+
+    // MoMo (or a malicious/naive replay) retries the exact same IPN a second time.
+    const res2 = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-DUP', extraData, transId: 'tx-1' } }, res2);
+    expect(res2.json).toHaveBeenCalledWith(expect.objectContaining({ resultCode: 0, message: 'Confirm Success' }));
+    expect(await Invoice.countDocuments()).toBe(1);
+    expect(await Booking.countDocuments()).toBe(1);
+    expect(await Ticket.countDocuments({ id: 1, status: 0 })).toBe(1);
+  });
+
+  it('moves the tracked Payment through PENDING -> PROCESSING before finalizing', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Payment.create({
+      id: 1, code: 'ORDER-PROC', booking_id: 1, account_id: 10, type: 'ONLINE', method: 'MOMO', amount: 1000,
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10, totalPrice: 1000 })).toString('base64');
+
+    const markPaidSpy = jest
+      .spyOn(paymentRepository, 'markPaidIfPending')
+      .mockRejectedValueOnce(new Error('simulated crash'));
+
+    const res = mockRes();
+    await expect(
+      bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-PROC', extraData } }, res),
+    ).rejects.toThrow('simulated crash');
+
+    const payment = await Payment.findOne({ code: 'ORDER-PROC' });
+    expect(payment.status).toBe('PROCESSING');
+    expect(await Invoice.countDocuments()).toBe(0); // finalize never ran
+    markPaidSpy.mockRestore();
+  });
+
   it('cancels the pending booking on payment failure', async () => {
     await Booking.create({
       id: 1,
@@ -395,6 +461,29 @@ describe('POST /api/MomoPayment/confirm', () => {
       res,
     );
     expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('rejects a failed-result payload for a mismatched account before cancelling anything', async () => {
+    await Booking.create({
+      id: 1,
+      code: 'ORDER-OTHER',
+      account_id: 999,
+      schedule_id: 1,
+      branch_id: 1,
+      ticket_ids: [1],
+      total_price: 50000,
+      status: 'PENDING',
+      expires_at: new Date(Date.now() + 60000),
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 999 })).toString('base64');
+    const res = mockRes();
+    await bookingController.momoConfirm(
+      { body: { resultCode: '1', orderId: 'ORDER-OTHER', extraData }, account: { accountId: 10 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+    const booking = await Booking.findOne({ id: 1 });
+    expect(booking.status).toBe('PENDING');
   });
 
   it('reports a payment failure', async () => {

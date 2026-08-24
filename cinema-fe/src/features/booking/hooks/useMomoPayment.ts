@@ -4,6 +4,7 @@ import type { MomoPaymentPayload } from '../types/booking.types';
 
 export function useMomoPayment() {
   return useMutation({
-    mutationFn: (payload: MomoPaymentPayload) => momoPayment(payload),
+    mutationFn: ({ payload, idempotencyKey }: { payload: MomoPaymentPayload; idempotencyKey?: string }) =>
+      momoPayment(payload, idempotencyKey),
   });
 }

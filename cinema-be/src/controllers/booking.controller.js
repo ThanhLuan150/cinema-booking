@@ -1,4 +1,5 @@
 const bookingRepository = require('../repositories/booking.repository');
+const paymentRepository = require('../repositories/payment.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
@@ -148,6 +149,14 @@ async function createMomoPayment(req, res) {
     return res.status(400).json({ message: 'ticketIds is required' });
   }
 
+  const idempotencyKey = req.headers?.['idempotency-key'] || null;
+  if (idempotencyKey) {
+    const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
+    if (existing && existing.pay_url) {
+      return res.type('text/plain').send(existing.pay_url);
+    }
+  }
+
   const accountId = req.account.accountId;
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
@@ -201,6 +210,17 @@ async function createMomoPayment(req, res) {
     expiresAt: heldUntil,
   });
 
+  const payment = await paymentRepository.createPayment({
+    code: orderId,
+    bookingId: booking.id,
+    accountId,
+    branchId,
+    type: 'ONLINE',
+    method: 'MOMO',
+    amount: pricing.totalPrice,
+    idempotencyKey,
+  });
+
   const payUrl = await createMomoPaymentUrl(pricing.totalPrice, orderId, {
     ticketIds,
     comboIds: comboIds || [],
@@ -210,6 +230,7 @@ async function createMomoPayment(req, res) {
     accountId: req.account.accountId,
     bookingId: booking.id,
   });
+  await paymentRepository.setPayUrl(payment.id, payUrl);
   res.type('text/plain').send(payUrl);
 }
 
@@ -220,8 +241,11 @@ async function momoIpn(req, res) {
     return res.status(400).json({ resultCode: 1, message: 'Invalid signature' });
   }
 
+  await paymentRepository.markProcessing(req.body.orderId);
+
   const orderPayload = decodeExtraData(req.body.extraData);
   if (String(req.body.resultCode) !== '0') {
+    await paymentRepository.markFailedIfPending(req.body.orderId, `MoMo resultCode ${req.body.resultCode}`);
     if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
@@ -229,20 +253,32 @@ async function momoIpn(req, res) {
     return res.json({ resultCode: 0, message: 'Acknowledged (payment not successful)' });
   }
 
-  await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
+  const { skip } = await paymentRepository.markPaidIfPending(req.body.orderId, {
+    gatewayTransactionId: req.body.transId ? String(req.body.transId) : null,
+    rawResponse: req.body,
+  });
+  if (!skip) {
+    await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
+  }
   res.json({ resultCode: 0, message: 'Confirm Success' });
 }
 
 // POST /api/MomoPayment/confirm -> browser-redirect fallback for local dev, where MoMo's
-// IPN can't reach localhost. Same verification + finalize logic as the IPN handler, just
-// triggered by the user's own browser landing on the redirect page instead of MoMo's servers.
 async function momoConfirm(req, res) {
   if (!verifyMomoSignature(req.body)) {
     return res.status(400).json({ message: 'Invalid signature' });
   }
 
   const orderPayload = decodeExtraData(req.body.extraData);
+  if (orderPayload.accountId && Number(orderPayload.accountId) !== req.account.accountId) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  // See momoIpn: PENDING -> PROCESSING while this callback is being handled.
+  await paymentRepository.markProcessing(req.body.orderId);
+
   if (String(req.body.resultCode) !== '0') {
+    await paymentRepository.markFailedIfPending(req.body.orderId, `MoMo resultCode ${req.body.resultCode}`);
     if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
@@ -250,11 +286,13 @@ async function momoConfirm(req, res) {
     return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
   }
 
-  if (orderPayload.accountId && Number(orderPayload.accountId) !== req.account.accountId) {
-    return res.status(403).json({ message: 'Forbidden' });
-  }
-
-  const result = await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
+  const { skip } = await paymentRepository.markPaidIfPending(req.body.orderId, {
+    gatewayTransactionId: req.body.transId ? String(req.body.transId) : null,
+    rawResponse: req.body,
+  });
+  const result = skip
+    ? { alreadyProcessed: true }
+    : await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
   res.json({ message: 'success', ...result });
 }
 
@@ -558,6 +596,8 @@ async function createCounterSale(req, res) {
     comboTotal: pricing.comboTotal,
     accountId: Number(accountId),
     createdBy: req.account.accountId,
+    branchId: req.branchId,
+    idempotencyKey: req.headers?.['idempotency-key'] || null,
   });
 
   if (result.skipped) return res.status(400).json({ message: 'Invalid counter sale payload' });

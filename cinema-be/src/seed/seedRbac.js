@@ -48,6 +48,7 @@ const PERMISSIONS = [
   ['dashboard.view', 'dashboard'], ['dashboard.viewSystem', 'dashboard'],
   ['position.read', 'position'],
   ['payment.create', 'payment'],
+  ['payment.read', 'payment'],
   ['booking.cancel', 'booking'],
   ['combo.sell', 'combo'], ['combo.order.view', 'combo'], ['combo.order.update', 'combo'],
   ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
@@ -78,6 +79,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'dashboard.view': 'BRANCH',
   'position.read': 'ALL',
   'payment.create': 'BRANCH',
+  'payment.read': 'BRANCH',
   'shift.create': 'BRANCH', 'shift.read': 'BRANCH', 'shift.update': 'BRANCH', 'shift.delete': 'BRANCH',
   'shiftAssignment.create': 'BRANCH', 'shiftAssignment.read': 'BRANCH',
   'shiftAssignment.update': 'BRANCH', 'shiftAssignment.delete': 'BRANCH',
@@ -105,6 +107,7 @@ const CUSTOMER_PERMISSIONS = {
   'combo.read': 'ALL', 'review.create': 'OWN', 'review.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
   'payment.create': 'OWN',
+  'payment.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

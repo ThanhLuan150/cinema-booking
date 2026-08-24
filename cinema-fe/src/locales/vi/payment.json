@@ -11,5 +11,21 @@
     "title": "Thanh toán thất bại",
     "confirmFailed": "Không thể xác nhận thanh toán.",
     "backHome": "Về trang chủ"
+  },
+  "history": {
+    "pageTitle": "Lịch sử thanh toán",
+    "empty": "Bạn chưa có lịch sử thanh toán nào.",
+    "type": {
+      "online": "Thanh toán online",
+      "counter": "Thanh toán tại quầy"
+    },
+    "status": {
+      "pending": "Chờ thanh toán",
+      "processing": "Đang xử lý",
+      "paid": "Đã thanh toán",
+      "failed": "Thất bại",
+      "refundPending": "Chờ hoàn tiền",
+      "refunded": "Đã hoàn tiền"
+    }
   }
 }

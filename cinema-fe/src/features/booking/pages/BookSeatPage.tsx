@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
@@ -300,23 +300,32 @@ function BookSeatPage() {
     }
   };
 
-  // Both "Đặt vé ngay" and "Thanh toán" go through the same MoMo checkout — the seat
-  // is only actually marked sold once MoMo confirms payment (see PaymentResultPage),
-  // not the moment this button is clicked. Instead of redirecting immediately, we get
-  // the real MoMo payUrl and let the user pick how to pay: scan it as a QR with the
-  // MoMo app on their phone, or open MoMo's own page and log in with a test account.
+  const idempotencyKeyRef = useRef<{ key: string; forOrder: string } | null>(null);
+  const getIdempotencyKey = (orderSignature: string) => {
+    if (idempotencyKeyRef.current?.forOrder !== orderSignature) {
+      idempotencyKeyRef.current = { key: crypto.randomUUID(), forOrder: orderSignature };
+    }
+    return idempotencyKeyRef.current.key;
+  };
+
   const handleCheckout = async () => {
     if (selectedSeatCodes.length === 0 || selectedTickets.length === 0) {
       toast.error(t('bookSeat.selectSeatFirst'));
       return;
     }
+    const ticketIds = selectedTickets.map((ticket) => ticket.id);
+    const appliedVoucherCode = voucherResult ? voucherCode.trim().toUpperCase() : null;
+    const orderSignature = JSON.stringify([ticketIds, selectedComboIds, appliedVoucherCode, totalPrice]);
     try {
       const payUrl = await momoPaymentMutation.mutateAsync({
-        ticketIds: selectedTickets.map((ticket) => ticket.id),
-        comboIds: selectedComboIds,
-        voucherCode: voucherResult ? voucherCode.trim().toUpperCase() : null,
-        discountAmount: discount,
-        totalPrice,
+        payload: {
+          ticketIds,
+          comboIds: selectedComboIds,
+          voucherCode: appliedVoucherCode,
+          discountAmount: discount,
+          totalPrice,
+        },
+        idempotencyKey: getIdempotencyKey(orderSignature),
       });
       dispatch(setMomoPayUrl(payUrl));
     } catch (error) {

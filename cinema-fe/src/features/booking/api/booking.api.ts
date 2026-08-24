@@ -34,9 +34,12 @@ export const releaseSeats = (scheduleId: number | string, seatCodes: string[]) =
 export const getSchedule = (scheduleId: number | string) =>
   apiClient.get<Schedule>(`/schedule/${scheduleId}`).then((res) => res.data);
 
-// Returns the MoMo payUrl to redirect to.
-export const momoPayment = (payload: MomoPaymentPayload) =>
-  apiClient.post<string>('/MomoPayment', payload).then((res) => res.data);
+export const momoPayment = (payload: MomoPaymentPayload, idempotencyKey?: string) =>
+  apiClient
+    .post<string>('/MomoPayment', payload, {
+      headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+    })
+    .then((res) => res.data);
 
 // Called from PaymentResultPage after MoMo redirects back, with the same query params MoMo sent.
 export const confirmMomoPayment = (payload: MomoConfirmParams) =>

@@ -162,6 +162,10 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                     <ion-icon name="card" />
                     {t('adminLayout.nav.transactions')}
                   </NavLink>
+                  <NavLink to={ROUTES.adminPayments} className={navLinkClass}>
+                    <ion-icon name="wallet" />
+                    {t('adminLayout.nav.payments')}
+                  </NavLink>
                   <NavLink to={ROUTES.adminReviews} className={navLinkClass}>
                     <ion-icon name="star" />
                     {t('adminLayout.nav.reviews')}
