@@ -10,6 +10,8 @@ const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
 const Combo = require('../models/Combo');
+const Payment = require('../models/Payment');
+const paymentRepository = require('./payment.repository');
 const nextId = require('../utils/nextId');
 const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
@@ -293,9 +295,16 @@ async function createCounterSale({
   createdBy,
   seatTotal,
   comboTotal,
+  branchId = null,
+  idempotencyKey = null,
 }) {
+  if (idempotencyKey) {
+    const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
+    if (existing) return { alreadyProcessed: true, bookingId: existing.booking_id };
+  }
+
   const orderId = `CTR-${await nextId('counterOrder')}`;
-  return finalizeMomoOrder(orderId, {
+  const result = await finalizeMomoOrder(orderId, {
     ticketIds,
     comboIds,
     voucherCode,
@@ -306,6 +315,23 @@ async function createCounterSale({
     seatTotal,
     comboTotal,
   });
+
+  if (!result.skipped && !result.alreadyProcessed) {
+    await paymentRepository.createPayment({
+      code: orderId,
+      bookingId: result.bookingId,
+      accountId,
+      branchId,
+      type: Payment.TYPE.COUNTER,
+      method: Payment.METHOD.CASH,
+      amount: totalPrice,
+      status: Payment.STATUS.PAID,
+      idempotencyKey,
+      createdBy,
+    });
+  }
+
+  return result;
 }
 
 // Creates the PENDING Booking a MoMo redirect is issued against; finalizeMomoOrder flips
@@ -368,8 +394,19 @@ async function cancelBooking(booking, { reason = null } = {}) {
   return booking;
 }
 
-// Sweep-job counterpart to expireAllHeldTickets: a Booking whose payment window has lapsed
-// while still PENDING is expired and its held tickets are released.
+async function applyRefund(booking) {
+  await Ticket.updateMany(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+  await Invoice.updateMany({ booking_id: booking.id }, { $set: { status: 2 } });
+  booking.status = Booking.STATUS.CANCELLED;
+  booking.cancelled_at = new Date();
+  booking.cancel_reason = 'Refunded';
+  await booking.save();
+  return booking;
+}
+
 async function expireStalePendingBookings() {
   const stale = await Booking.find({ status: Booking.STATUS.PENDING, expires_at: { $lt: new Date() } });
   for (const booking of stale) {
@@ -507,6 +544,7 @@ module.exports = {
   createPendingBooking,
   cancelPendingBookingByCode,
   cancelBooking,
+  applyRefund,
   expireStalePendingBookings,
   maybeCompleteBooking,
   resolveAccessibleBranchIds,

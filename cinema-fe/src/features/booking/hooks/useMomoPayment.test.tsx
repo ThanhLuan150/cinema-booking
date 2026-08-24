@@ -15,12 +15,12 @@ import { useMomoPayment } from './useMomoPayment';
 describe('useMomoPayment', () => {
   beforeEach(() => momoPaymentMock.mockReset());
 
-  it('calls momoPayment with the order payload', async () => {
+  it('calls momoPayment with the order payload and idempotency key', async () => {
     momoPaymentMock.mockResolvedValue('https://momo.pay/redirect');
     const payload = { ticketIds: [1], totalPrice: 1000 } as any;
     const { result } = renderHook(() => useMomoPayment(), { wrapper });
-    result.current.mutate(payload);
+    result.current.mutate({ payload, idempotencyKey: 'key-1' });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(momoPaymentMock).toHaveBeenCalledWith(payload);
+    expect(momoPaymentMock).toHaveBeenCalledWith(payload, 'key-1');
   });
 });

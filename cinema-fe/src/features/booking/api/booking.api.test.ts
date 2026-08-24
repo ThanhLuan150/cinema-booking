@@ -51,10 +51,16 @@ describe('booking.api', () => {
     expect(getMock).toHaveBeenCalledWith('/schedule/5');
   });
 
-  it('momoPayment posts to /MomoPayment', async () => {
+  it('momoPayment posts to /MomoPayment without an Idempotency-Key header when none is given', async () => {
     const payload = { ticketIds: [1], totalPrice: 1000 } as any;
     await bookingApi.momoPayment(payload);
-    expect(postMock).toHaveBeenCalledWith('/MomoPayment', payload);
+    expect(postMock).toHaveBeenCalledWith('/MomoPayment', payload, { headers: undefined });
+  });
+
+  it('momoPayment sends the Idempotency-Key header when one is given', async () => {
+    const payload = { ticketIds: [1], totalPrice: 1000 } as any;
+    await bookingApi.momoPayment(payload, 'key-1');
+    expect(postMock).toHaveBeenCalledWith('/MomoPayment', payload, { headers: { 'Idempotency-Key': 'key-1' } });
   });
 
   it('confirmMomoPayment posts to /MomoPayment/confirm', async () => {

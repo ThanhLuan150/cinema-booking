@@ -258,6 +258,35 @@
     "refundConfirm": "Refund this transaction?",
     "refundSuccess": "Transaction refunded."
   },
+  "payments": {
+    "breadcrumb": "Payments",
+    "headers": [
+      "ID",
+      "Payment code",
+      "Type",
+      "Amount",
+      "Status",
+      "Action"
+    ],
+    "type": {
+      "online": "Online",
+      "counter": "Counter"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "paid": "Paid",
+      "failed": "Failed",
+      "refundPending": "Refund pending",
+      "refunded": "Refunded"
+    },
+    "requestRefundButton": "Request refund",
+    "refundRequestConfirm": "Request a refund for this payment?",
+    "refundRequestSuccess": "Refund request recorded.",
+    "confirmRefundButton": "Confirm refund",
+    "refundConfirmConfirm": "Confirm the customer has been refunded?",
+    "refundConfirmSuccess": "Refund completed."
+  },
   "cinemas": {
     "breadcrumb": "Branches",
     "headers": [

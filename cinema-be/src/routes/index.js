@@ -12,6 +12,7 @@ const roomRoutes = require('./room.routes');
 const scheduleRoutes = require('./schedule.routes');
 const ticketRoutes = require('./ticket.routes');
 const bookingRoutes = require('./booking.routes');
+const paymentRoutes = require('./payment.routes');
 const userRoutes = require('./user.routes');
 const likeRoutes = require('./like.routes');
 const branchRoutes = require('./branch.routes');
@@ -64,6 +65,9 @@ router.use('/', dashboardRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice
 router.use('/', bookingRoutes);
+
+// Payment lifecycle: /payments/my, /payments, /payments/:code/status, /payments/:id/refund/*
+router.use('/', paymentRoutes);
 
 // Admin users: /users, /block/:id, /unblock/:id
 router.use('/', userRoutes);

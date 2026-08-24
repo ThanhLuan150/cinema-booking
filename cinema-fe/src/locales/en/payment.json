@@ -11,5 +11,21 @@
     "title": "Payment failed",
     "confirmFailed": "Could not confirm the payment.",
     "backHome": "Back to home"
+  },
+  "history": {
+    "pageTitle": "Payment History",
+    "empty": "You have no payment history yet.",
+    "type": {
+      "online": "Online payment",
+      "counter": "Counter payment"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "paid": "Paid",
+      "failed": "Failed",
+      "refundPending": "Refund pending",
+      "refunded": "Refunded"
+    }
   }
 }

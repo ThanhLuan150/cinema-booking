@@ -258,6 +258,35 @@
     "refundConfirm": "Hoàn tiền cho giao dịch này?",
     "refundSuccess": "Đã hoàn tiền cho giao dịch."
   },
+  "payments": {
+    "breadcrumb": "Thanh toán",
+    "headers": [
+      "ID",
+      "Mã thanh toán",
+      "Loại",
+      "Số tiền",
+      "Trạng thái",
+      "Hành động"
+    ],
+    "type": {
+      "online": "Online",
+      "counter": "Tại quầy"
+    },
+    "status": {
+      "pending": "Chờ thanh toán",
+      "processing": "Đang xử lý",
+      "paid": "Đã thanh toán",
+      "failed": "Thất bại",
+      "refundPending": "Chờ hoàn tiền",
+      "refunded": "Đã hoàn tiền"
+    },
+    "requestRefundButton": "Yêu cầu hoàn tiền",
+    "refundRequestConfirm": "Yêu cầu hoàn tiền cho thanh toán này?",
+    "refundRequestSuccess": "Đã ghi nhận yêu cầu hoàn tiền.",
+    "confirmRefundButton": "Xác nhận hoàn tiền",
+    "refundConfirmConfirm": "Xác nhận đã hoàn tiền cho khách hàng?",
+    "refundConfirmSuccess": "Đã hoàn tất hoàn tiền."
+  },
   "cinemas": {
     "breadcrumb": "Chi nhánh",
     "headers": [
