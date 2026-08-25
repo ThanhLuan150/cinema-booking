@@ -188,6 +188,37 @@ describe('schedule.routes wiring', () => {
     expect(res.body.status).toBe('CANCELLED');
   });
 
+  it('PATCH /api/schedule/:id/reschedule rejects a customer', async () => {
+    await seedBranches();
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = await request(app)
+      .patch('/api/schedule/1/reschedule')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({ movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PATCH /api/schedule/:id/reschedule forbids a branch admin from rescheduling another branch\'s showtime', async () => {
+    await seedBranches();
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 2, cinema_id: 2, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = await request(app)
+      .patch('/api/schedule/1/reschedule')
+      .set('Authorization', authHeader({ role: 2, accountId: 42 }))
+      .send({ movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PATCH /api/schedule/:id/reschedule allows a branch admin to reschedule their own showtime', async () => {
+    await seedBranches();
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = await request(app)
+      .patch('/api/schedule/1/reschedule')
+      .set('Authorization', authHeader({ role: 2, accountId: 42 }))
+      .send({ movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00' });
+    expect(res.status).toBe(200);
+    expect(res.body.time_begin).toBe('14:00');
+  });
+
   it('DELETE /api/schedule/:id allows super admin', async () => {
     await seedBranches();
     await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });

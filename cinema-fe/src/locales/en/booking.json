@@ -79,7 +79,16 @@
     "cancel": "Cancel booking",
     "confirmCancel": "Are you sure you want to cancel this booking?",
     "cancelSuccess": "Booking cancelled successfully.",
-    "cancelFailed": "Could not cancel the booking."
+    "cancelFailed": "Could not cancel the booking.",
+    "rescheduleBanner": {
+      "message": "This showtime has changed. Please accept the new time or request a refund.",
+      "acceptButton": "Accept new time",
+      "refundButton": "Request refund",
+      "acceptSuccess": "New showtime accepted.",
+      "refundConfirm": "Cancel this booking and request a refund for the changed showtime?",
+      "refundSuccess": "Booking cancelled. A refund request has been raised.",
+      "failed": "Could not process your decision. Please try again."
+    }
   },
   "myTickets": {
     "pageTitle": "My Tickets",

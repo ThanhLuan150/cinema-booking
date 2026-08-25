@@ -97,15 +97,34 @@ describe('seedRbac', () => {
     }
   });
 
-  it('grants branch admin schedule.create/update/delete/cancel scoped to BRANCH', async () => {
+  it('grants branch admin schedule.create/update/delete/cancel/reschedule scoped to BRANCH', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
-    for (const code of ['schedule.create', 'schedule.update', 'schedule.delete', 'schedule.cancel']) {
+    for (const code of ['schedule.create', 'schedule.update', 'schedule.delete', 'schedule.cancel', 'schedule.reschedule']) {
       const permission = await Permission.findOne({ code });
       const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
       expect(link).not.toBeNull();
       expect(link.scope).toBe('BRANCH');
     }
+  });
+
+  it('grants booking.reschedule to customer (OWN) and super admin (ALL), not branch admin or employee (Ticket 15)', async () => {
+    await seedRbac();
+    const permission = await Permission.findOne({ code: 'booking.reschedule' });
+
+    const superAdmin = await Role.findOne({ code: 'SUPER_ADMIN' });
+    const superAdminLink = await RolePermission.findOne({ role_id: superAdmin.id, permission_id: permission.id });
+    expect(superAdminLink.scope).toBe('ALL');
+
+    const customer = await Role.findOne({ code: 'CUSTOMER' });
+    const customerLink = await RolePermission.findOne({ role_id: customer.id, permission_id: permission.id });
+    expect(customerLink.scope).toBe('OWN');
+
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    expect(await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id })).toBeNull();
+
+    const employeeRole = await Role.findOne({ code: 'EMPLOYEE' });
+    expect(await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id })).toBeNull();
   });
 
   it('grants customer schedule.read (ALL scope) so any logged-in customer can browse showtimes to book', async () => {

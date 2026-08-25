@@ -17,4 +17,13 @@ export const createSchedule = (payload: Record<string, unknown>) =>
 
 export const cancelSchedule = (id: number | string) => apiClient.patch<Schedule>(`/schedule/${id}/cancel`);
 
+export interface RescheduleSchedulePayload {
+  movie_date: string;
+  time_begin: string;
+  time_end: string;
+}
+
+export const rescheduleSchedule = (id: number | string, payload: RescheduleSchedulePayload) =>
+  apiClient.patch<Schedule>(`/schedule/${id}/reschedule`, payload);
+
 export const createTicket = (payload: { schedule_id: number }) => apiClient.post('/ticket', payload);

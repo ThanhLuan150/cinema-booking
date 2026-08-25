@@ -1,6 +1,8 @@
 const bookingRepository = require('../repositories/booking.repository');
 const paymentRepository = require('../repositories/payment.repository');
 const employeeRepository = require('../repositories/employee.repository');
+const auditLogRepository = require('../repositories/auditLog.repository');
+const AuditLog = require('../models/AuditLog');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
@@ -8,6 +10,7 @@ const { HOLD_TTL_MS } = require('../config/seatHold');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
+const RESCHEDULE_RESPONSE_ACTIONS = ['ACCEPT', 'REFUND'];
 
 // ≥2h before showtime, matching the same policy cancelInvoice already enforces for a
 // single ticket. Returns null (no restriction) when the schedule can't be resolved.
@@ -75,6 +78,12 @@ async function holdSeats(req, res) {
   const { seatCodes } = req.body;
   if (!Array.isArray(seatCodes) || seatCodes.length === 0) {
     return res.status(400).json({ message: 'seatCodes is required' });
+  }
+
+  // Ticket 15: a CANCELLED showtime must not accept new bookings/holds.
+  const schedule = await bookingRepository.findScheduleById(req.params.scheduleId);
+  if (schedule && schedule.status === 'CANCELLED') {
+    return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
   }
 
   await bookingRepository.expireHeldTickets(req.params.scheduleId);
@@ -159,6 +168,16 @@ async function createMomoPayment(req, res) {
 
   const accountId = req.account.accountId;
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
+
+  // Ticket 15: a CANCELLED showtime must not accept new bookings, even if its seats still show
+  // as AVAILABLE after being released by the cancellation cascade.
+  if (tickets.length > 0) {
+    const schedule = await bookingRepository.findScheduleById(tickets[0].schedule_id);
+    if (schedule && schedule.status === 'CANCELLED') {
+      return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
+    }
+  }
+
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
   const unavailable = ticketIds.filter((id) => {
     const ticket = ticketById.get(Number(id));
@@ -634,6 +653,52 @@ async function cancelBooking(req, res) {
   res.json(cancelled);
 }
 
+// POST /api/bookings/:id/reschedule-response { action: 'ACCEPT' | 'REFUND' } -> the customer's
+// decision after their PAID booking's showtime was moved (schedule.controller.js: reschedule).
+// ACCEPT keeps the booking as-is (same schedule_id/seats — only the showtime's own time changed).
+// REFUND cancels the booking, releases its seats and raises a refund request on its Payment
+// (still requires a manual confirmRefund — Ticket 15 forbids auto-refunding).
+async function respondToReschedule(req, res) {
+  const booking = await bookingRepository.findBookingById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  if (!(await canAccessBooking(req, booking))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  if (!booking.needs_reschedule_response) {
+    return res.status(400).json({
+      message: 'This booking has no pending reschedule decision',
+      code: 'NO_RESCHEDULE_PENDING',
+    });
+  }
+
+  const { action } = req.body || {};
+  if (!RESCHEDULE_RESPONSE_ACTIONS.includes(action)) {
+    return res.status(400).json({ message: "action must be 'ACCEPT' or 'REFUND'" });
+  }
+
+  const performedBy = req.account ? req.account.accountId : null;
+  if (action === 'ACCEPT') {
+    const accepted = await bookingRepository.acceptReschedule(booking);
+    await auditLogRepository.create({
+      entityType: 'BOOKING',
+      entityId: booking.id,
+      action: AuditLog.ACTION.BOOKING_RESCHEDULE_ACCEPTED,
+      performedBy,
+    });
+    return res.json(accepted);
+  }
+
+  booking.needs_reschedule_response = false;
+  await bookingRepository.cancelBookingAndRequestRefund(booking, 'Customer declined reschedule');
+  await auditLogRepository.create({
+    entityType: 'BOOKING',
+    entityId: booking.id,
+    action: AuditLog.ACTION.BOOKING_RESCHEDULE_REFUND_REQUESTED,
+    performedBy,
+  });
+  res.json(booking);
+}
+
 // POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, accountId, cinema_id }
 async function createCounterSale(req, res) {
   const { ticketIds, comboIds, voucherCode, accountId } = req.body;
@@ -649,6 +714,13 @@ async function createCounterSale(req, res) {
     if (branchId !== req.branchId) {
       return res.status(400).json({ message: 'All tickets must belong to the target cinema', code: 'TICKET_CINEMA_MISMATCH' });
     }
+  }
+
+  // Ticket 15: a CANCELLED showtime must not accept new bookings, counter sales included.
+  const firstTicket = await bookingRepository.findTicketById(ticketIds[0]);
+  const scheduleForSale = firstTicket ? await bookingRepository.findScheduleById(firstTicket.schedule_id) : null;
+  if (scheduleForSale && scheduleForSale.status === 'CANCELLED') {
+    return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
   }
 
   const pricing = await bookingRepository.computeOrderPricing({
@@ -696,6 +768,7 @@ module.exports = {
   listBookings,
   getBookingById,
   cancelBooking,
+  respondToReschedule,
   adminInvoices,
   refundInvoice,
   lookupInvoice,

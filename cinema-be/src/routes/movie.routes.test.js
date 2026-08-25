@@ -1,4 +1,4 @@
-jest.mock('../utils/socket', () => ({ emitPublic: jest.fn(), emitToAdmin: jest.fn(), emitToOwner: jest.fn() }));
+jest.mock('../utils/socket', () => ({ emitPublic: jest.fn(), emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn() }));
 jest.mock('../utils/uploadImage', () => ({
   uploadImage: jest.fn().mockResolvedValue('https://cdn.example.com/a.jpg'),
   uploadTrailer: jest.fn().mockResolvedValue('https://cdn.example.com/t.mp4'),

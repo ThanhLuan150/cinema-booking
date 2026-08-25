@@ -15,6 +15,11 @@ vi.mock('../hooks/useBookings', () => ({ useBookings: () => useBookingsMock() })
 const cancelMutate = vi.fn();
 vi.mock('../hooks/useCancelBooking', () => ({ useCancelBooking: () => ({ mutateAsync: cancelMutate }) }));
 
+const respondToRescheduleMutate = vi.fn();
+vi.mock('../hooks/useRespondToReschedule', () => ({
+  useRespondToReschedule: () => ({ mutateAsync: respondToRescheduleMutate }),
+}));
+
 const confirmDialogMock = vi.fn();
 vi.mock('@/features/notifications/confirm', () => ({ confirmDialog: (...args: unknown[]) => confirmDialogMock(...args) }));
 
@@ -53,6 +58,7 @@ describe('MyBookingsPage', () => {
     useBookingsMock.mockReset();
     cancelMutate.mockReset();
     confirmDialogMock.mockReset();
+    respondToRescheduleMutate.mockReset();
   });
 
   it('shows an empty state when there are no bookings', () => {
@@ -94,6 +100,30 @@ describe('MyBookingsPage', () => {
     useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'CANCELLED' })] }, isLoading: false });
     renderPage();
     expect(screen.queryByText('Cancel booking')).not.toBeInTheDocument();
+  });
+
+  it('shows the reschedule banner and accepts the new time', async () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ needs_reschedule_response: true })] }, isLoading: false });
+    respondToRescheduleMutate.mockResolvedValue({});
+    renderPage();
+    expect(screen.getByText(/showtime has changed/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Accept new time'));
+    await vi.waitFor(() => expect(respondToRescheduleMutate).toHaveBeenCalledWith({ bookingId: 1, action: 'ACCEPT' }));
+  });
+
+  it('requests a refund from the reschedule banner after confirming', async () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ needs_reschedule_response: true })] }, isLoading: false });
+    confirmDialogMock.mockResolvedValue(true);
+    respondToRescheduleMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('Request refund'));
+    await vi.waitFor(() => expect(respondToRescheduleMutate).toHaveBeenCalledWith({ bookingId: 1, action: 'REFUND' }));
+  });
+
+  it('hides the reschedule banner when no decision is pending', () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ needs_reschedule_response: false })] }, isLoading: false });
+    renderPage();
+    expect(screen.queryByText(/showtime has changed/i)).not.toBeInTheDocument();
   });
 
   it('links to the e-tickets page instead of embedding a raw QR code', () => {

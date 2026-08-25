@@ -115,6 +115,20 @@ describe('booking.routes wiring', () => {
     expect(res.status).toBe(404);
   });
 
+  it('POST /api/bookings/:id/reschedule-response requires auth', async () => {
+    const res = await request(app).post('/api/bookings/1/reschedule-response').send({});
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/bookings/:id/reschedule-response is reachable for a plain customer (booking.reschedule OWN)', async () => {
+    const res = await request(app)
+      .post('/api/bookings/1/reschedule-response')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({ action: 'ACCEPT' });
+    // Reaches the controller (past the permission gate) and 404s since booking 1 doesn't exist.
+    expect(res.status).toBe(404);
+  });
+
   it('GET /api/my-tickets requires auth', async () => {
     const res = await request(app).get('/api/my-tickets');
     expect(res.status).toBe(401);

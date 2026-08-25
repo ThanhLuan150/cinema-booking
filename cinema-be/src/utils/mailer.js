@@ -68,4 +68,28 @@ async function sendInvoiceEmail(email, { seats, schedule_id, price }) {
   });
 }
 
-module.exports = { sendMail, sendOtpEmail, sendPasswordResetEmail, sendTempPasswordEmail, sendInvoiceEmail };
+async function sendShowtimeCancelledEmail(email, { movieName, movie_date, time_begin }) {
+  return sendMail({
+    to: email,
+    subject: 'Cinema Booking - Your showtime was cancelled',
+    text: `The showtime for "${movieName}" on ${movie_date} at ${time_begin} has been cancelled by the cinema. Your booking has been cancelled and, if paid, a refund request has been raised for staff to process.`,
+  });
+}
+
+async function sendShowtimeRescheduledEmail(email, { movieName, oldDate, oldTime, newDate, newTime }) {
+  return sendMail({
+    to: email,
+    subject: 'Cinema Booking - Your showtime was rescheduled',
+    text: `The showtime for "${movieName}" has moved from ${oldDate} ${oldTime} to ${newDate} ${newTime}. Please sign in to accept the new time or request a refund.`,
+  });
+}
+
+module.exports = {
+  sendMail,
+  sendOtpEmail,
+  sendPasswordResetEmail,
+  sendTempPasswordEmail,
+  sendInvoiceEmail,
+  sendShowtimeCancelledEmail,
+  sendShowtimeRescheduledEmail,
+};

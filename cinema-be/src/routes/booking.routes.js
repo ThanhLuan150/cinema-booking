@@ -83,6 +83,16 @@ router.post(
   asyncHandler(bookingController.cancelBooking),
 );
 
+// POST /api/bookings/:id/reschedule-response { action: 'ACCEPT' | 'REFUND' } -> the customer's
+// decision after their booking's showtime was rescheduled (scope checked inside the controller,
+// same canAccessBooking pattern as cancelBooking above)
+router.post(
+  '/bookings/:id/reschedule-response',
+  requireAuth,
+  requirePermission('booking.reschedule'),
+  asyncHandler(bookingController.respondToReschedule),
+);
+
 // GET /api/admin/invoices -> all transactions system-wide, newest first (booking.admin permission — super admin only)
 router.get('/admin/invoices', requireAuth, requirePermission('booking.admin'), asyncHandler(bookingController.adminInvoices));
 

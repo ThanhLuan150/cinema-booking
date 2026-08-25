@@ -51,13 +51,15 @@ import { RealtimeBridge } from './RealtimeBridge';
 
 function renderBridge() {
   const queryClient = new QueryClient();
-  return render(
+  const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+  const { unmount } = render(
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <RealtimeBridge />
       </Provider>
     </QueryClientProvider>,
   );
+  return { unmount, invalidateSpy };
 }
 
 describe('RealtimeBridge', () => {
@@ -100,6 +102,20 @@ describe('RealtimeBridge', () => {
     expect(store.getState().notifications.toasts.at(-1)?.type).toBe('error');
     emit('branch:maintenance', { name: 'A' });
     expect(store.getState().realtime.cinemaStatusVersion).toBe(before + 3);
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
+  });
+
+  it('invalidates the bookings query and toasts on showtime:cancelled', () => {
+    const { invalidateSpy } = renderBridge();
+    emit('showtime:cancelled', { bookingId: 1, scheduleId: 1 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['bookings'] });
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
+  });
+
+  it('invalidates the bookings query and toasts on showtime:rescheduled', () => {
+    const { invalidateSpy } = renderBridge();
+    emit('showtime:rescheduled', { bookingId: 1, scheduleId: 1 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['bookings'] });
     expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
   });
 

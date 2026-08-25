@@ -9,7 +9,9 @@
     "branchActivated": "Branch \"{{name}}\" has been activated.",
     "branchDisabled": "Branch \"{{name}}\" has been disabled.",
     "branchMaintenance": "Branch \"{{name}}\" has been put under maintenance.",
-    "newBooking": "New booking received: +{{amount}}đ"
+    "newBooking": "New booking received: +{{amount}}đ",
+    "showtimeCancelled": "A showtime for one of your bookings has been cancelled.",
+    "showtimeRescheduled": "A showtime for one of your bookings has been rescheduled."
   },
   "toastContainer": {
     "dismiss": "Dismiss"

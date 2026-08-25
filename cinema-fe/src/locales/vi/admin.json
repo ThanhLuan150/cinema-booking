@@ -215,7 +215,15 @@
       "cancelButton": "Hủy suất chiếu",
       "cancelConfirm": "Bạn muốn hủy suất chiếu này?",
       "cancelToastSuccess": "Đã hủy suất chiếu.",
-      "cancelToastError": "Hủy suất chiếu không thành công."
+      "cancelToastError": "Hủy suất chiếu không thành công.",
+      "rescheduleButton": "Đổi lịch"
+    },
+    "reschedule": {
+      "title": "Đổi lịch suất chiếu",
+      "currentTime": "Suất chiếu hiện tại",
+      "submit": "Lưu giờ chiếu mới",
+      "toastSuccess": "Đã đổi lịch suất chiếu. Khách hàng bị ảnh hưởng đã được thông báo.",
+      "noChange": "Vui lòng chọn ngày hoặc giờ khác."
     }
   },
   "reviews": {

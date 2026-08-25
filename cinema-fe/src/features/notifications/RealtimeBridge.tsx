@@ -4,11 +4,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { socket } from '@/lib/socket';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { moviesQueryKey } from '@/features/movies/hooks/useMovies';
+import { bookingsQueryKey } from '@/features/booking/hooks/useBookings';
 import { refreshAccessToken } from '@/services/apiClient';
 import { setAccessToken } from '@/features/auth/store/authSlice';
 import { bump } from './realtimeSlice';
 import { toast } from './toast';
-import type { BookingEvent, CinemaEvent, MovieEvent } from './types/realtime.types';
+import type { BookingEvent, CinemaEvent, MovieEvent, ShowtimeChangeEvent } from './types/realtime.types';
 
 // Mounted once near the app root. Keeps a single socket connection alive for the
 // session and fans server-pushed events out to Redux (for pages to refetch on) and
@@ -67,12 +68,22 @@ export function RealtimeBridge() {
       dispatch(bump('ownerBookingVersion'));
       toast.info(t('realtimeBridge.newBooking', { amount: Number(payload?.amount ?? 0).toLocaleString() }));
     };
+    const onShowtimeCancelled = (_payload: ShowtimeChangeEvent) => {
+      queryClient.invalidateQueries({ queryKey: bookingsQueryKey });
+      toast.info(t('realtimeBridge.showtimeCancelled'));
+    };
+    const onShowtimeRescheduled = (_payload: ShowtimeChangeEvent) => {
+      queryClient.invalidateQueries({ queryKey: bookingsQueryKey });
+      toast.info(t('realtimeBridge.showtimeRescheduled'));
+    };
 
     socket.on('movie:new', onMovieNew);
     socket.on('branch:activated', onBranchActivated);
     socket.on('branch:disabled', onBranchDisabled);
     socket.on('branch:maintenance', onBranchMaintenance);
     socket.on('booking:new', onBookingNew);
+    socket.on('showtime:cancelled', onShowtimeCancelled);
+    socket.on('showtime:rescheduled', onShowtimeRescheduled);
 
     return () => {
       socket.off('movie:new', onMovieNew);
@@ -80,6 +91,8 @@ export function RealtimeBridge() {
       socket.off('branch:disabled', onBranchDisabled);
       socket.off('branch:maintenance', onBranchMaintenance);
       socket.off('booking:new', onBookingNew);
+      socket.off('showtime:cancelled', onShowtimeCancelled);
+      socket.off('showtime:rescheduled', onShowtimeRescheduled);
     };
     // Re-register listeners when the translator changes so socket callbacks
     // always use the current language instead of a stale closure over `t`.

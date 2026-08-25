@@ -732,6 +732,86 @@ describe('booking.repository', () => {
       expect(invoices.every((inv) => inv.status === 0)).toBe(true);
     });
 
+    describe('findBookingsBySchedule', () => {
+      it('returns only bookings matching the given statuses on that schedule', async () => {
+        await Booking.create([
+          { id: 1, code: 'BK-A', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' },
+          { id: 2, code: 'BK-B', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'CANCELLED' },
+          { id: 3, code: 'BK-C', account_id: 1, schedule_id: 2, branch_id: 1, total_price: 1, status: 'PAID' },
+        ]);
+        const found = await bookingRepository.findBookingsBySchedule(1, ['PAID', 'PENDING']);
+        expect(found.map((b) => b.id)).toEqual([1]);
+      });
+    });
+
+    describe('cancelBookingAndRequestRefund', () => {
+      it('releases tickets, cancels invoices, and flips a PAID Payment to REFUND_PENDING', async () => {
+        const Payment = require('../models/Payment');
+        await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-6',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1],
+          total_price: 100000,
+          status: 'PAID',
+        });
+        await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-6', total_price: 100000, status: 1 });
+        await Payment.create({ id: 1, code: 'BK-6', booking_id: 1, account_id: 1, type: 'ONLINE', method: 'MOMO', amount: 100000, status: 'PAID' });
+
+        await bookingRepository.cancelBookingAndRequestRefund(booking, 'Showtime cancelled by cinema');
+
+        expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+        expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+        expect((await Invoice.findOne({ id: 1 })).status).toBe(0);
+        const payment = await Payment.findOne({ id: 1 });
+        expect(payment.status).toBe('REFUND_PENDING');
+        expect(payment.refund_reason).toBe('Showtime cancelled by cinema');
+      });
+
+      it('cancels the booking without touching any Payment when it was never paid', async () => {
+        const Payment = require('../models/Payment');
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-7',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          total_price: 100000,
+          status: 'PENDING',
+        });
+
+        await bookingRepository.cancelBookingAndRequestRefund(booking, 'Showtime cancelled by cinema');
+
+        expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+        expect(await Payment.findOne({ code: 'BK-7' })).toBeNull();
+      });
+    });
+
+    describe('markNeedsRescheduleResponse / acceptReschedule', () => {
+      it('sets and clears the needs_reschedule_response flag', async () => {
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-8',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          total_price: 100000,
+          status: 'PAID',
+        });
+
+        await bookingRepository.markNeedsRescheduleResponse(booking.id, true);
+        expect((await Booking.findOne({ id: 1 })).needs_reschedule_response).toBe(true);
+
+        const reloaded = await Booking.findOne({ id: 1 });
+        const accepted = await bookingRepository.acceptReschedule(reloaded);
+        expect(accepted.needs_reschedule_response).toBe(false);
+        expect((await Booking.findOne({ id: 1 })).needs_reschedule_response).toBe(false);
+      });
+    });
+
     it('expireStalePendingBookings flips lapsed PENDING bookings to EXPIRED and releases their held tickets', async () => {
       await Ticket.create({
         id: 1,

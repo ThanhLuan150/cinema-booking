@@ -74,6 +74,9 @@ export const getBookingById = (id: number | string) =>
 
 export const cancelBooking = (id: number | string) => apiClient.post(`/bookings/${id}/cancel`);
 
+export const respondToReschedule = (id: number | string, action: 'ACCEPT' | 'REFUND') =>
+  apiClient.post(`/bookings/${id}/reschedule-response`, { action });
+
 export const getMyTickets = () => apiClient.get<Ticket[]>('/my-tickets').then((res) => res.data);
 
 export const getTicketById = (id: number | string) =>

@@ -18,6 +18,8 @@ import { useMyMovies } from '../../movies/hooks/useMyMovies';
 import { useSchedules } from '../hooks/useSchedules';
 import { useCancelSchedule } from '../hooks/useCancelSchedule';
 import Add from '../components/Add';
+import Reschedule from '../components/Reschedule';
+import type { Schedule } from '../types/adminSchedule.types';
 
 const List = () => {
   const { t } = useTranslation('admin');
@@ -35,6 +37,7 @@ const List = () => {
   const [roomFilter, setRoomFilter] = useState('');
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [rescheduleTarget, setRescheduleTarget] = useState<Schedule | null>(null);
 
   const { data } = useSchedules({ branchId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
   const schedules = data?.data ?? [];
@@ -106,6 +109,7 @@ const List = () => {
       </div>
 
       {showAddModal && <Add id={null} handleCloseAddSchedule={() => setShowAddModal(false)} />}
+      {rescheduleTarget && <Reschedule schedule={rescheduleTarget} onClose={() => setRescheduleTarget(null)} />}
 
       <DataTable headers={t('schedules.list.headers', { returnObjects: true }) as unknown as string[]}>
         {schedules.map((schedule) => {
@@ -129,15 +133,20 @@ const List = () => {
               </td>
               <td>
                 {canManageShowtimes && !isCancelled && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
-                    onClick={() => handleCancel(schedule.id)}
-                  >
-                    {t('schedules.list.cancelButton')}
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setRescheduleTarget(schedule)}>
+                      {t('schedules.list.rescheduleButton')}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
+                      onClick={() => handleCancel(schedule.id)}
+                    >
+                      {t('schedules.list.cancelButton')}
+                    </Button>
+                  </div>
                 )}
               </td>
             </tr>

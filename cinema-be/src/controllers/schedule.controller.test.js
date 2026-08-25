@@ -1,10 +1,24 @@
+jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn(), emitPublic: jest.fn() }));
+jest.mock('../utils/mailer', () => ({
+  sendShowtimeCancelledEmail: jest.fn().mockResolvedValue({}),
+  sendShowtimeRescheduledEmail: jest.fn().mockResolvedValue({}),
+}));
+
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const scheduleController = require('./schedule.controller');
+const socket = require('../utils/socket');
+const mailer = require('../utils/mailer');
 const Schedule = require('../models/Schedule');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Movie = require('../models/Movie');
 const Seat = require('../models/Seat');
+const Ticket = require('../models/Ticket');
+const Invoice = require('../models/Invoice');
+const Booking = require('../models/Booking');
+const Payment = require('../models/Payment');
+const Account = require('../models/Account');
+const AuditLog = require('../models/AuditLog');
 
 function mockRes() {
   const res = {};
@@ -14,7 +28,10 @@ function mockRes() {
 }
 
 beforeAll(async () => connect());
-afterEach(async () => clearDatabase());
+afterEach(async () => {
+  await clearDatabase();
+  jest.clearAllMocks();
+});
 afterAll(async () => closeDatabase());
 
 async function seedMovieAndRoom({
@@ -307,6 +324,128 @@ describe('schedule.controller cancel', () => {
     await scheduleController.cancel({ params: { id: 1 } }, res);
     const updated = await Schedule.findOne({ id: 1 });
     expect(updated.status).toBe('CANCELLED');
+  });
+
+  it('cancels a PENDING booking on the showtime and releases its seats, without touching any Payment', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'Room 1' });
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2020-01-01', status: 'ACTIVE' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 10, held_until: new Date(Date.now() + 60000) });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 10, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PENDING' });
+
+    const res = mockRes();
+    await scheduleController.cancel({ params: { id: 1 }, account: { accountId: 42 }, body: {} }, res);
+
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+    expect(await Payment.findOne({ code: 'BK-1' })).toBeNull();
+  });
+
+  it('cancels a PAID booking, releases its seats and requests a refund without completing it', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'Room 1' });
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2020-01-01', status: 'ACTIVE' });
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Booking.create({ id: 1, code: 'BK-2', account_id: 10, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PAID' });
+    await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 10, code: 'BK-2', total_price: 1, status: 1 });
+    await Payment.create({ id: 1, code: 'BK-2', booking_id: 1, account_id: 10, type: 'ONLINE', method: 'MOMO', amount: 1, status: 'PAID' });
+
+    const res = mockRes();
+    await scheduleController.cancel({ params: { id: 1 }, account: { accountId: 42 }, body: {} }, res);
+
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+    const payment = await Payment.findOne({ id: 1 });
+    expect(payment.status).toBe('REFUND_PENDING');
+
+    expect(mailer.sendShowtimeCancelledEmail).toHaveBeenCalledWith('buyer@example.com', expect.objectContaining({ movieName: 'A' }));
+    expect(socket.emitToAccount).toHaveBeenCalledWith(10, 'showtime:cancelled', expect.objectContaining({ bookingId: 1, refundRequested: true }));
+
+    const logs = await AuditLog.find().sort({ id: 1 });
+    expect(logs.map((l) => l.action)).toEqual(
+      expect.arrayContaining(['BOOKING_REFUND_REQUESTED', 'SCHEDULE_CANCELLED']),
+    );
+  });
+});
+
+describe('schedule.controller reschedule', () => {
+  const rescheduleReq = (overrides = {}) => ({
+    params: { id: 1 },
+    account: { accountId: 42 },
+    permissionScope: 'ALL',
+    branchId: 1,
+    body: { movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00' },
+    ...overrides,
+  });
+
+  it('returns 404 for an unknown schedule', async () => {
+    const res = mockRes();
+    await scheduleController.reschedule(rescheduleReq({ params: { id: 999 } }), res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects rescheduling a cancelled showtime', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
+    const res = mockRes();
+    await scheduleController.reschedule(rescheduleReq(), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
+
+  it('rejects a no-op reschedule (identical date/time)', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    const res = mockRes();
+    await scheduleController.reschedule(rescheduleReq({ body: { movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00' } }), res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'NO_CHANGE' }));
+  });
+
+  it('rejects a new time that overlaps another showtime in the same room', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'Room 1' });
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2020-01-01', status: 'ACTIVE' });
+    await Seat.create({ id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Schedule.create({ id: 2, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '14:00', time_end: '16:00', price: 1 });
+
+    const res = mockRes();
+    await scheduleController.reschedule(rescheduleReq(), res);
+    expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('updates the showtime and flags every PAID booking for a reschedule decision, leaving PENDING alone', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema A', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'Room 1' });
+    await Movie.create({ id: 1, name: 'A', premiere_date: '2020-01-01', status: 'ACTIVE' });
+    await Seat.create({ id: 1, room_id: 1, row: 'A', number: 1, seat_code: 'A1', status: 'ACTIVE' });
+    await Account.create({ id: 10, email: 'paid@example.com', password: 'x' });
+    await Account.create({ id: 11, email: 'pending@example.com', password: 'x' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-10', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 10, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    await Booking.create({ id: 2, code: 'BK-2', account_id: 11, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PENDING' });
+
+    const res = mockRes();
+    await scheduleController.reschedule(rescheduleReq(), res);
+
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    const updated = await Schedule.findOne({ id: 1 });
+    expect(updated.time_begin).toBe('14:00');
+
+    expect((await Booking.findOne({ id: 1 })).needs_reschedule_response).toBe(true);
+    expect((await Booking.findOne({ id: 2 })).needs_reschedule_response).toBe(false);
+    expect((await Booking.findOne({ id: 2 })).status).toBe('PENDING');
+
+    expect(mailer.sendShowtimeRescheduledEmail).toHaveBeenCalledWith('paid@example.com', expect.objectContaining({ oldTime: '10:00', newTime: '14:00' }));
+    expect(mailer.sendShowtimeRescheduledEmail).not.toHaveBeenCalledWith('pending@example.com', expect.anything());
+    expect(socket.emitToAccount).toHaveBeenCalledWith(10, 'showtime:rescheduled', expect.objectContaining({ bookingId: 1 }));
+
+    const logs = await AuditLog.find().sort({ id: 1 });
+    expect(logs.map((l) => l.action)).toEqual(
+      expect.arrayContaining(['BOOKING_RESCHEDULE_NOTIFIED', 'SCHEDULE_RESCHEDULED']),
+    );
   });
 });
 

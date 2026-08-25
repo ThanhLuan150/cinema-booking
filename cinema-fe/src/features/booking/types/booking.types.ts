@@ -117,6 +117,7 @@ export interface Booking {
   expires_at: string | null;
   paid_at: string | null;
   cancelled_at: string | null;
+  needs_reschedule_response: boolean;
   movie?: InvoiceMovie | null;
   schedule?: InvoiceSchedule | null;
   branch?: { id: number; name: string } | null;

@@ -574,6 +574,34 @@ async function cancelBooking(booking, { reason = null } = {}) {
   return booking;
 }
 
+// Ticket 15: bookings sitting on a Schedule that's being cancelled or rescheduled-away-from.
+async function findBookingsBySchedule(scheduleId, statuses) {
+  return Booking.find({ schedule_id: Number(scheduleId), status: { $in: statuses } });
+}
+
+// Cancels the booking (releases its tickets, cancels its invoices — same as cancelBooking) and,
+// only if it had actually been paid, flips its Payment PAID -> REFUND_PENDING so the refund shows
+// up as pending staff work. Never auto-completes the refund (that stays a manual confirmRefund
+// call) — Ticket 15 explicitly forbids auto-refunding without an existing business policy for it.
+async function cancelBookingAndRequestRefund(booking, reason) {
+  await cancelBooking(booking, { reason });
+  const payment = await paymentRepository.findByCode(booking.code);
+  if (payment && payment.status === Payment.STATUS.PAID) {
+    await paymentRepository.requestRefund(payment.id, reason);
+  }
+  return booking;
+}
+
+async function markNeedsRescheduleResponse(bookingId, value) {
+  return Booking.updateOne({ id: Number(bookingId) }, { $set: { needs_reschedule_response: value } });
+}
+
+async function acceptReschedule(booking) {
+  booking.needs_reschedule_response = false;
+  await booking.save();
+  return booking;
+}
+
 async function applyRefund(booking) {
   await Ticket.updateMany(
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
@@ -737,6 +765,10 @@ module.exports = {
   cancelPendingBookingByCode,
   cancelBooking,
   applyRefund,
+  findBookingsBySchedule,
+  cancelBookingAndRequestRefund,
+  markNeedsRescheduleResponse,
+  acceptReschedule,
   expireStalePendingBookings,
   maybeCompleteBooking,
   resolveAccessibleBranchIds,

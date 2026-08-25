@@ -9,7 +9,7 @@ jest.mock('socket.io', () => ({ Server: MockServer }));
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
 
 const jwt = require('jsonwebtoken');
-const { initSocket, emitToAdmin, emitToOwner, emitPublic } = require('./socket');
+const { initSocket, emitToAdmin, emitToOwner, emitToAccount, emitPublic } = require('./socket');
 
 describe('initSocket', () => {
   beforeEach(() => {
@@ -76,33 +76,36 @@ describe('initSocket', () => {
       return mockOn.mock.calls.find((call) => call[0] === 'connection')[1];
     }
 
-    it('joins the admin room for role 0', () => {
+    it('joins the admin room (and its own account room) for role 0', () => {
       const connectionCb = getConnectionCallback();
       const socket = { account: { role: 0, accountId: 1 }, join: jest.fn() };
 
       connectionCb(socket);
 
       expect(socket.join).toHaveBeenCalledWith('admin');
-      expect(socket.join).toHaveBeenCalledTimes(1);
+      expect(socket.join).toHaveBeenCalledWith('account:1');
+      expect(socket.join).toHaveBeenCalledTimes(2);
     });
 
-    it('joins the owner room for role 2', () => {
+    it('joins the owner room (and its own account room) for role 2', () => {
       const connectionCb = getConnectionCallback();
       const socket = { account: { role: 2, accountId: 42 }, join: jest.fn() };
 
       connectionCb(socket);
 
       expect(socket.join).toHaveBeenCalledWith('owner:42');
-      expect(socket.join).toHaveBeenCalledTimes(1);
+      expect(socket.join).toHaveBeenCalledWith('account:42');
+      expect(socket.join).toHaveBeenCalledTimes(2);
     });
 
-    it('does not join any room for a regular user (role 1)', () => {
+    it('joins only its own account room for a regular user (role 1) — Ticket 15', () => {
       const connectionCb = getConnectionCallback();
-      const socket = { account: { role: 1, accountId: 1 }, join: jest.fn() };
+      const socket = { account: { role: 1, accountId: 7 }, join: jest.fn() };
 
       connectionCb(socket);
 
-      expect(socket.join).not.toHaveBeenCalled();
+      expect(socket.join).toHaveBeenCalledWith('account:7');
+      expect(socket.join).toHaveBeenCalledTimes(1);
     });
 
     it('does nothing when the socket has no account (anonymous)', () => {
@@ -157,6 +160,17 @@ describe('emit helpers after initSocket', () => {
     expect(mockTo).not.toHaveBeenCalled();
   });
 
+  it('emitToAccount emits to the account room when accountId is set', () => {
+    emitToAccount(7, 'showtime:cancelled', { bookingId: 1 });
+    expect(mockTo).toHaveBeenCalledWith('account:7');
+    expect(mockEmit).toHaveBeenCalledWith('showtime:cancelled', { bookingId: 1 });
+  });
+
+  it('emitToAccount no-ops when accountId is falsy', () => {
+    emitToAccount(null, 'showtime:cancelled', { bookingId: 1 });
+    expect(mockTo).not.toHaveBeenCalled();
+  });
+
   it('emitPublic emits directly on io', () => {
     emitPublic('announcement', { text: 'hi' });
     expect(mockEmit).toHaveBeenCalledWith('announcement', { text: 'hi' });
@@ -172,6 +186,7 @@ describe('emit helpers before initSocket (io is null)', () => {
 
     expect(() => fresh.emitToAdmin('e', {})).not.toThrow();
     expect(() => fresh.emitToOwner(1, 'e', {})).not.toThrow();
+    expect(() => fresh.emitToAccount(1, 'e', {})).not.toThrow();
     expect(() => fresh.emitPublic('e', {})).not.toThrow();
   });
 });

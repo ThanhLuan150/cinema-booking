@@ -44,6 +44,17 @@ router.patch(
   asyncHandler(scheduleController.cancel),
 );
 
+// PATCH /api/schedule/:id/reschedule { movie_date, time_begin, time_end } (schedule.reschedule
+// permission; branch-scoped) — narrower than PUT /:id, only moves the showtime itself and
+// cascades the customer-decision flow onto affected PAID bookings.
+router.patch(
+  '/:id/reschedule',
+  requireAuth,
+  requirePermission('schedule.reschedule'),
+  requireBranchOwnership((req) => scheduleRepository.findCinemaIdByScheduleId(req.params.id)),
+  asyncHandler(scheduleController.reschedule),
+);
+
 // DELETE /api/schedule/:id (schedule.delete permission; branch-scoped)
 router.delete(
   '/:id',

@@ -10,6 +10,7 @@ import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useBookings } from '../hooks/useBookings';
 import { useCancelBooking } from '../hooks/useCancelBooking';
+import { useRespondToReschedule } from '../hooks/useRespondToReschedule';
 import { SEAT_TYPE_KEY } from '@/constants/seatType';
 import { BOOKING_STATUS_META, CANCELLABLE_BOOKING_STATUSES } from '@/constants/bookingStatus';
 import { ROUTES } from '@/constants/routes';
@@ -19,6 +20,7 @@ function MyBookingsPage() {
   const { data, isLoading } = useBookings();
   const bookings = data?.data ?? [];
   const cancelBookingMutation = useCancelBooking();
+  const respondToRescheduleMutation = useRespondToReschedule();
 
   const handleCancel = async (bookingId: number) => {
     if (!(await confirmDialog(t('myBookings.confirmCancel')))) return;
@@ -27,6 +29,25 @@ function MyBookingsPage() {
       toast.success(t('myBookings.cancelSuccess'));
     } catch (error) {
       toast.error(getApiErrorMessage(error, t) || t('myBookings.cancelFailed'));
+    }
+  };
+
+  const handleAcceptReschedule = async (bookingId: number) => {
+    try {
+      await respondToRescheduleMutation.mutateAsync({ bookingId, action: 'ACCEPT' });
+      toast.success(t('myBookings.rescheduleBanner.acceptSuccess'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t) || t('myBookings.rescheduleBanner.failed'));
+    }
+  };
+
+  const handleRefundReschedule = async (bookingId: number) => {
+    if (!(await confirmDialog(t('myBookings.rescheduleBanner.refundConfirm')))) return;
+    try {
+      await respondToRescheduleMutation.mutateAsync({ bookingId, action: 'REFUND' });
+      toast.success(t('myBookings.rescheduleBanner.refundSuccess'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t) || t('myBookings.rescheduleBanner.failed'));
     }
   };
 
@@ -81,6 +102,27 @@ function MyBookingsPage() {
                 <p className="mt-1 text-sm text-txt/70">
                   {booking.schedule?.movie_date} · {booking.schedule?.time_begin}
                 </p>
+                {booking.needs_reschedule_response && (
+                  <div className="no-print mt-2 rounded-lg border border-amber-700/50 bg-amber-500/10 p-3">
+                    <p className="text-sm text-amber-300">{t('myBookings.rescheduleBanner.message')}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-hover"
+                        onClick={() => handleAcceptReschedule(booking.id)}
+                      >
+                        {t('myBookings.rescheduleBanner.acceptButton')}
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded-lg border border-red-800/60 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10"
+                        onClick={() => handleRefundReschedule(booking.id)}
+                      >
+                        {t('myBookings.rescheduleBanner.refundButton')}
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <p className="text-sm text-txt/70">{t('myBookings.seatsLabel', { codes: seatsSummary })}</p>
                 <p className="text-sm text-txt/70">{t('myBookings.bookingCode', { code: booking.code })}</p>
                 {booking.discount_amount > 0 && (

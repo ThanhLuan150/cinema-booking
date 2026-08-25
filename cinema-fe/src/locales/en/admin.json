@@ -215,7 +215,15 @@
       "cancelButton": "Cancel showtime",
       "cancelConfirm": "Cancel this showtime?",
       "cancelToastSuccess": "Showtime cancelled.",
-      "cancelToastError": "Failed to cancel the showtime."
+      "cancelToastError": "Failed to cancel the showtime.",
+      "rescheduleButton": "Reschedule"
+    },
+    "reschedule": {
+      "title": "Reschedule showtime",
+      "currentTime": "Current showtime",
+      "submit": "Save new time",
+      "toastSuccess": "Showtime rescheduled. Affected customers have been notified.",
+      "noChange": "Pick a different date or time first."
     }
   },
   "reviews": {

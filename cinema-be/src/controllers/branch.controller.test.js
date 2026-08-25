@@ -1,4 +1,4 @@
-jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitPublic: jest.fn() }));
+jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn(), emitPublic: jest.fn() }));
 
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const branchController = require('./branch.controller');

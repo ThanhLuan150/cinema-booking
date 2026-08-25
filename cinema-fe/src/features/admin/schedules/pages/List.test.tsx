@@ -35,6 +35,7 @@ const useSchedulesMock = vi.fn();
 vi.mock('../hooks/useSchedules', () => ({ useSchedules: (...args: unknown[]) => useSchedulesMock(...args) }));
 
 vi.mock('../components/Add', () => ({ default: () => <div>Add Schedule Modal</div> }));
+vi.mock('../components/Reschedule', () => ({ default: () => <div>Reschedule Schedule Modal</div> }));
 
 import AdminSchedulesList from './List';
 
@@ -110,6 +111,7 @@ describe('Admin Schedules List', () => {
     renderPage(ROLES.owner);
     expect(screen.getByText('schedules.list.addButton')).toBeInTheDocument();
     expect(screen.getByText('schedules.list.cancelButton')).toBeInTheDocument();
+    expect(screen.getByText('schedules.list.rescheduleButton')).toBeInTheDocument();
   });
 
   it('hides the Add Showtime button and per-row Cancel button for an employee', () => {
@@ -124,5 +126,6 @@ describe('Admin Schedules List', () => {
     renderPage(ROLES.employee);
     expect(screen.queryByText('schedules.list.addButton')).not.toBeInTheDocument();
     expect(screen.queryByText('schedules.list.cancelButton')).not.toBeInTheDocument();
+    expect(screen.queryByText('schedules.list.rescheduleButton')).not.toBeInTheDocument();
   });
 });

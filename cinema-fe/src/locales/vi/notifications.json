@@ -9,7 +9,9 @@
     "branchActivated": "Chi nhánh \"{{name}}\" đã được kích hoạt.",
     "branchDisabled": "Chi nhánh \"{{name}}\" đã bị vô hiệu hoá.",
     "branchMaintenance": "Chi nhánh \"{{name}}\" đã chuyển sang bảo trì.",
-    "newBooking": "Có đơn đặt vé mới: +{{amount}}đ"
+    "newBooking": "Có đơn đặt vé mới: +{{amount}}đ",
+    "showtimeCancelled": "Một suất chiếu trong đơn đặt vé của bạn đã bị hủy.",
+    "showtimeRescheduled": "Một suất chiếu trong đơn đặt vé của bạn đã được đổi lịch."
   },
   "toastContainer": {
     "dismiss": "Đóng"

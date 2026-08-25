@@ -79,7 +79,16 @@
     "cancel": "Hủy đặt vé",
     "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
     "cancelSuccess": "Hủy đặt vé thành công.",
-    "cancelFailed": "Không thể hủy đặt vé."
+    "cancelFailed": "Không thể hủy đặt vé.",
+    "rescheduleBanner": {
+      "message": "Suất chiếu này đã thay đổi. Vui lòng chấp nhận giờ chiếu mới hoặc yêu cầu hoàn tiền.",
+      "acceptButton": "Chấp nhận giờ mới",
+      "refundButton": "Yêu cầu hoàn tiền",
+      "acceptSuccess": "Đã chấp nhận suất chiếu mới.",
+      "refundConfirm": "Hủy đặt vé này và yêu cầu hoàn tiền do suất chiếu thay đổi?",
+      "refundSuccess": "Đã hủy đặt vé. Yêu cầu hoàn tiền đã được tạo.",
+      "failed": "Không thể xử lý yêu cầu của bạn. Vui lòng thử lại."
+    }
   },
   "myTickets": {
     "pageTitle": "Vé của tôi",

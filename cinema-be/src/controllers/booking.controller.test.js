@@ -156,6 +156,18 @@ describe('POST /api/MomoPayment', () => {
     expect(res.status).not.toHaveBeenCalledWith(409);
     expect(res.send).toHaveBeenCalledWith(expect.stringContaining('resultCode=0'));
   });
+
+  it('rejects checkout for a ticket on a CANCELLED showtime (Ticket 15)', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 50000, status: 'CANCELLED' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], totalPrice: 50000 }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
 });
 
 describe('POST /api/bookseat/:scheduleId/hold', () => {
@@ -207,6 +219,20 @@ describe('POST /api/bookseat/:scheduleId/hold', () => {
       res,
     );
     expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('rejects holding a seat on a CANCELLED showtime (Ticket 15)', async () => {
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1, status: 'CANCELLED' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    const res = mockRes();
+    await bookingController.holdSeats(
+      { params: { scheduleId: 1 }, body: { seatCodes: ['A1'] }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+    const ticket = await Ticket.findOne({ id: 1 });
+    expect(ticket.status).toBe(1);
   });
 
   it('re-holding your own already-held seat extends the TTL instead of conflicting', async () => {
@@ -1148,5 +1174,80 @@ describe('POST /api/bookings/:id/cancel', () => {
 
     expect(res.status).not.toHaveBeenCalledWith(403);
     expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+  });
+});
+
+describe('POST /api/bookings/:id/reschedule-response', () => {
+  it('returns 404 when the booking does not exist', async () => {
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 999 }, body: { action: 'ACCEPT' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("forbids responding to another account's booking", async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 2, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID', needs_reschedule_response: true });
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 1 }, body: { action: 'ACCEPT' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('rejects when the booking has no pending reschedule decision', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 1 }, body: { action: 'ACCEPT' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'NO_RESCHEDULE_PENDING' }));
+  });
+
+  it('rejects an invalid action', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID', needs_reschedule_response: true });
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 1 }, body: { action: 'MAYBE' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('ACCEPT clears the flag and leaves the booking PAID', async () => {
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID', needs_reschedule_response: true });
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 1 }, body: { action: 'ACCEPT' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    const updated = await Booking.findOne({ id: 1 });
+    expect(updated.status).toBe('PAID');
+    expect(updated.needs_reschedule_response).toBe(false);
+  });
+
+  it('REFUND cancels the booking, releases its tickets and flips the Payment to REFUND_PENDING', async () => {
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PAID', needs_reschedule_response: true });
+    await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1 });
+    await Payment.create({ id: 1, code: 'BK-1', booking_id: 1, account_id: 1, type: 'ONLINE', method: 'MOMO', amount: 1, status: 'PAID' });
+
+    const res = mockRes();
+    await bookingController.respondToReschedule(
+      { params: { id: 1 }, body: { action: 'REFUND' }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    const updated = await Booking.findOne({ id: 1 });
+    expect(updated.status).toBe('CANCELLED');
+    expect(updated.needs_reschedule_response).toBe(false);
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+    expect((await Payment.findOne({ id: 1 })).status).toBe('REFUND_PENDING');
   });
 });

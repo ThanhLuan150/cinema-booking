@@ -2,8 +2,16 @@ const scheduleRepository = require('../repositories/schedule.repository');
 const movieRepository = require('../repositories/movie.repository');
 const roomRepository = require('../repositories/room.repository');
 const seatRepository = require('../repositories/seat.repository');
+const bookingRepository = require('../repositories/booking.repository');
+const auditLogRepository = require('../repositories/auditLog.repository');
+const AuditLog = require('../models/AuditLog');
+const Booking = require('../models/Booking');
+const Account = require('../models/Account');
+const Branch = require('../models/Branch');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { sendShowtimeCancelledEmail, sendShowtimeRescheduledEmail } = require('../utils/mailer');
+const { emitToAccount, emitToOwner, emitToAdmin } = require('../utils/socket');
 
 // GET /api/schedule?branchId=&roomId=&page=&limit= -> management list (schedule.read
 // permission). ALL scope (super admin) sees every showtime; BRANCH scope (branch admin,
@@ -178,6 +186,38 @@ async function update(req, res) {
   res.json(schedule);
 }
 
+// Ticket 15: cancels every still-active Booking on a showtime that's going away (either the whole
+// Schedule was cancelled, or a Booking's own showtime moved and the customer chose to refund
+// instead of accepting the new time). Releases seats/invoices via the existing cancelBooking path,
+// auto-raises a refund request for anyone who'd actually paid (never auto-completes it — that's
+// still a manual confirmRefund), writes an AuditLog row, and notifies the customer.
+async function cancelAffectedBooking(booking, { reason, auditAction, performedBy, movie, schedule }) {
+  const wasPaid = booking.status === Booking.STATUS.PAID;
+  await bookingRepository.cancelBookingAndRequestRefund(booking, reason);
+  await auditLogRepository.create({
+    entityType: 'BOOKING',
+    entityId: booking.id,
+    action: auditAction,
+    performedBy,
+    reason,
+    metadata: { scheduleId: schedule.id, wasPaid },
+  });
+
+  const account = await Account.findOne({ id: booking.account_id });
+  if (account) {
+    await sendShowtimeCancelledEmail(account.email, {
+      movieName: movie ? movie.name : `Movie #${schedule.movie_id}`,
+      movie_date: schedule.movie_date,
+      time_begin: schedule.time_begin,
+    });
+  }
+  emitToAccount(booking.account_id, 'showtime:cancelled', {
+    bookingId: booking.id,
+    scheduleId: schedule.id,
+    refundRequested: wasPaid,
+  });
+}
+
 // PATCH /api/schedule/:id/cancel (schedule.cancel permission, branch-scoped)
 async function cancel(req, res) {
   const existing = await scheduleRepository.findById(req.params.id);
@@ -187,7 +227,122 @@ async function cancel(req, res) {
   }
 
   const schedule = await scheduleRepository.updateFields(existing.id, { status: 'CANCELLED' });
-  res.json(schedule);
+  const performedBy = req.account ? req.account.accountId : null;
+  const reason = req.body?.reason || 'Showtime cancelled by cinema';
+
+  const affectedBookings = await bookingRepository.findBookingsBySchedule(schedule.id, ['PENDING', 'PAID']);
+  const movie = await movieRepository.findById(schedule.movie_id);
+  for (const booking of affectedBookings) {
+    await cancelAffectedBooking(booking, {
+      reason,
+      auditAction:
+        booking.status === Booking.STATUS.PAID
+          ? AuditLog.ACTION.BOOKING_REFUND_REQUESTED
+          : AuditLog.ACTION.BOOKING_CANCELLED_SHOWTIME_CANCELLED,
+      performedBy,
+      movie,
+      schedule,
+    });
+  }
+
+  await auditLogRepository.create({
+    entityType: 'SCHEDULE',
+    entityId: schedule.id,
+    action: AuditLog.ACTION.SCHEDULE_CANCELLED,
+    performedBy,
+    reason,
+    metadata: { affectedBookings: affectedBookings.length },
+  });
+
+  const room = await roomRepository.findById(schedule.room_id);
+  if (room) {
+    const branch = await Branch.findOne({ id: room.cinema_id });
+    if (branch) emitToOwner(branch.owner_id, 'showtime:cancelled', { scheduleId: schedule.id, branchId: branch.id });
+  }
+  emitToAdmin('showtime:cancelled', { scheduleId: schedule.id });
+
+  res.json({ ...schedule.toJSON(), affectedBookings: affectedBookings.length });
+}
+
+// PATCH /api/schedule/:id/reschedule { movie_date, time_begin, time_end }
+// (schedule.reschedule permission, branch-scoped). Deliberately narrower than update() — only
+// the showtime itself moves; movie/room/price edits that don't affect a paying customer still go
+// through update(). Every PAID booking on the old time is flagged for a customer decision
+// (accept the new time, or refund) via POST /bookings/:id/reschedule-response; PENDING holds are
+// left alone since their schedule_id/seats don't change.
+async function reschedule(req, res) {
+  const existing = await scheduleRepository.findById(req.params.id);
+  if (!existing) return res.status(404).json({ message: 'Schedule not found' });
+  if (existing.status === 'CANCELLED') {
+    return res.status(400).json({ message: 'Cannot reschedule a cancelled showtime', code: 'SCHEDULE_CANCELLED' });
+  }
+
+  const { movie_date, time_begin, time_end } = req.body;
+  if (!movie_date || !time_begin || !time_end) {
+    return res.status(400).json({ message: 'movie_date, time_begin and time_end are required' });
+  }
+  if (movie_date === existing.movie_date && time_begin === existing.time_begin && time_end === existing.time_end) {
+    return res.status(400).json({ message: 'The new showtime is identical to the current one', code: 'NO_CHANGE' });
+  }
+
+  const validated = await validateShowtime(req, res, {
+    movie_id: existing.movie_id,
+    room_id: existing.room_id,
+    movie_date,
+    time_begin,
+    time_end,
+    excludeId: existing.id,
+  });
+  if (!validated) return;
+
+  const oldSnapshot = { movie_date: existing.movie_date, time_begin: existing.time_begin, time_end: existing.time_end };
+  const schedule = await scheduleRepository.updateFields(existing.id, { movie_date, time_begin, time_end });
+  const performedBy = req.account ? req.account.accountId : null;
+
+  const affectedBookings = await bookingRepository.findBookingsBySchedule(schedule.id, [Booking.STATUS.PAID]);
+  for (const booking of affectedBookings) {
+    await bookingRepository.markNeedsRescheduleResponse(booking.id, true);
+    await auditLogRepository.create({
+      entityType: 'BOOKING',
+      entityId: booking.id,
+      action: AuditLog.ACTION.BOOKING_RESCHEDULE_NOTIFIED,
+      performedBy,
+      metadata: { scheduleId: schedule.id, from: oldSnapshot, to: { movie_date, time_begin, time_end } },
+    });
+
+    const account = await Account.findOne({ id: booking.account_id });
+    if (account) {
+      await sendShowtimeRescheduledEmail(account.email, {
+        movieName: validated.movie.name,
+        oldDate: oldSnapshot.movie_date,
+        oldTime: oldSnapshot.time_begin,
+        newDate: movie_date,
+        newTime: time_begin,
+      });
+    }
+    emitToAccount(booking.account_id, 'showtime:rescheduled', {
+      bookingId: booking.id,
+      scheduleId: schedule.id,
+      from: oldSnapshot,
+      to: { movie_date, time_begin, time_end },
+    });
+  }
+
+  await auditLogRepository.create({
+    entityType: 'SCHEDULE',
+    entityId: schedule.id,
+    action: AuditLog.ACTION.SCHEDULE_RESCHEDULED,
+    performedBy,
+    metadata: { from: oldSnapshot, to: { movie_date, time_begin, time_end }, affectedBookings: affectedBookings.length },
+  });
+
+  if (validated.room) {
+    const branch = await Branch.findOne({ id: validated.room.cinema_id });
+    if (branch) emitToOwner(branch.owner_id, 'showtime:rescheduled', { scheduleId: schedule.id, branchId: branch.id });
+  }
+  emitToAdmin('showtime:rescheduled', { scheduleId: schedule.id });
+
+  res.json({ ...schedule.toJSON(), affectedBookings: affectedBookings.length });
 }
 
 // DELETE /api/schedule/:id (schedule.delete permission, branch-scoped)
@@ -199,4 +354,4 @@ async function remove(req, res) {
   res.json({ message: 'Deleted' });
 }
 
-module.exports = { list, getById, create, update, cancel, remove };
+module.exports = { list, getById, create, update, cancel, reschedule, remove };

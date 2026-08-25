@@ -14,3 +14,8 @@ export interface MovieEvent {
 export interface BookingEvent {
   amount?: number;
 }
+
+export interface ShowtimeChangeEvent {
+  bookingId?: number;
+  scheduleId?: number;
+}

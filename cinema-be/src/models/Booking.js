@@ -26,6 +26,7 @@ const bookingSchema = new mongoose.Schema(
     cancelled_at: { type: Date, default: null },
     cancel_reason: { type: String, default: null },
     created_by: { type: Number, default: null }, // employee/branch admin who created it via counter-sale
+    needs_reschedule_response: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
