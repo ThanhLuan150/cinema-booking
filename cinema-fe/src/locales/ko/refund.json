@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "내 환불",
+    "empty": "환불 요청 내역이 없습니다.",
+    "bookingLabel": "예매 #{{id}}",
+    "requestedAt": "요청 시각: {{date}}",
+    "rejectionReason": "사유: {{reason}}",
+    "failureReason": "사유: {{reason}}",
+    "status": {
+      "requested": "요청됨",
+      "approved": "승인됨",
+      "rejected": "거절됨",
+      "processing": "처리 중",
+      "completed": "완료됨",
+      "failed": "실패"
+    }
+  }
+}

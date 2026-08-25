@@ -322,5 +322,40 @@
       "statusInactive": "無効",
       "roleChangeSuccess": "権限を更新しました。"
     }
+  },
+  "refunds": {
+    "breadcrumb": "返金",
+    "headers": [
+      "ID",
+      "予約",
+      "金額",
+      "ポリシー",
+      "ステータス",
+      "操作"
+    ],
+    "status": {
+      "requested": "リクエスト済み",
+      "approved": "承認済み",
+      "rejected": "却下",
+      "processing": "処理中",
+      "completed": "完了",
+      "failed": "失敗"
+    },
+    "approveButton": "承認",
+    "approveConfirm": "この返金リクエストを承認しますか？",
+    "approveSuccess": "返金を承認しました。",
+    "rejectButton": "却下",
+    "rejectModalTitle": "返金を却下",
+    "rejectSuccess": "返金を却下しました。",
+    "processButton": "処理を開始",
+    "processConfirm": "この返金の処理を開始しますか？",
+    "processSuccess": "返金を処理中です。",
+    "completeButton": "完了",
+    "completeConfirm": "この返金を完了としてマークしますか？支払いが返金され、座席が解放されます。",
+    "completeSuccess": "返金が完了しました。",
+    "failButton": "失敗としてマーク",
+    "failModalTitle": "返金を失敗としてマーク",
+    "failSuccess": "返金を失敗としてマークしました。",
+    "reasonLabel": "理由"
   }
 }

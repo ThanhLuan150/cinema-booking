@@ -139,6 +139,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.bookingManagement')}
                 </NavLink>
               )}
+              {hasPermission('refund.read') && (
+                <NavLink to={ROUTES.refundManagement} className={navLinkClass}>
+                  <ion-icon name="cash-outline" />
+                  {t('adminLayout.nav.refunds')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.ownerEmployees} className={navLinkClass}>
                 <ion-icon name="people" />
                 {t('adminLayout.nav.employees')}

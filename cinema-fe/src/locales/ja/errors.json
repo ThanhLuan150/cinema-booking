@@ -34,5 +34,12 @@
   "DUPLICATE_ASSIGNMENT": "この従業員はこの日付のこのシフトに既に割り当てられています",
   "SEAT_UNAVAILABLE": "選択した座席の一部がご利用いただけなくなりました",
   "NOT_YOUR_HOLD": "この座席は他のお客様が確保中です",
-  "GENERIC": "問題が発生しました。もう一度お試しください。"
+  "GENERIC": "問題が発生しました。もう一度お試しください。",
+  "BOOKING_NOT_REFUNDABLE": "返金をリクエストできるのは支払い済みの予約のみです",
+  "REFUND_ALREADY_REQUESTED": "この予約にはすでに処理中の返金リクエストがあります",
+  "TICKET_NOT_REFUNDABLE": "この予約には返金できないチケットが含まれています",
+  "REFUND_WINDOW_EXPIRED": "上映時間に近すぎるため、この予約は返金の対象外です",
+  "REFUND_NOT_REQUESTED": "この返金はすでに承認待ちの状態ではありません",
+  "REFUND_NOT_APPROVED": "この返金はまだ承認されていません",
+  "REFUND_NOT_PROCESSING": "この返金は現在処理中ではありません"
 }

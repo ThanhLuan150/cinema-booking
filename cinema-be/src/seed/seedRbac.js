@@ -57,6 +57,8 @@ const PERMISSIONS = [
   ['shiftAssignment.update', 'shiftAssignment'], ['shiftAssignment.delete', 'shiftAssignment'],
   ['pricingRule.create', 'pricingRule'], ['pricingRule.read', 'pricingRule'],
   ['pricingRule.update', 'pricingRule'], ['pricingRule.delete', 'pricingRule'],
+  ['refund.request', 'refund'], ['refund.read', 'refund'],
+  ['refund.approve', 'refund'], ['refund.process', 'refund'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -87,6 +89,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'shiftAssignment.update': 'BRANCH', 'shiftAssignment.delete': 'BRANCH',
   'pricingRule.create': 'BRANCH', 'pricingRule.read': 'BRANCH',
   'pricingRule.update': 'BRANCH', 'pricingRule.delete': 'BRANCH',
+  'refund.read': 'BRANCH', 'refund.approve': 'BRANCH', 'refund.process': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {
@@ -111,6 +114,7 @@ const CUSTOMER_PERMISSIONS = {
   'actor.read': 'ALL', 'director.read': 'ALL',
   'payment.create': 'OWN',
   'payment.read': 'OWN',
+  'refund.request': 'OWN', 'refund.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "Meine Rückerstattungen",
+    "empty": "Sie haben noch keine Rückerstattungsanfragen.",
+    "bookingLabel": "Buchung #{{id}}",
+    "requestedAt": "Angefordert am {{date}}",
+    "rejectionReason": "Grund: {{reason}}",
+    "failureReason": "Grund: {{reason}}",
+    "status": {
+      "requested": "Angefordert",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "processing": "In Bearbeitung",
+      "completed": "Abgeschlossen",
+      "failed": "Fehlgeschlagen"
+    }
+  }
+}

@@ -388,5 +388,40 @@
       "approveButton": "Duyệt",
       "approveSuccess": "Đã duyệt tài khoản chủ rạp."
     }
+  },
+  "refunds": {
+    "breadcrumb": "Hoàn tiền",
+    "headers": [
+      "ID",
+      "Đơn đặt vé",
+      "Số tiền",
+      "Chính sách",
+      "Trạng thái",
+      "Hành động"
+    ],
+    "status": {
+      "requested": "Đã yêu cầu",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "processing": "Đang xử lý",
+      "completed": "Hoàn tất",
+      "failed": "Thất bại"
+    },
+    "approveButton": "Duyệt",
+    "approveConfirm": "Duyệt yêu cầu hoàn tiền này?",
+    "approveSuccess": "Đã duyệt yêu cầu hoàn tiền.",
+    "rejectButton": "Từ chối",
+    "rejectModalTitle": "Từ chối hoàn tiền",
+    "rejectSuccess": "Đã từ chối yêu cầu hoàn tiền.",
+    "processButton": "Xử lý",
+    "processConfirm": "Bắt đầu xử lý hoàn tiền này?",
+    "processSuccess": "Đang xử lý hoàn tiền.",
+    "completeButton": "Hoàn tất",
+    "completeConfirm": "Đánh dấu hoàn tiền này là hoàn tất? Thao tác này sẽ hoàn tiền thanh toán và giải phóng ghế.",
+    "completeSuccess": "Đã hoàn tất hoàn tiền.",
+    "failButton": "Đánh dấu thất bại",
+    "failModalTitle": "Đánh dấu hoàn tiền thất bại",
+    "failSuccess": "Đã đánh dấu hoàn tiền thất bại.",
+    "reasonLabel": "Lý do"
   }
 }

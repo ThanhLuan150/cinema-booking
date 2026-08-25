@@ -18,6 +18,7 @@ import MyBookings from '@/features/booking/pages/MyBookingsPage';
 import MyTickets from '@/features/booking/pages/MyTicketsPage';
 import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
+import MyRefunds from '@/features/refund/pages/MyRefundsPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -42,6 +43,7 @@ import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
 import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
 import BookingManagement from '@/features/booking/pages/BookingManagementPage';
+import RefundManagement from '@/features/admin/refunds/pages/List';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -82,6 +84,7 @@ export function AppRouter() {
       <Route path={ROUTES.myTickets} element={<MyTickets />} />
       <Route path="/Ticket/:id" element={<TicketDetail />} />
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
+      <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
       <Route
         path={ROUTES.adminUsers}
         element={
@@ -263,6 +266,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={STAFF_ROLES}>
             <BookingManagement />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.refundManagement}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <RefundManagement />
           </RequireRole>
         }
       />

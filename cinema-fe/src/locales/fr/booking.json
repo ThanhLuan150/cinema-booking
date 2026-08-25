@@ -78,12 +78,25 @@
     "cancel": "Annuler la réservation",
     "confirmCancel": "Êtes-vous sûr de vouloir annuler cette réservation ?",
     "cancelSuccess": "Réservation annulée avec succès.",
-    "cancelFailed": "Impossible d'annuler la réservation."
+    "cancelFailed": "Impossible d'annuler la réservation.",
+    "requestRefund": "Demander un remboursement",
+    "requestRefundConfirm": "Demander un remboursement pour cette réservation ?",
+    "requestRefundSuccess": "Demande de remboursement envoyée.",
+    "refundInProgress": "Une demande de remboursement est déjà en cours pour cette réservation."
   },
   "bookingManagement": {
     "pageTitle": "Gestion des réservations",
     "breadcrumb": "Réservations",
-    "headers": ["ID", "Code", "Client", "Film", "Sièges", "Total", "Statut", "Actions"],
+    "headers": [
+      "ID",
+      "Code",
+      "Client",
+      "Film",
+      "Sièges",
+      "Total",
+      "Statut",
+      "Actions"
+    ],
     "cancel": "Annuler",
     "confirmCancel": "Êtes-vous sûr de vouloir annuler cette réservation ?",
     "cancelSuccess": "Réservation annulée avec succès.",

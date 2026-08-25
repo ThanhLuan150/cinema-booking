@@ -388,5 +388,40 @@
       "approveButton": "Approve",
       "approveSuccess": "Theater owner account approved."
     }
+  },
+  "refunds": {
+    "breadcrumb": "Refunds",
+    "headers": [
+      "ID",
+      "Booking",
+      "Amount",
+      "Policy",
+      "Status",
+      "Action"
+    ],
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "approveButton": "Approve",
+    "approveConfirm": "Approve this refund request?",
+    "approveSuccess": "Refund approved.",
+    "rejectButton": "Reject",
+    "rejectModalTitle": "Reject refund",
+    "rejectSuccess": "Refund rejected.",
+    "processButton": "Process",
+    "processConfirm": "Start processing this refund?",
+    "processSuccess": "Refund is now processing.",
+    "completeButton": "Complete",
+    "completeConfirm": "Mark this refund as completed? This will refund the payment and release the seats.",
+    "completeSuccess": "Refund completed.",
+    "failButton": "Mark failed",
+    "failModalTitle": "Mark refund failed",
+    "failSuccess": "Refund marked as failed.",
+    "reasonLabel": "Reason"
   }
 }

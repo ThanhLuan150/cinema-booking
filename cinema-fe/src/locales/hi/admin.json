@@ -322,5 +322,40 @@
       "statusInactive": "निष्क्रिय",
       "roleChangeSuccess": "भूमिका अपडेट कर दी गई।"
     }
+  },
+  "refunds": {
+    "breadcrumb": "रिफंड",
+    "headers": [
+      "आईडी",
+      "बुकिंग",
+      "राशि",
+      "नीति",
+      "स्थिति",
+      "कार्रवाई"
+    ],
+    "status": {
+      "requested": "अनुरोध किया गया",
+      "approved": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "processing": "प्रक्रियारत",
+      "completed": "पूर्ण",
+      "failed": "विफल"
+    },
+    "approveButton": "स्वीकृत करें",
+    "approveConfirm": "क्या इस रिफंड अनुरोध को स्वीकृत करें?",
+    "approveSuccess": "रिफंड स्वीकृत किया गया।",
+    "rejectButton": "अस्वीकार करें",
+    "rejectModalTitle": "रिफंड अस्वीकार करें",
+    "rejectSuccess": "रिफंड अस्वीकार कर दिया गया।",
+    "processButton": "प्रोसेस करें",
+    "processConfirm": "क्या इस रिफंड को प्रोसेस करना शुरू करें?",
+    "processSuccess": "रिफंड प्रोसेस किया जा रहा है।",
+    "completeButton": "पूर्ण करें",
+    "completeConfirm": "क्या इस रिफंड को पूर्ण के रूप में चिह्नित करें? इससे भुगतान वापस कर दिया जाएगा और सीटें रिलीज़ हो जाएंगी।",
+    "completeSuccess": "रिफंड पूर्ण हो गया।",
+    "failButton": "विफल के रूप में चिह्नित करें",
+    "failModalTitle": "रिफंड को विफल चिह्नित करें",
+    "failSuccess": "रिफंड को विफल चिह्नित कर दिया गया।",
+    "reasonLabel": "कारण"
   }
 }

@@ -4,7 +4,7 @@ const { withCleanJSON } = require('./plugins');
 const auditLogSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
-    entity_type: { type: String, enum: ['SCHEDULE', 'BOOKING'], required: true, index: true },
+    entity_type: { type: String, enum: ['SCHEDULE', 'BOOKING', 'REFUND'], required: true, index: true },
     entity_id: { type: Number, required: true, index: true },
     action: { type: String, required: true },
     performed_by: { type: Number, default: null }, // account_id, or null for a system/sweep-driven change
@@ -25,6 +25,12 @@ AuditLog.ACTION = {
   BOOKING_RESCHEDULE_NOTIFIED: 'BOOKING_RESCHEDULE_NOTIFIED',
   BOOKING_RESCHEDULE_ACCEPTED: 'BOOKING_RESCHEDULE_ACCEPTED',
   BOOKING_RESCHEDULE_REFUND_REQUESTED: 'BOOKING_RESCHEDULE_REFUND_REQUESTED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_APPROVED: 'REFUND_APPROVED',
+  REFUND_REJECTED: 'REFUND_REJECTED',
+  REFUND_PROCESSING: 'REFUND_PROCESSING',
+  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  REFUND_FAILED: 'REFUND_FAILED',
 };
 
 module.exports = AuditLog;

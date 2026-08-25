@@ -88,7 +88,11 @@
       "refundConfirm": "Hủy đặt vé này và yêu cầu hoàn tiền do suất chiếu thay đổi?",
       "refundSuccess": "Đã hủy đặt vé. Yêu cầu hoàn tiền đã được tạo.",
       "failed": "Không thể xử lý yêu cầu của bạn. Vui lòng thử lại."
-    }
+    },
+    "requestRefund": "Yêu cầu hoàn tiền",
+    "requestRefundConfirm": "Yêu cầu hoàn tiền cho đơn đặt vé này?",
+    "requestRefundSuccess": "Đã gửi yêu cầu hoàn tiền.",
+    "refundInProgress": "Đơn đặt vé này đang có một yêu cầu hoàn tiền được xử lý."
   },
   "myTickets": {
     "pageTitle": "Vé của tôi",
@@ -119,7 +123,16 @@
   "bookingManagement": {
     "pageTitle": "Quản lý đặt vé",
     "breadcrumb": "Đặt vé",
-    "headers": ["ID", "Mã", "Khách hàng", "Phim", "Ghế", "Tổng tiền", "Trạng thái", "Thao tác"],
+    "headers": [
+      "ID",
+      "Mã",
+      "Khách hàng",
+      "Phim",
+      "Ghế",
+      "Tổng tiền",
+      "Trạng thái",
+      "Thao tác"
+    ],
     "cancel": "Hủy",
     "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
     "cancelSuccess": "Hủy đặt vé thành công.",

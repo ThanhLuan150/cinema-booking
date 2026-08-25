@@ -21,7 +21,8 @@
     "logout": "Đăng xuất",
     "login": "Đăng nhập",
     "logoutSuccess": "Đăng xuất thành công",
-    "bookNow": "Đặt vé ngay"
+    "bookNow": "Đặt vé ngay",
+    "myRefunds": "Hoàn tiền của tôi"
   },
   "footer": {
     "tagline": "Chúng tôi cam kết chất lượng và sự hài lòng khi bạn đặt vé xem phim tại đây.",
@@ -65,7 +66,8 @@
       "directors": "Đạo diễn",
       "counterSale": "Bán vé tại quầy",
       "checkIn": "Soát vé",
-      "mySchedule": "Lịch làm việc của tôi"
+      "mySchedule": "Lịch làm việc của tôi",
+      "refunds": "Hoàn tiền"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

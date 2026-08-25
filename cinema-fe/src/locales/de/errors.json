@@ -34,5 +34,12 @@
   "DUPLICATE_ASSIGNMENT": "Dieser Mitarbeiter ist dieser Schicht an diesem Tag bereits zugewiesen",
   "SEAT_UNAVAILABLE": "Ein oder mehrere ausgewählte Plätze sind nicht mehr verfügbar",
   "NOT_YOUR_HOLD": "Dieser Platz wird von einem anderen Kunden reserviert",
-  "GENERIC": "Etwas ist schiefgelaufen, bitte versuchen Sie es erneut."
+  "GENERIC": "Etwas ist schiefgelaufen, bitte versuchen Sie es erneut.",
+  "BOOKING_NOT_REFUNDABLE": "Eine Rückerstattung kann nur für eine bezahlte Buchung angefordert werden",
+  "REFUND_ALREADY_REQUESTED": "Für diese Buchung läuft bereits eine Rückerstattungsanfrage",
+  "TICKET_NOT_REFUNDABLE": "Diese Buchung enthält ein Ticket, das nicht erstattet werden kann",
+  "REFUND_WINDOW_EXPIRED": "Diese Buchung liegt zu nahe an der Vorstellungszeit, um erstattungsfähig zu sein",
+  "REFUND_NOT_REQUESTED": "Diese Rückerstattung wartet nicht mehr auf eine Entscheidung",
+  "REFUND_NOT_APPROVED": "Diese Rückerstattung wurde noch nicht genehmigt",
+  "REFUND_NOT_PROCESSING": "Diese Rückerstattung wird derzeit nicht bearbeitet"
 }

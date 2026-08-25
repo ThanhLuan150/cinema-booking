@@ -34,5 +34,12 @@
   "DUPLICATE_ASSIGNMENT": "该员工在这一天已被分配到此班次",
   "SEAT_UNAVAILABLE": "一个或多个已选座位已不可用",
   "NOT_YOUR_HOLD": "该座位正被其他顾客锁定",
-  "GENERIC": "出了点问题，请重试。"
+  "GENERIC": "出了点问题，请重试。",
+  "BOOKING_NOT_REFUNDABLE": "只能为已支付的订单申请退款",
+  "REFUND_ALREADY_REQUESTED": "该订单已有一个正在处理的退款申请",
+  "TICKET_NOT_REFUNDABLE": "该订单中有无法退款的票",
+  "REFUND_WINDOW_EXPIRED": "该订单已太接近场次时间，不符合退款条件",
+  "REFUND_NOT_REQUESTED": "该退款申请已不再处于待审核状态",
+  "REFUND_NOT_APPROVED": "该退款尚未被批准",
+  "REFUND_NOT_PROCESSING": "该退款当前未处于处理中状态"
 }

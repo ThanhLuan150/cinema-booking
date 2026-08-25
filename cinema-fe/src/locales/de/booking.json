@@ -78,12 +78,25 @@
     "cancel": "Buchung stornieren",
     "confirmCancel": "Möchten Sie diese Buchung wirklich stornieren?",
     "cancelSuccess": "Buchung erfolgreich storniert.",
-    "cancelFailed": "Die Buchung konnte nicht storniert werden."
+    "cancelFailed": "Die Buchung konnte nicht storniert werden.",
+    "requestRefund": "Rückerstattung anfordern",
+    "requestRefundConfirm": "Rückerstattung für diese Buchung anfordern?",
+    "requestRefundSuccess": "Rückerstattungsanfrage gesendet.",
+    "refundInProgress": "Für diese Buchung läuft bereits eine Rückerstattungsanfrage."
   },
   "bookingManagement": {
     "pageTitle": "Buchungsverwaltung",
     "breadcrumb": "Buchungen",
-    "headers": ["ID", "Code", "Kunde", "Film", "Sitzplätze", "Gesamt", "Status", "Aktionen"],
+    "headers": [
+      "ID",
+      "Code",
+      "Kunde",
+      "Film",
+      "Sitzplätze",
+      "Gesamt",
+      "Status",
+      "Aktionen"
+    ],
     "cancel": "Stornieren",
     "confirmCancel": "Möchten Sie diese Buchung wirklich stornieren?",
     "cancelSuccess": "Buchung erfolgreich storniert.",

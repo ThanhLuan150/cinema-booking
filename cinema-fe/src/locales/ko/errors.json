@@ -34,5 +34,12 @@
   "DUPLICATE_ASSIGNMENT": "이 직원은 해당 날짜에 이미 이 근무조에 배정되어 있습니다",
   "SEAT_UNAVAILABLE": "선택한 좌석 중 일부를 더 이상 사용할 수 없습니다",
   "NOT_YOUR_HOLD": "이 좌석은 다른 고객이 선점하고 있습니다",
-  "GENERIC": "문제가 발생했습니다. 다시 시도해 주세요."
+  "GENERIC": "문제가 발생했습니다. 다시 시도해 주세요.",
+  "BOOKING_NOT_REFUNDABLE": "결제 완료된 예매 건만 환불을 요청할 수 있습니다",
+  "REFUND_ALREADY_REQUESTED": "이 예매 건은 이미 환불 요청이 진행 중입니다",
+  "TICKET_NOT_REFUNDABLE": "이 예매 건에는 환불할 수 없는 티켓이 있습니다",
+  "REFUND_WINDOW_EXPIRED": "상영 시간이 너무 임박하여 환불 대상이 아닙니다",
+  "REFUND_NOT_REQUESTED": "이 환불은 더 이상 승인 대기 상태가 아닙니다",
+  "REFUND_NOT_APPROVED": "이 환불은 아직 승인되지 않았습니다",
+  "REFUND_NOT_PROCESSING": "이 환불은 현재 처리 중이 아닙니다"
 }

@@ -19,7 +19,8 @@
     "logout": "ออกจากระบบ",
     "login": "เข้าสู่ระบบ",
     "logoutSuccess": "ออกจากระบบสำเร็จ",
-    "bookNow": "จองตั๋วเลย"
+    "bookNow": "จองตั๋วเลย",
+    "myRefunds": "การขอคืนเงินของฉัน"
   },
   "footer": {
     "tagline": "เรารับประกันคุณภาพและความพึงพอใจเมื่อมาใช้บริการเว็บไซต์จองตั๋วภาพยนตร์ของเรา",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "ตารางงานของฉัน"
+      "mySchedule": "ตารางงานของฉัน",
+      "refunds": "การคืนเงิน"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

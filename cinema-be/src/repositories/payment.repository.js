@@ -114,6 +114,17 @@ async function completeRefund(id, refundedBy) {
   );
 }
 
+// Used by the dedicated Refund workflow (refund.controller.js) once a Refund reaches
+// COMPLETED — transitions straight from PAID (the Refund entity itself now tracks the
+// pending/approved states, so this payment never passes through REFUND_PENDING).
+async function markRefunded(id, refundedBy) {
+  return Payment.findOneAndUpdate(
+    { id: Number(id), status: { $in: [Payment.STATUS.PAID, Payment.STATUS.REFUND_PENDING] } },
+    { $set: { status: Payment.STATUS.REFUNDED, refunded_at: new Date(), refunded_by: refundedBy } },
+    { new: true },
+  );
+}
+
 async function listForAccount(accountId, { skip = 0, limit = 20 } = {}) {
   const filter = { account_id: Number(accountId) };
   const [data, total] = await Promise.all([
@@ -142,6 +153,7 @@ module.exports = {
   markProcessing,
   requestRefund,
   completeRefund,
+  markRefunded,
   listForAccount,
   listAll,
 };

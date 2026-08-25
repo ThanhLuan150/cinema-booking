@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "मेरे रिफंड",
+    "empty": "आपके पास अभी तक कोई रिफंड अनुरोध नहीं है।",
+    "bookingLabel": "बुकिंग #{{id}}",
+    "requestedAt": "अनुरोध किया गया: {{date}}",
+    "rejectionReason": "कारण: {{reason}}",
+    "failureReason": "कारण: {{reason}}",
+    "status": {
+      "requested": "अनुरोध किया गया",
+      "approved": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "processing": "प्रक्रियारत",
+      "completed": "पूर्ण",
+      "failed": "विफल"
+    }
+  }
+}

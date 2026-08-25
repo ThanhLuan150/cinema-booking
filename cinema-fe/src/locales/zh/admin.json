@@ -322,5 +322,40 @@
       "statusInactive": "已停用",
       "roleChangeSuccess": "角色已更新。"
     }
+  },
+  "refunds": {
+    "breadcrumb": "退款",
+    "headers": [
+      "ID",
+      "订单",
+      "金额",
+      "退款比例",
+      "状态",
+      "操作"
+    ],
+    "status": {
+      "requested": "已申请",
+      "approved": "已批准",
+      "rejected": "已拒绝",
+      "processing": "处理中",
+      "completed": "已完成",
+      "failed": "失败"
+    },
+    "approveButton": "批准",
+    "approveConfirm": "批准此退款申请？",
+    "approveSuccess": "退款已批准。",
+    "rejectButton": "拒绝",
+    "rejectModalTitle": "拒绝退款",
+    "rejectSuccess": "退款已拒绝。",
+    "processButton": "处理",
+    "processConfirm": "开始处理此退款？",
+    "processSuccess": "退款正在处理中。",
+    "completeButton": "完成",
+    "completeConfirm": "将此退款标记为已完成？这将退还付款并释放座位。",
+    "completeSuccess": "退款已完成。",
+    "failButton": "标记为失败",
+    "failModalTitle": "将退款标记为失败",
+    "failSuccess": "退款已标记为失败。",
+    "reasonLabel": "原因"
   }
 }

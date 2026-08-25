@@ -78,12 +78,25 @@
     "cancel": "予約をキャンセル",
     "confirmCancel": "この予約をキャンセルしてもよろしいですか?",
     "cancelSuccess": "予約をキャンセルしました。",
-    "cancelFailed": "予約をキャンセルできませんでした。"
+    "cancelFailed": "予約をキャンセルできませんでした。",
+    "requestRefund": "返金をリクエスト",
+    "requestRefundConfirm": "この予約の返金をリクエストしますか？",
+    "requestRefundSuccess": "返金リクエストを送信しました。",
+    "refundInProgress": "この予約にはすでに処理中の返金リクエストがあります。"
   },
   "bookingManagement": {
     "pageTitle": "予約管理",
     "breadcrumb": "予約",
-    "headers": ["ID", "コード", "顧客", "映画", "座席", "合計", "状態", "操作"],
+    "headers": [
+      "ID",
+      "コード",
+      "顧客",
+      "映画",
+      "座席",
+      "合計",
+      "状態",
+      "操作"
+    ],
     "cancel": "キャンセル",
     "confirmCancel": "この予約をキャンセルしてもよろしいですか?",
     "cancelSuccess": "予約をキャンセルしました。",

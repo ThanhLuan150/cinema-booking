@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "Hoàn tiền của tôi",
+    "empty": "Bạn chưa có yêu cầu hoàn tiền nào.",
+    "bookingLabel": "Đơn đặt vé #{{id}}",
+    "requestedAt": "Yêu cầu lúc {{date}}",
+    "rejectionReason": "Lý do: {{reason}}",
+    "failureReason": "Lý do: {{reason}}",
+    "status": {
+      "requested": "Đã yêu cầu",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "processing": "Đang xử lý",
+      "completed": "Hoàn tất",
+      "failed": "Thất bại"
+    }
+  }
+}

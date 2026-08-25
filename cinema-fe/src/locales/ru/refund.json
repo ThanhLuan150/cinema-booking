@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "Мои возвраты",
+    "empty": "У вас пока нет запросов на возврат.",
+    "bookingLabel": "Бронирование #{{id}}",
+    "requestedAt": "Запрошено {{date}}",
+    "rejectionReason": "Причина: {{reason}}",
+    "failureReason": "Причина: {{reason}}",
+    "status": {
+      "requested": "Запрошен",
+      "approved": "Одобрен",
+      "rejected": "Отклонён",
+      "processing": "В обработке",
+      "completed": "Завершён",
+      "failed": "Ошибка"
+    }
+  }
+}

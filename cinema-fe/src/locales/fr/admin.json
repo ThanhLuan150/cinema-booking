@@ -322,5 +322,40 @@
       "statusInactive": "Inactif",
       "roleChangeSuccess": "Rôle mis à jour."
     }
+  },
+  "refunds": {
+    "breadcrumb": "Remboursements",
+    "headers": [
+      "ID",
+      "Réservation",
+      "Montant",
+      "Politique",
+      "Statut",
+      "Action"
+    ],
+    "status": {
+      "requested": "Demandé",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "processing": "En traitement",
+      "completed": "Terminé",
+      "failed": "Échoué"
+    },
+    "approveButton": "Approuver",
+    "approveConfirm": "Approuver cette demande de remboursement ?",
+    "approveSuccess": "Remboursement approuvé.",
+    "rejectButton": "Rejeter",
+    "rejectModalTitle": "Rejeter le remboursement",
+    "rejectSuccess": "Remboursement rejeté.",
+    "processButton": "Traiter",
+    "processConfirm": "Commencer le traitement de ce remboursement ?",
+    "processSuccess": "Remboursement en cours de traitement.",
+    "completeButton": "Terminer",
+    "completeConfirm": "Marquer ce remboursement comme terminé ? Le paiement sera remboursé et les sièges libérés.",
+    "completeSuccess": "Remboursement terminé.",
+    "failButton": "Marquer comme échoué",
+    "failModalTitle": "Marquer le remboursement comme échoué",
+    "failSuccess": "Remboursement marqué comme échoué.",
+    "reasonLabel": "Motif"
   }
 }

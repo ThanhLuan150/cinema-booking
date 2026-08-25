@@ -19,7 +19,8 @@
     "logout": "Abmelden",
     "login": "Anmelden",
     "logoutSuccess": "Erfolgreich abgemeldet",
-    "bookNow": "Jetzt buchen"
+    "bookNow": "Jetzt buchen",
+    "myRefunds": "Meine Rückerstattungen"
   },
   "footer": {
     "tagline": "Wir garantieren Qualität und Zufriedenheit bei der Nutzung unserer Kinoticket-Buchungsseite.",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "Mein Dienstplan"
+      "mySchedule": "Mein Dienstplan",
+      "refunds": "Rückerstattungen"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

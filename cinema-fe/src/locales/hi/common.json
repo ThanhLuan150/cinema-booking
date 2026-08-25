@@ -19,7 +19,8 @@
     "logout": "लॉगआउट",
     "login": "लॉगिन",
     "logoutSuccess": "सफलतापूर्वक लॉगआउट हो गए",
-    "bookNow": "अभी बुक करें"
+    "bookNow": "अभी बुक करें",
+    "myRefunds": "मेरे रिफंड"
   },
   "footer": {
     "tagline": "हमारी मूवी टिकट बुकिंग साइट पर आने पर हम गुणवत्ता और संतुष्टि की गारंटी देते हैं।",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "मेरा शेड्यूल"
+      "mySchedule": "मेरा शेड्यूल",
+      "refunds": "रिफंड"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

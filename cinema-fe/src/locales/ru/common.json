@@ -19,7 +19,8 @@
     "logout": "Выйти",
     "login": "Войти",
     "logoutSuccess": "Вы успешно вышли из системы",
-    "bookNow": "Купить билет"
+    "bookNow": "Купить билет",
+    "myRefunds": "Мои возвраты"
   },
   "footer": {
     "tagline": "Мы гарантируем качество и удовлетворение на нашем сайте бронирования билетов в кино.",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "Мой график"
+      "mySchedule": "Мой график",
+      "refunds": "Возвраты"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

@@ -78,12 +78,25 @@
     "cancel": "예매 취소",
     "confirmCancel": "이 예매를 취소하시겠습니까?",
     "cancelSuccess": "예매가 취소되었습니다.",
-    "cancelFailed": "예매를 취소할 수 없습니다."
+    "cancelFailed": "예매를 취소할 수 없습니다.",
+    "requestRefund": "환불 요청",
+    "requestRefundConfirm": "이 예매 건에 대해 환불을 요청하시겠습니까?",
+    "requestRefundSuccess": "환불 요청이 접수되었습니다.",
+    "refundInProgress": "이 예매 건은 이미 환불 요청이 진행 중입니다."
   },
   "bookingManagement": {
     "pageTitle": "예매 관리",
     "breadcrumb": "예매",
-    "headers": ["ID", "코드", "고객", "영화", "좌석", "합계", "상태", "작업"],
+    "headers": [
+      "ID",
+      "코드",
+      "고객",
+      "영화",
+      "좌석",
+      "합계",
+      "상태",
+      "작업"
+    ],
     "cancel": "취소",
     "confirmCancel": "이 예매를 취소하시겠습니까?",
     "cancelSuccess": "예매가 취소되었습니다.",

@@ -322,5 +322,40 @@
       "statusInactive": "비활성",
       "roleChangeSuccess": "역할이 변경되었습니다."
     }
+  },
+  "refunds": {
+    "breadcrumb": "환불",
+    "headers": [
+      "ID",
+      "예매",
+      "금액",
+      "정책 비율",
+      "상태",
+      "작업"
+    ],
+    "status": {
+      "requested": "요청됨",
+      "approved": "승인됨",
+      "rejected": "거절됨",
+      "processing": "처리 중",
+      "completed": "완료됨",
+      "failed": "실패"
+    },
+    "approveButton": "승인",
+    "approveConfirm": "이 환불 요청을 승인하시겠습니까?",
+    "approveSuccess": "환불이 승인되었습니다.",
+    "rejectButton": "거절",
+    "rejectModalTitle": "환불 거절",
+    "rejectSuccess": "환불이 거절되었습니다.",
+    "processButton": "처리",
+    "processConfirm": "이 환불 처리를 시작하시겠습니까?",
+    "processSuccess": "환불이 처리 중입니다.",
+    "completeButton": "완료",
+    "completeConfirm": "이 환불을 완료로 표시하시겠습니까? 결제가 환불되고 좌석이 해제됩니다.",
+    "completeSuccess": "환불이 완료되었습니다.",
+    "failButton": "실패로 표시",
+    "failModalTitle": "환불 실패 표시",
+    "failSuccess": "환불이 실패로 표시되었습니다.",
+    "reasonLabel": "사유"
   }
 }

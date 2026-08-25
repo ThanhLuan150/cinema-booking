@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "Mes remboursements",
+    "empty": "Vous n'avez encore aucune demande de remboursement.",
+    "bookingLabel": "Réservation n°{{id}}",
+    "requestedAt": "Demandé le {{date}}",
+    "rejectionReason": "Motif : {{reason}}",
+    "failureReason": "Motif : {{reason}}",
+    "status": {
+      "requested": "Demandé",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "processing": "En traitement",
+      "completed": "Terminé",
+      "failed": "Échoué"
+    }
+  }
+}

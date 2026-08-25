@@ -322,5 +322,40 @@
       "statusInactive": "Неактивен",
       "roleChangeSuccess": "Роль обновлена."
     }
+  },
+  "refunds": {
+    "breadcrumb": "Возвраты",
+    "headers": [
+      "ID",
+      "Бронирование",
+      "Сумма",
+      "Процент",
+      "Статус",
+      "Действие"
+    ],
+    "status": {
+      "requested": "Запрошен",
+      "approved": "Одобрен",
+      "rejected": "Отклонён",
+      "processing": "В обработке",
+      "completed": "Завершён",
+      "failed": "Ошибка"
+    },
+    "approveButton": "Одобрить",
+    "approveConfirm": "Одобрить этот запрос на возврат?",
+    "approveSuccess": "Возврат одобрен.",
+    "rejectButton": "Отклонить",
+    "rejectModalTitle": "Отклонить возврат",
+    "rejectSuccess": "Возврат отклонён.",
+    "processButton": "Обработать",
+    "processConfirm": "Начать обработку этого возврата?",
+    "processSuccess": "Возврат обрабатывается.",
+    "completeButton": "Завершить",
+    "completeConfirm": "Отметить этот возврат как завершённый? Платёж будет возвращён, а места освобождены.",
+    "completeSuccess": "Возврат завершён.",
+    "failButton": "Отметить как неудачный",
+    "failModalTitle": "Отметить возврат как неудачный",
+    "failSuccess": "Возврат отмечен как неудачный.",
+    "reasonLabel": "Причина"
   }
 }

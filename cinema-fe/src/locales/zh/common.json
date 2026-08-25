@@ -19,7 +19,8 @@
     "logout": "退出登录",
     "login": "登录",
     "logoutSuccess": "退出登录成功",
-    "bookNow": "立即订票"
+    "bookNow": "立即订票",
+    "myRefunds": "我的退款"
   },
   "footer": {
     "tagline": "我们承诺为您提供高品质、放心的购票体验。",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "我的排班"
+      "mySchedule": "我的排班",
+      "refunds": "退款"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

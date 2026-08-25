@@ -19,7 +19,8 @@
     "logout": "ログアウト",
     "login": "ログイン",
     "logoutSuccess": "ログアウトしました",
-    "bookNow": "今すぐ予約"
+    "bookNow": "今すぐ予約",
+    "myRefunds": "マイ返金"
   },
   "footer": {
     "tagline": "当映画チケット予約サイトをご利用いただく際の品質とご満足を保証します。",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "マイスケジュール"
+      "mySchedule": "マイスケジュール",
+      "refunds": "返金"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

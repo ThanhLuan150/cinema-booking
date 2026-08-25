@@ -52,5 +52,12 @@
   "SHOWTIME_INVALID": "Suất chiếu này không còn hiệu lực",
   "CHECKIN_TOO_EARLY": "Chưa đến giờ mở soát vé cho suất chiếu này",
   "CHECKIN_TOO_LATE": "Đã hết thời gian soát vé cho suất chiếu này",
-  "GENERIC": "Đã có lỗi xảy ra, vui lòng thử lại."
+  "GENERIC": "Đã có lỗi xảy ra, vui lòng thử lại.",
+  "BOOKING_NOT_REFUNDABLE": "Chỉ có thể yêu cầu hoàn tiền cho đơn đặt vé đã thanh toán",
+  "REFUND_ALREADY_REQUESTED": "Đơn đặt vé này đang có một yêu cầu hoàn tiền được xử lý",
+  "TICKET_NOT_REFUNDABLE": "Đơn đặt vé này có vé không thể hoàn tiền",
+  "REFUND_WINDOW_EXPIRED": "Đơn đặt vé này quá gần giờ chiếu nên không đủ điều kiện hoàn tiền",
+  "REFUND_NOT_REQUESTED": "Yêu cầu hoàn tiền này không còn ở trạng thái chờ duyệt",
+  "REFUND_NOT_APPROVED": "Yêu cầu hoàn tiền này chưa được duyệt",
+  "REFUND_NOT_PROCESSING": "Yêu cầu hoàn tiền này hiện không ở trạng thái đang xử lý"
 }

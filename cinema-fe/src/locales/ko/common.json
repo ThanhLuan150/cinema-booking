@@ -19,7 +19,8 @@
     "logout": "로그아웃",
     "login": "로그인",
     "logoutSuccess": "로그아웃되었습니다",
-    "bookNow": "지금 예매"
+    "bookNow": "지금 예매",
+    "myRefunds": "내 환불"
   },
   "footer": {
     "tagline": "저희 영화 예매 사이트를 이용하실 때 품질과 만족을 보장해 드립니다.",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "내 스케줄"
+      "mySchedule": "내 스케줄",
+      "refunds": "환불"
     },
     "toggleMenu": "관리자 메뉴 열기/닫기",
     "adminFallback": "관리자",

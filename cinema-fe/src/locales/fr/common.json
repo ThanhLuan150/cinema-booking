@@ -19,7 +19,8 @@
     "logout": "Déconnexion",
     "login": "Connexion",
     "logoutSuccess": "Déconnexion réussie",
-    "bookNow": "Réserver"
+    "bookNow": "Réserver",
+    "myRefunds": "Mes remboursements"
   },
   "footer": {
     "tagline": "Nous garantissons qualité et satisfaction sur notre site de réservation de billets de cinéma.",
@@ -62,7 +63,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "Mon planning"
+      "mySchedule": "Mon planning",
+      "refunds": "Remboursements"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

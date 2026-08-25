@@ -34,5 +34,12 @@
   "DUPLICATE_ASSIGNMENT": "Cet employé est déjà affecté à cette équipe à cette date",
   "SEAT_UNAVAILABLE": "Un ou plusieurs sièges sélectionnés ne sont plus disponibles",
   "NOT_YOUR_HOLD": "Ce siège est réservé par un autre client",
-  "GENERIC": "Une erreur s'est produite, veuillez réessayer."
+  "GENERIC": "Une erreur s'est produite, veuillez réessayer.",
+  "BOOKING_NOT_REFUNDABLE": "Un remboursement ne peut être demandé que pour une réservation payée",
+  "REFUND_ALREADY_REQUESTED": "Une demande de remboursement est déjà en cours pour cette réservation",
+  "TICKET_NOT_REFUNDABLE": "Cette réservation contient un billet qui ne peut pas être remboursé",
+  "REFUND_WINDOW_EXPIRED": "Cette réservation est trop proche de la séance pour être éligible au remboursement",
+  "REFUND_NOT_REQUESTED": "Ce remboursement n'est plus en attente de décision",
+  "REFUND_NOT_APPROVED": "Ce remboursement n'a pas encore été approuvé",
+  "REFUND_NOT_PROCESSING": "Ce remboursement n'est pas actuellement en cours de traitement"
 }

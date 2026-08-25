@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "マイ返金",
+    "empty": "返金リクエストはまだありません。",
+    "bookingLabel": "予約 #{{id}}",
+    "requestedAt": "リクエスト日時: {{date}}",
+    "rejectionReason": "理由: {{reason}}",
+    "failureReason": "理由: {{reason}}",
+    "status": {
+      "requested": "リクエスト済み",
+      "approved": "承認済み",
+      "rejected": "却下",
+      "processing": "処理中",
+      "completed": "完了",
+      "failed": "失敗"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "My Refunds",
+    "empty": "You have no refund requests yet.",
+    "bookingLabel": "Booking #{{id}}",
+    "requestedAt": "Requested on {{date}}",
+    "rejectionReason": "Reason: {{reason}}",
+    "failureReason": "Reason: {{reason}}",
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  }
+}

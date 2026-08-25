@@ -322,5 +322,40 @@
       "statusInactive": "Inaktiv",
       "roleChangeSuccess": "Rolle aktualisiert."
     }
+  },
+  "refunds": {
+    "breadcrumb": "Rückerstattungen",
+    "headers": [
+      "ID",
+      "Buchung",
+      "Betrag",
+      "Richtlinie",
+      "Status",
+      "Aktion"
+    ],
+    "status": {
+      "requested": "Angefordert",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "processing": "In Bearbeitung",
+      "completed": "Abgeschlossen",
+      "failed": "Fehlgeschlagen"
+    },
+    "approveButton": "Genehmigen",
+    "approveConfirm": "Diese Rückerstattungsanfrage genehmigen?",
+    "approveSuccess": "Rückerstattung genehmigt.",
+    "rejectButton": "Ablehnen",
+    "rejectModalTitle": "Rückerstattung ablehnen",
+    "rejectSuccess": "Rückerstattung abgelehnt.",
+    "processButton": "Bearbeiten",
+    "processConfirm": "Mit der Bearbeitung dieser Rückerstattung beginnen?",
+    "processSuccess": "Rückerstattung wird bearbeitet.",
+    "completeButton": "Abschließen",
+    "completeConfirm": "Diese Rückerstattung als abgeschlossen markieren? Die Zahlung wird erstattet und die Plätze freigegeben.",
+    "completeSuccess": "Rückerstattung abgeschlossen.",
+    "failButton": "Als fehlgeschlagen markieren",
+    "failModalTitle": "Rückerstattung als fehlgeschlagen markieren",
+    "failSuccess": "Rückerstattung als fehlgeschlagen markiert.",
+    "reasonLabel": "Grund"
   }
 }

@@ -52,5 +52,12 @@
   "SHOWTIME_INVALID": "This showtime is no longer valid",
   "CHECKIN_TOO_EARLY": "Check-in has not opened yet for this showtime",
   "CHECKIN_TOO_LATE": "Check-in has closed for this showtime",
-  "GENERIC": "Something went wrong, please try again."
+  "GENERIC": "Something went wrong, please try again.",
+  "BOOKING_NOT_REFUNDABLE": "A refund can only be requested for a paid booking",
+  "REFUND_ALREADY_REQUESTED": "A refund is already in progress for this booking",
+  "TICKET_NOT_REFUNDABLE": "This booking has a ticket that cannot be refunded",
+  "REFUND_WINDOW_EXPIRED": "This booking is too close to its showtime to be eligible for a refund",
+  "REFUND_NOT_REQUESTED": "This refund is no longer awaiting a decision",
+  "REFUND_NOT_APPROVED": "This refund has not been approved yet",
+  "REFUND_NOT_PROCESSING": "This refund is not currently being processed"
 }

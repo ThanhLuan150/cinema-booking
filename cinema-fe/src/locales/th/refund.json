@@ -1,0 +1,18 @@
+{
+  "myRefunds": {
+    "pageTitle": "การขอคืนเงินของฉัน",
+    "empty": "คุณยังไม่มีคำขอคืนเงิน",
+    "bookingLabel": "การจอง #{{id}}",
+    "requestedAt": "ขอเมื่อ {{date}}",
+    "rejectionReason": "เหตุผล: {{reason}}",
+    "failureReason": "เหตุผล: {{reason}}",
+    "status": {
+      "requested": "ขอแล้ว",
+      "approved": "อนุมัติแล้ว",
+      "rejected": "ปฏิเสธแล้ว",
+      "processing": "กำลังดำเนินการ",
+      "completed": "เสร็จสมบูรณ์",
+      "failed": "ล้มเหลว"
+    }
+  }
+}

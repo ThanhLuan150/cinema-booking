@@ -88,7 +88,11 @@
       "refundConfirm": "Cancel this booking and request a refund for the changed showtime?",
       "refundSuccess": "Booking cancelled. A refund request has been raised.",
       "failed": "Could not process your decision. Please try again."
-    }
+    },
+    "requestRefund": "Request refund",
+    "requestRefundConfirm": "Request a refund for this booking?",
+    "requestRefundSuccess": "Refund request submitted.",
+    "refundInProgress": "A refund request is already in progress for this booking."
   },
   "myTickets": {
     "pageTitle": "My Tickets",
@@ -119,7 +123,16 @@
   "bookingManagement": {
     "pageTitle": "Booking management",
     "breadcrumb": "Bookings",
-    "headers": ["ID", "Code", "Customer", "Movie", "Seats", "Total", "Status", "Actions"],
+    "headers": [
+      "ID",
+      "Code",
+      "Customer",
+      "Movie",
+      "Seats",
+      "Total",
+      "Status",
+      "Actions"
+    ],
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this booking?",
     "cancelSuccess": "Booking cancelled successfully.",

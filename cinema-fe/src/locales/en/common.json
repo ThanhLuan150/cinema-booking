@@ -21,7 +21,8 @@
     "logout": "Logout",
     "login": "Login",
     "logoutSuccess": "Logged out successfully",
-    "bookNow": "Book Now"
+    "bookNow": "Book Now",
+    "myRefunds": "My Refunds"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
@@ -65,7 +66,8 @@
       "directors": "Directors",
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
-      "mySchedule": "My Schedule"
+      "mySchedule": "My Schedule",
+      "refunds": "Refunds"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

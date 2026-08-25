@@ -78,12 +78,25 @@
     "cancel": "取消订单",
     "confirmCancel": "确定要取消此订单吗？",
     "cancelSuccess": "订单取消成功。",
-    "cancelFailed": "无法取消该订单。"
+    "cancelFailed": "无法取消该订单。",
+    "requestRefund": "申请退款",
+    "requestRefundConfirm": "确定要为此订单申请退款吗？",
+    "requestRefundSuccess": "退款申请已提交。",
+    "refundInProgress": "该订单已有一个正在处理的退款申请。"
   },
   "bookingManagement": {
     "pageTitle": "订单管理",
     "breadcrumb": "订单",
-    "headers": ["ID", "订单号", "客户", "电影", "座位", "总计", "状态", "操作"],
+    "headers": [
+      "ID",
+      "订单号",
+      "客户",
+      "电影",
+      "座位",
+      "总计",
+      "状态",
+      "操作"
+    ],
     "cancel": "取消",
     "confirmCancel": "确定要取消此订单吗？",
     "cancelSuccess": "订单取消成功。",

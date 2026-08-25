@@ -11,9 +11,13 @@ import { getApiErrorMessage } from '@/lib/apiError';
 import { useBookings } from '../hooks/useBookings';
 import { useCancelBooking } from '../hooks/useCancelBooking';
 import { useRespondToReschedule } from '../hooks/useRespondToReschedule';
+import { useMyRefunds } from '@/features/refund/hooks/useMyRefunds';
+import { useRequestRefund } from '@/features/refund/hooks/useRequestRefund';
 import { SEAT_TYPE_KEY } from '@/constants/seatType';
-import { BOOKING_STATUS_META, CANCELLABLE_BOOKING_STATUSES } from '@/constants/bookingStatus';
+import { BOOKING_STATUS, BOOKING_STATUS_META, CANCELLABLE_BOOKING_STATUSES } from '@/constants/bookingStatus';
+import { ACTIVE_REFUND_STATUSES } from '@/constants/refundStatus';
 import { ROUTES } from '@/constants/routes';
+import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 
 function MyBookingsPage() {
   const { t } = useTranslation('booking');
@@ -21,6 +25,23 @@ function MyBookingsPage() {
   const bookings = data?.data ?? [];
   const cancelBookingMutation = useCancelBooking();
   const respondToRescheduleMutation = useRespondToReschedule();
+  const requestRefundMutation = useRequestRefund();
+  const { data: refundsData } = useMyRefunds(1, FULL_LIST_FETCH_LIMIT);
+  const activeRefundBookingIds = new Set(
+    (refundsData?.data ?? [])
+      .filter((refund) => ACTIVE_REFUND_STATUSES.includes(refund.status))
+      .map((refund) => refund.booking_id),
+  );
+
+  const handleRequestRefund = async (bookingId: number) => {
+    if (!(await confirmDialog(t('myBookings.requestRefundConfirm')))) return;
+    try {
+      await requestRefundMutation.mutateAsync({ bookingId });
+      toast.success(t('myBookings.requestRefundSuccess'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t));
+    }
+  };
 
   const handleCancel = async (bookingId: number) => {
     if (!(await confirmDialog(t('myBookings.confirmCancel')))) return;
@@ -72,6 +93,11 @@ function MyBookingsPage() {
         {bookings.map((booking) => {
           const status = BOOKING_STATUS_META[booking.status] || BOOKING_STATUS_META.PENDING;
           const canCancel = CANCELLABLE_BOOKING_STATUSES.includes(booking.status);
+          const hasActiveRefund = activeRefundBookingIds.has(booking.id);
+          // Skip while a reschedule decision is pending: that banner already offers its own
+          // accept/refund choice via respondToReschedule, a separate flow from this one.
+          const canRequestRefund =
+            booking.status === BOOKING_STATUS.paid && !hasActiveRefund && !booking.needs_reschedule_response;
           const seatsSummary = booking.tickets
             .map((ticket) => `${ticket.seat_code} (${t(`myBookings.seatType.${SEAT_TYPE_KEY[ticket.seat_type] ?? 'standard'}`)})`)
             .join(', ');
@@ -158,6 +184,20 @@ function MyBookingsPage() {
                     >
                       {t('myBookings.cancel')}
                     </button>
+                  )}
+                  {canRequestRefund && (
+                    <button
+                      type="button"
+                      className="rounded-lg border border-amber-700/60 px-3 py-1.5 text-xs font-medium text-amber-400 transition-colors hover:bg-amber-500/10"
+                      onClick={() => handleRequestRefund(booking.id)}
+                    >
+                      {t('myBookings.requestRefund')}
+                    </button>
+                  )}
+                  {hasActiveRefund && (
+                    <span className="rounded-lg border border-amber-700/60 px-3 py-1.5 text-xs font-medium text-amber-400">
+                      {t('myBookings.refundInProgress')}
+                    </span>
                   )}
                 </div>
               </div>
