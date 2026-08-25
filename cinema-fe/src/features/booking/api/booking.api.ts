@@ -12,6 +12,7 @@ import type {
   MomoConfirmParams,
   MomoPaymentPayload,
   ScheduleDateOption,
+  Ticket,
   VoucherValidationPayload,
   VoucherValidationResult,
 } from '../types/booking.types';
@@ -72,3 +73,8 @@ export const getBookingById = (id: number | string) =>
   apiClient.get<Booking>(`/bookings/${id}`).then((res) => res.data);
 
 export const cancelBooking = (id: number | string) => apiClient.post(`/bookings/${id}/cancel`);
+
+export const getMyTickets = () => apiClient.get<Ticket[]>('/my-tickets').then((res) => res.data);
+
+export const getTicketById = (id: number | string) =>
+  apiClient.get<Ticket>(`/my-tickets/${id}`).then((res) => res.data);

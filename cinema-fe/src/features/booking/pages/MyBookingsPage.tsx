@@ -1,4 +1,4 @@
-import { QRCodeSVG } from 'qrcode.react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AccountLayout } from '@/components/layout/AccountLayout';
 import { Spinner } from '@/components/ui/Spinner';
@@ -12,6 +12,7 @@ import { useBookings } from '../hooks/useBookings';
 import { useCancelBooking } from '../hooks/useCancelBooking';
 import { SEAT_TYPE_KEY } from '@/constants/seatType';
 import { BOOKING_STATUS_META, CANCELLABLE_BOOKING_STATUSES } from '@/constants/bookingStatus';
+import { ROUTES } from '@/constants/routes';
 
 function MyBookingsPage() {
   const { t } = useTranslation('booking');
@@ -91,27 +92,31 @@ function MyBookingsPage() {
                 )}
                 <p className="mt-1 font-semibold text-white">{booking.total_price.toLocaleString()}đ</p>
 
-                <div className="mt-3 flex items-center gap-3">
-                  <QRCodeSVG value={booking.code} size={64} />
-                  <div className="no-print flex flex-col gap-2">
+                <div className="no-print mt-3 flex flex-wrap items-center gap-2">
+                  <Link
+                    to={ROUTES.myTickets}
+                    className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white no-underline shadow-card transition-colors hover:bg-accent-hover"
+                  >
+                    <i className="fa-solid fa-qrcode mr-1" />
+                    {t('myBookings.viewTickets')}
+                  </Link>
+                  <button
+                    type="button"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-txt transition-colors hover:bg-white/5"
+                    onClick={() => window.print()}
+                  >
+                    <i className="fa-solid fa-print mr-1" />
+                    {t('myBookings.print')}
+                  </button>
+                  {canCancel && (
                     <button
                       type="button"
-                      className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white shadow-card transition-colors hover:bg-accent-hover"
-                      onClick={() => window.print()}
+                      className="rounded-lg border border-red-800/60 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10"
+                      onClick={() => handleCancel(booking.id)}
                     >
-                      <i className="fa-solid fa-print mr-1" />
-                      {t('myBookings.print')}
+                      {t('myBookings.cancel')}
                     </button>
-                    {canCancel && (
-                      <button
-                        type="button"
-                        className="rounded-lg border border-red-800/60 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10"
-                        onClick={() => handleCancel(booking.id)}
-                      >
-                        {t('myBookings.cancel')}
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -132,6 +132,10 @@ describe('booking.repository', () => {
       expect(invoices[0].total_price).toBe(50001);
       expect(invoices[1].total_price).toBe(50000);
       expect(invoices.every((inv) => inv.booking_id === result.bookingId)).toBe(true);
+      expect(invoices.every((inv) => inv.ticket_status === 'ISSUED')).toBe(true);
+      expect(invoices.every((inv) => inv.issued_at instanceof Date)).toBe(true);
+      expect(new Set(invoices.map((inv) => inv.qr_token)).size).toBe(2);
+      expect(invoices[0].qr_token).toMatch(/^TCK-/);
 
       const tickets = await Ticket.find().sort({ id: 1 });
       expect(tickets.every((t) => t.status === 0)).toBe(true);
@@ -167,6 +171,199 @@ describe('booking.repository', () => {
       const result = await bookingRepository.finalizeMomoOrder('ORDER-3', { ticketIds: [1], totalPrice: 1000, accountId: 10 });
       expect(result).toEqual({ alreadyProcessed: true });
       expect(await Invoice.countDocuments()).toBe(1);
+    });
+  });
+
+  describe('ticket lifecycle transitions', () => {
+    it('cancelInvoiceRecord marks the invoice cancelled and its ticket_status CANCELLED', async () => {
+      const invoice = await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1 });
+      await bookingRepository.cancelInvoiceRecord(invoice);
+      const saved = await Invoice.findOne({ id: 1 });
+      expect(saved.status).toBe(0);
+      expect(saved.ticket_status).toBe('CANCELLED');
+    });
+
+    it('refundInvoiceRecord marks the invoice refunded and its ticket_status REFUNDED', async () => {
+      const invoice = await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1 });
+      await bookingRepository.refundInvoiceRecord(invoice);
+      const saved = await Invoice.findOne({ id: 1 });
+      expect(saved.status).toBe(2);
+      expect(saved.ticket_status).toBe('REFUNDED');
+    });
+
+    it('checkInInvoiceRecord marks the invoice checked in and its ticket_status USED', async () => {
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'ISSUED',
+      });
+      const updated = await bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 42, branchId: 7 });
+      expect(updated.checked_in).toBe(true);
+      expect(updated.ticket_status).toBe('USED');
+      expect(updated.checked_in_by).toBe(42);
+      expect(updated.checkin_branch_id).toBe(7);
+      expect(updated.checked_in_at).toBeInstanceOf(Date);
+    });
+
+    it('checkInInvoiceRecord is atomic: a second concurrent check-in on the same ticket loses the race', async () => {
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'ISSUED',
+      });
+      const [first, second] = await Promise.all([
+        bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 1, branchId: 1 }),
+        bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 2, branchId: 1 }),
+      ]);
+      const winners = [first, second].filter(Boolean);
+      expect(winners).toHaveLength(1);
+    });
+
+    it('checkInInvoiceRecord refuses a ticket that is not ISSUED', async () => {
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'USED', checked_in: true,
+      });
+      const updated = await bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 1, branchId: 1 });
+      expect(updated).toBeNull();
+    });
+
+    it('cancelBooking also flips its sibling invoices to CANCELLED ticket_status', async () => {
+      const booking = await Booking.create({
+        id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1,
+        ticket_ids: [1], total_price: 1, status: 'PAID',
+      });
+      await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1 });
+      await bookingRepository.cancelBooking(booking);
+      expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('CANCELLED');
+    });
+
+    it('applyRefund also flips its sibling invoices to REFUNDED ticket_status', async () => {
+      const booking = await Booking.create({
+        id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1,
+        ticket_ids: [1], total_price: 1, status: 'PAID',
+      });
+      await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1 });
+      await bookingRepository.applyRefund(booking);
+      expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('REFUNDED');
+    });
+  });
+
+  describe('findInvoiceByQrToken', () => {
+    it('resolves an invoice by its qr_token', async () => {
+      await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, qr_token: 'TCK-abc' });
+      const found = await bookingRepository.findInvoiceByQrToken('TCK-abc');
+      expect(found?.id).toBe(1);
+    });
+
+    it('returns null for an unknown token', async () => {
+      expect(await bookingRepository.findInvoiceByQrToken('TCK-nope')).toBeNull();
+    });
+  });
+
+  describe('ticket views (my-tickets / QR verify)', () => {
+    async function seedIssuedTicket({ ticketStatus = 'ISSUED', movieDate = '2026-01-01' } = {}) {
+      await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'Cinema', code: 'A', address: '123 St', city: 'HCMC' });
+      await Room.create({ id: 1, cinema_id: 1, name: 'R1', type: 'IMAX' });
+      await Schedule.create({
+        id: 1, movie_id: 1, room_id: 1, movie_date: movieDate, time_begin: '10:00', time_end: '12:00', price: 1,
+      });
+      await Movie.create({ id: 1, name: 'Movie A', premiere_date: '2026-01-01', avatar: 'a.jpg' });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', seat_type: 1, status: 0 });
+      return Invoice.create({
+        id: 1, booking_id: 5, ticket_id: 1, account_id: 42, code: 'BK-1', total_price: 100000,
+        qr_token: 'TCK-view', ticket_status: ticketStatus, issued_at: new Date('2026-01-01T08:00:00Z'),
+      });
+    }
+
+    it('findTicketViewsForAccount returns a fully joined ticket view for the account', async () => {
+      await seedIssuedTicket();
+      const [view] = await bookingRepository.findTicketViewsForAccount(42);
+      expect(view).toMatchObject({
+        ticket_id: 1,
+        booking_id: 5,
+        showtime_id: 1,
+        movie_id: 1,
+        branch_id: 1,
+        room_id: 1,
+        seat_id: 1,
+        seat_code: 'A1',
+        status: 'ISSUED',
+        qr_token: 'TCK-view',
+      });
+      expect(view.movie.name).toBe('Movie A');
+      expect(view.room.name).toBe('R1');
+      expect(view.branch.name).toBe('Cinema');
+      expect(view.schedule.movie_date).toBe('2026-01-01');
+    });
+
+    it('findTicketViewsForAccount does not return another account\'s tickets', async () => {
+      await seedIssuedTicket();
+      expect(await bookingRepository.findTicketViewsForAccount(999)).toHaveLength(0);
+    });
+
+    it('findTicketViewById resolves a single ticket with its owning invoice', async () => {
+      await seedIssuedTicket();
+      const result = await bookingRepository.findTicketViewById(1);
+      expect(result.view.ticket_id).toBe(1);
+      expect(result.invoice.account_id).toBe(42);
+    });
+
+    it('findTicketViewById returns null for an unknown id', async () => {
+      expect(await bookingRepository.findTicketViewById(999)).toBeNull();
+    });
+
+    it('findTicketViewByQrToken resolves a ticket by its scanned QR token', async () => {
+      await seedIssuedTicket();
+      const result = await bookingRepository.findTicketViewByQrToken('TCK-view');
+      expect(result.view.seat_code).toBe('A1');
+    });
+
+    it('findTicketViewByQrToken returns null for an unrecognized token', async () => {
+      expect(await bookingRepository.findTicketViewByQrToken('TCK-nope')).toBeNull();
+    });
+  });
+
+  describe('expireIssuedTickets', () => {
+    it('flips an ISSUED ticket to EXPIRED once its showtime + runtime has clearly passed', async () => {
+      await Schedule.create({
+        id: 1, movie_id: 1, room_id: 1, movie_date: '2020-01-01', time_begin: '10:00', time_end: '12:00', price: 1,
+      });
+      await Movie.create({ id: 1, name: 'Old Movie', premiere_date: '2020-01-01', duration: 120 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+      await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, ticket_status: 'ISSUED' });
+
+      const count = await bookingRepository.expireIssuedTickets();
+      expect(count).toBe(1);
+      expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('EXPIRED');
+    });
+
+    it('leaves an ISSUED ticket alone while its showtime is still upcoming', async () => {
+      const future = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const movie_date = future.toISOString().split('T')[0];
+      await Schedule.create({
+        id: 1, movie_id: 1, room_id: 1, movie_date, time_begin: '10:00', time_end: '12:00', price: 1,
+      });
+      await Movie.create({ id: 1, name: 'Upcoming Movie', premiere_date: '2026-01-01', duration: 120 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+      await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, ticket_status: 'ISSUED' });
+
+      expect(await bookingRepository.expireIssuedTickets()).toBe(0);
+      expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('ISSUED');
+    });
+
+    it('never touches a ticket that already left the ISSUED state (e.g. USED)', async () => {
+      await Schedule.create({
+        id: 1, movie_id: 1, room_id: 1, movie_date: '2020-01-01', time_begin: '10:00', time_end: '12:00', price: 1,
+      });
+      await Movie.create({ id: 1, name: 'Old Movie', premiere_date: '2020-01-01', duration: 120 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+      await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, ticket_status: 'USED', checked_in: true });
+
+      expect(await bookingRepository.expireIssuedTickets()).toBe(0);
+      expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('USED');
+    });
+
+    it('returns 0 without touching anything when there are no ISSUED tickets', async () => {
+      expect(await bookingRepository.expireIssuedTickets()).toBe(0);
     });
   });
 

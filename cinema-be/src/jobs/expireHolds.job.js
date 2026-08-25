@@ -9,6 +9,9 @@ function startSeatHoldSweep() {
     bookingRepository.expireStalePendingBookings().catch((err) => {
       console.error('[seatHoldSweep] failed to expire stale pending bookings', err);
     });
+    bookingRepository.expireIssuedTickets().catch((err) => {
+      console.error('[seatHoldSweep] failed to expire issued tickets', err);
+    });
   }, SWEEP_INTERVAL_MS);
   timer.unref();
   return timer;

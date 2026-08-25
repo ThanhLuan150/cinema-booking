@@ -3,6 +3,7 @@ const bookingRepository = require('../repositories/booking.repository');
 jest.mock('../repositories/booking.repository', () => ({
   expireAllHeldTickets: jest.fn().mockResolvedValue({}),
   expireStalePendingBookings: jest.fn().mockResolvedValue(0),
+  expireIssuedTickets: jest.fn().mockResolvedValue(0),
 }));
 
 describe('startSeatHoldSweep', () => {
@@ -40,6 +41,19 @@ describe('startSeatHoldSweep', () => {
     jest.advanceTimersByTime(30000);
     await Promise.resolve();
     expect(bookingRepository.expireStalePendingBookings).toHaveBeenCalledTimes(1);
+
+    clearInterval(timer);
+  });
+
+  it('also periodically calls expireIssuedTickets to expire no-show tickets past showtime', async () => {
+    const { startSeatHoldSweep } = require('./expireHolds.job');
+    const timer = startSeatHoldSweep();
+
+    expect(bookingRepository.expireIssuedTickets).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(30000);
+    await Promise.resolve();
+    expect(bookingRepository.expireIssuedTickets).toHaveBeenCalledTimes(1);
 
     clearInterval(timer);
   });

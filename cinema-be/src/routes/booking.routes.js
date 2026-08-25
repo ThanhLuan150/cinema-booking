@@ -35,6 +35,26 @@ router.post('/MomoPayment/confirm', requireAuth, asyncHandler(bookingController.
 // GET /api/my-invoices -> booking history for the caller, joined with ticket/schedule/movie details
 router.get('/my-invoices', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.myInvoices));
 
+// GET /api/my-tickets -> the caller's issued tickets (one per seat), newest first, with QR/status
+router.get('/my-tickets', requireAuth, requirePermission('booking.read'), asyncHandler(bookingController.myTickets));
+
+// GET /api/my-tickets/:id -> single ticket detail: movie, showtime, room, seat, QR token, status
+router.get(
+  '/my-tickets/:id',
+  requireAuth,
+  requirePermission('booking.read'),
+  asyncHandler(bookingController.getTicketById),
+);
+
+// POST /api/tickets/verify { qr_token } -> door staff scan a ticket's QR to look it up
+// (ticket.checkin permission, cinema-scoped via the controller's own canAccessCinema check)
+router.post(
+  '/tickets/verify',
+  requireAuth,
+  requirePermission('ticket.checkin'),
+  asyncHandler(bookingController.verifyTicketByQr),
+);
+
 // POST /api/invoice/:id/cancel -> cancels a single ticket's invoice if the showtime is
 // more than 2h away
 router.post(

@@ -22,6 +22,7 @@ export function AccountLayout({ title, children }: AccountLayoutProps) {
   const navItems = [
     { to: ROUTES.profile, icon: 'fa-regular fa-user', label: t('header.viewProfile') },
     { to: ROUTES.myBookings, icon: 'fa-solid fa-ticket', label: t('header.myBookings') },
+    { to: ROUTES.myTickets, icon: 'fa-solid fa-qrcode', label: t('header.myTickets') },
     { to: ROUTES.paymentHistory, icon: 'fa-solid fa-receipt', label: t('header.paymentHistory') },
     { to: ROUTES.changePassword, icon: 'fa-solid fa-lock', label: t('header.changePassword') },
   ];

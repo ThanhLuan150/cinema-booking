@@ -358,10 +358,46 @@ async function cancelInvoice(req, res) {
     await bookingRepository.updateTicketStatus(ticket.id, 1);
   }
 
-  invoice.status = 0;
-  await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.cancelInvoiceRecord(invoice);
 
   res.json(invoice);
+}
+
+// GET /api/my-tickets -> the caller's full ticket history (one row per seat, across every
+// booking), newest first — movie/showtime/room/seat/QR/status all joined in for the customer's
+// "Ticket" view (Ticket 13). Read-only: nothing here lets the frontend change a ticket's status.
+async function myTickets(req, res) {
+  const tickets = await bookingRepository.findTicketViewsForAccount(req.account.accountId);
+  res.json(tickets);
+}
+
+// GET /api/my-tickets/:id -> single ticket detail, including its QR token
+async function getTicketById(req, res) {
+  const result = await bookingRepository.findTicketViewById(req.params.id);
+  if (!result) return res.status(404).json({ message: 'Ticket not found' });
+  if (result.invoice.account_id !== req.account.accountId && req.permissionScope !== 'ALL') {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  res.json(result.view);
+}
+
+// POST /api/tickets/verify { qr_token } -> door staff resolve a scanned QR to its ticket detail
+// before deciding whether to check it in (ticket.checkin permission, cinema-scoped).
+async function verifyTicketByQr(req, res) {
+  const { qr_token } = req.body;
+  if (!qr_token) return res.status(400).json({ message: 'qr_token is required' });
+
+  const result = await bookingRepository.findTicketViewByQrToken(qr_token);
+  if (!result) {
+    return res.status(404).json({ message: 'Invalid or unknown QR code', code: 'TICKET_NOT_FOUND' });
+  }
+
+  const cinema = result.view.branch_id ? await bookingRepository.findCinemaById(result.view.branch_id) : null;
+  if (!(await canAccessCinema(req, cinema))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  res.json(result.view);
 }
 
 // GET /api/admin/invoices?page=&limit= -> transactions, newest first (admin only)
@@ -411,8 +447,7 @@ async function refundInvoice(req, res) {
   }
 
   await bookingRepository.updateTicketStatus(invoice.ticket_id, 1);
-  invoice.status = 2;
-  await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.refundInvoiceRecord(invoice);
 
   res.json(invoice);
 }
@@ -442,23 +477,63 @@ async function lookupInvoice(req, res) {
   });
 }
 
-// POST /api/invoice/:id/checkin -> door check-in, marks the booking as admitted
-// (super admin, or branch admin/employee scoped to the invoice's own cinema).
+// POST /api/invoice/:id/checkin -> door check-in (Ticket 14). Route middleware already enforces
+// ticket.checkin permission and that the caller is staffed at the invoice's own branch
+// (requireBranchAccess -> findCinemaIdByInvoiceId), covering the "ticket belongs to the current
+// branch" requirement. Everything else the spec requires — ticket exists, payment PAID, not
+// USED/CANCELLED/REFUNDED/EXPIRED, showtime still active, within the check-in window — is
+// checked here, and the actual state flip is atomic (see checkInInvoiceRecord) so two scanners
+// racing on the same ticket can't both succeed.
 async function checkInInvoice(req, res) {
   const invoice = await bookingRepository.findInvoiceById(req.params.id);
-  if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
-  if (invoice.status !== 1) {
-    return res.status(400).json({ message: 'Only paid bookings can be checked in', code: 'INVOICE_NOT_PAID' });
-  }
-  if (invoice.checked_in) {
-    return res.status(400).json({ message: 'This ticket has already been checked in', code: 'ALREADY_CHECKED_IN' });
+  if (!invoice) return res.status(404).json({ message: 'Ticket not found', code: 'TICKET_NOT_FOUND' });
+
+  const payment = await paymentRepository.findByCode(invoice.code);
+  if (!payment || payment.status !== 'PAID') {
+    return res.status(400).json({ message: 'Payment for this ticket has not been completed', code: 'PAYMENT_NOT_PAID' });
   }
 
-  invoice.checked_in = true;
-  await bookingRepository.saveInvoice(invoice);
-  await bookingRepository.maybeCompleteBooking(invoice.booking_id);
+  if (invoice.ticket_status === 'USED') {
+    return res.status(409).json({ message: 'This ticket has already been checked in', code: 'ALREADY_CHECKED_IN' });
+  }
+  if (invoice.ticket_status === 'CANCELLED') {
+    return res.status(400).json({ message: 'This ticket has been cancelled', code: 'TICKET_CANCELLED' });
+  }
+  if (invoice.ticket_status === 'REFUNDED') {
+    return res.status(400).json({ message: 'This ticket has been refunded', code: 'TICKET_REFUNDED' });
+  }
+  if (invoice.ticket_status === 'EXPIRED') {
+    return res.status(400).json({ message: 'This ticket has expired', code: 'TICKET_EXPIRED' });
+  }
 
-  res.json(invoice);
+  const ticket = await bookingRepository.findTicketById(invoice.ticket_id);
+  const schedule = ticket ? await bookingRepository.findScheduleById(ticket.schedule_id) : null;
+  if (!schedule || schedule.status !== 'ACTIVE') {
+    return res.status(400).json({ message: 'This showtime is no longer valid', code: 'SHOWTIME_INVALID' });
+  }
+
+  const movie = await bookingRepository.findMovieById(schedule.movie_id);
+  const { opensAt, closesAt } = bookingRepository.getShowtimeCheckinWindow(schedule, movie);
+  const now = Date.now();
+  if (now < opensAt) {
+    return res.status(400).json({ message: 'Check-in has not opened yet for this showtime', code: 'CHECKIN_TOO_EARLY' });
+  }
+  if (now > closesAt) {
+    return res.status(400).json({ message: 'Check-in has closed for this showtime', code: 'CHECKIN_TOO_LATE' });
+  }
+
+  const updated = await bookingRepository.checkInInvoiceRecord({
+    id: invoice.id,
+    accountId: req.account ? req.account.accountId : null,
+    branchId: req.branchId ?? null,
+  });
+  if (!updated) {
+    return res.status(409).json({ message: 'This ticket has already been checked in', code: 'ALREADY_CHECKED_IN' });
+  }
+
+  await bookingRepository.maybeCompleteBooking(updated.booking_id);
+
+  res.json(updated);
 }
 
 // Joins each Booking with its seats, movie, showtime and branch for list/detail responses.
@@ -614,6 +689,9 @@ module.exports = {
   momoIpn,
   momoConfirm,
   myInvoices,
+  myTickets,
+  getTicketById,
+  verifyTicketByQr,
   cancelInvoice,
   listBookings,
   getBookingById,

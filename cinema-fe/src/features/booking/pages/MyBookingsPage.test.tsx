@@ -95,4 +95,11 @@ describe('MyBookingsPage', () => {
     renderPage();
     expect(screen.queryByText('Cancel booking')).not.toBeInTheDocument();
   });
+
+  it('links to the e-tickets page instead of embedding a raw QR code', () => {
+    useBookingsMock.mockReturnValue({ data: { data: [booking()] }, isLoading: false });
+    renderPage();
+    const link = screen.getByText('View e-tickets').closest('a');
+    expect(link).toHaveAttribute('href', '/MyTickets');
+  });
 });
