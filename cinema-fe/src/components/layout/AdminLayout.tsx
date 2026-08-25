@@ -84,6 +84,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.bookingManagement')}
                 </NavLink>
               )}
+              {hasPermission('combo.order.view') && (
+                <NavLink to={ROUTES.comboOrders} className={navLinkClass}>
+                  <ion-icon name="fast-food" />
+                  {t('adminLayout.nav.comboOrders')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.employeeMySchedule} className={navLinkClass}>
                 <ion-icon name="calendar" />
                 {t('adminLayout.nav.mySchedule')}
@@ -143,6 +149,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <NavLink to={ROUTES.refundManagement} className={navLinkClass}>
                   <ion-icon name="cash-outline" />
                   {t('adminLayout.nav.refunds')}
+                </NavLink>
+              )}
+              {hasPermission('combo.order.view') && (
+                <NavLink to={ROUTES.comboOrders} className={navLinkClass}>
+                  <ion-icon name="fast-food-outline" />
+                  {t('adminLayout.nav.comboOrders')}
                 </NavLink>
               )}
               <NavLink to={ROUTES.ownerEmployees} className={navLinkClass}>

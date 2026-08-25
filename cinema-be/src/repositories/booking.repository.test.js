@@ -15,6 +15,8 @@ const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
+const Combo = require('../models/Combo');
+const ComboOrder = require('../models/ComboOrder');
 
 beforeAll(async () => connect());
 afterEach(async () => {
@@ -678,6 +680,119 @@ describe('booking.repository', () => {
       expect(booking.paid_at).toBeInstanceOf(Date);
       const invoices = await Invoice.find({ booking_id: pending.id });
       expect(invoices).toHaveLength(2);
+    });
+
+    it('finalizeMomoOrder creates a PAID ComboOrder linked to the booking when combos were purchased', async () => {
+      await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+      await Combo.create([
+        { id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000 },
+        { id: 2, cinema_id: 1, name: 'Coke', price: 20000, type: 'BEVERAGE' },
+      ]);
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2 });
+      const pending = await bookingRepository.createPendingBooking({
+        code: 'BK-3',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1],
+        comboIds: [1, 1, 2],
+        totalPrice: 220000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+
+      await bookingRepository.finalizeMomoOrder(
+        'BK-3',
+        { ticketIds: [1], comboIds: [1, 1, 2], totalPrice: 220000, accountId: 10 },
+        { comboPaymentMethod: 'MOMO' },
+      );
+
+      const order = await ComboOrder.findOne({ booking_id: pending.id });
+      expect(order).not.toBeNull();
+      expect(order.status).toBe('PAID');
+      expect(order.payment_method).toBe('MOMO');
+      expect(order.branch_id).toBe(1);
+      expect(order.account_id).toBe(10);
+      expect(order.total_price).toBe(120000);
+      expect(order.items).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ combo_id: 1, quantity: 2, unit_price: 50000, line_total: 100000 }),
+          expect.objectContaining({ combo_id: 2, quantity: 1, unit_price: 20000, line_total: 20000 }),
+        ]),
+      );
+    });
+
+    it('createCounterSale creates a linked ComboOrder paid by CASH when combos were purchased', async () => {
+      await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+      await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
+      await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+      await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+      await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000 });
+
+      const result = await bookingRepository.createCounterSale({
+        ticketIds: [1],
+        comboIds: [1],
+        voucherCode: null,
+        discountAmount: 0,
+        totalPrice: 150000,
+        accountId: 1,
+        createdBy: 42,
+        branchId: 1,
+      });
+
+      const order = await ComboOrder.findOne({ booking_id: result.bookingId });
+      expect(order).not.toBeNull();
+      expect(order.status).toBe('PAID');
+      expect(order.payment_method).toBe('CASH');
+      expect(order.created_by).toBe(42);
+    });
+
+    it('finalizeMomoOrder silently drops combo ids that no longer resolve to a Combo', async () => {
+      await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2 });
+      await bookingRepository.createPendingBooking({
+        code: 'BK-4',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1],
+        comboIds: [999],
+        totalPrice: 100000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+
+      const result = await bookingRepository.finalizeMomoOrder('BK-4', {
+        ticketIds: [1],
+        comboIds: [999],
+        totalPrice: 100000,
+        accountId: 10,
+      });
+
+      expect(result.alreadyProcessed).toBe(false);
+      expect(await ComboOrder.countDocuments()).toBe(0);
+    });
+
+    it('finalizeMomoOrder does not create a second ComboOrder on a retried call for the same order', async () => {
+      await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+      await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000 });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2 });
+      await bookingRepository.createPendingBooking({
+        code: 'BK-5',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1],
+        comboIds: [1],
+        totalPrice: 150000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+
+      const payload = { ticketIds: [1], comboIds: [1], totalPrice: 150000, accountId: 10 };
+      await bookingRepository.finalizeMomoOrder('BK-5', payload);
+      const retried = await bookingRepository.finalizeMomoOrder('BK-5', payload);
+
+      expect(retried.alreadyProcessed).toBe(true);
+      expect(await ComboOrder.countDocuments()).toBe(1);
     });
 
     it('finalizeMomoOrder creates a PAID booking directly when none was pre-created (counter sale)', async () => {

@@ -45,7 +45,7 @@ describe('seedPositions', () => {
   it('grants Cashier booking/ticket/combo read, combo.sell and payment.create at BRANCH scope', async () => {
     await seedRbac();
     await seedPositions();
-    for (const code of ['booking.read', 'booking.create', 'ticket.read', 'combo.read', 'combo.sell', 'payment.create']) {
+    for (const code of ['booking.read', 'booking.create', 'ticket.read', 'combo.view', 'combo.sell', 'payment.create']) {
       expect(await scopeFor('CASHIER', code)).toBe('BRANCH');
     }
   });

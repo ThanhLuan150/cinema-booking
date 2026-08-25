@@ -6,8 +6,9 @@ async function findCinemaIdByComboId(comboId) {
   return combo ? combo.cinema_id : null;
 }
 
-async function findActiveByCinemaId(branchId, { skip = 0, limit = 20 } = {}) {
+async function findActiveByCinemaId(branchId, { skip = 0, limit = 20, type } = {}) {
   const filter = { active: true, cinema_id: Number(branchId) };
+  if (type) filter.type = type;
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Combo.countDocuments(filter),
@@ -15,8 +16,9 @@ async function findActiveByCinemaId(branchId, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findByCinemaIds(branchIds, { skip = 0, limit = 20 } = {}) {
+async function findByCinemaIds(branchIds, { skip = 0, limit = 20, type } = {}) {
   const filter = { cinema_id: { $in: branchIds } };
+  if (type) filter.type = type;
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Combo.countDocuments(filter),
@@ -24,16 +26,19 @@ async function findByCinemaIds(branchIds, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
-async function findAll({ skip = 0, limit = 20 } = {}) {
+async function findAll({ skip = 0, limit = 20, type } = {}) {
+  const filter = {};
+  if (type) filter.type = type;
   const [data, total] = await Promise.all([
-    Combo.find().sort({ id: -1 }).skip(skip).limit(limit),
-    Combo.countDocuments(),
+    Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Combo.countDocuments(filter),
   ]);
   return { data, total };
 }
 
-async function findActive({ skip = 0, limit = 20 } = {}) {
+async function findActive({ skip = 0, limit = 20, type } = {}) {
   const filter = { active: true };
+  if (type) filter.type = type;
   const [data, total] = await Promise.all([
     Combo.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
     Combo.countDocuments(filter),
@@ -43,6 +48,10 @@ async function findActive({ skip = 0, limit = 20 } = {}) {
 
 async function findById(id) {
   return Combo.findOne({ id: Number(id) });
+}
+
+async function findByIds(ids) {
+  return Combo.find({ id: { $in: ids.map(Number) } });
 }
 
 async function findOwnedCinemaIds(accountId) {
@@ -69,6 +78,7 @@ module.exports = {
   findAll,
   findActive,
   findById,
+  findByIds,
   findOwnedCinemaIds,
   create,
   updateFields,

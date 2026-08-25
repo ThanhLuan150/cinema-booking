@@ -41,6 +41,20 @@ export interface ComboFormValues {
   name: string;
   description: string;
   price: string;
+  type: 'FOOD' | 'BEVERAGE' | 'COMBO';
+  // combo item_id -> quantity; only meaningful (and only sent) when type === 'COMBO'
+  items: Record<number, number>;
+}
+
+// Wire payload for POST /combo — `items` here is already normalized to the array shape the
+// backend expects, unlike ComboFormValues.items (a form-friendly item_id -> quantity map).
+export interface CreateComboPayload {
+  cinema_id: number;
+  name: string;
+  description: string;
+  price: number;
+  type: 'FOOD' | 'BEVERAGE' | 'COMBO';
+  items: { item_id: number; quantity: number }[];
 }
 
 export interface VoucherFormValues {

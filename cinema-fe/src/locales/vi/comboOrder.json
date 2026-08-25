@@ -1,0 +1,39 @@
+{
+  "breadcrumb": "Đơn Combo",
+  "statusFilterPlaceholder": "Tất cả trạng thái",
+  "status": {
+    "pending": "Chờ thanh toán",
+    "paid": "Đã thanh toán",
+    "preparing": "Đang chuẩn bị",
+    "ready": "Sẵn sàng",
+    "delivered": "Đã giao",
+    "cancelled": "Đã hủy"
+  },
+  "headers": {
+    "code": "Mã đơn",
+    "items": "Sản phẩm",
+    "total": "Tổng tiền",
+    "status": "Trạng thái",
+    "actions": "Thao tác"
+  },
+  "sellButton": "Bán combo +",
+  "sellModalTitle": "Bán combo",
+  "sellBranchLabel": "Chi nhánh",
+  "sellBranchPlaceholder": "Chọn chi nhánh",
+  "sellSelectBranchFirst": "Vui lòng chọn chi nhánh để xem các combo/món có thể bán.",
+  "sellSubmit": "Tạo đơn",
+  "sellSuccess": "Đã tạo đơn combo.",
+  "noItems": "Không có combo/món nào để bán tại chi nhánh này.",
+  "payButton": "Thanh toán",
+  "paySuccess": "Đơn đã được thanh toán.",
+  "prepareButton": "Bắt đầu chuẩn bị",
+  "prepareSuccess": "Đơn đang được chuẩn bị.",
+  "readyButton": "Đã sẵn sàng",
+  "readySuccess": "Đơn đã sẵn sàng để giao.",
+  "deliverButton": "Giao hàng",
+  "deliverSuccess": "Đơn đã được giao.",
+  "cancelButton": "Hủy đơn",
+  "cancelModalTitle": "Hủy đơn combo",
+  "cancelReasonLabel": "Lý do (không bắt buộc)",
+  "cancelSuccess": "Đơn đã bị hủy."
+}

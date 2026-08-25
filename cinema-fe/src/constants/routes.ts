@@ -47,6 +47,7 @@ export const ROUTES = {
   ownerBookings: '/OwnerBookings',
   bookingManagement: '/BookingManagement',
   refundManagement: '/RefundManagement',
+  comboOrders: '/ComboOrders',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',
   ownerShiftAssignments: '/OwnerShifts/Assignments',

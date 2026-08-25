@@ -9,6 +9,8 @@ const Movie = require('../models/Movie');
 const Account = require('../models/Account');
 const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
+const Combo = require('../models/Combo');
+const ComboOrder = require('../models/ComboOrder');
 const paymentRepository = require('../repositories/payment.repository');
 
 function mockRes() {
@@ -392,6 +394,23 @@ describe('POST /api/MomoPayment/ipn', () => {
     await bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-1', extraData } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ resultCode: 0, message: 'Confirm Success' }));
     expect(await Invoice.countDocuments()).toBe(1);
+  });
+
+  it('creates a linked, MOMO-paid ComboOrder when the order included combos', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000 });
+    const extraData = Buffer.from(
+      JSON.stringify({ ticketIds: [1], comboIds: [1], accountId: 10, totalPrice: 150000 }),
+    ).toString('base64');
+    const res = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-COMBO', extraData } }, res);
+
+    const booking = await Booking.findOne({ code: 'ORDER-COMBO' });
+    const order = await ComboOrder.findOne({ booking_id: booking.id });
+    expect(order).not.toBeNull();
+    expect(order.status).toBe('PAID');
+    expect(order.payment_method).toBe('MOMO');
   });
 
   it('does not create duplicate Booking/Ticket/Invoice rows on a retried (duplicate) IPN call', async () => {

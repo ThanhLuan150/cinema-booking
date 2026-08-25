@@ -29,14 +29,52 @@ describe('combo mutation hooks', () => {
     deleteComboMock.mockReset();
   });
 
-  it('useCreateCombo coerces price to a number and invalidates ownerCombos', async () => {
+  it('useCreateCombo coerces price/cinema_id to numbers and invalidates ownerCombos', async () => {
     createComboMock.mockResolvedValue({});
     const { wrapper, invalidateSpy } = makeWrapper();
     const { result } = renderHook(() => useCreateCombo(), { wrapper });
-    result.current.mutate({ name: 'Combo', price: '50000', cinema_id: 1 } as any);
+    result.current.mutate({
+      name: 'Combo',
+      description: 'Tasty',
+      price: '50000',
+      cinema_id: '1',
+      type: 'FOOD',
+      items: {},
+    });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(createComboMock).toHaveBeenCalledWith({ name: 'Combo', price: 50000, cinema_id: 1 });
+    expect(createComboMock).toHaveBeenCalledWith({
+      name: 'Combo',
+      description: 'Tasty',
+      price: 50000,
+      cinema_id: 1,
+      type: 'FOOD',
+      items: [],
+    });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['ownerCombos'] });
+  });
+
+  it('useCreateCombo normalizes a COMBO type\'s items map to an array, dropping zero quantities', async () => {
+    createComboMock.mockResolvedValue({});
+    const { wrapper } = makeWrapper();
+    const { result } = renderHook(() => useCreateCombo(), { wrapper });
+    result.current.mutate({
+      name: 'Combo Bắp Nước',
+      description: '',
+      price: '65000',
+      cinema_id: '1',
+      type: 'COMBO',
+      items: { 1: 2, 2: 0, 3: 1 },
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(createComboMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'COMBO',
+        items: [
+          { item_id: 1, quantity: 2 },
+          { item_id: 3, quantity: 1 },
+        ],
+      }),
+    );
   });
 
   it('useUpdateCombo toggles active and invalidates ownerCombos', async () => {

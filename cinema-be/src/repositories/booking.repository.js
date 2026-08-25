@@ -12,6 +12,7 @@ const MovieCategory = require('../models/MovieCategory');
 const Combo = require('../models/Combo');
 const Payment = require('../models/Payment');
 const paymentRepository = require('./payment.repository');
+const comboOrderRepository = require('./comboOrder.repository');
 const nextId = require('../utils/nextId');
 const { generateQrToken } = require('../utils/qrToken');
 const { sendInvoiceEmail } = require('../utils/mailer');
@@ -39,10 +40,45 @@ async function findUpcomingSchedulesForMovie(movieId, fromDate) {
   });
 }
 
+// Groups a flat combo_ids list (one entry per unit) into a Combo Staff-visible ComboOrder,
+// already PAID since the booking's own payment already covers it, so it shows up in the
+// PREPARING/READY/DELIVERED queue for whoever bought combo alongside their tickets — not just
+// combo sold standalone at the counter via POST /combo-orders. Ids that no longer resolve to a
+// live Combo (e.g. deleted since) are silently dropped rather than failing the whole booking.
+async function createLinkedComboOrder({ bookingId, branchId, accountId, comboIds, createdBy, paymentMethod }) {
+  const quantityById = new Map();
+  for (const id of comboIds) {
+    const key = Number(id);
+    quantityById.set(key, (quantityById.get(key) || 0) + 1);
+  }
+
+  const combos = await Combo.find({ id: { $in: [...quantityById.keys()] } });
+  const comboById = new Map(combos.map((c) => [c.id, c]));
+  const items = [...quantityById.entries()]
+    .map(([id, quantity]) => {
+      const combo = comboById.get(id);
+      if (!combo) return null;
+      return { combo_id: id, name: combo.name, unit_price: combo.price, quantity, line_total: combo.price * quantity };
+    })
+    .filter(Boolean);
+  if (items.length === 0) return null;
+
+  const totalPrice = items.reduce((sum, item) => sum + item.line_total, 0);
+  const order = await comboOrderRepository.createOrder({
+    branchId,
+    accountId,
+    bookingId,
+    items,
+    totalPrice,
+    createdBy,
+  });
+  return comboOrderRepository.markPaid(order.id, paymentMethod);
+}
+
 // Creates the Invoice rows + marks tickets sold for a paid MoMo order. Idempotent on
 // `orderId` (stored as Invoice.code) so a retried IPN call or a user landing on the
 // redirect page twice never double-books.
-async function finalizeMomoOrder(orderId, orderPayload) {
+async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = null } = {}) {
   const existing = await Invoice.findOne({ code: orderId });
   if (existing) return { alreadyProcessed: true };
 
@@ -123,6 +159,23 @@ async function finalizeMomoOrder(orderId, orderPayload) {
       { id: Number(ticketIds[index]) },
       { $set: { status: 0, held_by: null, held_until: null } },
     );
+  }
+
+  if (comboIds.length > 0) {
+    try {
+      await createLinkedComboOrder({
+        bookingId: booking.id,
+        branchId: booking.branch_id,
+        accountId: Number(accountId),
+        comboIds,
+        createdBy,
+        paymentMethod: comboPaymentMethod,
+      });
+    } catch (err) {
+      // Never let the combo-fulfillment side effect block ticket/payment finalization —
+      // the customer already paid and must get their tickets regardless.
+      console.error(`Failed to create linked combo order for booking ${booking.id}:`, err);
+    }
   }
 
   const account = await Account.findOne({ id: Number(accountId) });
@@ -481,17 +534,11 @@ async function createCounterSale({
   }
 
   const orderId = `CTR-${await nextId('counterOrder')}`;
-  const result = await finalizeMomoOrder(orderId, {
-    ticketIds,
-    comboIds,
-    voucherCode,
-    discountAmount,
-    totalPrice,
-    accountId,
-    createdBy,
-    seatTotal,
-    comboTotal,
-  });
+  const result = await finalizeMomoOrder(
+    orderId,
+    { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy, seatTotal, comboTotal },
+    { comboPaymentMethod: 'CASH' },
+  );
 
   if (!result.skipped && !result.alreadyProcessed) {
     await paymentRepository.createPayment({
