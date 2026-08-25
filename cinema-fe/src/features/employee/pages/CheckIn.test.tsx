@@ -18,6 +18,16 @@ vi.mock('react-i18next', async (importOriginal) => {
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: { role: 3 } }) }));
 vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
+// The camera scanner needs getUserMedia/canvas support the test DOM doesn't provide; it's
+// covered on its own in QrScanner.test.tsx, so CheckIn only has to verify it's wired up.
+const qrScannerOnScan = vi.fn();
+vi.mock('../components/QrScanner', () => ({
+  QrScanner: ({ active, onScan }: { active: boolean; onScan: (data: string) => void }) => {
+    qrScannerOnScan.mockImplementation(onScan);
+    return active ? <div data-testid="qr-scanner-stub" /> : null;
+  },
+}));
+
 const refetchMock = vi.fn();
 const useLookupInvoiceForCheckInMock = vi.fn();
 const checkInMutate = vi.fn();
@@ -50,6 +60,7 @@ describe('CheckIn', () => {
     useLookupInvoiceForCheckInMock.mockReset();
     checkInMutate.mockReset();
     verifyQrMutate.mockReset();
+    qrScannerOnScan.mockReset();
     useLookupInvoiceForCheckInMock.mockReturnValue({ data: undefined, refetch: refetchMock, isFetching: false, error: null });
   });
 
@@ -156,6 +167,36 @@ describe('CheckIn', () => {
     fireEvent.change(screen.getByPlaceholderText('checkIn.qrPlaceholder'), { target: { value: 'TCK-bad' } });
     fireEvent.click(screen.getByText('checkIn.qrVerify'));
     expect(await screen.findByText('checkIn.qrNotFound')).toBeInTheDocument();
+  });
+
+  it('toggles the camera scanner on and off', () => {
+    renderPage();
+    expect(screen.queryByTestId('qr-scanner-stub')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('checkIn.startScan'));
+    expect(screen.getByTestId('qr-scanner-stub')).toBeInTheDocument();
+    expect(screen.getByText('checkIn.stopScan')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('checkIn.stopScan'));
+    expect(screen.queryByTestId('qr-scanner-stub')).not.toBeInTheDocument();
+  });
+
+  it('verifies and offers check-in for a ticket detected by the camera scanner', async () => {
+    verifyQrMutate.mockResolvedValue({
+      ticket_id: 5,
+      status: 'ISSUED',
+      seat_code: 'B3',
+      movie: { name: 'Movie B' },
+      schedule: {},
+    });
+    renderPage();
+
+    fireEvent.click(screen.getByText('checkIn.startScan'));
+    qrScannerOnScan('TCK-CAM');
+
+    await waitFor(() => expect(verifyQrMutate).toHaveBeenCalledWith('TCK-CAM'));
+    expect(await screen.findByText('Movie B')).toBeInTheDocument();
+    expect(screen.queryByTestId('qr-scanner-stub')).not.toBeInTheDocument();
   });
 
   it('disables QR check-in for a ticket that is not ISSUED (e.g. already USED)', async () => {

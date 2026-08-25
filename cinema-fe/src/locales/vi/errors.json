@@ -43,5 +43,14 @@
   "DUPLICATE_ASSIGNMENT": "Nhân viên này đã được phân vào ca làm việc này trong ngày này",
   "SEAT_UNAVAILABLE": "Một hoặc nhiều ghế đã chọn không còn khả dụng",
   "NOT_YOUR_HOLD": "Ghế này đang được khách hàng khác giữ",
+  "TICKET_NOT_FOUND": "Không tìm thấy vé",
+  "PAYMENT_NOT_PAID": "Vé này chưa được thanh toán",
+  "ALREADY_CHECKED_IN": "Vé này đã được soát trước đó",
+  "TICKET_CANCELLED": "Vé này đã bị hủy",
+  "TICKET_REFUNDED": "Vé này đã được hoàn tiền",
+  "TICKET_EXPIRED": "Vé này đã hết hạn",
+  "SHOWTIME_INVALID": "Suất chiếu này không còn hiệu lực",
+  "CHECKIN_TOO_EARLY": "Chưa đến giờ mở soát vé cho suất chiếu này",
+  "CHECKIN_TOO_LATE": "Đã hết thời gian soát vé cho suất chiếu này",
   "GENERIC": "Đã có lỗi xảy ra, vui lòng thử lại."
 }

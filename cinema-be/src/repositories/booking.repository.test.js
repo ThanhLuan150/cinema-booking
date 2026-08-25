@@ -192,11 +192,38 @@ describe('booking.repository', () => {
     });
 
     it('checkInInvoiceRecord marks the invoice checked in and its ticket_status USED', async () => {
-      const invoice = await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1 });
-      await bookingRepository.checkInInvoiceRecord(invoice);
-      const saved = await Invoice.findOne({ id: 1 });
-      expect(saved.checked_in).toBe(true);
-      expect(saved.ticket_status).toBe('USED');
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'ISSUED',
+      });
+      const updated = await bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 42, branchId: 7 });
+      expect(updated.checked_in).toBe(true);
+      expect(updated.ticket_status).toBe('USED');
+      expect(updated.checked_in_by).toBe(42);
+      expect(updated.checkin_branch_id).toBe(7);
+      expect(updated.checked_in_at).toBeInstanceOf(Date);
+    });
+
+    it('checkInInvoiceRecord is atomic: a second concurrent check-in on the same ticket loses the race', async () => {
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'ISSUED',
+      });
+      const [first, second] = await Promise.all([
+        bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 1, branchId: 1 }),
+        bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 2, branchId: 1 }),
+      ]);
+      const winners = [first, second].filter(Boolean);
+      expect(winners).toHaveLength(1);
+    });
+
+    it('checkInInvoiceRecord refuses a ticket that is not ISSUED', async () => {
+      await Invoice.create({
+        id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, status: 1,
+        ticket_status: 'USED', checked_in: true,
+      });
+      const updated = await bookingRepository.checkInInvoiceRecord({ id: 1, accountId: 1, branchId: 1 });
+      expect(updated).toBeNull();
     });
 
     it('cancelBooking also flips its sibling invoices to CANCELLED ticket_status', async () => {

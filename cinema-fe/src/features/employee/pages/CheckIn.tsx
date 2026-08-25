@@ -8,6 +8,7 @@ import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import type { Ticket } from '@/features/booking/types/booking.types';
 import { useCheckInInvoice, useLookupInvoiceForCheckIn, useVerifyTicketByQr } from '../hooks/useInvoiceCheckIn';
+import { QrScanner } from '../components/QrScanner';
 
 const ISSUED_TICKET_BADGE: Record<string, { variant: 'success' | 'default' | 'warning'; key: string }> = {
   ISSUED: { variant: 'default', key: 'statusIssued' },
@@ -26,12 +27,27 @@ function CheckIn() {
   const [qrToken, setQrToken] = useState('');
   const [scannedTicket, setScannedTicket] = useState<Ticket | null>(null);
   const [qrError, setQrError] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const verifyQrMutation = useVerifyTicketByQr();
 
   const handleLookup = useCallback(async () => {
     if (!code) return;
     await refetch();
   }, [code, refetch]);
+
+  const runVerifyQr = useCallback(
+    async (token: string) => {
+      setQrError(false);
+      try {
+        const ticket = await verifyQrMutation.mutateAsync(token);
+        setScannedTicket(ticket);
+      } catch {
+        setScannedTicket(null);
+        setQrError(true);
+      }
+    },
+    [verifyQrMutation],
+  );
 
   const handleCheckIn = useCallback(async () => {
     if (!invoice) return;
@@ -46,15 +62,17 @@ function CheckIn() {
 
   const handleVerifyQr = useCallback(async () => {
     if (!qrToken) return;
-    setQrError(false);
-    try {
-      const ticket = await verifyQrMutation.mutateAsync(qrToken);
-      setScannedTicket(ticket);
-    } catch {
-      setScannedTicket(null);
-      setQrError(true);
-    }
-  }, [qrToken, verifyQrMutation]);
+    await runVerifyQr(qrToken);
+  }, [qrToken, runVerifyQr]);
+
+  const handleScanDetected = useCallback(
+    (token: string) => {
+      setScanning(false);
+      setQrToken(token);
+      runVerifyQr(token);
+    },
+    [runVerifyQr],
+  );
 
   const handleQrCheckIn = useCallback(async () => {
     if (!scannedTicket) return;
@@ -137,6 +155,16 @@ function CheckIn() {
               {t('checkIn.qrVerify')}
             </Button>
           </div>
+
+          <Button
+            type="button"
+            variant={scanning ? 'outline' : 'primary'}
+            className="mt-3"
+            onClick={() => setScanning((prev) => !prev)}
+          >
+            {scanning ? t('checkIn.stopScan') : t('checkIn.startScan')}
+          </Button>
+          <QrScanner active={scanning} onScan={handleScanDetected} />
 
           {qrError && <p className="mt-3 text-sm text-red-400">{t('checkIn.qrNotFound')}</p>}
 

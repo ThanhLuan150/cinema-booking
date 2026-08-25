@@ -23,6 +23,9 @@ const invoiceSchema = new mongoose.Schema(
       index: true,
     },
     issued_at: { type: Date, default: null },
+    checked_in_at: { type: Date, default: null },
+    checked_in_by: { type: Number, default: null }, // account_id of the ticket.checkin staff who scanned it
+    checkin_branch_id: { type: Number, default: null }, // branch the check-in was performed at
   },
   { timestamps: true },
 );

@@ -255,11 +255,23 @@ async function refundInvoiceRecord(invoice) {
   return invoice;
 }
 
-async function checkInInvoiceRecord(invoice) {
-  invoice.checked_in = true;
-  invoice.ticket_status = Invoice.TICKET_STATUS.USED;
-  await invoice.save();
-  return invoice;
+// Atomic conditional update: only succeeds while the invoice is still ISSUED, so two scanners
+// racing to check in the same ticket can't both win — the loser's findOneAndUpdate matches
+// nothing and gets back null. Never read-then-save here (Ticket 14 security requirement).
+async function checkInInvoiceRecord({ id, accountId, branchId }) {
+  return Invoice.findOneAndUpdate(
+    { id: Number(id), ticket_status: Invoice.TICKET_STATUS.ISSUED },
+    {
+      $set: {
+        checked_in: true,
+        ticket_status: Invoice.TICKET_STATUS.USED,
+        checked_in_at: new Date(),
+        checked_in_by: accountId ?? null,
+        checkin_branch_id: branchId ?? null,
+      },
+    },
+    { new: true },
+  );
 }
 
 async function findInvoiceByQrToken(token) {
@@ -348,6 +360,20 @@ async function findTicketViewByQrToken(token) {
 // the ISSUED state via its own transition, so this only ever catches genuine no-shows.
 const EXPIRY_GRACE_MINUTES = 30;
 const DEFAULT_MOVIE_DURATION_MINUTES = 180;
+const EARLY_CHECKIN_MINUTES = 60;
+
+// Shared by expireIssuedTickets (auto-expiry sweep) and checkInInvoice (door check-in) so the
+// two never disagree about when a ticket stops being checkinable. Door check-in opens
+// EARLY_CHECKIN_MINUTES before the showtime and closes at the same cutoff the expiry sweep uses.
+function getShowtimeCheckinWindow(schedule, movie) {
+  const durationMinutes = movie?.duration || DEFAULT_MOVIE_DURATION_MINUTES;
+  const showtimeStart = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`).getTime();
+  return {
+    opensAt: showtimeStart - EARLY_CHECKIN_MINUTES * 60 * 1000,
+    startsAt: showtimeStart,
+    closesAt: showtimeStart + (durationMinutes + EXPIRY_GRACE_MINUTES) * 60 * 1000,
+  };
+}
 
 async function expireIssuedTickets() {
   const issued = await Invoice.find({ ticket_status: Invoice.TICKET_STATUS.ISSUED });
@@ -372,10 +398,8 @@ async function expireIssuedTickets() {
     const schedule = ticket ? scheduleById.get(ticket.schedule_id) : null;
     if (!schedule) continue;
     const movie = movieById.get(schedule.movie_id);
-    const durationMinutes = movie?.duration || DEFAULT_MOVIE_DURATION_MINUTES;
-    const showtimeStart = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`).getTime();
-    const cutoff = showtimeStart + (durationMinutes + EXPIRY_GRACE_MINUTES) * 60 * 1000;
-    if (cutoff < now) expiredIds.push(inv.id);
+    const { closesAt } = getShowtimeCheckinWindow(schedule, movie);
+    if (closesAt < now) expiredIds.push(inv.id);
   }
   if (expiredIds.length === 0) return 0;
 
@@ -691,6 +715,7 @@ module.exports = {
   cancelInvoiceRecord,
   refundInvoiceRecord,
   checkInInvoiceRecord,
+  getShowtimeCheckinWindow,
   findInvoiceByQrToken,
   findTicketViewsForAccount,
   findTicketViewById,

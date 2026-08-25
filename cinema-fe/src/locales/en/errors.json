@@ -43,5 +43,14 @@
   "DUPLICATE_ASSIGNMENT": "This employee is already assigned to this shift on this date",
   "SEAT_UNAVAILABLE": "One or more selected seats are no longer available",
   "NOT_YOUR_HOLD": "This seat is held by another customer",
+  "TICKET_NOT_FOUND": "Ticket not found",
+  "PAYMENT_NOT_PAID": "Payment for this ticket has not been completed",
+  "ALREADY_CHECKED_IN": "This ticket has already been checked in",
+  "TICKET_CANCELLED": "This ticket has been cancelled",
+  "TICKET_REFUNDED": "This ticket has been refunded",
+  "TICKET_EXPIRED": "This ticket has expired",
+  "SHOWTIME_INVALID": "This showtime is no longer valid",
+  "CHECKIN_TOO_EARLY": "Check-in has not opened yet for this showtime",
+  "CHECKIN_TOO_LATE": "Check-in has closed for this showtime",
   "GENERIC": "Something went wrong, please try again."
 }

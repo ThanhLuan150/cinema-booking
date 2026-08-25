@@ -808,35 +808,136 @@ describe('POST /api/invoice/:id/refund', () => {
 });
 
 describe('POST /api/invoice/:id/checkin', () => {
+  const requester = { account: { accountId: 99 }, branchId: 5 };
+
+  // Builds a fully-valid, checkinable fixture (paid, ISSUED, active showtime, within window)
+  // that individual tests then deviate from to hit one specific rejection.
+  async function seedCheckinableInvoice(overrides = {}) {
+    const { movie_date, time_begin } = dateAt(0.5); // showtime 30 min from now, inside the window
+    await Schedule.create({
+      id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1,
+      status: 'ACTIVE', ...overrides.schedule,
+    });
+    await Movie.create({ id: 1, name: 'Movie', premiere_date: '2026-01-01', duration: 120, ...overrides.movie });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', ...overrides.ticket });
+    await Payment.create({
+      id: 1, code: 'ABC', booking_id: 1, account_id: 1, type: 'ONLINE', method: 'MOMO', amount: 1,
+      status: 'PAID', ...overrides.payment,
+    });
+    await Invoice.create({
+      id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 1,
+      ticket_status: 'ISSUED', ...overrides.invoice,
+    });
+  }
+
   it('returns 404 when the invoice does not exist', async () => {
     const res = mockRes();
-    await bookingController.checkInInvoice({ params: { id: 999 } }, res);
+    await bookingController.checkInInvoice({ params: { id: 999 }, ...requester }, res);
     expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_NOT_FOUND' }));
   });
 
-  it('rejects checking in an unpaid invoice', async () => {
-    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 0 });
+  it('rejects checking in a ticket with no matching PAID payment', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, ticket_status: 'ISSUED' });
     const res = mockRes();
-    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'INVOICE_NOT_PAID' }));
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'PAYMENT_NOT_PAID' }));
   });
 
-  it('rejects checking in twice', async () => {
-    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 1, checked_in: true });
+  it('rejects checking in a ticket whose payment is still PENDING', async () => {
+    await seedCheckinableInvoice({ payment: { status: 'PENDING' } });
     const res = mockRes();
-    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
     expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'PAYMENT_NOT_PAID' }));
+  });
+
+  it('rejects checking in twice (already USED)', async () => {
+    await seedCheckinableInvoice({ invoice: { ticket_status: 'USED', checked_in: true } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(409);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'ALREADY_CHECKED_IN' }));
   });
 
-  it('marks a paid, not-yet-checked-in invoice as checked in', async () => {
-    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, status: 1 });
+  it('rejects a CANCELLED ticket', async () => {
+    await seedCheckinableInvoice({ invoice: { ticket_status: 'CANCELLED' } });
     const res = mockRes();
-    await bookingController.checkInInvoice({ params: { id: 1 } }, res);
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_CANCELLED' }));
+  });
+
+  it('rejects a REFUNDED ticket', async () => {
+    await seedCheckinableInvoice({ invoice: { ticket_status: 'REFUNDED' } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_REFUNDED' }));
+  });
+
+  it('rejects an EXPIRED ticket', async () => {
+    await seedCheckinableInvoice({ invoice: { ticket_status: 'EXPIRED' } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_EXPIRED' }));
+  });
+
+  it('rejects a ticket whose showtime was cancelled', async () => {
+    await seedCheckinableInvoice({ schedule: { status: 'CANCELLED' } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SHOWTIME_INVALID' }));
+  });
+
+  it('rejects check-in more than an hour before the showtime', async () => {
+    const { movie_date, time_begin } = dateAt(3);
+    await seedCheckinableInvoice({ schedule: { movie_date, time_begin } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CHECKIN_TOO_EARLY' }));
+  });
+
+  it('rejects check-in long after the showtime has ended', async () => {
+    const { movie_date, time_begin } = dateAt(-6);
+    await seedCheckinableInvoice({ schedule: { movie_date, time_begin } });
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CHECKIN_TOO_LATE' }));
+  });
+
+  it('marks a paid, not-yet-checked-in invoice as checked in, recording who/where/when', async () => {
+    await seedCheckinableInvoice();
+    const res = mockRes();
+    await bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, res);
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    expect(res.status).not.toHaveBeenCalledWith(404);
+    expect(res.status).not.toHaveBeenCalledWith(409);
+
     const invoice = await Invoice.findOne({ id: 1 });
     expect(invoice.checked_in).toBe(true);
     expect(invoice.ticket_status).toBe('USED');
+    expect(invoice.checked_in_by).toBe(99);
+    expect(invoice.checkin_branch_id).toBe(5);
+    expect(invoice.checked_in_at).toBeInstanceOf(Date);
+  });
+
+  it('rejects two concurrent check-ins on the same ticket — only one wins (atomicity)', async () => {
+    await seedCheckinableInvoice();
+    const resA = mockRes();
+    const resB = mockRes();
+    await Promise.all([
+      bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, resA),
+      bookingController.checkInInvoice({ params: { id: 1 }, ...requester }, resB),
+    ]);
+    const statuses = [resA, resB].map((res) => res.status.mock.calls[0]?.[0] ?? 200);
+    expect(statuses.filter((s) => s === 200).length).toBe(1);
+    expect(statuses.filter((s) => s === 409).length).toBe(1);
   });
 });
 
