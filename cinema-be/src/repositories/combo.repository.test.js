@@ -61,6 +61,26 @@ describe('combo.repository', () => {
     expect((await comboRepository.findById(1)).name).toBe('A');
   });
 
+  it('findByIds returns every matching combo, regardless of branch', async () => {
+    await Combo.create([
+      { id: 1, cinema_id: 1, name: 'A', price: 1 },
+      { id: 2, cinema_id: 2, name: 'B', price: 1 },
+      { id: 3, cinema_id: 1, name: 'C', price: 1 },
+    ]);
+    const result = await comboRepository.findByIds([1, 2]);
+    expect(result.map((c) => c.id).sort()).toEqual([1, 2]);
+  });
+
+  it('findActiveByCinemaId filters by type when given', async () => {
+    await Combo.create([
+      { id: 1, cinema_id: 1, name: 'Popcorn', price: 1, type: 'FOOD' },
+      { id: 2, cinema_id: 1, name: 'Coke', price: 1, type: 'BEVERAGE' },
+    ]);
+    const result = await comboRepository.findActiveByCinemaId(1, { type: 'FOOD' });
+    expect(result.total).toBe(1);
+    expect(result.data[0].name).toBe('Popcorn');
+  });
+
   it('findOwnedCinemaIds returns branch ids owned by the account', async () => {
     await Branch.create([
       { id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' },

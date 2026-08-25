@@ -67,7 +67,8 @@
       "counterSale": "Bán vé tại quầy",
       "checkIn": "Soát vé",
       "mySchedule": "Lịch làm việc của tôi",
-      "refunds": "Hoàn tiền"
+      "refunds": "Hoàn tiền",
+      "comboOrders": "Đơn Combo"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

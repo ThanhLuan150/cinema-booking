@@ -44,6 +44,7 @@ import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
 import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import RefundManagement from '@/features/admin/refunds/pages/List';
+import ComboOrders from '@/features/comboOrder/pages/ComboOrdersPage';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -274,6 +275,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <RefundManagement />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.comboOrders}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <ComboOrders />
           </RequireRole>
         }
       />

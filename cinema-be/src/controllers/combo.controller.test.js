@@ -76,6 +76,64 @@ describe('combo.controller create', () => {
     const created = await Combo.findOne({ name: 'Popcorn' });
     expect(created.price).toBe(50000);
     expect(created.cinema_id).toBe(1);
+    expect(created.type).toBe('COMBO');
+  });
+
+  it('rejects an invalid type', async () => {
+    const res = mockRes();
+    await comboController.create({ body: { cinema_id: 1, name: 'A', price: 1, type: 'BOGUS' } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('creates a FOOD item', async () => {
+    const res = mockRes();
+    await comboController.create({ body: { cinema_id: 1, name: 'Popcorn', price: 30000, type: 'FOOD' } }, res);
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect((await Combo.findOne({ name: 'Popcorn' })).type).toBe('FOOD');
+  });
+
+  it('rejects a combo item that references an unknown component', async () => {
+    const res = mockRes();
+    await comboController.create(
+      { body: { cinema_id: 1, name: 'Combo A', price: 65000, items: [{ item_id: 999, quantity: 1 }] } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('rejects nesting a COMBO item inside another combo', async () => {
+    await Combo.create({ id: 5, cinema_id: 1, name: 'Nested Combo', price: 1, type: 'COMBO' });
+    const res = mockRes();
+    await comboController.create(
+      { body: { cinema_id: 1, name: 'Combo A', price: 65000, items: [{ item_id: 5, quantity: 1 }] } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('builds a COMBO from existing FOOD/BEVERAGE components', async () => {
+    await Combo.create([
+      { id: 11, cinema_id: 1, name: 'Popcorn', price: 30000, type: 'FOOD' },
+      { id: 12, cinema_id: 1, name: 'Coke', price: 20000, type: 'BEVERAGE' },
+    ]);
+    const res = mockRes();
+    await comboController.create(
+      {
+        body: {
+          cinema_id: 1,
+          name: 'Combo Bắp Nước',
+          price: 45000,
+          items: [
+            { item_id: 11, quantity: 1 },
+            { item_id: 12, quantity: 1 },
+          ],
+        },
+      },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(201);
+    const created = await Combo.findOne({ name: 'Combo Bắp Nước' });
+    expect(created.items).toHaveLength(2);
   });
 });
 

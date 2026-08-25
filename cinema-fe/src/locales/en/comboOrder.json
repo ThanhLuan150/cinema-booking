@@ -1,0 +1,39 @@
+{
+  "breadcrumb": "Combo Orders",
+  "statusFilterPlaceholder": "All statuses",
+  "status": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "preparing": "Preparing",
+    "ready": "Ready",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "headers": {
+    "code": "Order code",
+    "items": "Items",
+    "total": "Total",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "sellButton": "Sell combo +",
+  "sellModalTitle": "Sell combo",
+  "sellBranchLabel": "Branch",
+  "sellBranchPlaceholder": "Select a branch",
+  "sellSelectBranchFirst": "Select a branch to see the combos/items available to sell.",
+  "sellSubmit": "Create order",
+  "sellSuccess": "Combo order created.",
+  "noItems": "No combos/items available to sell at this branch.",
+  "payButton": "Pay",
+  "paySuccess": "Order paid.",
+  "prepareButton": "Start preparing",
+  "prepareSuccess": "Order is now preparing.",
+  "readyButton": "Mark ready",
+  "readySuccess": "Order is ready for delivery.",
+  "deliverButton": "Deliver",
+  "deliverSuccess": "Order delivered.",
+  "cancelButton": "Cancel",
+  "cancelModalTitle": "Cancel combo order",
+  "cancelReasonLabel": "Reason (optional)",
+  "cancelSuccess": "Order cancelled."
+}

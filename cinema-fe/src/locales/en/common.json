@@ -67,7 +67,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "My Schedule",
-      "refunds": "Refunds"
+      "refunds": "Refunds",
+      "comboOrders": "Combo Orders"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

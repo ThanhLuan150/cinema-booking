@@ -80,6 +80,13 @@ export interface Seat {
   status: 'ACTIVE' | 'DISABLED';
 }
 
+export type ComboType = 'FOOD' | 'BEVERAGE' | 'COMBO';
+
+export interface ComboComponentItem {
+  item_id: number;
+  quantity: number;
+}
+
 export interface Combo {
   id: number;
   cinema_id: number;
@@ -88,6 +95,8 @@ export interface Combo {
   price: number;
   image: string;
   active: boolean;
+  type: ComboType;
+  items: ComboComponentItem[];
 }
 
 export interface Voucher {

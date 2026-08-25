@@ -277,7 +277,7 @@ async function momoIpn(req, res) {
     rawResponse: req.body,
   });
   if (!skip) {
-    await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
+    await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
   }
   res.json({ resultCode: 0, message: 'Confirm Success' });
 }
@@ -311,7 +311,7 @@ async function momoConfirm(req, res) {
   });
   const result = skip
     ? { alreadyProcessed: true }
-    : await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload);
+    : await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
   res.json({ message: 'success', ...result });
 }
 

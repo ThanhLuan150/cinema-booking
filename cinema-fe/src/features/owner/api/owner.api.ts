@@ -15,7 +15,7 @@ import type {
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
   CinemaFormValues,
-  ComboFormValues,
+  CreateComboPayload,
   EmployeeFormValues,
   GenerateSeatMapPayload,
   HolidayFormValues,
@@ -54,8 +54,7 @@ export const updateSeat = (id: number | string, payload: { status: 'ACTIVE' | 'D
 export const getOwnerCombos = (branchId?: number | string, params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Combo>>('/combo', { params: { branchId, ...params } }).then((res) => res.data);
 
-export const createCombo = (payload: Omit<ComboFormValues, 'price'> & { price: number }) =>
-  apiClient.post('/combo', payload);
+export const createCombo = (payload: CreateComboPayload) => apiClient.post('/combo', payload);
 
 export const updateCombo = (id: number | string, payload: Record<string, unknown>) =>
   apiClient.put(`/combo/${id}`, payload);

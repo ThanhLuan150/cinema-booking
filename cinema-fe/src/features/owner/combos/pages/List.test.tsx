@@ -68,13 +68,17 @@ describe('Owner Combos List', () => {
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A' }] } });
   });
 
-  it('renders combo rows with cinema name and status', () => {
+  it('renders combo rows with cinema name, type and status', () => {
     useOwnerCombosMock.mockReturnValue({
-      data: { data: [{ id: 1, cinema_id: 1, name: 'Combo A', price: 50000, active: true }], totalPages: 1 },
+      data: {
+        data: [{ id: 1, cinema_id: 1, name: 'Combo A', price: 50000, active: true, type: 'FOOD' }],
+        totalPages: 1,
+      },
     });
     renderPage();
     expect(screen.getByText('Combo A')).toBeInTheDocument();
     expect(screen.getByText('Cinema A')).toBeInTheDocument();
+    expect(screen.getByText('combos.typeFood')).toBeInTheDocument();
     expect(screen.getByText('combos.statusActive')).toBeInTheDocument();
   });
 
@@ -104,5 +108,13 @@ describe('Owner Combos List', () => {
     renderPage();
     fireEvent.click(screen.getByText('combos.addButton'));
     expect(screen.getByText('combos.addTitle')).toBeInTheDocument();
+  });
+
+  it('defaults the new combo to type COMBO and prompts for a cinema before showing items', () => {
+    useOwnerCombosMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    fireEvent.click(screen.getByText('combos.addButton'));
+    expect(screen.getByText('combos.typeCombo')).toBeInTheDocument();
+    expect(screen.getByText('combos.itemsSelectCinemaFirst')).toBeInTheDocument();
   });
 });
