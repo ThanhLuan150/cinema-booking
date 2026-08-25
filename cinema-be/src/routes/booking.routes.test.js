@@ -115,6 +115,40 @@ describe('booking.routes wiring', () => {
     expect(res.status).toBe(404);
   });
 
+  it('GET /api/my-tickets requires auth', async () => {
+    const res = await request(app).get('/api/my-tickets');
+    expect(res.status).toBe(401);
+  });
+
+  it('GET /api/my-tickets is reachable for a plain customer (booking.read OWN)', async () => {
+    const res = await request(app).get('/api/my-tickets').set('Authorization', authHeader({ role: 1 }));
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+  it('GET /api/my-tickets/:id requires auth', async () => {
+    const res = await request(app).get('/api/my-tickets/1');
+    expect(res.status).toBe(401);
+  });
+
+  it('GET /api/my-tickets/:id 404s for an unknown ticket for a plain customer', async () => {
+    const res = await request(app).get('/api/my-tickets/1').set('Authorization', authHeader({ role: 1 }));
+    expect(res.status).toBe(404);
+  });
+
+  it('POST /api/tickets/verify requires auth', async () => {
+    const res = await request(app).post('/api/tickets/verify').send({});
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/tickets/verify requires the ticket.checkin permission (forbidden for a plain customer)', async () => {
+    const res = await request(app)
+      .post('/api/tickets/verify')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({ qr_token: 'TCK-1' });
+    expect(res.status).toBe(403);
+  });
+
   it('POST /api/invoice/:id/cancel now requires the booking.cancel permission', async () => {
     const res = await request(app)
       .post('/api/invoice/1/cancel')

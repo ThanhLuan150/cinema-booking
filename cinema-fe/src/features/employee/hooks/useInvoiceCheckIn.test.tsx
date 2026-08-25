@@ -4,12 +4,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const lookupInvoiceByCodeMock = vi.fn();
 const checkInInvoiceMock = vi.fn();
+const verifyTicketByQrMock = vi.fn();
 vi.mock('../api/employee.api', () => ({
   lookupInvoiceByCode: (...args: unknown[]) => lookupInvoiceByCodeMock(...args),
   checkInInvoice: (...args: unknown[]) => checkInInvoiceMock(...args),
+  verifyTicketByQr: (...args: unknown[]) => verifyTicketByQrMock(...args),
 }));
 
-import { useCheckInInvoice, useLookupInvoiceForCheckIn } from './useInvoiceCheckIn';
+import { useCheckInInvoice, useLookupInvoiceForCheckIn, useVerifyTicketByQr } from './useInvoiceCheckIn';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   const client = new QueryClient();
@@ -42,5 +44,17 @@ describe('useCheckInInvoice', () => {
     result.current.mutate(1);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(checkInInvoiceMock).toHaveBeenCalledWith(1);
+  });
+});
+
+describe('useVerifyTicketByQr', () => {
+  beforeEach(() => verifyTicketByQrMock.mockReset());
+
+  it('calls the QR verify endpoint with the scanned token', async () => {
+    verifyTicketByQrMock.mockResolvedValue({ ticket_id: 1, status: 'ISSUED' });
+    const { result } = renderHook(() => useVerifyTicketByQr(), { wrapper });
+    result.current.mutate('TCK-1');
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(verifyTicketByQrMock).toHaveBeenCalledWith('TCK-1');
   });
 });

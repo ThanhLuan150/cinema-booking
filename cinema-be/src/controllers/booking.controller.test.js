@@ -548,6 +548,109 @@ describe('GET /api/my-invoices', () => {
   });
 });
 
+describe('GET /api/my-tickets', () => {
+  async function seedIssuedTicket({ accountId = 42 } = {}) {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'Cinema', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Movie.create({ id: 1, name: 'Movie A', premiere_date: '2026-01-01' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    return Invoice.create({
+      id: 1, booking_id: 9, ticket_id: 1, account_id: accountId, code: 'BK-1', total_price: 1000,
+      qr_token: 'TCK-1', ticket_status: 'ISSUED',
+    });
+  }
+
+  it('returns the caller\'s tickets joined with movie/showtime/room/seat and QR', async () => {
+    await seedIssuedTicket();
+    const res = mockRes();
+    await bookingController.myTickets({ account: { accountId: 42 } }, res);
+    const [tickets] = res.json.mock.calls[0];
+    expect(tickets).toHaveLength(1);
+    expect(tickets[0]).toMatchObject({ ticket_id: 1, seat_code: 'A1', status: 'ISSUED', qr_token: 'TCK-1' });
+    expect(tickets[0].movie.name).toBe('Movie A');
+  });
+
+  it('never returns another account\'s tickets', async () => {
+    await seedIssuedTicket({ accountId: 7 });
+    const res = mockRes();
+    await bookingController.myTickets({ account: { accountId: 42 } }, res);
+    const [tickets] = res.json.mock.calls[0];
+    expect(tickets).toHaveLength(0);
+  });
+});
+
+describe('GET /api/my-tickets/:id', () => {
+  it('returns 404 for an unknown ticket', async () => {
+    const res = mockRes();
+    await bookingController.getTicketById({ params: { id: 999 }, account: { accountId: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('forbids viewing another account\'s ticket', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 2, code: 'ABC', total_price: 1, qr_token: 'TCK-1' });
+    const res = mockRes();
+    await bookingController.getTicketById({ params: { id: 1 }, account: { accountId: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('allows an ALL-scope caller (admin) to view any ticket', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 2, code: 'ABC', total_price: 1, qr_token: 'TCK-1' });
+    const res = mockRes();
+    await bookingController.getTicketById(
+      { params: { id: 1 }, account: { accountId: 99 }, permissionScope: 'ALL' },
+      res,
+    );
+    expect(res.status).not.toHaveBeenCalledWith(403);
+  });
+
+  it('returns the ticket detail including its QR token for the owning account', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, qr_token: 'TCK-1', ticket_status: 'ISSUED' });
+    const res = mockRes();
+    await bookingController.getTicketById({ params: { id: 1 }, account: { accountId: 1 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ ticket_id: 1, qr_token: 'TCK-1', status: 'ISSUED' }));
+  });
+});
+
+describe('POST /api/tickets/verify', () => {
+  it('rejects a missing qr_token', async () => {
+    const res = mockRes();
+    await bookingController.verifyTicketByQr({ body: {}, account: { role: 3 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 404 for an unknown qr_token', async () => {
+    const res = mockRes();
+    await bookingController.verifyTicketByQr({ body: { qr_token: 'TCK-nope' }, account: { role: 3 } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_NOT_FOUND' }));
+  });
+
+  it('forbids a theater staff who does not own the cinema', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'Cinema', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, qr_token: 'TCK-1' });
+
+    const res = mockRes();
+    await bookingController.verifyTicketByQr({ body: { qr_token: 'TCK-1' }, account: { role: 2, accountId: 42 } }, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('resolves the scanned QR to its ticket detail for the owning theater staff', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Cinema', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 1, qr_token: 'TCK-1', ticket_status: 'ISSUED' });
+
+    const res = mockRes();
+    await bookingController.verifyTicketByQr({ body: { qr_token: 'TCK-1' }, account: { role: 2, accountId: 42 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ seat_code: 'A1', status: 'ISSUED' }));
+  });
+});
+
 describe('GET /api/admin/invoices', () => {
   it('paginates invoices joined with ticket/movie/account summaries', async () => {
     await Account.create({ id: 1, email: 'a@b.com', password: 'x', name: 'Alice' });
@@ -668,6 +771,7 @@ describe('POST /api/invoice/:id/cancel', () => {
     expect(res.status).not.toHaveBeenCalledWith(400);
     const invoice = await Invoice.findOne({ id: 1 });
     expect(invoice.status).toBe(0);
+    expect(invoice.ticket_status).toBe('CANCELLED');
     const ticket = await Ticket.findOne({ id: 1 });
     expect(ticket.status).toBe(1);
   });
@@ -697,6 +801,7 @@ describe('POST /api/invoice/:id/refund', () => {
 
     const invoice = await Invoice.findOne({ id: 1 });
     expect(invoice.status).toBe(2);
+    expect(invoice.ticket_status).toBe('REFUNDED');
     const ticket = await Ticket.findOne({ id: 1 });
     expect(ticket.status).toBe(1);
   });
@@ -731,6 +836,7 @@ describe('POST /api/invoice/:id/checkin', () => {
     await bookingController.checkInInvoice({ params: { id: 1 } }, res);
     const invoice = await Invoice.findOne({ id: 1 });
     expect(invoice.checked_in).toBe(true);
+    expect(invoice.ticket_status).toBe('USED');
   });
 });
 

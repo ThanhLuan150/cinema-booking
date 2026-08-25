@@ -75,10 +75,37 @@
     "bookingCode": "Booking code: {{code}}",
     "discount": "Discount: -{{amount}}",
     "print": "Print ticket",
+    "viewTickets": "View e-tickets",
     "cancel": "Cancel booking",
     "confirmCancel": "Are you sure you want to cancel this booking?",
     "cancelSuccess": "Booking cancelled successfully.",
     "cancelFailed": "Could not cancel the booking."
+  },
+  "myTickets": {
+    "pageTitle": "My Tickets",
+    "empty": "You have no e-tickets yet",
+    "seatLabel": "Seat: {{code}} ({{type}})",
+    "viewDetail": "View ticket & QR code",
+    "status": {
+      "issued": "Issued",
+      "used": "Used",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "expired": "Expired"
+    }
+  },
+  "ticketDetail": {
+    "pageTitle": "Ticket detail",
+    "back": "Back to my tickets",
+    "notFound": "Ticket not found",
+    "showtime": "Showtime",
+    "branch": "Branch",
+    "room": "Room",
+    "seat": "Seat",
+    "bookingCode": "Booking code",
+    "issuedAt": "Issued at",
+    "qrHint": "Show this QR code at the door to check in",
+    "qrUnavailable": "QR code unavailable"
   },
   "bookingManagement": {
     "pageTitle": "Booking management",

@@ -15,10 +15,27 @@ const invoiceSchema = new mongoose.Schema(
     status: { type: Number, default: 1 }, // 1 = paid, 0 = cancelled, 2 = refunded
     checked_in: { type: Boolean, default: false },
     created_by: { type: Number, default: null }, // account_id of the employee/branch admin who sold this at the counter (null = self-service online purchase)
+    qr_token: { type: String, unique: true, sparse: true, index: true },
+    ticket_status: {
+      type: String,
+      enum: ['ISSUED', 'USED', 'CANCELLED', 'REFUNDED', 'EXPIRED'],
+      default: 'ISSUED',
+      index: true,
+    },
+    issued_at: { type: Date, default: null },
   },
   { timestamps: true },
 );
 
 withCleanJSON(invoiceSchema);
 
-module.exports = mongoose.model('Invoice', invoiceSchema);
+const Invoice = mongoose.model('Invoice', invoiceSchema);
+Invoice.TICKET_STATUS = {
+  ISSUED: 'ISSUED',
+  USED: 'USED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  EXPIRED: 'EXPIRED',
+};
+
+module.exports = Invoice;

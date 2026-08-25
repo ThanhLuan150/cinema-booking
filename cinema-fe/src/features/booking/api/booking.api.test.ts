@@ -114,4 +114,14 @@ describe('booking.api', () => {
     await bookingApi.cancelBooking(5);
     expect(postMock).toHaveBeenCalledWith('/bookings/5/cancel');
   });
+
+  it('getMyTickets gets /my-tickets', async () => {
+    await bookingApi.getMyTickets();
+    expect(getMock).toHaveBeenCalledWith('/my-tickets');
+  });
+
+  it('getTicketById gets /my-tickets/:id', async () => {
+    await bookingApi.getTicketById(5);
+    expect(getMock).toHaveBeenCalledWith('/my-tickets/5');
+  });
 });

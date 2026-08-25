@@ -15,6 +15,8 @@ import ForgotPassword from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPassword from '@/features/auth/pages/ResetPasswordPage';
 import ChangePassword from '@/features/auth/pages/ChangePasswordPage';
 import MyBookings from '@/features/booking/pages/MyBookingsPage';
+import MyTickets from '@/features/booking/pages/MyTicketsPage';
+import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
@@ -77,6 +79,8 @@ export function AppRouter() {
       <Route path={ROUTES.resetPassword} element={<ResetPassword />} />
       <Route path={ROUTES.changePassword} element={<ChangePassword />} />
       <Route path={ROUTES.myBookings} element={<MyBookings />} />
+      <Route path={ROUTES.myTickets} element={<MyTickets />} />
+      <Route path="/Ticket/:id" element={<TicketDetail />} />
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route
         path={ROUTES.adminUsers}

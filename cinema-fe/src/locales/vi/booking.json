@@ -75,10 +75,37 @@
     "bookingCode": "Mã đặt vé: {{code}}",
     "discount": "Giảm giá: -{{amount}}đ",
     "print": "In vé",
+    "viewTickets": "Xem vé điện tử",
     "cancel": "Hủy đặt vé",
     "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
     "cancelSuccess": "Hủy đặt vé thành công.",
     "cancelFailed": "Không thể hủy đặt vé."
+  },
+  "myTickets": {
+    "pageTitle": "Vé của tôi",
+    "empty": "Bạn chưa có vé điện tử nào",
+    "seatLabel": "Ghế: {{code}} ({{type}})",
+    "viewDetail": "Xem vé & mã QR",
+    "status": {
+      "issued": "Đã phát hành",
+      "used": "Đã sử dụng",
+      "cancelled": "Đã hủy",
+      "refunded": "Đã hoàn tiền",
+      "expired": "Đã hết hạn"
+    }
+  },
+  "ticketDetail": {
+    "pageTitle": "Chi tiết vé",
+    "back": "Quay lại Vé của tôi",
+    "notFound": "Không tìm thấy vé",
+    "showtime": "Suất chiếu",
+    "branch": "Rạp",
+    "room": "Phòng chiếu",
+    "seat": "Ghế",
+    "bookingCode": "Mã đặt vé",
+    "issuedAt": "Ngày phát hành",
+    "qrHint": "Xuất trình mã QR này tại cửa để check-in",
+    "qrUnavailable": "Không có mã QR"
   },
   "bookingManagement": {
     "pageTitle": "Quản lý đặt vé",

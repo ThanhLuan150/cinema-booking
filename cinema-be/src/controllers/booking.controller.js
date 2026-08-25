@@ -358,10 +358,46 @@ async function cancelInvoice(req, res) {
     await bookingRepository.updateTicketStatus(ticket.id, 1);
   }
 
-  invoice.status = 0;
-  await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.cancelInvoiceRecord(invoice);
 
   res.json(invoice);
+}
+
+// GET /api/my-tickets -> the caller's full ticket history (one row per seat, across every
+// booking), newest first — movie/showtime/room/seat/QR/status all joined in for the customer's
+// "Ticket" view (Ticket 13). Read-only: nothing here lets the frontend change a ticket's status.
+async function myTickets(req, res) {
+  const tickets = await bookingRepository.findTicketViewsForAccount(req.account.accountId);
+  res.json(tickets);
+}
+
+// GET /api/my-tickets/:id -> single ticket detail, including its QR token
+async function getTicketById(req, res) {
+  const result = await bookingRepository.findTicketViewById(req.params.id);
+  if (!result) return res.status(404).json({ message: 'Ticket not found' });
+  if (result.invoice.account_id !== req.account.accountId && req.permissionScope !== 'ALL') {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  res.json(result.view);
+}
+
+// POST /api/tickets/verify { qr_token } -> door staff resolve a scanned QR to its ticket detail
+// before deciding whether to check it in (ticket.checkin permission, cinema-scoped).
+async function verifyTicketByQr(req, res) {
+  const { qr_token } = req.body;
+  if (!qr_token) return res.status(400).json({ message: 'qr_token is required' });
+
+  const result = await bookingRepository.findTicketViewByQrToken(qr_token);
+  if (!result) {
+    return res.status(404).json({ message: 'Invalid or unknown QR code', code: 'TICKET_NOT_FOUND' });
+  }
+
+  const cinema = result.view.branch_id ? await bookingRepository.findCinemaById(result.view.branch_id) : null;
+  if (!(await canAccessCinema(req, cinema))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  res.json(result.view);
 }
 
 // GET /api/admin/invoices?page=&limit= -> transactions, newest first (admin only)
@@ -411,8 +447,7 @@ async function refundInvoice(req, res) {
   }
 
   await bookingRepository.updateTicketStatus(invoice.ticket_id, 1);
-  invoice.status = 2;
-  await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.refundInvoiceRecord(invoice);
 
   res.json(invoice);
 }
@@ -454,8 +489,7 @@ async function checkInInvoice(req, res) {
     return res.status(400).json({ message: 'This ticket has already been checked in', code: 'ALREADY_CHECKED_IN' });
   }
 
-  invoice.checked_in = true;
-  await bookingRepository.saveInvoice(invoice);
+  await bookingRepository.checkInInvoiceRecord(invoice);
   await bookingRepository.maybeCompleteBooking(invoice.booking_id);
 
   res.json(invoice);
@@ -614,6 +648,9 @@ module.exports = {
   momoIpn,
   momoConfirm,
   myInvoices,
+  myTickets,
+  getTicketById,
+  verifyTicketByQr,
   cancelInvoice,
   listBookings,
   getBookingById,

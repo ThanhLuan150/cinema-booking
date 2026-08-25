@@ -29,6 +29,7 @@
   },
   "checkIn": {
     "breadcrumb": "Soát vé",
+    "codeSectionTitle": "Tra cứu theo mã đặt vé",
     "codePlaceholder": "Nhập mã vé",
     "lookup": "Tra cứu",
     "notFound": "Không tìm thấy đơn đặt vé với mã này.",
@@ -36,7 +37,17 @@
     "statusPaid": "Đã thanh toán",
     "statusNotPaid": "Chưa thanh toán",
     "confirmCheckIn": "Xác nhận soát vé",
-    "checkInSuccess": "Soát vé thành công."
+    "checkInSuccess": "Soát vé thành công.",
+    "qrSectionTitle": "Quét mã QR vé",
+    "qrPlaceholder": "Quét hoặc dán mã QR của vé",
+    "qrVerify": "Xác minh",
+    "qrNotFound": "Mã QR không hợp lệ hoặc không tồn tại.",
+    "seatLabel": "Ghế: {{code}}",
+    "statusIssued": "Đã phát hành",
+    "statusUsed": "Đã sử dụng",
+    "statusCancelled": "Đã hủy",
+    "statusRefunded": "Đã hoàn tiền",
+    "statusExpired": "Đã hết hạn"
   },
   "mySchedule": {
     "breadcrumb": "Lịch làm việc của tôi",

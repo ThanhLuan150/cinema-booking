@@ -1,7 +1,7 @@
 import apiClient from 'services/apiClient';
 import type { Schedule, ShiftAssignment } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
-import type { BookedSeatTicket } from '@/features/booking/types/booking.types';
+import type { BookedSeatTicket, Ticket } from '@/features/booking/types/booking.types';
 import type { CounterSalePayload, LookedUpInvoice } from '../types/employee.types';
 
 // The backend auto-scopes /schedule to the caller's own cinema for an employee account.
@@ -25,3 +25,8 @@ export const lookupInvoiceByCode = (code: string) =>
   apiClient.get<LookedUpInvoice>(`/invoice/lookup/${code}`).then((res) => res.data);
 
 export const checkInInvoice = (invoiceId: number | string) => apiClient.post(`/invoice/${invoiceId}/checkin`);
+
+// Door staff scan a ticket's QR code (its secure token, never the raw booking code) to resolve
+// it before deciding whether to check it in.
+export const verifyTicketByQr = (qrToken: string) =>
+  apiClient.post<Ticket>('/tickets/verify', { qr_token: qrToken }).then((res) => res.data);

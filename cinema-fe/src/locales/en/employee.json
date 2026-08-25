@@ -29,6 +29,7 @@
   },
   "checkIn": {
     "breadcrumb": "Check-in",
+    "codeSectionTitle": "Look up by booking code",
     "codePlaceholder": "Enter ticket code",
     "lookup": "Look up",
     "notFound": "No booking found with this code.",
@@ -36,7 +37,17 @@
     "statusPaid": "Paid",
     "statusNotPaid": "Not paid",
     "confirmCheckIn": "Confirm check-in",
-    "checkInSuccess": "Checked in successfully."
+    "checkInSuccess": "Checked in successfully.",
+    "qrSectionTitle": "Scan ticket QR code",
+    "qrPlaceholder": "Scan or paste the ticket's QR code",
+    "qrVerify": "Verify",
+    "qrNotFound": "Invalid or unknown QR code.",
+    "seatLabel": "Seat: {{code}}",
+    "statusIssued": "Issued",
+    "statusUsed": "Used",
+    "statusCancelled": "Cancelled",
+    "statusRefunded": "Refunded",
+    "statusExpired": "Expired"
   },
   "mySchedule": {
     "breadcrumb": "My Schedule",

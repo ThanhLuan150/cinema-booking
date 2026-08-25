@@ -129,3 +129,53 @@ export interface BookingListParams {
   limit?: number;
   status?: BookingStatus;
 }
+
+export type TicketStatus = 'ISSUED' | 'USED' | 'CANCELLED' | 'REFUNDED' | 'EXPIRED';
+
+export interface TicketMovie {
+  id: number;
+  name: string;
+  avatar: string;
+}
+
+export interface TicketSchedule {
+  id: number;
+  movie_date: string;
+  time_begin: string;
+  time_end: string;
+}
+
+export interface TicketRoom {
+  id: number;
+  name: string;
+  type: string;
+}
+
+export interface TicketBranch {
+  id: number;
+  name: string;
+  address: string;
+  city: string;
+}
+
+export interface Ticket {
+  ticket_id: number;
+  booking_id: number | null;
+  code: string;
+  showtime_id: number | null;
+  movie_id: number | null;
+  branch_id: number | null;
+  room_id: number | null;
+  seat_id: number | null;
+  seat_code: string | null;
+  seat_type: number | null;
+  status: TicketStatus;
+  checked_in: boolean;
+  qr_token: string | null;
+  issued_at: string | null;
+  total_price: number;
+  movie: TicketMovie | null;
+  schedule: TicketSchedule | null;
+  room: TicketRoom | null;
+  branch: TicketBranch | null;
+}

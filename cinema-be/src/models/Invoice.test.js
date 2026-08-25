@@ -24,6 +24,28 @@ describe('Invoice model', () => {
     expect(invoice.checked_in).toBe(false);
     expect(invoice.created_by).toBeNull();
     expect(invoice.createdAt).toBeInstanceOf(Date);
+    expect(invoice.ticket_status).toBe('ISSUED');
+    expect(invoice.issued_at).toBeNull();
+    expect(invoice.qr_token).toBeUndefined();
+  });
+
+  it('enforces a unique qr_token when set', async () => {
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'A', total_price: 1, qr_token: 'TCK-1' });
+    await expect(
+      Invoice.create({ id: 2, ticket_id: 2, account_id: 2, code: 'B', total_price: 2, qr_token: 'TCK-1' }),
+    ).rejects.toThrow();
+  });
+
+  it('rejects an unrecognized ticket_status', () => {
+    const err = new Invoice({
+      id: 1,
+      ticket_id: 1,
+      account_id: 1,
+      code: 'A',
+      total_price: 1,
+      ticket_status: 'BOGUS',
+    }).validateSync();
+    expect(err.errors.ticket_status).toBeDefined();
   });
 
   it('stores created_by when a counter sale is recorded', async () => {

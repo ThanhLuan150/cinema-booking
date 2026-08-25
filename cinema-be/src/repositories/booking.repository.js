@@ -13,6 +13,7 @@ const Combo = require('../models/Combo');
 const Payment = require('../models/Payment');
 const paymentRepository = require('./payment.repository');
 const nextId = require('../utils/nextId');
+const { generateQrToken } = require('../utils/qrToken');
 const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
 const pricingEngine = require('../services/pricingEngine');
@@ -113,6 +114,10 @@ async function finalizeMomoOrder(orderId, orderPayload) {
       discount_amount: isFirst ? Number(discountAmount) : 0,
       status: 1,
       created_by: createdBy,
+      // Ticket 13: a Ticket only ever comes into existence here, once payment has cleared.
+      qr_token: generateQrToken(),
+      ticket_status: Invoice.TICKET_STATUS.ISSUED,
+      issued_at: new Date(),
     });
     await Ticket.updateOne(
       { id: Number(ticketIds[index]) },
@@ -231,6 +236,154 @@ async function releaseTickets({ scheduleId, seatCodes, accountId }) {
 async function saveInvoice(invoice) {
   await invoice.save();
   return invoice;
+}
+
+// The three door/customer-facing Ticket transitions. Each keeps the legacy `status`/
+// `checked_in` fields (still read by the existing invoice endpoints) in sync with the new
+// `ticket_status` lifecycle instead of replacing them, so nothing else has to change.
+async function cancelInvoiceRecord(invoice) {
+  invoice.status = 0;
+  invoice.ticket_status = Invoice.TICKET_STATUS.CANCELLED;
+  await invoice.save();
+  return invoice;
+}
+
+async function refundInvoiceRecord(invoice) {
+  invoice.status = 2;
+  invoice.ticket_status = Invoice.TICKET_STATUS.REFUNDED;
+  await invoice.save();
+  return invoice;
+}
+
+async function checkInInvoiceRecord(invoice) {
+  invoice.checked_in = true;
+  invoice.ticket_status = Invoice.TICKET_STATUS.USED;
+  await invoice.save();
+  return invoice;
+}
+
+async function findInvoiceByQrToken(token) {
+  return Invoice.findOne({ qr_token: token });
+}
+
+// Joins Invoice (the issued Ticket) -> Ticket (the seat) -> Schedule -> Room -> Branch/Movie
+// into the shape the customer- and door-facing ticket endpoints return.
+async function buildTicketViews(invoices) {
+  const ticketIds = [...new Set(invoices.map((inv) => inv.ticket_id))];
+  const tickets = await Ticket.find({ id: { $in: ticketIds } });
+  const ticketById = new Map(tickets.map((t) => [t.id, t]));
+
+  const scheduleIds = [...new Set(tickets.map((t) => t.schedule_id))];
+  const schedules = await Schedule.find({ id: { $in: scheduleIds } });
+  const scheduleById = new Map(schedules.map((s) => [s.id, s]));
+
+  const roomIds = [...new Set(schedules.map((s) => s.room_id))];
+  const rooms = await Room.find({ id: { $in: roomIds } });
+  const roomById = new Map(rooms.map((r) => [r.id, r]));
+
+  const branchIds = [...new Set(rooms.map((r) => r.cinema_id))];
+  const branches = await Branch.find({ id: { $in: branchIds } });
+  const branchById = new Map(branches.map((b) => [b.id, b]));
+
+  const movieIds = [...new Set(schedules.map((s) => s.movie_id))];
+  const movies = await Movie.find({ id: { $in: movieIds } });
+  const movieById = new Map(movies.map((m) => [m.id, m]));
+
+  return invoices.map((inv) => {
+    const ticket = ticketById.get(inv.ticket_id);
+    const schedule = ticket ? scheduleById.get(ticket.schedule_id) : null;
+    const room = schedule ? roomById.get(schedule.room_id) : null;
+    const branch = room ? branchById.get(room.cinema_id) : null;
+    const movie = schedule ? movieById.get(schedule.movie_id) : null;
+    return {
+      ticket_id: inv.id,
+      booking_id: inv.booking_id,
+      code: inv.code,
+      showtime_id: ticket ? ticket.schedule_id : null,
+      movie_id: schedule ? schedule.movie_id : null,
+      branch_id: room ? room.cinema_id : null,
+      room_id: schedule ? schedule.room_id : null,
+      seat_id: ticket ? ticket.id : null,
+      seat_code: ticket ? ticket.seat_code : null,
+      seat_type: ticket ? ticket.seat_type : null,
+      status: inv.ticket_status,
+      checked_in: inv.checked_in,
+      qr_token: inv.qr_token,
+      issued_at: inv.issued_at,
+      total_price: inv.total_price,
+      movie: movie ? { id: movie.id, name: movie.name, avatar: movie.avatar } : null,
+      schedule: schedule
+        ? { id: schedule.id, movie_date: schedule.movie_date, time_begin: schedule.time_begin, time_end: schedule.time_end }
+        : null,
+      room: room ? { id: room.id, name: room.name, type: room.type } : null,
+      branch: branch ? { id: branch.id, name: branch.name, address: branch.address, city: branch.city } : null,
+    };
+  });
+}
+
+// GET /api/my-tickets -> the caller's full ticket history (one row per seat), newest first.
+async function findTicketViewsForAccount(accountId) {
+  const invoices = await Invoice.find({ account_id: Number(accountId) }).sort({ createdAt: -1 });
+  return buildTicketViews(invoices);
+}
+
+async function findTicketViewById(id) {
+  const invoice = await Invoice.findOne({ id: Number(id) });
+  if (!invoice) return null;
+  const [view] = await buildTicketViews([invoice]);
+  return { view, invoice };
+}
+
+// Door check-in scans resolve their QR payload through here — never trusting anything the
+// scanner itself claims about the ticket.
+async function findTicketViewByQrToken(token) {
+  const invoice = await findInvoiceByQrToken(token);
+  if (!invoice) return null;
+  const [view] = await buildTicketViews([invoice]);
+  return { view, invoice };
+}
+
+// Flips ISSUED tickets whose showtime has clearly passed (start + the movie's runtime, plus
+// a grace window) to EXPIRED. A ticket that was actually used/cancelled/refunded already left
+// the ISSUED state via its own transition, so this only ever catches genuine no-shows.
+const EXPIRY_GRACE_MINUTES = 30;
+const DEFAULT_MOVIE_DURATION_MINUTES = 180;
+
+async function expireIssuedTickets() {
+  const issued = await Invoice.find({ ticket_status: Invoice.TICKET_STATUS.ISSUED });
+  if (issued.length === 0) return 0;
+
+  const ticketIds = [...new Set(issued.map((inv) => inv.ticket_id))];
+  const tickets = await Ticket.find({ id: { $in: ticketIds } });
+  const ticketById = new Map(tickets.map((t) => [t.id, t]));
+
+  const scheduleIds = [...new Set(tickets.map((t) => t.schedule_id))];
+  const schedules = await Schedule.find({ id: { $in: scheduleIds } });
+  const scheduleById = new Map(schedules.map((s) => [s.id, s]));
+
+  const movieIds = [...new Set(schedules.map((s) => s.movie_id))];
+  const movies = await Movie.find({ id: { $in: movieIds } });
+  const movieById = new Map(movies.map((m) => [m.id, m]));
+
+  const now = Date.now();
+  const expiredIds = [];
+  for (const inv of issued) {
+    const ticket = ticketById.get(inv.ticket_id);
+    const schedule = ticket ? scheduleById.get(ticket.schedule_id) : null;
+    if (!schedule) continue;
+    const movie = movieById.get(schedule.movie_id);
+    const durationMinutes = movie?.duration || DEFAULT_MOVIE_DURATION_MINUTES;
+    const showtimeStart = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`).getTime();
+    const cutoff = showtimeStart + (durationMinutes + EXPIRY_GRACE_MINUTES) * 60 * 1000;
+    if (cutoff < now) expiredIds.push(inv.id);
+  }
+  if (expiredIds.length === 0) return 0;
+
+  await Invoice.updateMany(
+    { id: { $in: expiredIds } },
+    { $set: { ticket_status: Invoice.TICKET_STATUS.EXPIRED } },
+  );
+  return expiredIds.length;
 }
 
 async function findAllInvoices({ skip = 0, limit = 20 } = {}) {
@@ -386,7 +539,10 @@ async function cancelBooking(booking, { reason = null } = {}) {
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
-  await Invoice.updateMany({ booking_id: booking.id }, { $set: { status: 0 } });
+  await Invoice.updateMany(
+    { booking_id: booking.id },
+    { $set: { status: 0, ticket_status: Invoice.TICKET_STATUS.CANCELLED } },
+  );
   booking.status = Booking.STATUS.CANCELLED;
   booking.cancelled_at = new Date();
   if (reason) booking.cancel_reason = reason;
@@ -399,7 +555,10 @@ async function applyRefund(booking) {
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
-  await Invoice.updateMany({ booking_id: booking.id }, { $set: { status: 2 } });
+  await Invoice.updateMany(
+    { booking_id: booking.id },
+    { $set: { status: 2, ticket_status: Invoice.TICKET_STATUS.REFUNDED } },
+  );
   booking.status = Booking.STATUS.CANCELLED;
   booking.cancelled_at = new Date();
   booking.cancel_reason = 'Refunded';
@@ -529,6 +688,14 @@ module.exports = {
   holdTickets,
   releaseTickets,
   saveInvoice,
+  cancelInvoiceRecord,
+  refundInvoiceRecord,
+  checkInInvoiceRecord,
+  findInvoiceByQrToken,
+  findTicketViewsForAccount,
+  findTicketViewById,
+  findTicketViewByQrToken,
+  expireIssuedTickets,
   findAllInvoices,
   findAccountsByIds,
   findInvoiceByCode,
