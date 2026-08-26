@@ -93,6 +93,52 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/combo/1');
   });
 
+  it('getOwnerInventory gets /inventory with branchId param', async () => {
+    await ownerApi.getOwnerInventory(1, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/inventory', { params: { branchId: 1, page: 1 } });
+  });
+
+  it('getInventoryAlerts gets /inventory/alerts', async () => {
+    await ownerApi.getInventoryAlerts(1);
+    expect(getMock).toHaveBeenCalledWith('/inventory/alerts', { params: { branchId: 1 } });
+  });
+
+  it('getInventoryHistory gets /inventory/:id/history', async () => {
+    await ownerApi.getInventoryHistory(1, { page: 1 } as any);
+    expect(getMock).toHaveBeenCalledWith('/inventory/1/history', { params: { page: 1 } });
+  });
+
+  it('createInventory posts to /inventory', async () => {
+    const payload = { branch_id: 1, item: 'Popcorn', combo_id: null, quantity: 10, minimum_quantity: 5, unit: 'pcs' };
+    await ownerApi.createInventory(payload);
+    expect(postMock).toHaveBeenCalledWith('/inventory', payload);
+  });
+
+  it('updateInventory puts /inventory/:id', async () => {
+    await ownerApi.updateInventory(1, { unit: 'kg' });
+    expect(putMock).toHaveBeenCalledWith('/inventory/1', { unit: 'kg' });
+  });
+
+  it('deleteInventory deletes /inventory/:id', async () => {
+    await ownerApi.deleteInventory(1);
+    expect(deleteMock).toHaveBeenCalledWith('/inventory/1');
+  });
+
+  it('receiveInventory posts to /inventory/:id/receive', async () => {
+    await ownerApi.receiveInventory(1, { quantity: 10, reason: 'restock' });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/receive', { quantity: 10, reason: 'restock' });
+  });
+
+  it('adjustInventory posts to /inventory/:id/adjust', async () => {
+    await ownerApi.adjustInventory(1, { quantity: 8 });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/adjust', { quantity: 8 });
+  });
+
+  it('deductInventory posts to /inventory/:id/deduct', async () => {
+    await ownerApi.deductInventory(1, { quantity: 2, reason: 'spoiled' });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/deduct', { quantity: 2, reason: 'spoiled' });
+  });
+
   it('getOwnerVouchers gets /voucher with branchId param', async () => {
     await ownerApi.getOwnerVouchers(1, { page: 1 } as any);
     expect(getMock).toHaveBeenCalledWith('/voucher', { params: { branchId: 1, page: 1 } });

@@ -127,6 +127,38 @@ export interface OwnerCombosState {
   showAddModal: boolean;
 }
 
+export interface InventoryFormValues {
+  cinema_id: string;
+  item: string;
+  combo_id: string; // '' means this item is not linked to a Combo (no auto-deduction on sale)
+  quantity: string;
+  minimum_quantity: string;
+  unit: string;
+}
+
+// Wire payload for POST /inventory — numeric fields already coerced from InventoryFormValues.
+export interface CreateInventoryPayload {
+  branch_id: number;
+  item: string;
+  combo_id: number | null;
+  quantity: number;
+  minimum_quantity: number;
+  unit: string;
+}
+
+export type StockActionMode = 'receive' | 'adjust' | 'deduct';
+
+export interface StockActionFormValues {
+  quantity: string;
+  reason: string;
+}
+
+export interface OwnerInventoryState {
+  showAddModal: boolean;
+  stockAction: { id: number; mode: StockActionMode } | null;
+  historyItemId: number | null;
+}
+
 export interface OwnerVouchersState {
   showAddModal: boolean;
 }

@@ -123,6 +123,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <ion-icon name="fast-food" />
                 {t('adminLayout.nav.combos')}
               </NavLink>
+              {hasPermission('inventory.view') && (
+                <NavLink to={ROUTES.ownerInventory} className={navLinkClass}>
+                  <ion-icon name="cube" />
+                  {t('adminLayout.nav.inventory')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>
                 <ion-icon name="pricetag" />
                 {t('adminLayout.nav.vouchers')}
