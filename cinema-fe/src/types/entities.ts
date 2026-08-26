@@ -99,6 +99,36 @@ export interface Combo {
   items: ComboComponentItem[];
 }
 
+export type InventoryStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
+
+export interface Inventory {
+  id: number;
+  branch_id: number;
+  combo_id: number | null;
+  item: string;
+  quantity: number;
+  minimum_quantity: number;
+  unit: string;
+  status: InventoryStatus;
+}
+
+export type InventoryTransactionType = 'RECEIVE' | 'ADJUST' | 'DEDUCT';
+
+export interface InventoryTransaction {
+  id: number;
+  inventory_id: number;
+  branch_id: number;
+  type: InventoryTransactionType;
+  quantity_change: number;
+  quantity_before: number;
+  quantity_after: number;
+  reason: string;
+  ref_type: string | null;
+  ref_code: string | null;
+  performed_by: number | null;
+  createdAt: string;
+}
+
 export interface Voucher {
   id: number;
   cinema_id: number | null;

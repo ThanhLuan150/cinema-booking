@@ -1,5 +1,6 @@
 const ComboOrder = require('../models/ComboOrder');
 const nextId = require('../utils/nextId');
+const inventoryRepository = require('./inventory.repository');
 
 async function createOrder({ branchId, accountId = null, bookingId = null, items, totalPrice, createdBy = null }) {
   return ComboOrder.create({
@@ -31,12 +32,27 @@ async function listAll(filter = {}, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
+// The single choke point for PENDING -> PAID, reached both from a counter sale
+// (comboOrder.controller.payOrder) and from a booking's linked combo order
+// (booking.repository.createLinkedComboOrder) — hooking inventory deduction here, right after
+// this atomic guarded update succeeds, means it runs exactly once per order no matter which
+// caller triggered it or how many times payment confirmation is retried: a duplicate call always
+// finds status no longer PENDING and returns null before reaching the deduction below.
 async function markPaid(id, method) {
-  return ComboOrder.findOneAndUpdate(
+  const updated = await ComboOrder.findOneAndUpdate(
     { id: Number(id), status: ComboOrder.STATUS.PENDING },
     { $set: { status: ComboOrder.STATUS.PAID, paid_at: new Date(), payment_method: method } },
     { new: true },
   );
+  if (updated) {
+    try {
+      await inventoryRepository.deductForComboOrder(updated);
+    } catch (err) {
+      // Never let warehouse bookkeeping block a payment that already succeeded.
+      console.error(`Failed to deduct inventory for combo order ${updated.id}:`, err);
+    }
+  }
+  return updated;
 }
 
 async function markPreparing(id) {

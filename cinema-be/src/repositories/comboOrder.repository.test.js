@@ -1,6 +1,8 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const comboOrderRepository = require('./comboOrder.repository');
+const inventoryRepository = require('./inventory.repository');
 const ComboOrder = require('../models/ComboOrder');
+const Combo = require('../models/Combo');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
@@ -93,5 +95,34 @@ describe('comboOrder.repository', () => {
     expect(cancelled.cancel_reason).toBe('out of stock');
     expect(cancelled.cancelled_at).toBeInstanceOf(Date);
     expect(await ComboOrder.countDocuments({ status: 'CANCELLED' })).toBe(1);
+  });
+});
+
+describe('comboOrder.repository markPaid inventory deduction', () => {
+  it('deducts matching Inventory exactly once when an order is paid', async () => {
+    await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000, type: 'FOOD' });
+    const inventory = await inventoryRepository.create({
+      branchId: 1,
+      comboId: 1,
+      item: 'Popcorn',
+      quantity: 100,
+      minimumQuantity: 10,
+      unit: 'pcs',
+    });
+    const order = await comboOrderRepository.createOrder({ branchId: 1, items, totalPrice: 100000 });
+
+    await comboOrderRepository.markPaid(order.id, 'CASH');
+    expect((await inventoryRepository.findById(inventory.id)).quantity).toBe(98); // items[0].quantity is 2
+
+    // A duplicate confirmation attempt (e.g. a retried payment callback) must not deduct again:
+    // markPaid itself is guarded (order is no longer PENDING) so it never re-enters deduction.
+    await comboOrderRepository.markPaid(order.id, 'CASH');
+    expect((await inventoryRepository.findById(inventory.id)).quantity).toBe(98);
+  });
+
+  it('does not fail markPaid when no Inventory tracks the sold item', async () => {
+    const order = await comboOrderRepository.createOrder({ branchId: 1, items, totalPrice: 100000 });
+    const paid = await comboOrderRepository.markPaid(order.id, 'CASH');
+    expect(paid.status).toBe('PAID');
   });
 });

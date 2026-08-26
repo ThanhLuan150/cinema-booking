@@ -6,6 +6,7 @@ import adminMoviesReducer from '@/features/admin/movies/store/adminMoviesSlice';
 import ownerDashboardReducer from '@/features/owner/store/ownerDashboardSlice';
 import ownerCinemasReducer from '@/features/owner/store/ownerCinemasSlice';
 import ownerCombosReducer from '@/features/owner/store/ownerCombosSlice';
+import ownerInventoryReducer from '@/features/owner/store/ownerInventorySlice';
 import ownerVouchersReducer from '@/features/owner/store/ownerVouchersSlice';
 import ownerPricingRulesReducer from '@/features/owner/store/ownerPricingRulesSlice';
 import ownerHolidaysReducer from '@/features/owner/store/ownerHolidaysSlice';
@@ -26,6 +27,7 @@ export const store = configureStore({
     ownerDashboard: ownerDashboardReducer,
     ownerCinemas: ownerCinemasReducer,
     ownerCombos: ownerCombosReducer,
+    ownerInventory: ownerInventoryReducer,
     ownerVouchers: ownerVouchersReducer,
     ownerPricingRules: ownerPricingRulesReducer,
     ownerHolidays: ownerHolidaysReducer,

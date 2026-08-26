@@ -59,6 +59,7 @@ const PERMISSIONS = [
   ['pricingRule.update', 'pricingRule'], ['pricingRule.delete', 'pricingRule'],
   ['refund.request', 'refund'], ['refund.read', 'refund'],
   ['refund.approve', 'refund'], ['refund.process', 'refund'],
+  ['inventory.view', 'inventory'], ['inventory.manage', 'inventory'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -90,6 +91,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'pricingRule.create': 'BRANCH', 'pricingRule.read': 'BRANCH',
   'pricingRule.update': 'BRANCH', 'pricingRule.delete': 'BRANCH',
   'refund.read': 'BRANCH', 'refund.approve': 'BRANCH', 'refund.process': 'BRANCH',
+  'inventory.view': 'BRANCH', 'inventory.manage': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {
