@@ -33,6 +33,7 @@ const pricingRuleRoutes = require('./pricingRule.routes');
 const holidayRoutes = require('./holiday.routes');
 const inventoryRoutes = require('./inventory.routes');
 const loyaltyRoutes = require('./loyalty.routes');
+const maintenanceRequestRoutes = require('./maintenanceRequest.routes');
 
 const router = express.Router();
 
@@ -69,6 +70,7 @@ router.use('/shiftAssignment', shiftAssignmentRoutes);
 router.use('/pricingRule', pricingRuleRoutes);
 router.use('/pricingHoliday', holidayRoutes);
 router.use('/inventory', inventoryRoutes);
+router.use('/maintenance', maintenanceRequestRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

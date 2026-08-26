@@ -29,6 +29,7 @@ vi.mock('@/features/admin/schedules/pages/List', () => ({ default: () => <div>Sh
 vi.mock('@/features/owner/pages/OwnerDashboard', () => ({ default: () => <div>OwnerDashboard</div> }));
 vi.mock('@/features/owner/cinemas/pages/List', () => ({ default: () => <div>OwnerCinemas</div> }));
 vi.mock('@/features/owner/cinemas/pages/Rooms', () => ({ default: () => <div>OwnerRooms</div> }));
+vi.mock('@/features/owner/maintenance/pages/List', () => ({ default: () => <div>OwnerMaintenance</div> }));
 vi.mock('@/features/owner/combos/pages/List', () => ({ default: () => <div>OwnerCombos</div> }));
 vi.mock('@/features/owner/vouchers/pages/List', () => ({ default: () => <div>OwnerVouchers</div> }));
 vi.mock('@/features/owner/promotions/pages/List', () => ({ default: () => <div>OwnerPromotions</div> }));
@@ -136,6 +137,18 @@ describe('AppRouter', () => {
     store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
     renderAt(ROUTES.ownerEmployees);
     expect(screen.getByText('OwnerEmployees')).toBeInTheDocument();
+  });
+
+  it('renders the maintenance route when logged in as an owner', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.ownerMaintenance);
+    expect(screen.getByText('OwnerMaintenance')).toBeInTheDocument();
+  });
+
+  it('renders the maintenance route when logged in as an employee (staff-wide route)', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.employee), account: {} as Account }));
+    renderAt(ROUTES.ownerMaintenance);
+    expect(screen.getByText('OwnerMaintenance')).toBeInTheDocument();
   });
 
   it('redirects an admin away from home to the admin dashboard', () => {

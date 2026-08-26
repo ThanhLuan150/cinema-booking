@@ -6,6 +6,7 @@ import type {
   Holiday,
   Inventory,
   InventoryTransaction,
+  MaintenanceRequest,
   Position,
   PricingRule,
   Promotion,
@@ -229,3 +230,36 @@ export const updateShiftAssignment = (id: number | string, payload: Record<strin
   apiClient.put(`/shiftAssignment/${id}`, payload);
 
 export const deleteShiftAssignment = (id: number | string) => apiClient.delete(`/shiftAssignment/${id}`);
+
+export const getMaintenanceRequests = (
+  branchId: number | string | undefined,
+  params?: PaginationParams & { status?: string; resourceType?: string },
+) =>
+  apiClient
+    .get<PaginatedResponse<MaintenanceRequest>>('/maintenance', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export interface CreateMaintenanceRequestPayload {
+  branch_id: number;
+  resource_type: MaintenanceRequest['resource_type'];
+  room_id?: number;
+  seat_id?: number;
+  resource_name?: string;
+  title: string;
+  description?: string;
+}
+
+export const createMaintenanceRequest = (payload: CreateMaintenanceRequestPayload) =>
+  apiClient.post('/maintenance', payload);
+
+export const assignMaintenanceRequest = (id: number | string, payload: { employee_id: number }) =>
+  apiClient.post(`/maintenance/${id}/assign`, payload);
+
+export const startMaintenanceRequest = (id: number | string) => apiClient.post(`/maintenance/${id}/start`);
+
+export const resolveMaintenanceRequest = (id: number | string, payload: { resolution_note?: string }) =>
+  apiClient.post(`/maintenance/${id}/resolve`, payload);
+
+export const closeMaintenanceRequest = (id: number | string) => apiClient.post(`/maintenance/${id}/close`);
+
+export const deleteMaintenanceRequest = (id: number | string) => apiClient.delete(`/maintenance/${id}`);

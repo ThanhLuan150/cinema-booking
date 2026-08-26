@@ -1,5 +1,6 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
 import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
+import type { MAINTENANCE_RESOURCE_TYPE } from '@/constants/maintenanceResourceType';
 
 export interface RevenueByDay {
   date: string;
@@ -221,4 +222,23 @@ export interface OwnerShiftsState {
   showAddModal: boolean;
   editingShiftId: number | null;
   showAssignModal: boolean;
+}
+
+// room_id/seat_id: '' = none. resource_name is required by the backend for every resource_type
+// other than ROOM/SEAT (no backing model to name it from) — see maintenanceRequest.controller.js.
+export interface MaintenanceRequestFormValues {
+  branch_id: string;
+  resource_type: (typeof MAINTENANCE_RESOURCE_TYPE)[keyof typeof MAINTENANCE_RESOURCE_TYPE];
+  room_id: string;
+  seat_id: string;
+  resource_name: string;
+  title: string;
+  description: string;
+}
+
+export interface OwnerMaintenanceState {
+  selectedbranchId: string;
+  showAddModal: boolean;
+  assignRequestId: number | null;
+  resolveRequestId: number | null;
 }

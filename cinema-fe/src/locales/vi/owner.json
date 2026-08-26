@@ -564,5 +564,77 @@
       "shiftRequired": "Vui lòng chọn ca làm việc.",
       "dateRequired": "Vui lòng chọn ngày."
     }
+  },
+  "maintenance": {
+    "breadcrumb": "Bảo trì",
+    "addButton": "Báo cáo sự cố +",
+    "addTitle": "Báo cáo sự cố bảo trì",
+    "branchLabel": "Chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranches": "Tất cả chi nhánh",
+    "statusFilterPlaceholder": "Tất cả trạng thái",
+    "resourceTypeLabel": "Loại tài nguyên",
+    "resourceType": {
+      "ROOM": "Phòng chiếu",
+      "PROJECTOR": "Máy chiếu",
+      "SOUND_SYSTEM": "Hệ thống âm thanh",
+      "AIR_CONDITIONER": "Máy lạnh",
+      "SEAT": "Ghế ngồi",
+      "QR_SCANNER": "Máy quét QR",
+      "POS": "Máy POS",
+      "EQUIPMENT_OTHER": "Thiết bị khác"
+    },
+    "roomLabel": "Phòng chiếu",
+    "roomPlaceholder": "Chọn phòng chiếu",
+    "roomOptionalLabel": "Vị trí (tùy chọn)",
+    "roomOptionalPlaceholder": "Không thuộc phòng nào",
+    "seatLabel": "Ghế",
+    "seatPlaceholder": "Chọn ghế",
+    "resourceNameLabel": "Tên thiết bị",
+    "titleLabel": "Tiêu đề sự cố",
+    "descriptionLabel": "Mô tả",
+    "submit": "Lưu",
+    "createSuccess": "Đã báo cáo sự cố bảo trì.",
+    "deleteConfirm": "Xóa yêu cầu bảo trì này?",
+    "deleteSuccess": "Đã xóa yêu cầu bảo trì.",
+    "assignTitle": "Phân công nhân viên",
+    "employeeLabel": "Nhân viên",
+    "employeePlaceholder": "Chọn nhân viên",
+    "assignSuccess": "Đã phân công nhân viên.",
+    "resolveTitle": "Xử lý xong sự cố",
+    "resolutionNoteLabel": "Ghi chú xử lý (tùy chọn)",
+    "resolveSuccess": "Đã đánh dấu xử lý xong.",
+    "startSuccess": "Đã bắt đầu xử lý.",
+    "closeSuccess": "Đã đóng yêu cầu.",
+    "assign": "Phân công",
+    "reassign": "Phân công lại",
+    "start": "Bắt đầu",
+    "resolve": "Xử lý xong",
+    "close": "Đóng",
+    "delete": "Xóa",
+    "unassigned": "Chưa phân công",
+    "status": {
+      "OPEN": "Mới",
+      "ASSIGNED": "Đã phân công",
+      "IN_PROGRESS": "Đang xử lý",
+      "RESOLVED": "Đã xử lý",
+      "CLOSED": "Đã đóng"
+    },
+    "headers": {
+      "id": "ID",
+      "branch": "Chi nhánh",
+      "resource": "Tài nguyên",
+      "title": "Sự cố",
+      "assignee": "Người phụ trách",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "validation": {
+      "branchRequired": "Vui lòng chọn chi nhánh.",
+      "titleRequired": "Vui lòng nhập tiêu đề sự cố.",
+      "roomRequired": "Vui lòng chọn phòng chiếu.",
+      "seatRequired": "Vui lòng chọn ghế.",
+      "resourceNameRequired": "Vui lòng nhập tên thiết bị."
+    }
   }
 }

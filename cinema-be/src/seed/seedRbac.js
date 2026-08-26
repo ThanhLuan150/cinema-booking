@@ -64,6 +64,9 @@ const PERMISSIONS = [
   ['inventory.view', 'inventory'], ['inventory.manage', 'inventory'],
   ['loyalty.read', 'loyalty'], ['loyalty.redeem', 'loyalty'], ['loyaltyConfig.manage', 'loyalty'],
   ['membershipLevel.read', 'loyalty'], ['membershipLevel.manage', 'loyalty'],
+  ['maintenance.create', 'maintenance'], ['maintenance.read', 'maintenance'],
+  ['maintenance.update', 'maintenance'], ['maintenance.assign', 'maintenance'],
+  ['maintenance.close', 'maintenance'], ['maintenance.delete', 'maintenance'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -97,6 +100,8 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'pricingRule.update': 'BRANCH', 'pricingRule.delete': 'BRANCH',
   'refund.read': 'BRANCH', 'refund.approve': 'BRANCH', 'refund.process': 'BRANCH',
   'inventory.view': 'BRANCH', 'inventory.manage': 'BRANCH',
+  'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
+  'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {
@@ -108,6 +113,10 @@ const EMPLOYEE_PERMISSIONS = {
   'actor.read': 'ALL', 'director.read': 'ALL',
   // Own work schedule only — see the Ticket 04 note against auto-restricting this per Position.
   'shiftAssignment.read': 'OWN',
+  // Any staffed employee may report/view a maintenance issue at their own branch ("Phát hiện
+  // lỗi"); actually working a ticket (assign/start/resolve/close) is gated further below, either
+  // to Branch Admin or, for start/resolve, to the MAINTENANCE_STAFF position (see seedPositions.js).
+  'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH',
 };
 
 const CUSTOMER_PERMISSIONS = {

@@ -55,7 +55,12 @@ const POSITION_PERMISSIONS = {
 
   SECURITY: {},
   CLEANING_STAFF: {},
-  MAINTENANCE_STAFF: {},
+  // Every Employee already holds maintenance.create/read at the branch (seedRbac.js); this adds
+  // the ability to actually work a ticket — start it (ASSIGNED -> IN_PROGRESS) and resolve it
+  // (IN_PROGRESS -> RESOLVED). Assigning a ticket and closing it stay Branch Admin-only.
+  MAINTENANCE_STAFF: {
+    'maintenance.update': 'BRANCH',
+  },
 };
 
 async function seedPositions() {

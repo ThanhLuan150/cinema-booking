@@ -564,5 +564,77 @@
       "shiftRequired": "Please select a shift.",
       "dateRequired": "Please select a date."
     }
+  },
+  "maintenance": {
+    "breadcrumb": "Maintenance",
+    "addButton": "Report issue +",
+    "addTitle": "Report a maintenance issue",
+    "branchLabel": "Branch",
+    "branchPlaceholder": "Select branch",
+    "allBranches": "All branches",
+    "statusFilterPlaceholder": "All statuses",
+    "resourceTypeLabel": "Resource type",
+    "resourceType": {
+      "ROOM": "Room",
+      "PROJECTOR": "Projector",
+      "SOUND_SYSTEM": "Sound system",
+      "AIR_CONDITIONER": "Air conditioner",
+      "SEAT": "Seat",
+      "QR_SCANNER": "QR scanner",
+      "POS": "POS terminal",
+      "EQUIPMENT_OTHER": "Other equipment"
+    },
+    "roomLabel": "Room",
+    "roomPlaceholder": "Select room",
+    "roomOptionalLabel": "Location (optional)",
+    "roomOptionalPlaceholder": "Not tied to a room",
+    "seatLabel": "Seat",
+    "seatPlaceholder": "Select seat",
+    "resourceNameLabel": "Equipment name",
+    "titleLabel": "Issue title",
+    "descriptionLabel": "Description",
+    "submit": "Save",
+    "createSuccess": "Maintenance request reported.",
+    "deleteConfirm": "Delete this maintenance request?",
+    "deleteSuccess": "Maintenance request deleted.",
+    "assignTitle": "Assign employee",
+    "employeeLabel": "Employee",
+    "employeePlaceholder": "Select employee",
+    "assignSuccess": "Employee assigned.",
+    "resolveTitle": "Resolve request",
+    "resolutionNoteLabel": "Resolution note (optional)",
+    "resolveSuccess": "Request marked resolved.",
+    "startSuccess": "Work started.",
+    "closeSuccess": "Request closed.",
+    "assign": "Assign",
+    "reassign": "Reassign",
+    "start": "Start",
+    "resolve": "Resolve",
+    "close": "Close",
+    "delete": "Delete",
+    "unassigned": "Unassigned",
+    "status": {
+      "OPEN": "Open",
+      "ASSIGNED": "Assigned",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "headers": {
+      "id": "ID",
+      "branch": "Branch",
+      "resource": "Resource",
+      "title": "Issue",
+      "assignee": "Assigned to",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "branchRequired": "Please select a branch.",
+      "titleRequired": "Please enter an issue title.",
+      "roomRequired": "Please select a room.",
+      "seatRequired": "Please select a seat.",
+      "resourceNameRequired": "Please enter the equipment name."
+    }
   }
 }

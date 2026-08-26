@@ -50,14 +50,24 @@ describe('seedPositions', () => {
     }
   });
 
-  it('gives Security, Cleaning Staff and Maintenance Staff zero permissions', async () => {
+  it('gives Security and Cleaning Staff zero permissions', async () => {
     await seedRbac();
     await seedPositions();
-    for (const code of ['SECURITY', 'CLEANING_STAFF', 'MAINTENANCE_STAFF']) {
+    for (const code of ['SECURITY', 'CLEANING_STAFF']) {
       const position = await Position.findOne({ code });
       const links = await PositionPermission.countDocuments({ position_id: position.id });
       expect(links).toBe(0);
     }
+  });
+
+  it('grants Maintenance Staff only maintenance.update, at BRANCH scope', async () => {
+    await seedRbac();
+    await seedPositions();
+    const position = await Position.findOne({ code: 'MAINTENANCE_STAFF' });
+    const links = await PositionPermission.find({ position_id: position.id });
+    const permissions = await Permission.find({ id: { $in: links.map((l) => l.permission_id) } });
+    expect(permissions.map((p) => p.code)).toEqual(['maintenance.update']);
+    expect(await scopeFor('MAINTENANCE_STAFF', 'maintenance.update')).toBe('BRANCH');
   });
 
   it('never grants Security booking.create, payment.create or ticket.checkin', async () => {
