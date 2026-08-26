@@ -19,6 +19,7 @@ import MyTickets from '@/features/booking/pages/MyTicketsPage';
 import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import MyRefunds from '@/features/refund/pages/MyRefundsPage';
+import MyMembership from '@/features/membership/pages/MyMembershipPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -88,6 +89,7 @@ export function AppRouter() {
       <Route path="/Ticket/:id" element={<TicketDetail />} />
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
+      <Route path={ROUTES.myMembership} element={<MyMembership />} />
       <Route
         path={ROUTES.adminUsers}
         element={

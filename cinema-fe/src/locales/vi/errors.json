@@ -59,5 +59,9 @@
   "REFUND_WINDOW_EXPIRED": "Đơn đặt vé này quá gần giờ chiếu nên không đủ điều kiện hoàn tiền",
   "REFUND_NOT_REQUESTED": "Yêu cầu hoàn tiền này không còn ở trạng thái chờ duyệt",
   "REFUND_NOT_APPROVED": "Yêu cầu hoàn tiền này chưa được duyệt",
-  "REFUND_NOT_PROCESSING": "Yêu cầu hoàn tiền này hiện không ở trạng thái đang xử lý"
+  "REFUND_NOT_PROCESSING": "Yêu cầu hoàn tiền này hiện không ở trạng thái đang xử lý",
+  "INVALID_POINTS": "Số điểm không hợp lệ",
+  "BELOW_MIN_REDEEM": "Số điểm đổi tối thiểu chưa đạt yêu cầu",
+  "INSUFFICIENT_POINTS": "Số điểm hiện có không đủ",
+  "LEVEL_CODE_EXISTS": "Hạng thành viên với mã này đã tồn tại"
 }
