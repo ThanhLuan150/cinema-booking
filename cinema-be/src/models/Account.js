@@ -17,6 +17,8 @@ const accountSchema = new mongoose.Schema(
     approved: { type: Boolean, default: true }, // theater staff (role 2) start unapproved
     verified: { type: Boolean, default: false },
     membership_level: { type: String, enum: MEMBERSHIP_LEVELS, default: 'NONE' },
+    points_balance: { type: Number, default: 0, min: 0 }, // spendable loyalty points
+    lifetime_points: { type: Number, default: 0, min: 0 }, // total ever earned; drives membership_level
     otp: { type: String, default: null, select: false },
     otpExpiresAt: { type: Date, default: null, select: false },
     refreshTokenHash: { type: String, default: null, select: false },

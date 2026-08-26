@@ -15,6 +15,7 @@ export const ROUTES = {
   ticketDetail: (id: string | number) => `/Ticket/${id}`,
   paymentHistory: '/PaymentHistory',
   myRefunds: '/MyRefunds',
+  myMembership: '/MyMembership',
   playing: '/Playing',
   upcoming: '/Upcoming',
   cinemas: '/Cinemas',

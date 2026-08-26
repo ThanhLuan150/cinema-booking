@@ -1,0 +1,29 @@
+{
+  "pageTitle": "My Membership",
+  "currentTierLabel": "Current Tier",
+  "pointsBalanceLabel": "Points Balance",
+  "lifetimePointsLabel": "Lifetime points earned: {{points}}",
+  "progressToNext": "Progress to {{level}}",
+  "pointsToNext": "{{points}} more points to reach {{level}}",
+  "topTierReached": "You've reached the highest membership tier.",
+  "redeem": {
+    "button": "Redeem Points",
+    "modalTitle": "Redeem Points",
+    "inputLabel": "Points to redeem",
+    "submit": "Redeem",
+    "confirm": "Redeem {{points}} points?",
+    "invalidAmount": "Enter a valid number of points",
+    "success": "Redeemed successfully! Value: {{value}}đ"
+  },
+  "history": {
+    "title": "Points History",
+    "empty": "No points activity yet.",
+    "type": {
+      "earn": "Earned",
+      "redeem": "Redeemed",
+      "expire": "Expired",
+      "reversal": "Reversed",
+      "adjust": "Adjusted"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "pageTitle": "Hạng thành viên của tôi",
+  "currentTierLabel": "Hạng hiện tại",
+  "pointsBalanceLabel": "Số điểm hiện có",
+  "lifetimePointsLabel": "Tổng điểm đã tích lũy: {{points}}",
+  "progressToNext": "Tiến trình lên hạng {{level}}",
+  "pointsToNext": "Cần thêm {{points}} điểm để đạt hạng {{level}}",
+  "topTierReached": "Bạn đã đạt hạng thành viên cao nhất.",
+  "redeem": {
+    "button": "Đổi điểm",
+    "modalTitle": "Đổi điểm thưởng",
+    "inputLabel": "Số điểm muốn đổi",
+    "submit": "Đổi điểm",
+    "confirm": "Đổi {{points}} điểm?",
+    "invalidAmount": "Vui lòng nhập số điểm hợp lệ",
+    "success": "Đổi điểm thành công! Giá trị: {{value}}đ"
+  },
+  "history": {
+    "title": "Lịch sử điểm",
+    "empty": "Chưa có hoạt động điểm nào.",
+    "type": {
+      "earn": "Tích điểm",
+      "redeem": "Đổi điểm",
+      "expire": "Hết hạn",
+      "reversal": "Hoàn điểm",
+      "adjust": "Điều chỉnh"
+    }
+  }
+}

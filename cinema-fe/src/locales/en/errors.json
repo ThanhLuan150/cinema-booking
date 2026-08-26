@@ -59,5 +59,9 @@
   "REFUND_WINDOW_EXPIRED": "This booking is too close to its showtime to be eligible for a refund",
   "REFUND_NOT_REQUESTED": "This refund is no longer awaiting a decision",
   "REFUND_NOT_APPROVED": "This refund has not been approved yet",
-  "REFUND_NOT_PROCESSING": "This refund is not currently being processed"
+  "REFUND_NOT_PROCESSING": "This refund is not currently being processed",
+  "INVALID_POINTS": "Points must be a valid amount",
+  "BELOW_MIN_REDEEM": "The minimum redeemable points has not been met",
+  "INSUFFICIENT_POINTS": "Not enough points balance",
+  "LEVEL_CODE_EXISTS": "A membership level with this code already exists"
 }

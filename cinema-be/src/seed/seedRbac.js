@@ -62,6 +62,8 @@ const PERMISSIONS = [
   ['refund.request', 'refund'], ['refund.read', 'refund'],
   ['refund.approve', 'refund'], ['refund.process', 'refund'],
   ['inventory.view', 'inventory'], ['inventory.manage', 'inventory'],
+  ['loyalty.read', 'loyalty'], ['loyalty.redeem', 'loyalty'], ['loyaltyConfig.manage', 'loyalty'],
+  ['membershipLevel.read', 'loyalty'], ['membershipLevel.manage', 'loyalty'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -120,6 +122,7 @@ const CUSTOMER_PERMISSIONS = {
   'payment.create': 'OWN',
   'payment.read': 'OWN',
   'refund.request': 'OWN', 'refund.read': 'OWN',
+  'loyalty.read': 'OWN', 'loyalty.redeem': 'OWN', 'membershipLevel.read': 'ALL',
 };
 
 function normalizePermissionScopes(permissions) {

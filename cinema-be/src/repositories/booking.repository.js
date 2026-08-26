@@ -20,6 +20,7 @@ const { generateQrToken } = require('../utils/qrToken');
 const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
 const pricingEngine = require('../services/pricingEngine');
+const loyaltyService = require('../services/loyaltyService');
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
 const { isPromotionEligible, computePromotionDiscount } = require('../utils/promotionPricing');
 
@@ -141,6 +142,20 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
       paid_at: new Date(),
       created_by: createdBy,
     });
+  }
+
+  // Customer -> Booking -> Payment -> Earn Points. finalizeMomoOrder already only reaches this
+  // point once per orderId (see the Invoice.findOne guard above), and earnPointsForBooking adds
+  // its own unique-index backstop, so a duplicate payment callback never double-credits points.
+  try {
+    await loyaltyService.earnPointsForBooking({
+      accountId: Number(accountId),
+      bookingId: booking.id,
+      amount: totalPrice,
+      description: `Booking ${orderId}`,
+    });
+  } catch (err) {
+    console.error(`Failed to award loyalty points for booking ${booking.id}:`, err);
   }
 
   const ticketCount = ticketIds.length;
@@ -678,6 +693,16 @@ async function applyRefund(booking) {
   booking.cancelled_at = new Date();
   booking.cancel_reason = 'Refunded';
   await booking.save();
+
+  // Business policy: a refunded booking's earned points are clawed back (see
+  // loyaltyService.reversePointsForBooking for exactly how much and why). Never let this
+  // failing block the refund itself — the customer's money/tickets already moved.
+  try {
+    await loyaltyService.reversePointsForBooking({ bookingId: booking.id, reason: `Booking ${booking.code} refunded` });
+  } catch (err) {
+    console.error(`Failed to reverse loyalty points for booking ${booking.id}:`, err);
+  }
+
   return booking;
 }
 

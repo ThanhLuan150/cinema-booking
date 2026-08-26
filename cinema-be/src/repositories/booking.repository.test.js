@@ -19,6 +19,7 @@ const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
 const Combo = require('../models/Combo');
 const ComboOrder = require('../models/ComboOrder');
+const PointsTransaction = require('../models/PointsTransaction');
 
 beforeAll(async () => connect());
 afterEach(async () => {
@@ -210,6 +211,34 @@ describe('booking.repository', () => {
       expect(result).toEqual({ alreadyProcessed: true });
       expect(await Invoice.countDocuments()).toBe(1);
     });
+
+    it('awards loyalty points to the buyer once the booking is paid', async () => {
+      await seedOrder();
+      const result = await bookingRepository.finalizeMomoOrder('ORDER-1', {
+        ticketIds: [1, 2],
+        totalPrice: 100000,
+        accountId: 10,
+      });
+
+      const buyer = await Account.findOne({ id: 10 });
+      expect(buyer.points_balance).toBeGreaterThan(0);
+      expect(buyer.lifetime_points).toBe(buyer.points_balance);
+
+      const earnTxs = await PointsTransaction.find({ booking_id: result.bookingId, type: 'EARN' });
+      expect(earnTxs).toHaveLength(1);
+      expect(earnTxs[0].account_id).toBe(10);
+    });
+
+    it('never awards loyalty points twice for a retried orderId (duplicate payment callback)', async () => {
+      await seedOrder();
+      const first = await bookingRepository.finalizeMomoOrder('ORDER-3', { ticketIds: [1], totalPrice: 100000, accountId: 10 });
+      await bookingRepository.finalizeMomoOrder('ORDER-3', { ticketIds: [1], totalPrice: 100000, accountId: 10 });
+
+      const earnTxs = await PointsTransaction.find({ booking_id: first.bookingId, type: 'EARN' });
+      expect(earnTxs).toHaveLength(1);
+      const buyer = await Account.findOne({ id: 10 });
+      expect(buyer.points_balance).toBe(earnTxs[0].points);
+    });
   });
 
   describe('ticket lifecycle transitions', () => {
@@ -282,6 +311,24 @@ describe('booking.repository', () => {
       await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1 });
       await bookingRepository.applyRefund(booking);
       expect((await Invoice.findOne({ id: 1 })).ticket_status).toBe('REFUNDED');
+    });
+
+    it('applyRefund reverses the booking\'s earned loyalty points', async () => {
+      await Account.create({ id: 1, email: 'buyer@example.com', password: 'x', points_balance: 10, lifetime_points: 10 });
+      await PointsTransaction.create({
+        id: 9001, account_id: 1, type: 'EARN', points: 10, remaining_points: 10, booking_id: 1, balance_after: 10,
+      });
+      const booking = await Booking.create({
+        id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1,
+        ticket_ids: [1], total_price: 1, status: 'PAID',
+      });
+      await bookingRepository.applyRefund(booking);
+
+      const account = await Account.findOne({ id: 1 });
+      expect(account.points_balance).toBe(0);
+      expect(account.lifetime_points).toBe(0);
+      const reversal = await PointsTransaction.findOne({ booking_id: 1, type: 'REVERSAL' });
+      expect(reversal.points).toBe(-10);
     });
   });
 
