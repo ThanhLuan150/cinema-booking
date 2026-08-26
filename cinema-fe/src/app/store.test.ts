@@ -15,6 +15,7 @@ describe('store', () => {
         'ownerCombos',
         'ownerInventory',
         'ownerVouchers',
+        'ownerPromotions',
         'ownerPricingRules',
         'ownerHolidays',
         'ownerEmployees',

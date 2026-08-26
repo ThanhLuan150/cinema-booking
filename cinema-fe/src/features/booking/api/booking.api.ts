@@ -11,6 +11,8 @@ import type {
   Invoice,
   MomoConfirmParams,
   MomoPaymentPayload,
+  PromotionValidationPayload,
+  PromotionValidationResult,
   ScheduleDateOption,
   Ticket,
   VoucherValidationPayload,
@@ -55,6 +57,9 @@ export const cancelInvoice = (invoiceId: number | string) => apiClient.post(`/in
 
 export const validateVoucher = (payload: VoucherValidationPayload) =>
   apiClient.post<VoucherValidationResult>('/voucher/validate', payload).then((res) => res.data);
+
+export const validatePromotion = (payload: PromotionValidationPayload) =>
+  apiClient.post<PromotionValidationResult>('/promotion/validate', payload).then((res) => res.data);
 
 export const getCombos = (branchId?: number | null) =>
   apiClient

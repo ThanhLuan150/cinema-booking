@@ -11,6 +11,7 @@ const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
 const Combo = require('../models/Combo');
 const ComboOrder = require('../models/ComboOrder');
+const Promotion = require('../models/Promotion');
 const paymentRepository = require('../repositories/payment.repository');
 
 function mockRes() {
@@ -169,6 +170,78 @@ describe('POST /api/MomoPayment', () => {
     );
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
+});
+
+describe('POST /api/MomoPayment — promotion discount (never both a voucher and a promotion)', () => {
+  it('rejects a request that sends both a voucherCode and a promotionCode', async () => {
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], voucherCode: 'V', promotionCode: 'P' }, account: { accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'DISCOUNT_CONFLICT' }));
+  });
+
+  it('applies an eligible promotion code and stores the backend-computed discount on the pending booking', async () => {
+    await Schedule.create({
+      id: 1,
+      movie_id: 7,
+      room_id: 1,
+      cinema_id: 5,
+      movie_date: '2026-01-01',
+      time_begin: '10:00',
+      time_end: '12:00',
+      price: 100000,
+    });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Promotion.create({
+      id: 1,
+      code: 'PROMO10',
+      name: 'Promo',
+      discount_type: 'PERCENTAGE',
+      discount_value: 10,
+      start_at: new Date(Date.now() - 86400000),
+      end_at: new Date(Date.now() + 86400000),
+    });
+
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], promotionCode: 'promo10' }, account: { accountId: 42 } },
+      res,
+    );
+    expect(res.type).toHaveBeenCalledWith('text/plain');
+
+    const booking = await Booking.findOne({ account_id: 42 });
+    expect(booking.promotion_code).toBe('PROMO10');
+    expect(booking.voucher_code).toBeNull();
+    expect(booking.discount_amount).toBe(10000);
+    expect(booking.total_price).toBe(90000);
+  });
+
+  it('ignores an ineligible promotion code and charges the full price without erroring', async () => {
+    await Schedule.create({ id: 1, movie_id: 7, room_id: 1, cinema_id: 5, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 100000 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Promotion.create({
+      id: 1,
+      code: 'EXPIRED1',
+      name: 'Expired',
+      discount_type: 'FIXED_AMOUNT',
+      discount_value: 5000,
+      start_at: new Date(Date.now() - 2 * 86400000),
+      end_at: new Date(Date.now() - 86400000),
+    });
+
+    const res = mockRes();
+    await bookingController.createMomoPayment(
+      { body: { ticketIds: [1], promotionCode: 'EXPIRED1' }, account: { accountId: 42 } },
+      res,
+    );
+    const booking = await Booking.findOne({ account_id: 42 });
+    expect(booking.promotion_code).toBeNull();
+    expect(booking.discount_amount).toBe(0);
+    expect(booking.total_price).toBe(100000);
   });
 });
 
@@ -1032,6 +1105,44 @@ describe('POST /api/invoice/counter-sale', () => {
     const invoice = await Invoice.findOne({ ticket_id: 1 });
     expect(invoice.created_by).toBe(7);
     expect(invoice.status).toBe(1);
+  });
+
+  it('rejects a counter sale that sends both a voucherCode and a promotionCode', async () => {
+    const res = mockRes();
+    await bookingController.createCounterSale(
+      { body: { ticketIds: [1], accountId: 1, voucherCode: 'V', promotionCode: 'P' }, account: { accountId: 7 }, branchId: 1 },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'DISCOUNT_CONFLICT' }));
+  });
+
+  it('applies an eligible promotion code to a counter sale', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
+    await Room.create({ id: 1, cinema_id: 1, name: 'R1' });
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 100000 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1' });
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+    await Promotion.create({
+      id: 1,
+      code: 'COUNTER10',
+      name: 'Counter promo',
+      discount_type: 'FIXED_AMOUNT',
+      discount_value: 10000,
+      start_at: new Date(Date.now() - 86400000),
+      end_at: new Date(Date.now() + 86400000),
+    });
+
+    const res = mockRes();
+    await bookingController.createCounterSale(
+      { body: { ticketIds: [1], accountId: 1, promotionCode: 'counter10' }, account: { accountId: 7 }, branchId: 1 },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(201);
+    const invoice = await Invoice.findOne({ ticket_id: 1 });
+    expect(invoice.promotion_code).toBe('COUNTER10');
+    expect(invoice.discount_amount).toBe(10000);
+    expect((await Promotion.findOne({ id: 1 })).used_count).toBe(1);
   });
 });
 

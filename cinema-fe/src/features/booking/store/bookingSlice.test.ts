@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import type { BookedSeatTicket, VoucherValidationResult } from '../types/booking.types';
+import type { BookedSeatTicket, PromotionValidationResult, VoucherValidationResult } from '../types/booking.types';
 import reducer, {
+  applyPromotionFailure,
+  applyPromotionSuccess,
   applyVoucherFailure,
   applyVoucherSuccess,
+  clearPromotion,
   clearVoucher,
   resetBookingSelection,
   setbranchId,
   setMomoPayUrl,
   setPaymentResult,
+  setPromotionCode,
   setScheduleId,
   setSelectedDay,
   setSelectedTime,
@@ -91,6 +95,50 @@ describe('bookingSlice', () => {
     const state = reducer(dirty, clearVoucher());
     expect(state.voucherResult).toBeNull();
     expect(state.voucherError).toBe('');
+  });
+
+  it('setPromotionCode updates the promotion code', () => {
+    const state = reducer(initialState, setPromotionCode('PROMO10'));
+    expect(state.promotionCode).toBe('PROMO10');
+  });
+
+  it('applyPromotionSuccess sets the result and clears the error', () => {
+    const result = { discount_amount: 1000 } as unknown as PromotionValidationResult;
+    const withError = { ...initialState, promotionError: 'bad code' };
+    const state = reducer(withError, applyPromotionSuccess(result));
+    expect(state.promotionResult).toEqual(result);
+    expect(state.promotionError).toBe('');
+  });
+
+  it('applyPromotionFailure sets the error and clears the result', () => {
+    const state = reducer(initialState, applyPromotionFailure('Invalid promotion'));
+    expect(state.promotionError).toBe('Invalid promotion');
+    expect(state.promotionResult).toBeNull();
+  });
+
+  it('clearPromotion resets promotion result and error', () => {
+    const dirty = reducer(initialState, applyPromotionFailure('Invalid promotion'));
+    const state = reducer(dirty, clearPromotion());
+    expect(state.promotionResult).toBeNull();
+    expect(state.promotionError).toBe('');
+  });
+
+  it('a customer can only apply one of a voucher or a promotion at a time', () => {
+    const voucherResult = { discount_amount: 1000 } as unknown as VoucherValidationResult;
+    const promotionResult = { discount_amount: 2000 } as unknown as PromotionValidationResult;
+
+    const withVoucher = reducer(
+      { ...initialState, promotionCode: 'PROMO10' },
+      applyVoucherSuccess(voucherResult),
+    );
+    expect(withVoucher.voucherResult).toEqual(voucherResult);
+    expect(withVoucher.promotionCode).toBe('');
+    expect(withVoucher.promotionResult).toBeNull();
+
+    const withPromotion = reducer(withVoucher, applyPromotionSuccess(promotionResult));
+    expect(withPromotion.promotionResult).toEqual(promotionResult);
+    expect(withPromotion.voucherCode).toBe('');
+    expect(withPromotion.voucherResult).toBeNull();
   });
 
   it('setMomoPayUrl stores the pay url', () => {

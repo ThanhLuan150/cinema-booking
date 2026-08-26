@@ -31,6 +31,7 @@ vi.mock('@/features/owner/cinemas/pages/List', () => ({ default: () => <div>Owne
 vi.mock('@/features/owner/cinemas/pages/Rooms', () => ({ default: () => <div>OwnerRooms</div> }));
 vi.mock('@/features/owner/combos/pages/List', () => ({ default: () => <div>OwnerCombos</div> }));
 vi.mock('@/features/owner/vouchers/pages/List', () => ({ default: () => <div>OwnerVouchers</div> }));
+vi.mock('@/features/owner/promotions/pages/List', () => ({ default: () => <div>OwnerPromotions</div> }));
 vi.mock('@/features/owner/pricingRules/pages/List', () => ({ default: () => <div>OwnerPricingRules</div> }));
 vi.mock('@/features/owner/holidays/pages/List', () => ({ default: () => <div>OwnerHolidays</div> }));
 vi.mock('@/features/owner/pages/Lookup', () => ({ default: () => <div>OwnerBookingLookup</div> }));
@@ -111,6 +112,12 @@ describe('AppRouter', () => {
   it('redirects an owner-management route to login when unauthenticated', () => {
     renderAt(ROUTES.ownerVouchers);
     expect(screen.getByText('LoginForm')).toBeInTheDocument();
+  });
+
+  it('renders the owner promotions route when logged in as an owner', () => {
+    store.dispatch(login({ accessToken: 'tok', userId: '1', role: String(ROLES.owner), account: {} as Account }));
+    renderAt(ROUTES.ownerPromotions);
+    expect(screen.getByText('OwnerPromotions')).toBeInTheDocument();
   });
 
   it('renders the owner pricing rules route when logged in as an owner', () => {

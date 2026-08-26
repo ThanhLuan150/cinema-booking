@@ -31,6 +31,7 @@ import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
+import OwnerPromotions from '@/features/owner/promotions/pages/List';
 import OwnerPricingRules from '@/features/owner/pricingRules/pages/List';
 import OwnerHolidays from '@/features/owner/holidays/pages/List';
 import OwnerBookingLookup from '@/features/owner/pages/Lookup';
@@ -188,6 +189,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerVouchers />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerPromotions}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerPromotions />
           </RequireRole>
         }
       />

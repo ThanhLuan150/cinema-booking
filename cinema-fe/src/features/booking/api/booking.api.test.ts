@@ -90,6 +90,12 @@ describe('booking.api', () => {
     expect(postMock).toHaveBeenCalledWith('/voucher/validate', payload);
   });
 
+  it('validatePromotion posts to /promotion/validate', async () => {
+    const payload = { code: 'PROMO10' } as any;
+    await bookingApi.validatePromotion(payload);
+    expect(postMock).toHaveBeenCalledWith('/promotion/validate', payload);
+  });
+
   it('getCombos gets /combo with branchId and full-list limit', async () => {
     await bookingApi.getCombos(3);
     expect(getMock).toHaveBeenCalledWith('/combo', { params: { branchId: 3, limit: FULL_LIST_FETCH_LIMIT } });

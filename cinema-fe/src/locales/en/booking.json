@@ -139,10 +139,21 @@
     "cancelFailed": "Could not cancel the booking."
   },
   "voucher": {
-    "title": "Discount code",
-    "placeholder": "Enter code...",
+    "title": "Voucher code",
+    "placeholder": "Enter voucher code...",
     "apply": "Apply",
     "applied": "Applied: -{{amount}}",
-    "applyFailed": "Could not apply the discount code."
+    "applyFailed": "Could not apply the voucher code.",
+    "remove": "Remove",
+    "disabledHint": "Remove the promotion code above to use a voucher."
+  },
+  "promotion": {
+    "title": "Promotion code",
+    "placeholder": "Enter promotion code...",
+    "apply": "Apply",
+    "applied": "Applied: -{{amount}}",
+    "applyFailed": "Could not apply the promotion code.",
+    "remove": "Remove",
+    "disabledHint": "Remove the voucher code above to use a promotion."
   }
 }
