@@ -20,6 +20,7 @@ describe('store', () => {
         'ownerHolidays',
         'ownerEmployees',
         'ownerShifts',
+        'ownerMaintenance',
         'adminActors',
         'adminDirectors',
         'notifications',

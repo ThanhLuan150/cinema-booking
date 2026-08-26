@@ -254,6 +254,38 @@ export interface ShiftAssignment {
   shift?: { name: string; start_time: string; end_time: string };
 }
 
+export type MaintenanceResourceType =
+  | 'ROOM'
+  | 'PROJECTOR'
+  | 'SOUND_SYSTEM'
+  | 'AIR_CONDITIONER'
+  | 'SEAT'
+  | 'QR_SCANNER'
+  | 'POS'
+  | 'EQUIPMENT_OTHER';
+
+export type MaintenanceStatus = 'OPEN' | 'ASSIGNED' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+
+export interface MaintenanceRequest {
+  id: number;
+  branch_id: number;
+  resource_type: MaintenanceResourceType;
+  room_id: number | null;
+  seat_id: number | null;
+  resource_name: string;
+  title: string;
+  description: string;
+  status: MaintenanceStatus;
+  reported_by: number;
+  assigned_employee_id: number | null;
+  assigned_at: string | null;
+  started_at: string | null;
+  resolved_at: string | null;
+  resolution_note: string | null;
+  closed_at: string | null;
+  createdAt: string;
+}
+
 export interface Actor {
   id: number;
   full_name: string;

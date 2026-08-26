@@ -258,4 +258,40 @@ describe('owner.api', () => {
     await ownerApi.getPositions();
     expect(getMock).toHaveBeenCalledWith('/position');
   });
+
+  it('getMaintenanceRequests gets /maintenance with branchId param', async () => {
+    await ownerApi.getMaintenanceRequests(1, { page: 1, limit: 20 });
+    expect(getMock).toHaveBeenCalledWith('/maintenance', { params: { branchId: 1, page: 1, limit: 20 } });
+  });
+
+  it('createMaintenanceRequest posts to /maintenance', async () => {
+    const payload = { branch_id: 1, resource_type: 'ROOM' as const, room_id: 1, title: 'Flicker' };
+    await ownerApi.createMaintenanceRequest(payload);
+    expect(postMock).toHaveBeenCalledWith('/maintenance', payload);
+  });
+
+  it('assignMaintenanceRequest posts to /maintenance/:id/assign', async () => {
+    await ownerApi.assignMaintenanceRequest(1, { employee_id: 5 });
+    expect(postMock).toHaveBeenCalledWith('/maintenance/1/assign', { employee_id: 5 });
+  });
+
+  it('startMaintenanceRequest posts to /maintenance/:id/start', async () => {
+    await ownerApi.startMaintenanceRequest(1);
+    expect(postMock).toHaveBeenCalledWith('/maintenance/1/start');
+  });
+
+  it('resolveMaintenanceRequest posts to /maintenance/:id/resolve', async () => {
+    await ownerApi.resolveMaintenanceRequest(1, { resolution_note: 'Fixed it' });
+    expect(postMock).toHaveBeenCalledWith('/maintenance/1/resolve', { resolution_note: 'Fixed it' });
+  });
+
+  it('closeMaintenanceRequest posts to /maintenance/:id/close', async () => {
+    await ownerApi.closeMaintenanceRequest(1);
+    expect(postMock).toHaveBeenCalledWith('/maintenance/1/close');
+  });
+
+  it('deleteMaintenanceRequest deletes /maintenance/:id', async () => {
+    await ownerApi.deleteMaintenanceRequest(1);
+    expect(deleteMock).toHaveBeenCalledWith('/maintenance/1');
+  });
 });

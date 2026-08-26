@@ -44,4 +44,9 @@ describe('routes/index composition', () => {
     const res = await request(app).get('/api/admin/dashboard');
     expect(res.status).toBe(401);
   });
+
+  it('mounts the maintenance routes', async () => {
+    const res = await request(app).get('/api/maintenance');
+    expect(res.status).toBe(401);
+  });
 });

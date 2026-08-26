@@ -13,6 +13,7 @@ import ownerPricingRulesReducer from '@/features/owner/store/ownerPricingRulesSl
 import ownerHolidaysReducer from '@/features/owner/store/ownerHolidaysSlice';
 import ownerEmployeesReducer from '@/features/owner/store/ownerEmployeesSlice';
 import ownerShiftsReducer from '@/features/owner/store/ownerShiftsSlice';
+import ownerMaintenanceReducer from '@/features/owner/store/ownerMaintenanceSlice';
 import adminActorsReducer from '@/features/admin/actors/store/adminActorsSlice';
 import adminDirectorsReducer from '@/features/admin/directors/store/adminDirectorsSlice';
 import notificationsReducer from '@/features/notifications/notificationSlice';
@@ -35,6 +36,7 @@ export const store = configureStore({
     ownerHolidays: ownerHolidaysReducer,
     ownerEmployees: ownerEmployeesReducer,
     ownerShifts: ownerShiftsReducer,
+    ownerMaintenance: ownerMaintenanceReducer,
     adminActors: adminActorsReducer,
     adminDirectors: adminDirectorsReducer,
     notifications: notificationsReducer,
