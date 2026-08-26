@@ -8,6 +8,7 @@ import type {
   InventoryTransaction,
   Position,
   PricingRule,
+  Promotion,
   Room,
   Seat,
   Shift,
@@ -105,6 +106,35 @@ export const updateVoucher = (id: number | string, payload: Record<string, unkno
   apiClient.put(`/voucher/${id}`, payload);
 
 export const deleteVoucher = (id: number | string) => apiClient.delete(`/voucher/${id}`);
+
+export const getOwnerPromotions = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<Promotion>>('/promotion', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export interface PromotionPayload {
+  code: string;
+  name: string;
+  description: string;
+  discount_type: Promotion['discount_type'];
+  discount_value: number;
+  minimum_order_value: number;
+  maximum_discount: number | null;
+  start_at: string;
+  end_at: string;
+  usage_limit: number | null;
+  per_customer_limit: number | null;
+  branch_ids: number[];
+  movie_ids: number[];
+  combo_ids: number[];
+}
+
+export const createPromotion = (payload: PromotionPayload) => apiClient.post('/promotion', payload);
+
+export const updatePromotion = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/promotion/${id}`, payload);
+
+export const deletePromotion = (id: number | string) => apiClient.delete(`/promotion/${id}`);
 
 export const getOwnerPricingRules = (branchId?: number | string, params?: PaginationParams) =>
   apiClient

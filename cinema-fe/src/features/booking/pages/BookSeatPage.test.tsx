@@ -50,6 +50,11 @@ vi.mock('../hooks/useValidateVoucher', () => ({
   useValidateVoucher: () => ({ mutateAsync: validateVoucherMutate }),
 }));
 
+const validatePromotionMutate = vi.fn();
+vi.mock('../hooks/useValidatePromotion', () => ({
+  useValidatePromotion: () => ({ mutateAsync: validatePromotionMutate }),
+}));
+
 const momoPaymentMutate = vi.fn();
 vi.mock('../hooks/useMomoPayment', () => ({
   useMomoPayment: () => ({ mutateAsync: momoPaymentMutate, isPending: false }),
@@ -81,6 +86,7 @@ describe('BookSeatPage', () => {
     useRoomsListMock.mockReset();
     useCombosMock.mockReset();
     validateVoucherMutate.mockReset();
+    validatePromotionMutate.mockReset();
     momoPaymentMutate.mockReset();
     holdSeatsMutate.mockReset();
     holdSeatsMutate.mockImplementation((_seatCodes: string[], opts?: { onSuccess?: () => void }) => opts?.onSuccess?.());
@@ -183,8 +189,8 @@ describe('BookSeatPage', () => {
     });
     validateVoucherMutate.mockResolvedValue({ discount_amount: 10000, code: 'SAVE10' });
     renderPage();
-    fireEvent.change(screen.getByPlaceholderText('Enter code...'), { target: { value: 'save10' } });
-    fireEvent.click(screen.getByText('Apply'));
+    fireEvent.change(screen.getByPlaceholderText('Enter voucher code...'), { target: { value: 'save10' } });
+    fireEvent.click(screen.getAllByText('Apply')[0]);
     await waitFor(() =>
       expect(validateVoucherMutate).toHaveBeenCalledWith(
         expect.objectContaining({ code: 'save10', cinema_id: 3 }),
@@ -193,6 +199,44 @@ describe('BookSeatPage', () => {
     expect(
       await screen.findByText((_, el) => el?.tagName === 'P' && !!el.textContent?.includes('10,000đ')),
     ).toBeInTheDocument();
+  });
+
+  it('applies a promotion and shows the discount', async () => {
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
+      isLoading: false,
+    });
+    validatePromotionMutate.mockResolvedValue({ discount_amount: 15000, code: 'PROMO15' });
+    renderPage();
+    fireEvent.change(screen.getByPlaceholderText('Enter promotion code...'), { target: { value: 'promo15' } });
+    fireEvent.click(screen.getAllByText('Apply')[1]);
+    await waitFor(() =>
+      expect(validatePromotionMutate).toHaveBeenCalledWith(
+        expect.objectContaining({ code: 'promo15', branch_id: 3, movie_id: 1, showtime_id: 7 }),
+      ),
+    );
+    expect(
+      await screen.findByText((_, el) => el?.tagName === 'P' && !!el.textContent?.includes('15,000đ')),
+    ).toBeInTheDocument();
+  });
+
+  it('only allows one of a voucher or a promotion to be applied at a time', async () => {
+    useBookedSeatsMock.mockReturnValue({
+      data: [{ id: 1, seat_code: 'A1', seat_type: 0, status: 1 }],
+      isLoading: false,
+    });
+    validateVoucherMutate.mockResolvedValue({ discount_amount: 10000, code: 'SAVE10' });
+    renderPage();
+    fireEvent.change(screen.getByPlaceholderText('Enter voucher code...'), { target: { value: 'save10' } });
+    fireEvent.click(screen.getAllByText('Apply')[0]);
+    await waitFor(() => expect(validateVoucherMutate).toHaveBeenCalled());
+
+    expect(screen.getByPlaceholderText('Enter promotion code...')).toBeDisabled();
+    expect(screen.getAllByText('Apply')[1]).toBeDisabled();
+
+    fireEvent.click(screen.getByText('Remove'));
+    expect(screen.getByPlaceholderText('Enter promotion code...')).not.toBeDisabled();
+    expect(screen.getAllByText('Apply')[1]).not.toBeDisabled();
   });
 
   it('shows the momo modal after a successful checkout', async () => {

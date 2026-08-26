@@ -1,4 +1,5 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
+import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
 
 export interface Movie {
   id: number;
@@ -127,6 +128,27 @@ export interface InventoryTransaction {
   ref_code: string | null;
   performed_by: number | null;
   createdAt: string;
+}
+
+export interface Promotion {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  discount_type: (typeof PROMOTION_DISCOUNT_TYPE)[keyof typeof PROMOTION_DISCOUNT_TYPE];
+  discount_value: number;
+  minimum_order_value: number;
+  maximum_discount: number | null;
+  start_at: string;
+  end_at: string;
+  usage_limit: number | null;
+  used_count: number;
+  per_customer_limit: number | null;
+  status: 'ACTIVE' | 'INACTIVE';
+  branch_ids: number[];
+  movie_ids: number[];
+  showtime_ids: number[];
+  combo_ids: number[];
 }
 
 export interface Voucher {

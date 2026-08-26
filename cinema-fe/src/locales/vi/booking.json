@@ -139,10 +139,21 @@
     "cancelFailed": "Không thể hủy đặt vé."
   },
   "voucher": {
-    "title": "Mã giảm giá",
-    "placeholder": "Nhập mã...",
+    "title": "Mã giảm giá (Voucher)",
+    "placeholder": "Nhập mã giảm giá...",
     "apply": "Áp dụng",
     "applied": "Đã áp dụng: -{{amount}}đ",
-    "applyFailed": "Không thể áp dụng mã giảm giá."
+    "applyFailed": "Không thể áp dụng mã giảm giá.",
+    "remove": "Bỏ",
+    "disabledHint": "Bỏ mã khuyến mãi ở trên để dùng mã giảm giá."
+  },
+  "promotion": {
+    "title": "Mã khuyến mãi",
+    "placeholder": "Nhập mã khuyến mãi...",
+    "apply": "Áp dụng",
+    "applied": "Đã áp dụng: -{{amount}}đ",
+    "applyFailed": "Không thể áp dụng mã khuyến mãi.",
+    "remove": "Bỏ",
+    "disabledHint": "Bỏ mã giảm giá ở trên để dùng mã khuyến mãi."
   }
 }

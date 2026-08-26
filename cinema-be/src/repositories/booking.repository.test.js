@@ -11,6 +11,8 @@ const Invoice = require('../models/Invoice');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
+const Promotion = require('../models/Promotion');
+const PromotionUsage = require('../models/PromotionUsage');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
@@ -164,6 +166,40 @@ describe('booking.repository', () => {
       expect(voucher.used_count).toBe(1);
       const invoice = await Invoice.findOne({ ticket_id: 1 });
       expect(invoice.voucher_code).toBe('SAVE10');
+      expect(invoice.discount_amount).toBe(10000);
+    });
+
+    it('records usage when a promotion code is present, and never touches Voucher.used_count', async () => {
+      await seedOrder();
+      await Promotion.create({
+        id: 1,
+        code: 'PROMO10',
+        name: 'Promo',
+        discount_type: 'PERCENTAGE',
+        discount_value: 10,
+        start_at: new Date(Date.now() - 86400000),
+        end_at: new Date(Date.now() + 86400000),
+      });
+
+      await bookingRepository.finalizeMomoOrder('ORDER-2B', {
+        ticketIds: [1],
+        totalPrice: 90000,
+        accountId: 10,
+        promotionCode: 'promo10',
+        discountAmount: 10000,
+      });
+
+      const promotion = await Promotion.findOne({ id: 1 });
+      expect(promotion.used_count).toBe(1);
+      const usage = await PromotionUsage.findOne({ promotion_id: 1, account_id: 10 });
+      expect(usage.count).toBe(1);
+
+      const booking = await Booking.findOne({ code: 'ORDER-2B' });
+      expect(booking.promotion_code).toBe('PROMO10');
+      expect(booking.voucher_code).toBeNull();
+
+      const invoice = await Invoice.findOne({ ticket_id: 1 });
+      expect(invoice.promotion_code).toBe('PROMO10');
       expect(invoice.discount_amount).toBe(10000);
     });
 
@@ -652,6 +688,22 @@ describe('booking.repository', () => {
       expect(booking.ticket_ids).toEqual([1, 2]);
     });
 
+    it('createPendingBooking stores a promotion_code instead when given one', async () => {
+      const booking = await bookingRepository.createPendingBooking({
+        code: 'BK-1B',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1],
+        promotionCode: 'promo10',
+        discountAmount: 2000,
+        totalPrice: 18000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+      expect(booking.promotion_code).toBe('PROMO10');
+      expect(booking.voucher_code).toBeNull();
+    });
+
     it('finalizeMomoOrder flips a pre-created PENDING booking to PAID and stamps booking_id on every invoice', async () => {
       await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
       await Ticket.create([
@@ -1057,6 +1109,115 @@ describe('booking.repository', () => {
         await Booking.create({ id: 1, code: 'BK-10', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1 });
         expect(await bookingRepository.findBookingById('1')).not.toBeNull();
         expect(await bookingRepository.findBookingById('999')).toBeNull();
+      });
+    });
+
+    describe('computeOrderPricing', () => {
+      async function seedSchedule(overrides = {}) {
+        await Schedule.create({
+          id: 1,
+          movie_id: 7,
+          room_id: 1,
+          cinema_id: 5,
+          movie_date: '2026-01-01',
+          time_begin: '10:00',
+          time_end: '12:00',
+          price: 100000,
+          ...overrides,
+        });
+        await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+      }
+
+      it('applies a voucher when both a voucher and a promotion code are somehow both sent', async () => {
+        await seedSchedule();
+        await Voucher.create({ id: 1, code: 'SAVE10', discount_type: 'fixed', discount_value: 5000 });
+        await Promotion.create({
+          id: 1,
+          code: 'PROMO10',
+          name: 'Promo',
+          discount_type: 'FIXED_AMOUNT',
+          discount_value: 9000,
+          start_at: new Date(Date.now() - 86400000),
+          end_at: new Date(Date.now() + 86400000),
+        });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1],
+          voucherCode: 'save10',
+          promotionCode: 'promo10',
+          accountId: 42,
+        });
+        expect(pricing.voucherCode).toBe('SAVE10');
+        expect(pricing.promotionCode).toBeNull();
+        expect(pricing.discountAmount).toBe(5000);
+      });
+
+      it('computes an eligible percentage promotion discount', async () => {
+        await seedSchedule();
+        await Promotion.create({
+          id: 1,
+          code: 'PROMO10',
+          name: 'Promo',
+          discount_type: 'PERCENTAGE',
+          discount_value: 10,
+          start_at: new Date(Date.now() - 86400000),
+          end_at: new Date(Date.now() + 86400000),
+        });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1],
+          promotionCode: 'promo10',
+          accountId: 42,
+        });
+        expect(pricing.promotionCode).toBe('PROMO10');
+        expect(pricing.discountAmount).toBe(10000);
+        expect(pricing.totalPrice).toBe(90000);
+      });
+
+      it('respects a promotion scoped to a different branch', async () => {
+        await seedSchedule();
+        await Promotion.create({
+          id: 1,
+          code: 'OTHERBRANCH',
+          name: 'Promo',
+          discount_type: 'FIXED_AMOUNT',
+          discount_value: 5000,
+          start_at: new Date(Date.now() - 86400000),
+          end_at: new Date(Date.now() + 86400000),
+          branch_ids: [999],
+        });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1],
+          promotionCode: 'OTHERBRANCH',
+          accountId: 42,
+        });
+        expect(pricing.promotionCode).toBeNull();
+        expect(pricing.discountAmount).toBe(0);
+        expect(pricing.totalPrice).toBe(100000);
+      });
+
+      it('respects a per-customer usage limit already reached by this account', async () => {
+        await seedSchedule();
+        await Promotion.create({
+          id: 1,
+          code: 'ONCEONLY',
+          name: 'Promo',
+          discount_type: 'FIXED_AMOUNT',
+          discount_value: 5000,
+          start_at: new Date(Date.now() - 86400000),
+          end_at: new Date(Date.now() + 86400000),
+          per_customer_limit: 1,
+        });
+        await PromotionUsage.create({ promotion_id: 1, account_id: 42, count: 1 });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1],
+          promotionCode: 'ONCEONLY',
+          accountId: 42,
+        });
+        expect(pricing.promotionCode).toBeNull();
+        expect(pricing.discountAmount).toBe(0);
       });
     });
   });

@@ -1,4 +1,5 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
+import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
 
 export interface RevenueByDay {
   date: string;
@@ -161,6 +162,31 @@ export interface OwnerInventoryState {
 
 export interface OwnerVouchersState {
   showAddModal: boolean;
+}
+
+// branch_id === 'ALL' means a system-wide promotion (branch_ids: []) — admin only, same
+// convention as PricingRuleFormValues.branch_id. movie_id/combo_id === '' means "any" (no
+// restriction on that dimension); Showtime targeting has no picker yet and is left empty.
+export interface PromotionFormValues {
+  code: string;
+  name: string;
+  description: string;
+  discount_type: (typeof PROMOTION_DISCOUNT_TYPE)[keyof typeof PROMOTION_DISCOUNT_TYPE];
+  discount_value: string;
+  minimum_order_value: string;
+  maximum_discount: string;
+  start_at: string;
+  end_at: string;
+  usage_limit: string;
+  per_customer_limit: string;
+  branch_id: string;
+  movie_id: string;
+  combo_id: string;
+}
+
+export interface OwnerPromotionsState {
+  showAddModal: boolean;
+  editingPromotionId: number | null;
 }
 
 export interface OwnerPricingRulesState {

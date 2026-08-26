@@ -1,5 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { BookedSeatTicket, BookingState, PaymentStatus, VoucherValidationResult } from '../types/booking.types';
+import type {
+  BookedSeatTicket,
+  BookingState,
+  PaymentStatus,
+  PromotionValidationResult,
+  VoucherValidationResult,
+} from '../types/booking.types';
 
 const initialState: BookingState = {
   movieId: null,
@@ -16,6 +22,9 @@ const initialState: BookingState = {
   voucherCode: '',
   voucherResult: null,
   voucherError: '',
+  promotionCode: '',
+  promotionResult: null,
+  promotionError: '',
   momoPayUrl: '',
   paymentStatus: 'confirming',
   paymentMessage: '',
@@ -72,9 +81,14 @@ const bookingSlice = createSlice({
     setVoucherCode(state, action: PayloadAction<string>) {
       state.voucherCode = action.payload;
     },
+    // A customer applies a voucher OR a promotion to an order, never both — succeeding with
+    // one clears any result already held for the other.
     applyVoucherSuccess(state, action: PayloadAction<VoucherValidationResult>) {
       state.voucherResult = action.payload;
       state.voucherError = '';
+      state.promotionCode = '';
+      state.promotionResult = null;
+      state.promotionError = '';
     },
     applyVoucherFailure(state, action: PayloadAction<string>) {
       state.voucherResult = null;
@@ -83,6 +97,24 @@ const bookingSlice = createSlice({
     clearVoucher(state) {
       state.voucherResult = null;
       state.voucherError = '';
+    },
+    setPromotionCode(state, action: PayloadAction<string>) {
+      state.promotionCode = action.payload;
+    },
+    applyPromotionSuccess(state, action: PayloadAction<PromotionValidationResult>) {
+      state.promotionResult = action.payload;
+      state.promotionError = '';
+      state.voucherCode = '';
+      state.voucherResult = null;
+      state.voucherError = '';
+    },
+    applyPromotionFailure(state, action: PayloadAction<string>) {
+      state.promotionResult = null;
+      state.promotionError = action.payload;
+    },
+    clearPromotion(state) {
+      state.promotionResult = null;
+      state.promotionError = '';
     },
     setMomoPayUrl(state, action: PayloadAction<string>) {
       state.momoPayUrl = action.payload;
@@ -111,6 +143,10 @@ export const {
   applyVoucherSuccess,
   applyVoucherFailure,
   clearVoucher,
+  setPromotionCode,
+  applyPromotionSuccess,
+  applyPromotionFailure,
+  clearPromotion,
   setMomoPayUrl,
   setPaymentResult,
   resetBookingSelection,

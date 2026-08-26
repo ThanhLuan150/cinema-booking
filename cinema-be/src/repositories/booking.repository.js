@@ -4,6 +4,8 @@ const Invoice = require('../models/Invoice');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
+const Promotion = require('../models/Promotion');
+const promotionRepository = require('./promotion.repository');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
@@ -19,6 +21,7 @@ const { sendInvoiceEmail } = require('../utils/mailer');
 const { emitToOwner } = require('../utils/socket');
 const pricingEngine = require('../services/pricingEngine');
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
+const { isPromotionEligible, computePromotionDiscount } = require('../utils/promotionPricing');
 
 async function findScheduleByMovieDateTime({ movie_id, movie_date, time_begin }) {
   return Schedule.findOne({ movie_id: Number(movie_id), movie_date, time_begin, status: { $ne: 'CANCELLED' } });
@@ -86,6 +89,7 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
     ticketIds = [],
     comboIds = [],
     voucherCode,
+    promotionCode,
     discountAmount = 0,
     totalPrice = 0,
     accountId,
@@ -95,10 +99,17 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
   } = orderPayload;
   if (!accountId || ticketIds.length === 0) return { alreadyProcessed: false, skipped: true };
 
+  // A customer applies a voucher OR a promotion to an order, never both — enforced when the
+  // order is first priced (computeOrderPricing) / created (booking.controller.js).
   if (voucherCode) {
     const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase() });
     if (voucher) {
       await Voucher.updateOne({ id: voucher.id }, { $inc: { used_count: 1 } });
+    }
+  } else if (promotionCode) {
+    const promotion = await Promotion.findOne({ code: String(promotionCode).toUpperCase() });
+    if (promotion) {
+      await promotionRepository.recordUsage(promotion.id, accountId);
     }
   }
 
@@ -121,6 +132,7 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
       ticket_ids: ticketIds.map(Number),
       combo_ids: comboIds.map(Number),
       voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
+      promotion_code: promotionCode ? String(promotionCode).toUpperCase() : null,
       discount_amount: Number(discountAmount),
       seat_total: Number(seatTotal),
       combo_total: Number(comboTotal),
@@ -147,6 +159,7 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
       total_price: basePerTicket + (isFirst ? remainder : 0),
       combo_ids: comboIds.map(Number),
       voucher_code: isFirst && voucherCode ? String(voucherCode).toUpperCase() : null,
+      promotion_code: isFirst && promotionCode ? String(promotionCode).toUpperCase() : null,
       discount_amount: isFirst ? Number(discountAmount) : 0,
       status: 1,
       created_by: createdBy,
@@ -519,6 +532,7 @@ async function createCounterSale({
   ticketIds,
   comboIds,
   voucherCode,
+  promotionCode,
   discountAmount,
   totalPrice,
   accountId,
@@ -536,7 +550,7 @@ async function createCounterSale({
   const orderId = `CTR-${await nextId('counterOrder')}`;
   const result = await finalizeMomoOrder(
     orderId,
-    { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, accountId, createdBy, seatTotal, comboTotal },
+    { ticketIds, comboIds, voucherCode, promotionCode, discountAmount, totalPrice, accountId, createdBy, seatTotal, comboTotal },
     { comboPaymentMethod: 'CASH' },
   );
 
@@ -568,6 +582,7 @@ async function createPendingBooking({
   ticketIds,
   comboIds = [],
   voucherCode = null,
+  promotionCode = null,
   discountAmount = 0,
   seatTotal = 0,
   comboTotal = 0,
@@ -583,6 +598,7 @@ async function createPendingBooking({
     ticket_ids: ticketIds.map(Number),
     combo_ids: comboIds.map(Number),
     voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
+    promotion_code: promotionCode ? String(promotionCode).toUpperCase() : null,
     discount_amount: Number(discountAmount),
     seat_total: Number(seatTotal),
     combo_total: Number(comboTotal),
@@ -736,7 +752,10 @@ async function calculateTicketPrices(schedule, tickets, accountId) {
   return results;
 }
 
-async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, accountId }) {
+// A customer may apply a voucher OR a promotion to an order, never both — the controller
+// rejects a request that sends both before this is ever called; if it somehow still receives
+// both, voucherCode wins and promotionCode is ignored (defensive, not the primary guard).
+async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, promotionCode, accountId }) {
   const tickets = await findTicketsByIds(ticketIds);
   if (tickets.length === 0) return null;
 
@@ -750,21 +769,46 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, acco
 
   const combos = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
   const comboTotal = combos.reduce((sum, c) => sum + c.price, 0);
+  const orderValue = seatTotal + comboTotal;
 
   let discountAmount = 0;
   let appliedVoucherCode = null;
+  let appliedPromotionCode = null;
   if (voucherCode) {
     const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase(), active: true });
-    const orderValue = seatTotal + comboTotal;
     const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue });
     if (eligibility.eligible) {
       discountAmount = computeVoucherDiscount(voucher, orderValue);
       appliedVoucherCode = voucher.code;
     }
+  } else if (promotionCode) {
+    const promotion = await Promotion.findOne({ code: String(promotionCode).toUpperCase() });
+    const usage = promotion ? await promotionRepository.findUsage(promotion.id, accountId) : null;
+    const eligibility = isPromotionEligible(promotion, {
+      branchId: schedule.cinema_id,
+      movieId: schedule.movie_id,
+      showtimeId: schedule.id,
+      comboIds,
+      orderValue,
+      customerUsedCount: usage ? usage.count : 0,
+    });
+    if (eligibility.eligible) {
+      discountAmount = computePromotionDiscount(promotion, orderValue);
+      appliedPromotionCode = promotion.code;
+    }
   }
 
-  const totalPrice = Math.max(seatTotal + comboTotal - discountAmount, 0);
-  return { scheduleId, seatTotal, comboTotal, discountAmount, totalPrice, voucherCode: appliedVoucherCode, ticketPrices };
+  const totalPrice = Math.max(orderValue - discountAmount, 0);
+  return {
+    scheduleId,
+    seatTotal,
+    comboTotal,
+    discountAmount,
+    totalPrice,
+    voucherCode: appliedVoucherCode,
+    promotionCode: appliedPromotionCode,
+    ticketPrices,
+  };
 }
 
 module.exports = {

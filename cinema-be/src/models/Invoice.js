@@ -11,6 +11,7 @@ const invoiceSchema = new mongoose.Schema(
     total_price: { type: Number, required: true },
     combo_ids: { type: [Number], default: [] },
     voucher_code: { type: String, default: null },
+    promotion_code: { type: String, default: null },
     discount_amount: { type: Number, default: 0 },
     status: { type: Number, default: 1 }, // 1 = paid, 0 = cancelled, 2 = refunded
     checked_in: { type: Boolean, default: false },

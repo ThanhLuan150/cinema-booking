@@ -29,6 +29,9 @@ export interface BookingState {
   voucherCode: string;
   voucherResult: VoucherValidationResult | null;
   voucherError: string;
+  promotionCode: string;
+  promotionResult: PromotionValidationResult | null;
+  promotionError: string;
   momoPayUrl: string;
   paymentStatus: PaymentStatus;
   paymentMessage: string;
@@ -43,6 +46,7 @@ export interface MomoPaymentPayload {
   ticketIds: number[];
   comboIds: number[];
   voucherCode: string | null;
+  promotionCode: string | null;
   discountAmount: number;
   totalPrice: number;
 }
@@ -54,6 +58,20 @@ export interface VoucherValidationPayload {
 }
 
 export interface VoucherValidationResult {
+  discount_amount: number;
+  [key: string]: unknown;
+}
+
+export interface PromotionValidationPayload {
+  code: string;
+  branch_id: number | null;
+  movie_id: number | null;
+  showtime_id: number | null;
+  combo_ids: number[];
+  order_value: number;
+}
+
+export interface PromotionValidationResult {
   discount_amount: number;
   [key: string]: unknown;
 }
@@ -110,6 +128,7 @@ export interface Booking {
   tickets: BookingTicket[];
   combo_ids: number[];
   voucher_code: string | null;
+  promotion_code: string | null;
   discount_amount: number;
   seat_total: number;
   combo_total: number;

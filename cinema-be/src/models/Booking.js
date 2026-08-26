@@ -11,6 +11,7 @@ const bookingSchema = new mongoose.Schema(
     ticket_ids: { type: [Number], default: [] },
     combo_ids: { type: [Number], default: [] },
     voucher_code: { type: String, default: null },
+    promotion_code: { type: String, default: null },
     discount_amount: { type: Number, default: 0 },
     seat_total: { type: Number, default: 0 },
     combo_total: { type: Number, default: 0 },

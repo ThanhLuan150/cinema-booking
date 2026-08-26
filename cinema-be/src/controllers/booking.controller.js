@@ -153,9 +153,15 @@ async function bookticket(req, res) {
 
 // POST /api/MomoPayment { ticketIds, comboIds, voucherCode, discountAmount, totalPrice }
 async function createMomoPayment(req, res) {
-  const { ticketIds, comboIds, voucherCode } = req.body;
+  const { ticketIds, comboIds, voucherCode, promotionCode } = req.body;
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
     return res.status(400).json({ message: 'ticketIds is required' });
+  }
+  if (voucherCode && promotionCode) {
+    return res.status(400).json({
+      message: 'Cannot apply both a voucher and a promotion to the same order',
+      code: 'DISCOUNT_CONFLICT',
+    });
   }
 
   const idempotencyKey = req.headers?.['idempotency-key'] || null;
@@ -197,6 +203,7 @@ async function createMomoPayment(req, res) {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: voucherCode || null,
+    promotionCode: promotionCode || null,
     accountId,
   });
   if (!pricing) {
@@ -222,6 +229,7 @@ async function createMomoPayment(req, res) {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: pricing.voucherCode,
+    promotionCode: pricing.promotionCode,
     discountAmount: pricing.discountAmount,
     seatTotal: pricing.seatTotal,
     comboTotal: pricing.comboTotal,
@@ -244,6 +252,7 @@ async function createMomoPayment(req, res) {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: pricing.voucherCode,
+    promotionCode: pricing.promotionCode,
     discountAmount: pricing.discountAmount,
     totalPrice: pricing.totalPrice,
     accountId: req.account.accountId,
@@ -701,12 +710,18 @@ async function respondToReschedule(req, res) {
 
 // POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, accountId, cinema_id }
 async function createCounterSale(req, res) {
-  const { ticketIds, comboIds, voucherCode, accountId } = req.body;
+  const { ticketIds, comboIds, voucherCode, promotionCode, accountId } = req.body;
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
     return res.status(400).json({ message: 'ticketIds is required' });
   }
   if (!accountId) {
     return res.status(400).json({ message: 'accountId is required' });
+  }
+  if (voucherCode && promotionCode) {
+    return res.status(400).json({
+      message: 'Cannot apply both a voucher and a promotion to the same order',
+      code: 'DISCOUNT_CONFLICT',
+    });
   }
 
   for (const ticketId of ticketIds) {
@@ -727,6 +742,7 @@ async function createCounterSale(req, res) {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: voucherCode || null,
+    promotionCode: promotionCode || null,
     accountId: Number(accountId),
   });
   if (!pricing) {
@@ -737,6 +753,7 @@ async function createCounterSale(req, res) {
     ticketIds,
     comboIds: comboIds || [],
     voucherCode: pricing.voucherCode,
+    promotionCode: pricing.promotionCode,
     discountAmount: pricing.discountAmount,
     totalPrice: pricing.totalPrice,
     seatTotal: pricing.seatTotal,

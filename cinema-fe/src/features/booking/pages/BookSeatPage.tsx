@@ -28,14 +28,20 @@ import { useScheduleDetail } from '../hooks/useScheduleDetail';
 import { useRoomsList } from '../hooks/useRoomsList';
 import { useCombos } from '../hooks/useCombos';
 import { useValidateVoucher } from '../hooks/useValidateVoucher';
+import { useValidatePromotion } from '../hooks/useValidatePromotion';
 import { useMomoPayment } from '../hooks/useMomoPayment';
 import {
+  applyPromotionFailure,
+  applyPromotionSuccess,
   applyVoucherFailure,
   applyVoucherSuccess,
   clearExpiredSelection,
+  clearPromotion,
+  clearVoucher,
   resetBookingSelection,
   setbranchId,
   setMomoPayUrl,
+  setPromotionCode,
   setScheduleId,
   setSeatHoldExpiry,
   setShowtime,
@@ -222,6 +228,9 @@ function BookSeatPage() {
     voucherCode,
     voucherResult,
     voucherError,
+    promotionCode,
+    promotionResult,
+    promotionError,
     momoPayUrl,
   } = useAppSelector((state) => state.booking);
 
@@ -273,6 +282,7 @@ function BookSeatPage() {
 
   const { data: combos = [] } = useCombos();
   const validateVoucherMutation = useValidateVoucher();
+  const validatePromotionMutation = useValidatePromotion();
   const momoPaymentMutation = useMomoPayment();
 
   const seatTotal = useMemo(
@@ -283,7 +293,8 @@ function BookSeatPage() {
   const comboTotal = combos
     .filter((c) => selectedComboIds.includes(c.id))
     .reduce((sum, c) => sum + c.price, 0);
-  const discount = voucherResult?.discount_amount ?? 0;
+  // A customer applies a voucher OR a promotion to an order, never both.
+  const discount = voucherResult?.discount_amount ?? promotionResult?.discount_amount ?? 0;
   const totalPrice = Math.max(seatTotal + comboTotal - discount, 0);
 
   const handleApplyVoucher = async () => {
@@ -297,6 +308,23 @@ function BookSeatPage() {
       dispatch(applyVoucherSuccess(result));
     } catch (error) {
       dispatch(applyVoucherFailure(getApiErrorMessage(error, t) || t('voucher.applyFailed')));
+    }
+  };
+
+  const handleApplyPromotion = async () => {
+    if (!promotionCode.trim()) return;
+    try {
+      const result = await validatePromotionMutation.mutateAsync({
+        code: promotionCode.trim(),
+        branch_id: branchId,
+        movie_id: movieId ? Number(movieId) : null,
+        showtime_id: scheduleId,
+        combo_ids: selectedComboIds,
+        order_value: seatTotal + comboTotal,
+      });
+      dispatch(applyPromotionSuccess(result));
+    } catch (error) {
+      dispatch(applyPromotionFailure(getApiErrorMessage(error, t) || t('promotion.applyFailed')));
     }
   };
 
@@ -315,13 +343,21 @@ function BookSeatPage() {
     }
     const ticketIds = selectedTickets.map((ticket) => ticket.id);
     const appliedVoucherCode = voucherResult ? voucherCode.trim().toUpperCase() : null;
-    const orderSignature = JSON.stringify([ticketIds, selectedComboIds, appliedVoucherCode, totalPrice]);
+    const appliedPromotionCode = promotionResult ? promotionCode.trim().toUpperCase() : null;
+    const orderSignature = JSON.stringify([
+      ticketIds,
+      selectedComboIds,
+      appliedVoucherCode,
+      appliedPromotionCode,
+      totalPrice,
+    ]);
     try {
       const payUrl = await momoPaymentMutation.mutateAsync({
         payload: {
           ticketIds,
           comboIds: selectedComboIds,
           voucherCode: appliedVoucherCode,
+          promotionCode: appliedPromotionCode,
           discountAmount: discount,
           totalPrice,
         },
@@ -465,20 +501,74 @@ function BookSeatPage() {
                     value={voucherCode}
                     onChange={(e) => dispatch(setVoucherCode(e.target.value))}
                     placeholder={t('voucher.placeholder')}
-                    className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    disabled={!!promotionResult}
+                    className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  <Button type="button" variant="secondary" size="sm" onClick={handleApplyVoucher}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleApplyVoucher}
+                    disabled={!!promotionResult}
+                  >
                     {t('voucher.apply')}
                   </Button>
                 </div>
                 {voucherResult && (
-                  <p className="mt-2 text-sm text-emerald-400">
+                  <p className="mt-2 flex items-center gap-2 text-sm text-emerald-400">
                     {t('voucher.applied', {
                       amount: `${voucherResult.discount_amount.toLocaleString()}đ`,
                     })}
+                    <button
+                      type="button"
+                      onClick={() => dispatch(clearVoucher())}
+                      className="text-txt/50 underline transition-colors hover:text-txt"
+                    >
+                      {t('voucher.remove')}
+                    </button>
                   </p>
                 )}
                 {voucherError && <p className="mt-2 text-sm text-red-400">{voucherError}</p>}
+                {promotionResult && <p className="mt-2 text-sm text-txt/50">{t('voucher.disabledHint')}</p>}
+              </div>
+
+              <div className="border-b border-border py-4">
+                <p className="mb-2 text-sm text-txt/60">{t('promotion.title')}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promotionCode}
+                    onChange={(e) => dispatch(setPromotionCode(e.target.value))}
+                    placeholder={t('promotion.placeholder')}
+                    disabled={!!voucherResult}
+                    className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleApplyPromotion}
+                    disabled={!!voucherResult}
+                  >
+                    {t('promotion.apply')}
+                  </Button>
+                </div>
+                {promotionResult && (
+                  <p className="mt-2 flex items-center gap-2 text-sm text-emerald-400">
+                    {t('promotion.applied', {
+                      amount: `${promotionResult.discount_amount.toLocaleString()}đ`,
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => dispatch(clearPromotion())}
+                      className="text-txt/50 underline transition-colors hover:text-txt"
+                    >
+                      {t('promotion.remove')}
+                    </button>
+                  </p>
+                )}
+                {promotionError && <p className="mt-2 text-sm text-red-400">{promotionError}</p>}
+                {voucherResult && <p className="mt-2 text-sm text-txt/50">{t('promotion.disabledHint')}</p>}
               </div>
 
               <div className="flex items-end justify-between py-4">
