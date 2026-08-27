@@ -4,6 +4,7 @@ const checkinLogRepository = require('../repositories/checkinLog.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const Invoice = require('../models/Invoice');
 const Ticket = require('../models/Ticket');
 const { withCategories } = require('../utils/withCategories');
@@ -240,6 +241,15 @@ async function createMomoPayment(req, res) {
     expiresAt: heldUntil,
   });
 
+  await recordAudit({
+    req,
+    action: ACTION.CREATE_BOOKING,
+    entityType: ENTITY_TYPE.BOOKING,
+    entityId: booking.id,
+    branchId: branchId ?? null,
+    metadata: { code: orderId, channel: 'ONLINE', seats: ticketIds.length, totalPrice: pricing.totalPrice },
+  });
+
   const payment = await paymentRepository.createPayment({
     code: orderId,
     bookingId: booking.id,
@@ -265,6 +275,49 @@ async function createMomoPayment(req, res) {
   res.type('text/plain').send(payUrl);
 }
 
+// Ticket 24: audit a MoMo callback's outcome. Both callbacks (IPN + browser confirm) funnel
+// through here so PAYMENT_SUCCESS / PAYMENT_FAILED (and TICKET_ISSUED on success) land exactly
+// once per order. The actor is the paying customer's account (the gateway holds no session).
+async function auditMomoOutcome(req, orderId, { success }) {
+  try {
+    const payment = await paymentRepository.findByCode(orderId);
+    if (!payment) return;
+    const performedBy = payment.account_id ?? null;
+    const branchId = payment.branch_id ?? null;
+    if (success) {
+      await recordAudit({
+        performedBy,
+        action: ACTION.PAYMENT_SUCCESS,
+        entityType: ENTITY_TYPE.PAYMENT,
+        entityId: payment.id,
+        branchId,
+        metadata: { code: orderId, method: 'MOMO', amount: payment.amount },
+      });
+      if (payment.booking_id) {
+        await recordAudit({
+          performedBy,
+          action: ACTION.TICKET_ISSUED,
+          entityType: ENTITY_TYPE.TICKET,
+          entityId: payment.booking_id,
+          branchId,
+          metadata: { code: orderId },
+        });
+      }
+    } else {
+      await recordAudit({
+        performedBy,
+        action: ACTION.PAYMENT_FAILED,
+        entityType: ENTITY_TYPE.PAYMENT,
+        entityId: payment.id,
+        branchId,
+        metadata: { code: orderId, resultCode: req?.body?.resultCode ?? null },
+      });
+    }
+  } catch (err) {
+    console.error('[auditLog] momo outcome failed', err.message);
+  }
+}
+
 // POST /api/MomoPayment/ipn -> MoMo's server-to-server payment confirmation (public;
 // authenticated via MoMo's HMAC signature instead of our own JWT since MoMo can't hold one).
 async function momoIpn(req, res) {
@@ -281,6 +334,7 @@ async function momoIpn(req, res) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
     await bookingRepository.cancelPendingBookingByCode(req.body.orderId);
+    await auditMomoOutcome(req, req.body.orderId, { success: false });
     return res.json({ resultCode: 0, message: 'Acknowledged (payment not successful)' });
   }
 
@@ -290,6 +344,7 @@ async function momoIpn(req, res) {
   });
   if (!skip) {
     await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
+    await auditMomoOutcome(req, req.body.orderId, { success: true });
   }
   res.json({ resultCode: 0, message: 'Confirm Success' });
 }
@@ -314,6 +369,7 @@ async function momoConfirm(req, res) {
       await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
     }
     await bookingRepository.cancelPendingBookingByCode(req.body.orderId);
+    await auditMomoOutcome(req, req.body.orderId, { success: false });
     return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
   }
 
@@ -324,6 +380,9 @@ async function momoConfirm(req, res) {
   const result = skip
     ? { alreadyProcessed: true }
     : await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
+  if (!skip) {
+    await auditMomoOutcome(req, req.body.orderId, { success: true });
+  }
   res.json({ message: 'success', ...result });
 }
 
@@ -577,6 +636,15 @@ async function checkInInvoice(req, res) {
     })
     .catch(() => {});
 
+  await recordAudit({
+    req,
+    action: ACTION.TICKET_CHECKIN,
+    entityType: ENTITY_TYPE.TICKET,
+    entityId: updated.id,
+    branchId: updated.checkin_branch_id ?? req.branchId ?? null,
+    metadata: { invoice_code: updated.code, channel: 'STAFF' },
+  });
+
   res.json(updated);
 }
 
@@ -678,6 +746,27 @@ async function cancelBooking(req, res) {
   }
 
   const cancelled = await bookingRepository.cancelBooking(booking, { reason: req.body?.reason || null });
+
+  await recordAudit({
+    req,
+    action: ACTION.CANCEL_BOOKING,
+    entityType: ENTITY_TYPE.BOOKING,
+    entityId: booking.id,
+    branchId: booking.branch_id ?? null,
+    reason: req.body?.reason || null,
+    metadata: { code: booking.code, previousStatus: booking.status },
+  });
+  // Cancelling a booking voids its issued tickets.
+  await recordAudit({
+    req,
+    action: ACTION.TICKET_CANCELLED,
+    entityType: ENTITY_TYPE.TICKET,
+    entityId: booking.id,
+    branchId: booking.branch_id ?? null,
+    reason: req.body?.reason || null,
+    metadata: { code: booking.code, count: Array.isArray(booking.ticket_ids) ? booking.ticket_ids.length : null },
+  });
+
   res.json(cancelled);
 }
 
@@ -877,6 +966,34 @@ async function createCounterSale(req, res) {
   });
 
   if (result.skipped) return res.status(400).json({ message: 'Invalid counter sale payload' });
+
+  if (result.bookingId && !result.alreadyProcessed) {
+    await recordAudit({
+      req,
+      action: ACTION.CREATE_BOOKING,
+      entityType: ENTITY_TYPE.BOOKING,
+      entityId: result.bookingId,
+      branchId: req.branchId ?? null,
+      metadata: { channel: 'COUNTER', seats: ticketIds.length, totalPrice: pricing.totalPrice },
+    });
+    await recordAudit({
+      req,
+      action: ACTION.PAYMENT_SUCCESS,
+      entityType: ENTITY_TYPE.PAYMENT,
+      entityId: result.bookingId,
+      branchId: req.branchId ?? null,
+      metadata: { channel: 'COUNTER', method: 'CASH', amount: pricing.totalPrice },
+    });
+    await recordAudit({
+      req,
+      action: ACTION.TICKET_ISSUED,
+      entityType: ENTITY_TYPE.TICKET,
+      entityId: result.bookingId,
+      branchId: req.branchId ?? null,
+      metadata: { channel: 'COUNTER', count: ticketIds.length },
+    });
+  }
+
   res.status(201).json(result);
 }
 

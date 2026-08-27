@@ -37,6 +37,7 @@ const maintenanceRequestRoutes = require('./maintenanceRequest.routes');
 const supportTicketRoutes = require('./supportTicket.routes');
 const entranceRoutes = require('./entrance.routes');
 const deviceRoutes = require('./device.routes');
+const auditLogRoutes = require('./auditLog.routes');
 
 const router = express.Router();
 
@@ -79,6 +80,9 @@ router.use('/support-tickets', supportTicketRoutes);
 // logs), and the device-authenticated /devices/checkin door endpoint.
 router.use('/entrance', entranceRoutes);
 router.use('/devices', deviceRoutes);
+// Audit Log viewer (Ticket 24): read-only trail of important actions, gated by auditLog.read
+// and branch-scoped for a Branch Admin.
+router.use('/audit-logs', auditLogRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

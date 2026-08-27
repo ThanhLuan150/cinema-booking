@@ -209,6 +209,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <ion-icon name="time" />
                 {t('adminLayout.nav.shifts')}
               </NavLink>
+              {hasPermission('auditLog.read') && (
+                <NavLink to={ROUTES.auditLog} className={navLinkClass}>
+                  <ion-icon name="document-lock" />
+                  {t('adminLayout.nav.auditLog')}
+                </NavLink>
+              )}
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-border" />

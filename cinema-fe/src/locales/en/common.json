@@ -74,7 +74,8 @@
       "mySchedule": "My Schedule",
       "refunds": "Refunds",
       "comboOrders": "Combo Orders",
-      "supportTickets": "Support Tickets"
+      "supportTickets": "Support Tickets",
+      "auditLog": "Audit Log"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

@@ -7,6 +7,7 @@ const Device = require('../models/Device');
 const nextId = require('../utils/nextId');
 const { generateDeviceKey, hashDeviceKey } = require('../utils/deviceKey');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 const STATUSES = Device.STATUSES;
 
@@ -203,6 +204,15 @@ async function checkin(req, res) {
   await checkinLogRepository
     .record({ ...logBase, result: 'SUCCESS', reason: null, invoice_id: invoice.id })
     .catch(() => {});
+
+  await recordAudit({
+    performedBy: null,
+    action: ACTION.TICKET_CHECKIN,
+    entityType: ENTITY_TYPE.TICKET,
+    entityId: invoice.id,
+    branchId: device.branch_id ?? null,
+    metadata: { invoice_code: updated.code, channel: 'DEVICE', device_id: device.id },
+  });
 
   res.json({
     checked_in: true,

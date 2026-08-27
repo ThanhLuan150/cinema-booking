@@ -4,6 +4,7 @@ const companyRepository = require('../repositories/company.repository');
 const nextId = require('../utils/nextId');
 const { emitToOwner } = require('../utils/socket');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 const SUPER_ADMIN_UPDATE_FIELDS = [
   'company_id',
@@ -208,6 +209,16 @@ async function create(req, res) {
     closing_time: closing_time || '',
     status: 'ACTIVE',
   });
+
+  await recordAudit({
+    req,
+    action: ACTION.CREATE_BRANCH,
+    entityType: ENTITY_TYPE.BRANCH,
+    entityId: branch.id,
+    branchId: branch.id,
+    metadata: { name: branch.name, code: branch.code, company_id: branch.company_id },
+  });
+
   res.status(201).json(branch);
 }
 
@@ -228,6 +239,18 @@ async function update(req, res) {
   }
 
   const branch = await branchRepository.updateFields(req.params.id, updates);
+
+  if (branch) {
+    await recordAudit({
+      req,
+      action: ACTION.UPDATE_BRANCH,
+      entityType: ENTITY_TYPE.BRANCH,
+      entityId: branch.id,
+      branchId: branch.id,
+      metadata: { fields: Object.keys(updates) },
+    });
+  }
+
   res.json(branch);
 }
 
