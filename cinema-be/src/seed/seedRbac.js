@@ -74,6 +74,7 @@ const PERMISSIONS = [
   ['entrance.update', 'entrance'], ['entrance.delete', 'entrance'],
   ['device.create', 'device'], ['device.read', 'device'],
   ['device.update', 'device'], ['device.delete', 'device'],
+  ['auditLog.read', 'auditLog'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -118,6 +119,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'user.read': 'ALL',
   'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
+  // Audit Log (Ticket 24): "BRANCH_ADMIN chỉ xem Log thuộc Branch mình nếu được cấp quyền" —
+  // granted here, branch-scoped, so a Branch Admin only ever sees their own branch's trail.
+  'auditLog.read': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {

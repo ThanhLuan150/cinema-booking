@@ -7,6 +7,7 @@ const userRepository = require('../repositories/user.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { sendTempPasswordEmail } = require('../utils/mailer');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 function toEmployeeJson(employee, account, position) {
   return {
@@ -75,11 +76,22 @@ async function create(req, res) {
     hire_date: new Date(),
   });
 
+  await recordAudit({
+    req,
+    action: ACTION.CREATE_EMPLOYEE,
+    entityType: ENTITY_TYPE.EMPLOYEE,
+    entityId: employee.id,
+    branchId: employee.branch_id,
+    metadata: { employee_code: employee.employee_code, position_id: employee.position_id },
+  });
+
   res.status(201).json(toEmployeeJson(employee, account, position));
 }
 
 // PUT /api/employee/:id { position_id, status } (branch admin/super admin, cinema-scoped)
 async function update(req, res) {
+  const before = await employeeRepository.findById(req.params.id);
+
   const updates = {};
   if (req.body.position_id !== undefined) {
     const position = await positionRepository.findActiveById(req.body.position_id);
@@ -90,6 +102,19 @@ async function update(req, res) {
 
   const employee = await employeeRepository.updateFields(req.params.id, updates);
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
+
+  const positionChanged =
+    updates.position_id !== undefined && before && before.position_id !== updates.position_id;
+  await recordAudit({
+    req,
+    action: positionChanged ? ACTION.CHANGE_EMPLOYEE_POSITION : ACTION.UPDATE_EMPLOYEE,
+    entityType: ENTITY_TYPE.EMPLOYEE,
+    entityId: employee.id,
+    branchId: employee.branch_id,
+    metadata: positionChanged
+      ? { from_position_id: before.position_id, to_position_id: updates.position_id }
+      : { fields: Object.keys(updates) },
+  });
 
   const account = await authRepository.findById(employee.user_id);
   const position = await positionRepository.findById(employee.position_id);

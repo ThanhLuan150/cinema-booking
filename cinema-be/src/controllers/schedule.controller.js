@@ -5,6 +5,7 @@ const seatRepository = require('../repositories/seat.repository');
 const bookingRepository = require('../repositories/booking.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Branch = require('../models/Branch');
@@ -144,6 +145,15 @@ async function create(req, res) {
     status: 'ACTIVE',
   });
 
+  await recordAudit({
+    req,
+    action: ACTION.CREATE_SHOWTIME,
+    entityType: ENTITY_TYPE.SCHEDULE,
+    entityId: schedule.id,
+    branchId: schedule.cinema_id ?? null,
+    metadata: { movie_id: schedule.movie_id, room_id: schedule.room_id, movie_date: schedule.movie_date },
+  });
+
   res.status(201).json(schedule);
 }
 
@@ -182,6 +192,16 @@ async function update(req, res) {
     time_end,
     price,
   });
+
+  await recordAudit({
+    req,
+    action: ACTION.UPDATE_SHOWTIME,
+    entityType: ENTITY_TYPE.SCHEDULE,
+    entityId: schedule.id,
+    branchId: schedule.cinema_id ?? null,
+    metadata: { movie_date: schedule.movie_date, time_begin: schedule.time_begin, time_end: schedule.time_end },
+  });
+
   res.json(schedule);
 }
 
@@ -247,8 +267,9 @@ async function cancel(req, res) {
   await auditLogRepository.create({
     entityType: 'SCHEDULE',
     entityId: schedule.id,
-    action: AuditLog.ACTION.SCHEDULE_CANCELLED,
+    action: AuditLog.ACTION.CANCEL_SHOWTIME,
     performedBy,
+    branchId: schedule.cinema_id ?? null,
     reason,
     metadata: { affectedBookings: affectedBookings.length },
   });

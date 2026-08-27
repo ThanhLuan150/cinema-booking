@@ -74,7 +74,8 @@
       "mySchedule": "Lịch làm việc của tôi",
       "refunds": "Hoàn tiền",
       "comboOrders": "Đơn Combo",
-      "supportTickets": "Hỗ trợ khách hàng"
+      "supportTickets": "Hỗ trợ khách hàng",
+      "auditLog": "Nhật ký kiểm toán"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

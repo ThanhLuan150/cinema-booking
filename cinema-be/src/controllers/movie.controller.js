@@ -5,6 +5,7 @@ const { withCategories } = require('../utils/withCategories');
 const { withActorsAndDirectors } = require('../utils/withActorsAndDirectors');
 const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -107,6 +108,14 @@ async function create(req, res) {
     producerAvatar: producerAvatarUrl,
   });
 
+  await recordAudit({
+    req,
+    action: ACTION.CREATE_MOVIE,
+    entityType: ENTITY_TYPE.MOVIE,
+    entityId: movie.id,
+    metadata: { name: movie.name },
+  });
+
   emitPublic('movie:new', movie);
   res.status(201).json(movie);
 }
@@ -148,6 +157,15 @@ async function update(req, res) {
   if (producerAvatarFile) updates.producerAvatar = await uploadImage(producerAvatarFile);
 
   const movie = await movieRepository.updateFields(req.params.id, updates);
+
+  await recordAudit({
+    req,
+    action: ACTION.UPDATE_MOVIE,
+    entityType: ENTITY_TYPE.MOVIE,
+    entityId: Number(req.params.id),
+    metadata: { fields: Object.keys(updates) },
+  });
+
   res.json(movie);
 }
 
@@ -157,6 +175,15 @@ async function remove(req, res) {
   if (!existing) return res.status(404).json({ message: 'Movie not found' });
 
   await movieRepository.remove(existing.id);
+
+  await recordAudit({
+    req,
+    action: ACTION.DELETE_MOVIE,
+    entityType: ENTITY_TYPE.MOVIE,
+    entityId: existing.id,
+    metadata: { name: existing.name },
+  });
+
   res.json({ message: 'Deleted' });
 }
 

@@ -1,6 +1,7 @@
 const paymentRepository = require('../repositories/payment.repository');
 const bookingRepository = require('../repositories/booking.repository');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 async function canAccessPayment(req, payment) {
   if (req.permissionScope === 'ALL') return true;
@@ -86,6 +87,15 @@ async function confirmRefund(req, res) {
 
   const booking = await bookingRepository.findBookingById(updated.booking_id);
   if (booking) await bookingRepository.applyRefund(booking);
+
+  await recordAudit({
+    req,
+    action: ACTION.REFUND,
+    entityType: ENTITY_TYPE.PAYMENT,
+    entityId: updated.id,
+    branchId: updated.branch_id ?? null,
+    metadata: { code: updated.code, bookingId: updated.booking_id, amount: updated.amount },
+  });
 
   res.json(updated);
 }

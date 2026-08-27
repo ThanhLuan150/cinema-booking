@@ -712,5 +712,55 @@
       "invoice": "Invoice",
       "reason": "Reason"
     }
+  },
+  "auditLog": {
+    "breadcrumb": "Audit Log",
+    "system": "System-wide",
+    "systemActor": "System",
+    "view": "Details",
+    "empty": "No audit records match these filters.",
+    "reason": "Reason",
+    "metadata": "Metadata",
+    "detailTitle": "Audit record #{{id}}",
+    "filters": {
+      "branch": "Branch",
+      "allBranches": "All branches",
+      "entityType": "Entity type",
+      "action": "Action",
+      "actor": "Actor (account id)",
+      "from": "From",
+      "to": "To",
+      "any": "Any",
+      "reset": "Reset"
+    },
+    "headers": {
+      "time": "Time",
+      "action": "Action",
+      "entity": "Entity",
+      "branch": "Branch",
+      "actor": "Actor",
+      "details": "Details"
+    },
+    "actions": {
+      "CREATE_BRANCH": "Branch created",
+      "UPDATE_BRANCH": "Branch updated",
+      "CREATE_EMPLOYEE": "Employee created",
+      "UPDATE_EMPLOYEE": "Employee updated",
+      "CHANGE_EMPLOYEE_POSITION": "Employee position changed",
+      "CREATE_MOVIE": "Movie created",
+      "UPDATE_MOVIE": "Movie updated",
+      "DELETE_MOVIE": "Movie deleted",
+      "CREATE_SHOWTIME": "Showtime created",
+      "UPDATE_SHOWTIME": "Showtime updated",
+      "CANCEL_SHOWTIME": "Showtime cancelled",
+      "CREATE_BOOKING": "Booking created",
+      "CANCEL_BOOKING": "Booking cancelled",
+      "PAYMENT_SUCCESS": "Payment succeeded",
+      "PAYMENT_FAILED": "Payment failed",
+      "REFUND": "Refund",
+      "TICKET_ISSUED": "Ticket issued",
+      "TICKET_CHECKIN": "Ticket checked in",
+      "TICKET_CANCELLED": "Ticket cancelled"
+    }
   }
 }

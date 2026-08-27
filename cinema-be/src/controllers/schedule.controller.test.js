@@ -377,7 +377,7 @@ describe('schedule.controller cancel', () => {
 
     const logs = await AuditLog.find().sort({ id: 1 });
     expect(logs.map((l) => l.action)).toEqual(
-      expect.arrayContaining(['BOOKING_REFUND_REQUESTED', 'SCHEDULE_CANCELLED']),
+      expect.arrayContaining(['BOOKING_REFUND_REQUESTED', 'CANCEL_SHOWTIME']),
     );
   });
 });

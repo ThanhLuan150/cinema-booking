@@ -352,6 +352,36 @@ export interface CheckinLog {
   createdAt: string;
 }
 
+// Ticket 24 — Audit Log
+export type AuditLogEntityType =
+  | 'BRANCH'
+  | 'EMPLOYEE'
+  | 'MOVIE'
+  | 'SCHEDULE'
+  | 'BOOKING'
+  | 'PAYMENT'
+  | 'REFUND'
+  | 'TICKET';
+
+export interface AuditLog {
+  id: number;
+  entity_type: AuditLogEntityType;
+  entity_id: number;
+  action: string;
+  /** actor account id — `user_id` is the spec alias of `performed_by`; both are sent */
+  performed_by: number | null;
+  user_id: number | null;
+  branch_id: number | null;
+  reason: string | null;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+}
+
+export interface AuditLogMeta {
+  actions: string[];
+  entityTypes: AuditLogEntityType[];
+}
+
 export interface Actor {
   id: number;
   full_name: string;

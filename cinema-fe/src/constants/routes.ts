@@ -53,6 +53,7 @@ export const ROUTES = {
   bookingManagement: '/BookingManagement',
   refundManagement: '/RefundManagement',
   supportTickets: '/SupportTickets',
+  auditLog: '/AuditLog',
   comboOrders: '/ComboOrders',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',

@@ -122,6 +122,7 @@ async function requestRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_REQUESTED,
     performedBy: req.account.accountId,
     reason: reason || null,
@@ -186,6 +187,7 @@ async function approveRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_APPROVED,
     performedBy: req.account.accountId,
   });
@@ -212,6 +214,7 @@ async function rejectRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_REJECTED,
     performedBy: req.account.accountId,
     reason,
@@ -236,6 +239,7 @@ async function processRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_PROCESSING,
     performedBy: req.account.accountId,
   });
@@ -264,9 +268,20 @@ async function completeRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_COMPLETED,
     performedBy: req.account.accountId,
     metadata: { amount: refund.amount },
+  });
+  // Canonical Ticket-24 action: the money actually went back. Kept alongside the fine-grained
+  // REFUND_COMPLETED state row so audit-log consumers can filter on a single `REFUND` action.
+  await auditLogRepository.create({
+    entityType: 'REFUND',
+    entityId: refund.id,
+    branchId: refund.branch_id,
+    action: AuditLog.ACTION.REFUND,
+    performedBy: req.account.accountId,
+    metadata: { bookingId: refund.booking_id, amount: refund.amount },
   });
   res.json(updated);
 }
@@ -291,6 +306,7 @@ async function failRefund(req, res) {
   await auditLogRepository.create({
     entityType: 'REFUND',
     entityId: refund.id,
+    branchId: refund.branch_id,
     action: AuditLog.ACTION.REFUND_FAILED,
     performedBy: req.account.accountId,
     reason,

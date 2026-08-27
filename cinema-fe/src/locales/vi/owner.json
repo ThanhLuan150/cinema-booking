@@ -712,5 +712,55 @@
       "invoice": "Hóa đơn",
       "reason": "Lý do"
     }
+  },
+  "auditLog": {
+    "breadcrumb": "Nhật ký kiểm toán",
+    "system": "Toàn hệ thống",
+    "systemActor": "Hệ thống",
+    "view": "Chi tiết",
+    "empty": "Không có bản ghi nào khớp bộ lọc.",
+    "reason": "Lý do",
+    "metadata": "Dữ liệu kèm theo",
+    "detailTitle": "Bản ghi kiểm toán #{{id}}",
+    "filters": {
+      "branch": "Chi nhánh",
+      "allBranches": "Tất cả chi nhánh",
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "actor": "Người thực hiện (id tài khoản)",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "any": "Tất cả",
+      "reset": "Đặt lại"
+    },
+    "headers": {
+      "time": "Thời gian",
+      "action": "Hành động",
+      "entity": "Đối tượng",
+      "branch": "Chi nhánh",
+      "actor": "Người thực hiện",
+      "details": "Chi tiết"
+    },
+    "actions": {
+      "CREATE_BRANCH": "Tạo chi nhánh",
+      "UPDATE_BRANCH": "Cập nhật chi nhánh",
+      "CREATE_EMPLOYEE": "Tạo nhân viên",
+      "UPDATE_EMPLOYEE": "Cập nhật nhân viên",
+      "CHANGE_EMPLOYEE_POSITION": "Đổi vị trí nhân viên",
+      "CREATE_MOVIE": "Tạo phim",
+      "UPDATE_MOVIE": "Cập nhật phim",
+      "DELETE_MOVIE": "Xóa phim",
+      "CREATE_SHOWTIME": "Tạo suất chiếu",
+      "UPDATE_SHOWTIME": "Cập nhật suất chiếu",
+      "CANCEL_SHOWTIME": "Hủy suất chiếu",
+      "CREATE_BOOKING": "Tạo đơn đặt vé",
+      "CANCEL_BOOKING": "Hủy đơn đặt vé",
+      "PAYMENT_SUCCESS": "Thanh toán thành công",
+      "PAYMENT_FAILED": "Thanh toán thất bại",
+      "REFUND": "Hoàn tiền",
+      "TICKET_ISSUED": "Phát hành vé",
+      "TICKET_CHECKIN": "Soát vé",
+      "TICKET_CANCELLED": "Hủy vé"
+    }
   }
 }
