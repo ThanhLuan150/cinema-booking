@@ -42,6 +42,7 @@ export const ROUTES = {
   ownerCinemaRooms: (branchId: string | number) => `/OwnerCinemas/${branchId}/Rooms`,
   ownerRooms: '/OwnerCinemas/Rooms',
   ownerMaintenance: '/OwnerMaintenance',
+  ownerDevices: '/OwnerDevices',
   ownerCombos: '/OwnerCombos',
   ownerInventory: '/OwnerInventory',
   ownerVouchers: '/OwnerVouchers',

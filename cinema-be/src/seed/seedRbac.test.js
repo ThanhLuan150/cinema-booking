@@ -188,6 +188,36 @@ describe('seedRbac', () => {
     expect(employeeLink).toBeNull();
   });
 
+  it('grants branch admin device.* and entrance.* scoped to BRANCH, and super admin at ALL (Ticket 23)', async () => {
+    await seedRbac();
+    const codes = [
+      'device.create', 'device.read', 'device.update', 'device.delete',
+      'entrance.create', 'entrance.read', 'entrance.update', 'entrance.delete',
+    ];
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    const superAdmin = await Role.findOne({ code: 'SUPER_ADMIN' });
+    for (const code of codes) {
+      const permission = await Permission.findOne({ code });
+      expect(permission).not.toBeNull();
+      const baLink = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(baLink.scope).toBe('BRANCH');
+      const saLink = await RolePermission.findOne({ role_id: superAdmin.id, permission_id: permission.id });
+      expect(saLink.scope).toBe('ALL');
+    }
+  });
+
+  it('does not grant employee or customer any device.* or entrance.* permission (Ticket 23)', async () => {
+    await seedRbac();
+    for (const roleCode of ['EMPLOYEE', 'CUSTOMER']) {
+      const role = await Role.findOne({ code: roleCode });
+      for (const code of ['device.read', 'device.create', 'entrance.read', 'entrance.create']) {
+        const permission = await Permission.findOne({ code });
+        const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+        expect(link).toBeNull();
+      }
+    }
+  });
+
   it('prunes a role-permission link that is no longer in the map on the next run', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
