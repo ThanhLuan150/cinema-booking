@@ -11,9 +11,56 @@
     "branchMaintenance": "Branch \"{{name}}\" has been put under maintenance.",
     "newBooking": "New booking received: +{{amount}}đ",
     "showtimeCancelled": "A showtime for one of your bookings has been cancelled.",
-    "showtimeRescheduled": "A showtime for one of your bookings has been rescheduled."
+    "showtimeRescheduled": "A showtime for one of your bookings has been rescheduled.",
+    "notification": "You have a new notification."
   },
   "toastContainer": {
     "dismiss": "Dismiss"
+  },
+  "feed": {
+    "title": "Notifications",
+    "bellLabel": "Notifications",
+    "viewAll": "View all",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all as read",
+    "unreadOnly": "Unread only",
+    "unreadCount": "{{count}} unread",
+    "allRead": "You're all caught up",
+    "empty": "No notifications yet",
+    "emptyHint": "Updates about your bookings, payments and showtimes will show up here.",
+    "types": {
+      "BOOKING_CREATED": {
+        "title": "Booking created",
+        "body": "We received your booking for \"{{movie}}\" — booking code {{bookingCode}}."
+      },
+      "PAYMENT_SUCCESS": {
+        "title": "Payment successful",
+        "body": "Your payment for \"{{movie}}\" was successful. Booking {{bookingCode}} is confirmed."
+      },
+      "PAYMENT_FAILED": {
+        "title": "Payment failed",
+        "body": "Your payment for booking {{bookingCode}} did not go through. Please try again."
+      },
+      "TICKET_ISSUED": {
+        "title": "Ticket issued",
+        "body": "Your ticket for \"{{movie}}\" is ready. Seats {{seats}} — booking {{bookingCode}}."
+      },
+      "BOOKING_CANCELLED": {
+        "title": "Booking cancelled",
+        "body": "Your booking {{bookingCode}} for \"{{movie}}\" has been cancelled."
+      },
+      "REFUND_COMPLETED": {
+        "title": "Refund completed",
+        "body": "Your refund of {{amount}}đ for booking {{bookingCode}} has been completed."
+      },
+      "SHOWTIME_CANCELLED": {
+        "title": "Showtime cancelled",
+        "body": "The showtime for \"{{movie}}\" at {{branch}} has been cancelled. Booking {{bookingCode}}."
+      },
+      "SHOWTIME_CHANGED": {
+        "title": "Showtime changed",
+        "body": "The showtime for \"{{movie}}\" (booking {{bookingCode}}) has changed. Please review your booking."
+      }
+    }
   }
 }

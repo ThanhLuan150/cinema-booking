@@ -84,6 +84,12 @@ async function sendShowtimeRescheduledEmail(email, { movieName, oldDate, oldTime
   });
 }
 
+// Ticket 25: generic transactional email for the notification system. The caller (notification
+// service) has already built safe, non-sensitive subject/text — this only forwards it.
+async function sendNotificationEmail(email, { subject, text }) {
+  return sendMail({ to: email, subject, text });
+}
+
 module.exports = {
   sendMail,
   sendOtpEmail,
@@ -92,4 +98,5 @@ module.exports = {
   sendInvoiceEmail,
   sendShowtimeCancelledEmail,
   sendShowtimeRescheduledEmail,
+  sendNotificationEmail,
 };

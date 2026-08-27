@@ -5,6 +5,7 @@ const employeeRepository = require('../repositories/employee.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+const notificationService = require('../services/notification.service');
 const Invoice = require('../models/Invoice');
 const Ticket = require('../models/Ticket');
 const { withCategories } = require('../utils/withCategories');
@@ -249,6 +250,12 @@ async function createMomoPayment(req, res) {
     branchId: branchId ?? null,
     metadata: { code: orderId, channel: 'ONLINE', seats: ticketIds.length, totalPrice: pricing.totalPrice },
   });
+  // Ticket 25: notify the customer their booking was created. Never throws / never blocks.
+  await notificationService.notify({
+    event: notificationService.EVENT.BOOKING_CREATED,
+    accountId,
+    bookingId: booking.id,
+  });
 
   const payment = await paymentRepository.createPayment({
     code: orderId,
@@ -303,6 +310,25 @@ async function auditMomoOutcome(req, orderId, { success }) {
           metadata: { code: orderId },
         });
       }
+      // Ticket 25: payment confirmed -> booking confirmed -> ticket generated -> notify.
+      // An email copy is worth it here since the customer may have closed the tab.
+      if (performedBy) {
+        await notificationService.notify({
+          event: notificationService.EVENT.PAYMENT_SUCCESS,
+          accountId: performedBy,
+          bookingId: payment.booking_id ?? null,
+          data: { amount: payment.amount },
+          channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
+        });
+        if (payment.booking_id) {
+          await notificationService.notify({
+            event: notificationService.EVENT.TICKET_ISSUED,
+            accountId: performedBy,
+            bookingId: payment.booking_id,
+            channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
+          });
+        }
+      }
     } else {
       await recordAudit({
         performedBy,
@@ -312,6 +338,14 @@ async function auditMomoOutcome(req, orderId, { success }) {
         branchId,
         metadata: { code: orderId, resultCode: req?.body?.resultCode ?? null },
       });
+      if (performedBy) {
+        await notificationService.notify({
+          event: notificationService.EVENT.PAYMENT_FAILED,
+          accountId: performedBy,
+          bookingId: payment.booking_id ?? null,
+          data: { bookingCode: orderId },
+        });
+      }
     }
   } catch (err) {
     console.error('[auditLog] momo outcome failed', err.message);
@@ -766,6 +800,13 @@ async function cancelBooking(req, res) {
     reason: req.body?.reason || null,
     metadata: { code: booking.code, count: Array.isArray(booking.ticket_ids) ? booking.ticket_ids.length : null },
   });
+  // Ticket 25: tell the customer their booking was cancelled.
+  await notificationService.notify({
+    event: notificationService.EVENT.BOOKING_CANCELLED,
+    accountId: booking.account_id,
+    bookingId: booking.id,
+    data: { reason: req.body?.reason || null },
+  });
 
   res.json(cancelled);
 }
@@ -991,6 +1032,24 @@ async function createCounterSale(req, res) {
       entityId: result.bookingId,
       branchId: req.branchId ?? null,
       metadata: { channel: 'COUNTER', count: ticketIds.length },
+    });
+    // Ticket 25: a counter sale is booking + payment + ticket in one step — notify the customer
+    // whose account the tickets were sold to.
+    await notificationService.notify({
+      event: notificationService.EVENT.BOOKING_CREATED,
+      accountId: Number(accountId),
+      bookingId: result.bookingId,
+    });
+    await notificationService.notify({
+      event: notificationService.EVENT.PAYMENT_SUCCESS,
+      accountId: Number(accountId),
+      bookingId: result.bookingId,
+      data: { amount: pricing.totalPrice, channel: 'COUNTER' },
+    });
+    await notificationService.notify({
+      event: notificationService.EVENT.TICKET_ISSUED,
+      accountId: Number(accountId),
+      bookingId: result.bookingId,
     });
   }
 

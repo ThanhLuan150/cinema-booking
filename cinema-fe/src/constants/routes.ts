@@ -16,6 +16,7 @@ export const ROUTES = {
   paymentHistory: '/PaymentHistory',
   myRefunds: '/MyRefunds',
   myMembership: '/MyMembership',
+  notifications: '/Notifications',
   playing: '/Playing',
   upcoming: '/Upcoming',
   cinemas: '/Cinemas',

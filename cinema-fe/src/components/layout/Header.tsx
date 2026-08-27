@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { logout } from '@/features/auth/store/authSlice';
 import { logout as logoutApi } from '@/features/auth/api/auth.api';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { toast } from '@/features/notifications/toast';
 import { MANAGEMENT_ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
@@ -175,6 +176,11 @@ export function Header() {
           <li className="flex items-center justify-center px-4 py-3 md:px-1 md:py-0">
             <LanguageSwitcher />
           </li>
+          {isLoggedIn && (
+            <li className="flex items-center justify-center px-4 py-3 md:px-1 md:py-0">
+              <NotificationBell />
+            </li>
+          )}
           {isLoggedIn ? (
             <li className="relative px-4 py-3 text-center md:px-1 md:py-0">
               <button

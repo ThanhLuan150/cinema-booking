@@ -8,6 +8,7 @@ const Payment = require('../models/Payment');
 const Invoice = require('../models/Invoice');
 const { calculateRefundAmount } = require('../utils/refundPolicy');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const notificationService = require('../services/notification.service');
 
 // OWN: caller must own the refund's booking. BRANCH: caller must have access to the refund's
 // branch. ALL: no restriction. Same shape as canAccessBooking/canAccessPayment. Used for
@@ -283,6 +284,16 @@ async function completeRefund(req, res) {
     performedBy: req.account.accountId,
     metadata: { bookingId: refund.booking_id, amount: refund.amount },
   });
+  // Ticket 25: notify the customer the money actually went back.
+  if (booking) {
+    await notificationService.notify({
+      event: notificationService.EVENT.REFUND_COMPLETED,
+      accountId: booking.account_id,
+      bookingId: refund.booking_id,
+      data: { amount: refund.amount },
+      channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
+    });
+  }
   res.json(updated);
 }
 

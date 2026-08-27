@@ -11,9 +11,56 @@
     "branchMaintenance": "Chi nhánh \"{{name}}\" đã chuyển sang bảo trì.",
     "newBooking": "Có đơn đặt vé mới: +{{amount}}đ",
     "showtimeCancelled": "Một suất chiếu trong đơn đặt vé của bạn đã bị hủy.",
-    "showtimeRescheduled": "Một suất chiếu trong đơn đặt vé của bạn đã được đổi lịch."
+    "showtimeRescheduled": "Một suất chiếu trong đơn đặt vé của bạn đã được đổi lịch.",
+    "notification": "Bạn có một thông báo mới."
   },
   "toastContainer": {
     "dismiss": "Đóng"
+  },
+  "feed": {
+    "title": "Thông báo",
+    "bellLabel": "Thông báo",
+    "viewAll": "Xem tất cả",
+    "markRead": "Đánh dấu đã đọc",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "unreadOnly": "Chỉ chưa đọc",
+    "unreadCount": "{{count}} chưa đọc",
+    "allRead": "Bạn đã đọc hết thông báo",
+    "empty": "Chưa có thông báo nào",
+    "emptyHint": "Các cập nhật về đơn đặt vé, thanh toán và suất chiếu của bạn sẽ hiển thị ở đây.",
+    "types": {
+      "BOOKING_CREATED": {
+        "title": "Đã tạo đơn đặt vé",
+        "body": "Chúng tôi đã nhận đơn đặt vé cho phim \"{{movie}}\" — mã đơn {{bookingCode}}."
+      },
+      "PAYMENT_SUCCESS": {
+        "title": "Thanh toán thành công",
+        "body": "Thanh toán cho phim \"{{movie}}\" đã thành công. Đơn {{bookingCode}} đã được xác nhận."
+      },
+      "PAYMENT_FAILED": {
+        "title": "Thanh toán thất bại",
+        "body": "Thanh toán cho đơn {{bookingCode}} chưa thành công. Vui lòng thử lại."
+      },
+      "TICKET_ISSUED": {
+        "title": "Đã xuất vé",
+        "body": "Vé cho phim \"{{movie}}\" đã sẵn sàng. Ghế {{seats}} — đơn {{bookingCode}}."
+      },
+      "BOOKING_CANCELLED": {
+        "title": "Đơn đặt vé đã hủy",
+        "body": "Đơn {{bookingCode}} cho phim \"{{movie}}\" đã bị hủy."
+      },
+      "REFUND_COMPLETED": {
+        "title": "Đã hoàn tiền",
+        "body": "Khoản hoàn {{amount}}đ cho đơn {{bookingCode}} đã hoàn tất."
+      },
+      "SHOWTIME_CANCELLED": {
+        "title": "Suất chiếu đã hủy",
+        "body": "Suất chiếu phim \"{{movie}}\" tại {{branch}} đã bị hủy. Đơn {{bookingCode}}."
+      },
+      "SHOWTIME_CHANGED": {
+        "title": "Suất chiếu đã thay đổi",
+        "body": "Suất chiếu phim \"{{movie}}\" (đơn {{bookingCode}}) đã thay đổi. Vui lòng kiểm tra lại đơn đặt vé."
+      }
+    }
   }
 }

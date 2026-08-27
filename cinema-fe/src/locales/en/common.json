@@ -23,7 +23,8 @@
     "logoutSuccess": "Logged out successfully",
     "bookNow": "Book Now",
     "myRefunds": "My Refunds",
-    "myMembership": "My Membership"
+    "myMembership": "My Membership",
+    "notifications": "Notifications"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
