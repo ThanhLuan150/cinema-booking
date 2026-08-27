@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "मेरा शेड्यूल",
-      "refunds": "रिफंड"
+      "refunds": "रिफंड",
+      "supportTickets": "ग्राहक सेवा"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

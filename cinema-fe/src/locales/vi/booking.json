@@ -136,7 +136,18 @@
     "cancel": "Hủy",
     "confirmCancel": "Bạn có chắc muốn hủy đặt vé này?",
     "cancelSuccess": "Hủy đặt vé thành công.",
-    "cancelFailed": "Không thể hủy đặt vé."
+    "cancelFailed": "Không thể hủy đặt vé.",
+    "requestRefund": "Yêu cầu hoàn tiền",
+    "refundRequestSuccess": "Đã gửi yêu cầu hoàn tiền.",
+    "refundModalTitle": "Yêu cầu hoàn tiền",
+    "refundReasonLabel": "Lý do (không bắt buộc)",
+    "acceptReschedule": "Chấp nhận suất chiếu mới",
+    "declineReschedule": "Từ chối & hoàn tiền",
+    "rescheduleSuccess": "Đã ghi nhận phản hồi.",
+    "checkPayment": "Kiểm tra thanh toán",
+    "paymentStatusResult": "Trạng thái thanh toán: {{status}} · {{amount}}đ",
+    "changeShowtime": "Đổi suất chiếu",
+    "changeShowtimeSuccess": "Đã đổi suất chiếu thành công."
   },
   "voucher": {
     "title": "Mã giảm giá (Voucher)",
@@ -155,5 +166,13 @@
     "applyFailed": "Không thể áp dụng mã khuyến mãi.",
     "remove": "Bỏ",
     "disabledHint": "Bỏ mã giảm giá ở trên để dùng mã khuyến mãi."
+  },
+  "changeShowtime": {
+    "title": "Đổi suất chiếu",
+    "description": "Chọn suất chiếu mới cho cùng bộ phim và chọn {{count}} ghế.",
+    "scheduleLabel": "Suất chiếu mới",
+    "schedulePlaceholder": "Chọn suất chiếu",
+    "seatsLabel": "Đã chọn ghế: {{selected}}/{{required}}",
+    "failed": "Không thể đổi suất chiếu."
   }
 }

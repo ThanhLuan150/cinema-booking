@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "Hỗ trợ khách hàng",
+  "branchPlaceholder": "Chọn chi nhánh",
+  "allBranches": "Tất cả chi nhánh",
+  "statusFilterPlaceholder": "Tất cả trạng thái",
+  "newButton": "Tạo yêu cầu",
+  "createTitle": "Tạo yêu cầu hỗ trợ",
+  "categoryLabel": "Loại yêu cầu",
+  "subjectLabel": "Tiêu đề",
+  "descriptionLabel": "Mô tả",
+  "submit": "Gửi",
+  "createSuccess": "Đã tạo yêu cầu hỗ trợ.",
+  "validation": {
+    "subjectRequired": "Vui lòng nhập tiêu đề"
+  },
+  "assignTitle": "Phân công yêu cầu",
+  "employeeLabel": "Nhân viên",
+  "employeePlaceholder": "Chọn nhân viên",
+  "assignSuccess": "Đã phân công yêu cầu.",
+  "resolveTitle": "Xử lý yêu cầu",
+  "resolutionNoteLabel": "Ghi chú xử lý",
+  "resolveSuccess": "Đã xử lý yêu cầu.",
+  "closeSuccess": "Đã đóng yêu cầu.",
+  "deleteConfirm": "Xóa yêu cầu hỗ trợ này?",
+  "deleteSuccess": "Đã xóa yêu cầu.",
+  "claim": "Nhận xử lý",
+  "claimSuccess": "Bạn đã nhận yêu cầu này.",
+  "assign": "Phân công",
+  "resolve": "Xử lý xong",
+  "close": "Đóng",
+  "delete": "Xóa",
+  "unassigned": "Chưa phân công",
+  "headers": {
+    "id": "ID",
+    "branch": "Chi nhánh",
+    "customer": "Khách hàng",
+    "category": "Loại",
+    "subject": "Tiêu đề",
+    "assignee": "Người xử lý",
+    "status": "Trạng thái",
+    "actions": "Thao tác"
+  },
+  "status": {
+    "OPEN": "Mới",
+    "IN_PROGRESS": "Đang xử lý",
+    "RESOLVED": "Đã xử lý",
+    "CLOSED": "Đã đóng"
+  },
+  "category": {
+    "GENERAL": "Chung",
+    "COMPLAINT": "Khiếu nại",
+    "BOOKING_SUPPORT": "Hỗ trợ đặt vé",
+    "REFUND_SUPPORT": "Hỗ trợ hoàn tiền",
+    "SHOWTIME_CHANGE": "Đổi suất chiếu"
+  },
+  "customerPicker": {
+    "label": "Khách hàng",
+    "placeholder": "Tìm theo tên, email hoặc số điện thoại",
+    "noName": "Chưa có tên",
+    "change": "Đổi",
+    "noResults": "Không tìm thấy khách hàng"
+  }
+}

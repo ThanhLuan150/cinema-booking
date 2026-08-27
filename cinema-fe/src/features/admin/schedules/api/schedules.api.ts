@@ -5,6 +5,7 @@ import type { Schedule } from '../types/adminSchedule.types';
 export interface ScheduleFilters {
   branchId?: string | number;
   roomId?: string | number;
+  movieId?: string | number;
 }
 
 export const getSchedules = (filters?: ScheduleFilters, pagination?: PaginationParams) =>

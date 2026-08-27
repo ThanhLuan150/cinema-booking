@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "マイスケジュール",
-      "refunds": "返金"
+      "refunds": "返金",
+      "supportTickets": "カスタマーサービス"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

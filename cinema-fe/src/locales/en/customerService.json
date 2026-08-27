@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "Support Tickets",
+  "branchPlaceholder": "Select a branch",
+  "allBranches": "All branches",
+  "statusFilterPlaceholder": "All statuses",
+  "newButton": "New Ticket",
+  "createTitle": "New support ticket",
+  "categoryLabel": "Category",
+  "subjectLabel": "Subject",
+  "descriptionLabel": "Description",
+  "submit": "Submit",
+  "createSuccess": "Support ticket created.",
+  "validation": {
+    "subjectRequired": "Subject is required"
+  },
+  "assignTitle": "Assign ticket",
+  "employeeLabel": "Employee",
+  "employeePlaceholder": "Select an employee",
+  "assignSuccess": "Ticket assigned.",
+  "resolveTitle": "Resolve ticket",
+  "resolutionNoteLabel": "Resolution note",
+  "resolveSuccess": "Ticket resolved.",
+  "closeSuccess": "Ticket closed.",
+  "deleteConfirm": "Delete this support ticket?",
+  "deleteSuccess": "Ticket deleted.",
+  "claim": "Claim",
+  "claimSuccess": "Ticket claimed.",
+  "assign": "Assign",
+  "resolve": "Resolve",
+  "close": "Close",
+  "delete": "Delete",
+  "unassigned": "Unassigned",
+  "headers": {
+    "id": "ID",
+    "branch": "Branch",
+    "customer": "Customer",
+    "category": "Category",
+    "subject": "Subject",
+    "assignee": "Assignee",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "status": {
+    "OPEN": "Open",
+    "IN_PROGRESS": "In progress",
+    "RESOLVED": "Resolved",
+    "CLOSED": "Closed"
+  },
+  "category": {
+    "GENERAL": "General",
+    "COMPLAINT": "Complaint",
+    "BOOKING_SUPPORT": "Booking support",
+    "REFUND_SUPPORT": "Refund support",
+    "SHOWTIME_CHANGE": "Showtime change"
+  },
+  "customerPicker": {
+    "label": "Customer",
+    "placeholder": "Search by name, email or phone",
+    "noName": "No name",
+    "change": "Change",
+    "noResults": "No customers found"
+  }
+}

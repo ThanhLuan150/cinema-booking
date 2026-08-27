@@ -21,10 +21,11 @@ async function resolveAccessibleCinemaIds(accountId) {
 
 // Lists schedules for management. `scope` is 'ALL' (super admin — no restriction) or 'BRANCH'
 // (restricted to `accessibleCinemaIds`). `cinemaId`/`roomId` narrow the result further.
-async function findFiltered({ scope, accessibleCinemaIds = [], cinemaId, roomId, skip = 0, limit = 20 }) {
+async function findFiltered({ scope, accessibleCinemaIds = [], cinemaId, roomId, movieId, skip = 0, limit = 20 }) {
   const filter = {};
   if (roomId) filter.room_id = Number(roomId);
   if (cinemaId) filter.cinema_id = Number(cinemaId);
+  if (movieId) filter.movie_id = Number(movieId);
 
   if (scope !== 'ALL') {
     const allowed = cinemaId

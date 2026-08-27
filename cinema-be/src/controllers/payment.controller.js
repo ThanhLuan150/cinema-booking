@@ -31,6 +31,9 @@ async function adminPayments(req, res) {
   }
   if (req.query.status) filter.status = req.query.status;
   if (req.query.type) filter.type = req.query.type;
+  // Lets branch/all-scoped staff (e.g. Customer Service) pull up one customer's payments; OWN
+  // scope already forces account_id above, so this would only narrow it to themselves anyway.
+  if (req.query.accountId && req.permissionScope !== 'OWN') filter.account_id = Number(req.query.accountId);
 
   const { data, total } = await paymentRepository.listAll(filter, { skip, limit });
   res.json(buildPaginatedResult({ data, total, page, limit }));

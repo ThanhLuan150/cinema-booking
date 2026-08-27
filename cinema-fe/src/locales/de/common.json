@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "Mein Dienstplan",
-      "refunds": "Rückerstattungen"
+      "refunds": "Rückerstattungen",
+      "supportTickets": "Kundenservice"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

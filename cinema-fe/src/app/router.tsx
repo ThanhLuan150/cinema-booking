@@ -48,6 +48,7 @@ import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
 import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import RefundManagement from '@/features/admin/refunds/pages/List';
+import SupportTickets from '@/features/customerService/pages/SupportTicketsPage';
 import ComboOrders from '@/features/comboOrder/pages/ComboOrdersPage';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
@@ -302,8 +303,16 @@ export function AppRouter() {
       <Route
         path={ROUTES.refundManagement}
         element={
-          <RequireRole roles={MANAGEMENT_ROLES}>
+          <RequireRole roles={STAFF_ROLES}>
             <RefundManagement />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.supportTickets}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <SupportTickets />
           </RequireRole>
         }
       />

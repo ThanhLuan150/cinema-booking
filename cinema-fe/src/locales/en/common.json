@@ -72,7 +72,8 @@
       "checkIn": "Check-in",
       "mySchedule": "My Schedule",
       "refunds": "Refunds",
-      "comboOrders": "Combo Orders"
+      "comboOrders": "Combo Orders",
+      "supportTickets": "Support Tickets"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

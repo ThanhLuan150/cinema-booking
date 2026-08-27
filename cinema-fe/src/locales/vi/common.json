@@ -72,7 +72,8 @@
       "checkIn": "Soát vé",
       "mySchedule": "Lịch làm việc của tôi",
       "refunds": "Hoàn tiền",
-      "comboOrders": "Đơn Combo"
+      "comboOrders": "Đơn Combo",
+      "supportTickets": "Hỗ trợ khách hàng"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

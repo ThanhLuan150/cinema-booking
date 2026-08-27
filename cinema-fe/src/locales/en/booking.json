@@ -136,7 +136,18 @@
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this booking?",
     "cancelSuccess": "Booking cancelled successfully.",
-    "cancelFailed": "Could not cancel the booking."
+    "cancelFailed": "Could not cancel the booking.",
+    "requestRefund": "Request Refund",
+    "refundRequestSuccess": "Refund request submitted.",
+    "refundModalTitle": "Request a refund",
+    "refundReasonLabel": "Reason (optional)",
+    "acceptReschedule": "Accept new time",
+    "declineReschedule": "Decline & refund",
+    "rescheduleSuccess": "Response recorded.",
+    "checkPayment": "Check payment",
+    "paymentStatusResult": "Payment status: {{status}} · {{amount}}đ",
+    "changeShowtime": "Change Showtime",
+    "changeShowtimeSuccess": "Showtime changed successfully."
   },
   "voucher": {
     "title": "Voucher code",
@@ -155,5 +166,13 @@
     "applyFailed": "Could not apply the promotion code.",
     "remove": "Remove",
     "disabledHint": "Remove the voucher code above to use a promotion."
+  },
+  "changeShowtime": {
+    "title": "Change showtime",
+    "description": "Pick a new showtime for the same movie and select {{count}} seat(s).",
+    "scheduleLabel": "New showtime",
+    "schedulePlaceholder": "Select a showtime",
+    "seatsLabel": "Seats selected: {{selected}}/{{required}}",
+    "failed": "Could not change the showtime."
   }
 }

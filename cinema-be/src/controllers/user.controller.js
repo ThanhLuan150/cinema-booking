@@ -64,10 +64,11 @@ async function myPermissions(req, res) {
   res.json({ roleCode: role.code, positionCode, permissions: [...permissionCodes] });
 }
 
-// GET /api/users?page=&limit= (admin only)
+// GET /api/users?page=&limit=&q= (user.read permission) — q searches name/email/phone, used by
+// Customer Service to look up a customer account.
 async function list(req, res) {
   const { page, limit, skip } = parsePagination(req.query);
-  const { data, total } = await userRepository.findAll({ skip, limit });
+  const { data, total } = await userRepository.findAll({ skip, limit, q: req.query.q });
   res.json(buildPaginatedResult({ data, total, page, limit }));
 }
 

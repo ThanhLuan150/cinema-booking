@@ -3,6 +3,8 @@ const paymentRepository = require('../repositories/payment.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
+const Invoice = require('../models/Invoice');
+const Ticket = require('../models/Ticket');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
@@ -617,6 +619,9 @@ async function listBookings(req, res) {
     filter.branch_id = { $in: branchIds };
   }
   if (req.query.status) filter.status = req.query.status;
+  // Lets branch/all-scoped staff (e.g. Customer Service) pull up one customer's bookings; OWN
+  // scope already forces account_id above, so this would only narrow it to themselves anyway.
+  if (req.query.accountId && req.permissionScope !== 'OWN') filter.account_id = Number(req.query.accountId);
 
   const { data: bookings, total } = await bookingRepository.findBookings(filter, { skip, limit });
   const result = await enrichBookings(bookings);
@@ -708,6 +713,99 @@ async function respondToReschedule(req, res) {
   res.json(booking);
 }
 
+// POST /api/bookings/:id/change-showtime { schedule_id, seatCodes } -> staff moves a still-open
+async function changeBookingShowtime(req, res) {
+  const booking = await bookingRepository.findBookingById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  if (!(await canAccessBooking(req, booking))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  if (!CANCELLABLE_BOOKING_STATUSES.includes(booking.status)) {
+    return res.status(400).json({
+      message: `This booking cannot be moved to a different showtime from status ${booking.status}`,
+      code: 'BOOKING_NOT_CHANGEABLE',
+    });
+  }
+  if (booking.status === 'PAID') {
+    const invoices = await Invoice.find({ booking_id: booking.id });
+    const notIssued = invoices.find((inv) => inv.ticket_status !== Invoice.TICKET_STATUS.ISSUED);
+    if (notIssued) {
+      return res.status(400).json({
+        message: `This booking has a ticket that is already ${notIssued.ticket_status.toLowerCase()} and cannot be moved`,
+        code: 'TICKET_NOT_CHANGEABLE',
+      });
+    }
+  }
+
+  const windowError = await assertCancellableBeforeShowtime(booking.schedule_id);
+  if (windowError) {
+    return res.status(400).json({
+      message: 'A booking can only be moved to a different showtime at least 2 hours before its current showtime',
+      code: windowError,
+    });
+  }
+
+  const { schedule_id, seatCodes } = req.body || {};
+  if (!schedule_id || !Array.isArray(seatCodes) || seatCodes.length === 0) {
+    return res.status(400).json({ message: 'schedule_id and seatCodes are required' });
+  }
+  if (seatCodes.length !== booking.ticket_ids.length) {
+    return res.status(400).json({
+      message: `seatCodes must contain exactly ${booking.ticket_ids.length} seat(s)`,
+      code: 'SEAT_COUNT_MISMATCH',
+    });
+  }
+
+  const newSchedule = await bookingRepository.findScheduleById(schedule_id);
+  if (!newSchedule) return res.status(404).json({ message: 'Schedule not found' });
+  if (newSchedule.id === booking.schedule_id) {
+    return res.status(400).json({ message: 'This booking is already on that showtime', code: 'SAME_SCHEDULE' });
+  }
+  if (newSchedule.status === 'CANCELLED') {
+    return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
+  }
+  const currentSchedule = await bookingRepository.findScheduleById(booking.schedule_id);
+  if (!currentSchedule || newSchedule.movie_id !== currentSchedule.movie_id) {
+    return res.status(400).json({ message: 'The new showtime must be for the same movie', code: 'MOVIE_MISMATCH' });
+  }
+  if (newSchedule.cinema_id !== booking.branch_id) {
+    return res.status(400).json({ message: 'The new showtime must be at the same branch', code: 'BRANCH_MISMATCH' });
+  }
+  const newShowtime = new Date(`${newSchedule.movie_date}T${newSchedule.time_begin}:00`);
+  if (newShowtime.getTime() <= Date.now()) {
+    return res.status(400).json({ message: 'The new showtime must be in the future', code: 'NEW_SHOWTIME_IN_PAST' });
+  }
+
+  const newTickets = await bookingRepository.findTicketsBySeatCodes(schedule_id, seatCodes);
+  const ticketBySeatCode = new Map(newTickets.map((t) => [t.seat_code, t]));
+  const unavailable = seatCodes.filter((code) => {
+    const ticket = ticketBySeatCode.get(code);
+    return !ticket || ticket.status !== Ticket.STATUS.AVAILABLE;
+  });
+  if (unavailable.length > 0) {
+    return res.status(409).json({
+      message: 'One or more selected seats are not available on the new showtime',
+      code: 'SEAT_UNAVAILABLE',
+      seatCodes: unavailable,
+    });
+  }
+
+  const newTicketIds = seatCodes.map((code) => ticketBySeatCode.get(code).id);
+  const oldScheduleId = booking.schedule_id;
+  const updated = await bookingRepository.changeBookingShowtime(booking, { newScheduleId: schedule_id, newTicketIds });
+
+  await auditLogRepository.create({
+    entityType: 'BOOKING',
+    entityId: booking.id,
+    action: AuditLog.ACTION.BOOKING_SHOWTIME_CHANGED,
+    performedBy: req.account.accountId,
+    metadata: { oldScheduleId, newScheduleId: Number(schedule_id) },
+  });
+
+  const [result] = await enrichBookings([updated]);
+  res.json(result);
+}
+
 // POST /api/invoice/counter-sale { ticketIds, comboIds, voucherCode, accountId, cinema_id }
 async function createCounterSale(req, res) {
   const { ticketIds, comboIds, voucherCode, promotionCode, accountId } = req.body;
@@ -786,6 +884,7 @@ module.exports = {
   getBookingById,
   cancelBooking,
   respondToReschedule,
+  changeBookingShowtime,
   adminInvoices,
   refundInvoice,
   lookupInvoice,

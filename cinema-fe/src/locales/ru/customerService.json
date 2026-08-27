@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "Служба поддержки клиентов",
+  "branchPlaceholder": "Выберите филиал",
+  "allBranches": "Все филиалы",
+  "statusFilterPlaceholder": "Все статусы",
+  "newButton": "Новый тикет",
+  "createTitle": "Создать тикет поддержки",
+  "categoryLabel": "Категория",
+  "subjectLabel": "Тема",
+  "descriptionLabel": "Описание",
+  "submit": "Отправить",
+  "createSuccess": "Тикет поддержки создан.",
+  "validation": {
+    "subjectRequired": "Укажите тему"
+  },
+  "assignTitle": "Назначить тикет",
+  "employeeLabel": "Сотрудник",
+  "employeePlaceholder": "Выберите сотрудника",
+  "assignSuccess": "Тикет назначен.",
+  "resolveTitle": "Решить тикет",
+  "resolutionNoteLabel": "Заметка о решении",
+  "resolveSuccess": "Тикет решён.",
+  "closeSuccess": "Тикет закрыт.",
+  "deleteConfirm": "Удалить этот тикет поддержки?",
+  "deleteSuccess": "Тикет удалён.",
+  "claim": "Взять в работу",
+  "claimSuccess": "Вы взяли тикет в работу.",
+  "assign": "Назначить",
+  "resolve": "Решить",
+  "close": "Закрыть",
+  "delete": "Удалить",
+  "unassigned": "Не назначен",
+  "headers": {
+    "id": "ID",
+    "branch": "Филиал",
+    "customer": "Клиент",
+    "category": "Категория",
+    "subject": "Тема",
+    "assignee": "Исполнитель",
+    "status": "Статус",
+    "actions": "Действия"
+  },
+  "status": {
+    "OPEN": "Открыт",
+    "IN_PROGRESS": "В работе",
+    "RESOLVED": "Решён",
+    "CLOSED": "Закрыт"
+  },
+  "category": {
+    "GENERAL": "Общее",
+    "COMPLAINT": "Жалоба",
+    "BOOKING_SUPPORT": "Поддержка бронирования",
+    "REFUND_SUPPORT": "Поддержка возврата",
+    "SHOWTIME_CHANGE": "Смена сеанса"
+  },
+  "customerPicker": {
+    "label": "Клиент",
+    "placeholder": "Поиск по имени, email или телефону",
+    "noName": "Без имени",
+    "change": "Изменить",
+    "noResults": "Клиенты не найдены"
+  }
+}

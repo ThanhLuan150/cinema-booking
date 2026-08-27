@@ -1381,3 +1381,186 @@ describe('POST /api/bookings/:id/reschedule-response', () => {
     expect((await Payment.findOne({ id: 1 })).status).toBe('REFUND_PENDING');
   });
 });
+
+describe('POST /api/bookings/:id/change-showtime', () => {
+  async function seedPaidBooking({ scheduleOverrides = {}, ticketOverrides = {} } = {}) {
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date, time_begin, time_end: '23:59', price: 1, ...scheduleOverrides });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0, ...ticketOverrides });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PAID' });
+    await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1, ticket_status: 'ISSUED' });
+  }
+
+  function newSchedule(overrides = {}) {
+    const { movie_date, time_begin } = dateAt(10);
+    return { id: 2, movie_id: 1, room_id: 2, cinema_id: 1, movie_date, time_begin, time_end: '23:59', price: 1, ...overrides };
+  }
+
+  it('returns 404 when the booking does not exist', async () => {
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 999 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("forbids changing another account's booking", async () => {
+    await seedPaidBooking();
+    await Booking.updateOne({ id: 1 }, { $set: { account_id: 2 } });
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('rejects a booking that is not PENDING/PAID', async () => {
+    await seedPaidBooking();
+    await Booking.updateOne({ id: 1 }, { $set: { status: 'CANCELLED' } });
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'BOOKING_NOT_CHANGEABLE' }));
+  });
+
+  it('rejects when a sibling ticket is already USED/CANCELLED/REFUNDED/EXPIRED', async () => {
+    await seedPaidBooking();
+    await Invoice.updateOne({ id: 1 }, { $set: { ticket_status: 'USED' } });
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'TICKET_NOT_CHANGEABLE' }));
+  });
+
+  it('rejects within 2 hours of the current showtime', async () => {
+    const { movie_date, time_begin } = dateAt(1);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, ticket_ids: [1], total_price: 1, status: 'PAID' });
+    await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-1', total_price: 1, status: 1, ticket_status: 'ISSUED' });
+
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCEL_WINDOW_EXPIRED' }));
+  });
+
+  it('rejects a seatCodes count that does not match the ticket count', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule());
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1', 'A2'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SEAT_COUNT_MISMATCH' }));
+  });
+
+  it('404s for an unknown target schedule', async () => {
+    await seedPaidBooking();
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 999, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('rejects a CANCELLED target schedule', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule({ status: 'CANCELLED' }));
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SCHEDULE_CANCELLED' }));
+  });
+
+  it('rejects a target schedule for a different movie', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule({ movie_id: 2 }));
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'MOVIE_MISMATCH' }));
+  });
+
+  it('rejects a target schedule at a different branch', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule({ cinema_id: 2 }));
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'BRANCH_MISMATCH' }));
+  });
+
+  it('rejects a seat that is not AVAILABLE on the new schedule', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule());
+    await Ticket.create({ id: 2, schedule_id: 2, seat_index: 0, seat_code: 'A1', status: 0 });
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['A1'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SEAT_UNAVAILABLE' }));
+  });
+
+  it('moves the booking, releases the old seat, books the new one and re-points the invoice', async () => {
+    await seedPaidBooking();
+    await Schedule.create(newSchedule());
+    await Ticket.create({ id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B2', status: 1 });
+
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['B2'] }, account: { accountId: 1 }, permissionScope: 'OWN' },
+      res,
+    );
+
+    expect(res.status).not.toHaveBeenCalledWith(400);
+    const updated = await Booking.findOne({ id: 1 });
+    expect(updated.schedule_id).toBe(2);
+    expect(updated.ticket_ids).toEqual([2]);
+    expect(updated.total_price).toBe(1); // price is carried over unchanged
+    expect((await Ticket.findOne({ id: 1 })).status).toBe(1); // old seat released
+    expect((await Ticket.findOne({ id: 2 })).status).toBe(0); // new seat booked
+    expect((await Invoice.findOne({ id: 1 })).ticket_id).toBe(2);
+  });
+
+  it('a Branch Admin can change the showtime for their own branch', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 5, name: 'C1', code: 'A' });
+    await seedPaidBooking();
+    await Schedule.create(newSchedule());
+    await Ticket.create({ id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B2', status: 1 });
+
+    const res = mockRes();
+    await bookingController.changeBookingShowtime(
+      { params: { id: 1 }, body: { schedule_id: 2, seatCodes: ['B2'] }, account: { accountId: 5 }, permissionScope: 'BRANCH' },
+      res,
+    );
+
+    expect(res.status).not.toHaveBeenCalledWith(403);
+    expect((await Booking.findOne({ id: 1 })).schedule_id).toBe(2);
+  });
+});

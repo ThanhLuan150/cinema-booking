@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "我的排班",
-      "refunds": "退款"
+      "refunds": "退款",
+      "supportTickets": "客户服务"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "客户服务",
+  "branchPlaceholder": "选择分店",
+  "allBranches": "所有分店",
+  "statusFilterPlaceholder": "所有状态",
+  "newButton": "新建工单",
+  "createTitle": "新建支持工单",
+  "categoryLabel": "类别",
+  "subjectLabel": "主题",
+  "descriptionLabel": "描述",
+  "submit": "提交",
+  "createSuccess": "支持工单已创建。",
+  "validation": {
+    "subjectRequired": "请输入主题"
+  },
+  "assignTitle": "分配工单",
+  "employeeLabel": "员工",
+  "employeePlaceholder": "选择员工",
+  "assignSuccess": "工单已分配。",
+  "resolveTitle": "处理工单",
+  "resolutionNoteLabel": "处理说明",
+  "resolveSuccess": "工单已处理。",
+  "closeSuccess": "工单已关闭。",
+  "deleteConfirm": "确定删除此支持工单吗？",
+  "deleteSuccess": "工单已删除。",
+  "claim": "认领",
+  "claimSuccess": "您已认领此工单。",
+  "assign": "分配",
+  "resolve": "处理完成",
+  "close": "关闭",
+  "delete": "删除",
+  "unassigned": "未分配",
+  "headers": {
+    "id": "ID",
+    "branch": "分店",
+    "customer": "客户",
+    "category": "类别",
+    "subject": "主题",
+    "assignee": "处理人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "status": {
+    "OPEN": "待处理",
+    "IN_PROGRESS": "处理中",
+    "RESOLVED": "已处理",
+    "CLOSED": "已关闭"
+  },
+  "category": {
+    "GENERAL": "一般",
+    "COMPLAINT": "投诉",
+    "BOOKING_SUPPORT": "订票支持",
+    "REFUND_SUPPORT": "退款支持",
+    "SHOWTIME_CHANGE": "场次变更"
+  },
+  "customerPicker": {
+    "label": "客户",
+    "placeholder": "按姓名、邮箱或电话搜索",
+    "noName": "无姓名",
+    "change": "更换",
+    "noResults": "未找到客户"
+  }
+}

@@ -652,6 +652,30 @@ async function cancelBooking(booking, { reason = null } = {}) {
   return booking;
 }
 
+async function changeBookingShowtime(booking, { newScheduleId, newTicketIds }) {
+  await Ticket.updateMany(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+  await Ticket.updateMany(
+    { id: { $in: newTicketIds } },
+    { $set: { status: Ticket.STATUS.BOOKED, held_by: null, held_until: null } },
+  );
+
+  if (booking.status === Booking.STATUS.PAID) {
+    const invoices = await Invoice.find({ booking_id: booking.id }).sort({ id: 1 });
+    for (let i = 0; i < invoices.length && i < newTicketIds.length; i += 1) {
+      invoices[i].ticket_id = Number(newTicketIds[i]);
+      await invoices[i].save();
+    }
+  }
+
+  booking.schedule_id = Number(newScheduleId);
+  booking.ticket_ids = newTicketIds.map(Number);
+  await booking.save();
+  return booking;
+}
+
 // Ticket 15: bookings sitting on a Schedule that's being cancelled or rescheduled-away-from.
 async function findBookingsBySchedule(scheduleId, statuses) {
   return Booking.find({ schedule_id: Number(scheduleId), status: { $in: statuses } });
@@ -880,6 +904,7 @@ module.exports = {
   createPendingBooking,
   cancelPendingBookingByCode,
   cancelBooking,
+  changeBookingShowtime,
   applyRefund,
   findBookingsBySchedule,
   cancelBookingAndRequestRefund,

@@ -100,7 +100,18 @@
     "cancel": "Annuler",
     "confirmCancel": "Êtes-vous sûr de vouloir annuler cette réservation ?",
     "cancelSuccess": "Réservation annulée avec succès.",
-    "cancelFailed": "Impossible d'annuler la réservation."
+    "cancelFailed": "Impossible d'annuler la réservation.",
+    "requestRefund": "Demander un remboursement",
+    "refundRequestSuccess": "Demande de remboursement envoyée.",
+    "refundModalTitle": "Demander un remboursement",
+    "refundReasonLabel": "Raison (facultatif)",
+    "acceptReschedule": "Accepter le nouvel horaire",
+    "declineReschedule": "Refuser et rembourser",
+    "rescheduleSuccess": "Réponse enregistrée.",
+    "checkPayment": "Vérifier le paiement",
+    "paymentStatusResult": "Statut du paiement : {{status}} · {{amount}}đ",
+    "changeShowtime": "Changer de séance",
+    "changeShowtimeSuccess": "Séance modifiée avec succès."
   },
   "voucher": {
     "title": "Code promo",
@@ -108,5 +119,13 @@
     "apply": "Appliquer",
     "applied": "Appliqué : -{{amount}}",
     "applyFailed": "Impossible d'appliquer le code promo."
+  },
+  "changeShowtime": {
+    "title": "Changer de séance",
+    "description": "Choisissez une nouvelle séance pour le même film et sélectionnez {{count}} place(s).",
+    "scheduleLabel": "Nouvelle séance",
+    "schedulePlaceholder": "Sélectionner une séance",
+    "seatsLabel": "Places sélectionnées : {{selected}}/{{required}}",
+    "failed": "Impossible de changer la séance."
   }
 }

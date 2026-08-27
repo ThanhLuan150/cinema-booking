@@ -148,6 +148,8 @@ export interface BookingListParams {
   page?: number;
   limit?: number;
   status?: BookingStatus;
+  // Lets branch/all-scoped staff (e.g. Customer Service) narrow the list to one customer.
+  accountId?: number | string;
 }
 
 export type TicketStatus = 'ISSUED' | 'USED' | 'CANCELLED' | 'REFUNDED' | 'EXPIRED';

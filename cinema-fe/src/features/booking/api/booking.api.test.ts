@@ -121,6 +121,12 @@ describe('booking.api', () => {
     expect(postMock).toHaveBeenCalledWith('/bookings/5/cancel');
   });
 
+  it('changeBookingShowtime posts to /bookings/:id/change-showtime', async () => {
+    postMock.mockResolvedValueOnce({ data: {} });
+    await bookingApi.changeBookingShowtime(5, { schedule_id: 9, seatCodes: ['A1', 'A2'] });
+    expect(postMock).toHaveBeenCalledWith('/bookings/5/change-showtime', { schedule_id: 9, seatCodes: ['A1', 'A2'] });
+  });
+
   it('getMyTickets gets /my-tickets', async () => {
     await bookingApi.getMyTickets();
     expect(getMock).toHaveBeenCalledWith('/my-tickets');
