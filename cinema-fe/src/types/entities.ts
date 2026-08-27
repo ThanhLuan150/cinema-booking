@@ -382,6 +382,52 @@ export interface AuditLogMeta {
   entityTypes: AuditLogEntityType[];
 }
 
+// Ticket 25 — Notification system
+export type NotificationType =
+  | 'BOOKING_CREATED'
+  | 'PAYMENT_SUCCESS'
+  | 'PAYMENT_FAILED'
+  | 'TICKET_ISSUED'
+  | 'BOOKING_CANCELLED'
+  | 'REFUND_COMPLETED'
+  | 'SHOWTIME_CANCELLED'
+  | 'SHOWTIME_CHANGED';
+
+export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
+export type NotificationChannel = 'IN_APP' | 'EMAIL';
+
+/** Safe, display-only context attached to a notification — never any sensitive data. */
+export interface NotificationData {
+  movie?: string;
+  branch?: string;
+  room?: string;
+  showtime?: { date: string; time_begin: string; time_end: string };
+  seats?: string[];
+  bookingCode?: string;
+  ticketCodes?: string[];
+  amount?: number;
+  reason?: string | null;
+  refundRequested?: boolean;
+  from?: { movie_date: string; time_begin: string; time_end: string };
+  to?: { movie_date: string; time_begin: string; time_end: string };
+  [key: string]: unknown;
+}
+
+export interface Notification {
+  id: number;
+  account_id: number;
+  type: NotificationType;
+  title: string;
+  body: string;
+  data: NotificationData | null;
+  channels: NotificationChannel[];
+  status: NotificationStatus;
+  read_at: string | null;
+  sent_at: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Actor {
   id: number;
   full_name: string;

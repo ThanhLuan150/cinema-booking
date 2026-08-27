@@ -6,6 +6,7 @@ const bookingRepository = require('../repositories/booking.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+const notificationService = require('../services/notification.service');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Branch = require('../models/Branch');
@@ -235,6 +236,14 @@ async function cancelAffectedBooking(booking, { reason, auditAction, performedBy
     scheduleId: schedule.id,
     refundRequested: wasPaid,
   });
+  // Ticket 25: durable notification record alongside the transient socket event + email.
+  await notificationService.notify({
+    event: notificationService.EVENT.SHOWTIME_CANCELLED,
+    accountId: booking.account_id,
+    bookingId: booking.id,
+    data: { refundRequested: wasPaid },
+    channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
+  });
 }
 
 // PATCH /api/schedule/:id/cancel (schedule.cancel permission, branch-scoped)
@@ -345,6 +354,17 @@ async function reschedule(req, res) {
       scheduleId: schedule.id,
       from: oldSnapshot,
       to: { movie_date, time_begin, time_end },
+    });
+    // Ticket 25: durable "showtime changed" notification for the customer's feed.
+    await notificationService.notify({
+      event: notificationService.EVENT.SHOWTIME_CHANGED,
+      accountId: booking.account_id,
+      bookingId: booking.id,
+      data: {
+        from: oldSnapshot,
+        to: { movie_date, time_begin, time_end },
+      },
+      channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
     });
   }
 

@@ -5,6 +5,8 @@ import { socket } from '@/lib/socket';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { moviesQueryKey } from '@/features/movies/hooks/useMovies';
 import { bookingsQueryKey } from '@/features/booking/hooks/useBookings';
+import { notificationsQueryKey, unreadCountQueryKey } from '@/features/notifications/hooks/useNotifications';
+import type { Notification } from '@/types/entities';
 import { refreshAccessToken } from '@/services/apiClient';
 import { setAccessToken } from '@/features/auth/store/authSlice';
 import { bump } from './realtimeSlice';
@@ -76,6 +78,11 @@ export function RealtimeBridge() {
       queryClient.invalidateQueries({ queryKey: bookingsQueryKey });
       toast.info(t('realtimeBridge.showtimeRescheduled'));
     };
+    const onNotificationNew = (payload: Notification) => {
+      queryClient.invalidateQueries({ queryKey: notificationsQueryKey });
+      queryClient.invalidateQueries({ queryKey: unreadCountQueryKey });
+      toast.info(payload?.title ?? t('realtimeBridge.notification'));
+    };
 
     socket.on('movie:new', onMovieNew);
     socket.on('branch:activated', onBranchActivated);
@@ -84,6 +91,7 @@ export function RealtimeBridge() {
     socket.on('booking:new', onBookingNew);
     socket.on('showtime:cancelled', onShowtimeCancelled);
     socket.on('showtime:rescheduled', onShowtimeRescheduled);
+    socket.on('notification:new', onNotificationNew);
 
     return () => {
       socket.off('movie:new', onMovieNew);
@@ -93,6 +101,7 @@ export function RealtimeBridge() {
       socket.off('booking:new', onBookingNew);
       socket.off('showtime:cancelled', onShowtimeCancelled);
       socket.off('showtime:rescheduled', onShowtimeRescheduled);
+      socket.off('notification:new', onNotificationNew);
     };
     // Re-register listeners when the translator changes so socket callbacks
     // always use the current language instead of a stale closure over `t`.

@@ -38,6 +38,7 @@ const supportTicketRoutes = require('./supportTicket.routes');
 const entranceRoutes = require('./entrance.routes');
 const deviceRoutes = require('./device.routes');
 const auditLogRoutes = require('./auditLog.routes');
+const notificationRoutes = require('./notification.routes');
 
 const router = express.Router();
 
@@ -83,6 +84,9 @@ router.use('/devices', deviceRoutes);
 // Audit Log viewer (Ticket 24): read-only trail of important actions, gated by auditLog.read
 // and branch-scoped for a Branch Admin.
 router.use('/audit-logs', auditLogRoutes);
+// Notification history (Ticket 25): a caller's own feed of booking/payment/showtime events,
+// raised server-side by notification.service. Read + mark-read only.
+router.use('/notifications', notificationRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

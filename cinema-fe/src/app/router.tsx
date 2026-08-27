@@ -32,6 +32,7 @@ import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerMaintenance from '@/features/owner/maintenance/pages/List';
 import OwnerDevices from '@/features/owner/devices/pages/List';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
+import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
@@ -94,6 +95,7 @@ export function AppRouter() {
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
       <Route path={ROUTES.myMembership} element={<MyMembership />} />
+      <Route path={ROUTES.notifications} element={<NotificationsPage />} />
       <Route
         path={ROUTES.adminUsers}
         element={
