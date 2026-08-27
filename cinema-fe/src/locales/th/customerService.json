@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "บริการลูกค้า",
+  "branchPlaceholder": "เลือกสาขา",
+  "allBranches": "ทุกสาขา",
+  "statusFilterPlaceholder": "ทุกสถานะ",
+  "newButton": "สร้างตั๋วใหม่",
+  "createTitle": "สร้างตั๋วขอความช่วยเหลือ",
+  "categoryLabel": "หมวดหมู่",
+  "subjectLabel": "หัวข้อ",
+  "descriptionLabel": "รายละเอียด",
+  "submit": "ส่ง",
+  "createSuccess": "สร้างตั๋วขอความช่วยเหลือแล้ว",
+  "validation": {
+    "subjectRequired": "กรุณากรอกหัวข้อ"
+  },
+  "assignTitle": "มอบหมายตั๋ว",
+  "employeeLabel": "พนักงาน",
+  "employeePlaceholder": "เลือกพนักงาน",
+  "assignSuccess": "มอบหมายตั๋วแล้ว",
+  "resolveTitle": "จัดการตั๋ว",
+  "resolutionNoteLabel": "บันทึกการแก้ไข",
+  "resolveSuccess": "จัดการตั๋วเรียบร้อยแล้ว",
+  "closeSuccess": "ปิดตั๋วแล้ว",
+  "deleteConfirm": "ลบตั๋วขอความช่วยเหลือนี้หรือไม่?",
+  "deleteSuccess": "ลบตั๋วแล้ว",
+  "claim": "รับดำเนินการ",
+  "claimSuccess": "คุณรับดำเนินการตั๋วนี้แล้ว",
+  "assign": "มอบหมาย",
+  "resolve": "แก้ไขเสร็จสิ้น",
+  "close": "ปิด",
+  "delete": "ลบ",
+  "unassigned": "ยังไม่มอบหมาย",
+  "headers": {
+    "id": "ID",
+    "branch": "สาขา",
+    "customer": "ลูกค้า",
+    "category": "หมวดหมู่",
+    "subject": "หัวข้อ",
+    "assignee": "ผู้รับผิดชอบ",
+    "status": "สถานะ",
+    "actions": "การดำเนินการ"
+  },
+  "status": {
+    "OPEN": "เปิด",
+    "IN_PROGRESS": "กำลังดำเนินการ",
+    "RESOLVED": "แก้ไขแล้ว",
+    "CLOSED": "ปิดแล้ว"
+  },
+  "category": {
+    "GENERAL": "ทั่วไป",
+    "COMPLAINT": "ข้อร้องเรียน",
+    "BOOKING_SUPPORT": "ช่วยเหลือการจอง",
+    "REFUND_SUPPORT": "ช่วยเหลือการคืนเงิน",
+    "SHOWTIME_CHANGE": "เปลี่ยนรอบฉาย"
+  },
+  "customerPicker": {
+    "label": "ลูกค้า",
+    "placeholder": "ค้นหาด้วยชื่อ อีเมล หรือเบอร์โทร",
+    "noName": "ไม่มีชื่อ",
+    "change": "เปลี่ยน",
+    "noResults": "ไม่พบลูกค้า"
+  }
+}

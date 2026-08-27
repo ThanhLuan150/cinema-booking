@@ -150,6 +150,9 @@ async function listRefunds(req, res) {
     filter.branch_id = { $in: branchIds };
   }
   if (req.query.status) filter.status = req.query.status;
+  // Lets branch/all-scoped staff (e.g. Customer Service) pull up one customer's refunds; OWN
+  // scope already forces account_id above, so this would only narrow it to themselves anyway.
+  if (req.query.accountId && req.permissionScope !== 'OWN') filter.account_id = Number(req.query.accountId);
 
   const { data, total } = await refundRepository.listAll(filter, { skip, limit });
   res.json(buildPaginatedResult({ data, total, page, limit }));

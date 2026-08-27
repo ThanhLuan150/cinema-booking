@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "Kundenservice",
+  "branchPlaceholder": "Filiale auswählen",
+  "allBranches": "Alle Filialen",
+  "statusFilterPlaceholder": "Alle Status",
+  "newButton": "Neues Ticket",
+  "createTitle": "Support-Ticket erstellen",
+  "categoryLabel": "Kategorie",
+  "subjectLabel": "Betreff",
+  "descriptionLabel": "Beschreibung",
+  "submit": "Senden",
+  "createSuccess": "Support-Ticket erstellt.",
+  "validation": {
+    "subjectRequired": "Betreff ist erforderlich"
+  },
+  "assignTitle": "Ticket zuweisen",
+  "employeeLabel": "Mitarbeiter",
+  "employeePlaceholder": "Mitarbeiter auswählen",
+  "assignSuccess": "Ticket zugewiesen.",
+  "resolveTitle": "Ticket lösen",
+  "resolutionNoteLabel": "Lösungsnotiz",
+  "resolveSuccess": "Ticket gelöst.",
+  "closeSuccess": "Ticket geschlossen.",
+  "deleteConfirm": "Dieses Support-Ticket löschen?",
+  "deleteSuccess": "Ticket gelöscht.",
+  "claim": "Übernehmen",
+  "claimSuccess": "Sie haben dieses Ticket übernommen.",
+  "assign": "Zuweisen",
+  "resolve": "Lösen",
+  "close": "Schließen",
+  "delete": "Löschen",
+  "unassigned": "Nicht zugewiesen",
+  "headers": {
+    "id": "ID",
+    "branch": "Filiale",
+    "customer": "Kunde",
+    "category": "Kategorie",
+    "subject": "Betreff",
+    "assignee": "Zuständig",
+    "status": "Status",
+    "actions": "Aktionen"
+  },
+  "status": {
+    "OPEN": "Offen",
+    "IN_PROGRESS": "In Bearbeitung",
+    "RESOLVED": "Gelöst",
+    "CLOSED": "Geschlossen"
+  },
+  "category": {
+    "GENERAL": "Allgemein",
+    "COMPLAINT": "Beschwerde",
+    "BOOKING_SUPPORT": "Buchungssupport",
+    "REFUND_SUPPORT": "Erstattungssupport",
+    "SHOWTIME_CHANGE": "Vorstellungswechsel"
+  },
+  "customerPicker": {
+    "label": "Kunde",
+    "placeholder": "Suche nach Name, E-Mail oder Telefon",
+    "noName": "Kein Name",
+    "change": "Ändern",
+    "noResults": "Keine Kunden gefunden"
+  }
+}

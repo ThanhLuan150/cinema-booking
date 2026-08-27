@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "ग्राहक सेवा",
+  "branchPlaceholder": "शाखा चुनें",
+  "allBranches": "सभी शाखाएँ",
+  "statusFilterPlaceholder": "सभी स्थितियाँ",
+  "newButton": "नया टिकट",
+  "createTitle": "सहायता टिकट बनाएं",
+  "categoryLabel": "श्रेणी",
+  "subjectLabel": "विषय",
+  "descriptionLabel": "विवरण",
+  "submit": "जमा करें",
+  "createSuccess": "सहायता टिकट बनाया गया।",
+  "validation": {
+    "subjectRequired": "विषय आवश्यक है"
+  },
+  "assignTitle": "टिकट सौंपें",
+  "employeeLabel": "कर्मचारी",
+  "employeePlaceholder": "कर्मचारी चुनें",
+  "assignSuccess": "टिकट सौंपा गया।",
+  "resolveTitle": "टिकट हल करें",
+  "resolutionNoteLabel": "समाधान नोट",
+  "resolveSuccess": "टिकट हल हो गया।",
+  "closeSuccess": "टिकट बंद कर दिया गया।",
+  "deleteConfirm": "क्या इस सहायता टिकट को हटाना है?",
+  "deleteSuccess": "टिकट हटा दिया गया।",
+  "claim": "स्वयं लें",
+  "claimSuccess": "आपने यह टिकट ले लिया है।",
+  "assign": "सौंपें",
+  "resolve": "हल करें",
+  "close": "बंद करें",
+  "delete": "हटाएं",
+  "unassigned": "असाइन नहीं किया गया",
+  "headers": {
+    "id": "आईडी",
+    "branch": "शाखा",
+    "customer": "ग्राहक",
+    "category": "श्रेणी",
+    "subject": "विषय",
+    "assignee": "जिम्मेदार व्यक्ति",
+    "status": "स्थिति",
+    "actions": "क्रियाएं"
+  },
+  "status": {
+    "OPEN": "खुला",
+    "IN_PROGRESS": "प्रगति पर",
+    "RESOLVED": "हल हो गया",
+    "CLOSED": "बंद"
+  },
+  "category": {
+    "GENERAL": "सामान्य",
+    "COMPLAINT": "शिकायत",
+    "BOOKING_SUPPORT": "बुकिंग सहायता",
+    "REFUND_SUPPORT": "रिफंड सहायता",
+    "SHOWTIME_CHANGE": "शो टाइम परिवर्तन"
+  },
+  "customerPicker": {
+    "label": "ग्राहक",
+    "placeholder": "नाम, ईमेल या फ़ोन से खोजें",
+    "noName": "कोई नाम नहीं",
+    "change": "बदलें",
+    "noResults": "कोई ग्राहक नहीं मिला"
+  }
+}

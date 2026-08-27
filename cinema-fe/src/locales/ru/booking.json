@@ -100,7 +100,18 @@
     "cancel": "Отменить",
     "confirmCancel": "Вы уверены, что хотите отменить это бронирование?",
     "cancelSuccess": "Бронирование успешно отменено.",
-    "cancelFailed": "Не удалось отменить бронирование."
+    "cancelFailed": "Не удалось отменить бронирование.",
+    "requestRefund": "Запросить возврат",
+    "refundRequestSuccess": "Запрос на возврат отправлен.",
+    "refundModalTitle": "Запросить возврат",
+    "refundReasonLabel": "Причина (необязательно)",
+    "acceptReschedule": "Принять новое время",
+    "declineReschedule": "Отклонить и вернуть деньги",
+    "rescheduleSuccess": "Ответ сохранён.",
+    "checkPayment": "Проверить статус оплаты",
+    "paymentStatusResult": "Статус оплаты: {{status}} · {{amount}}đ",
+    "changeShowtime": "Изменить сеанс",
+    "changeShowtimeSuccess": "Сеанс успешно изменён."
   },
   "voucher": {
     "title": "Промокод",
@@ -108,5 +119,13 @@
     "apply": "Применить",
     "applied": "Применено: -{{amount}}",
     "applyFailed": "Не удалось применить промокод."
+  },
+  "changeShowtime": {
+    "title": "Изменить сеанс",
+    "description": "Выберите новый сеанс для того же фильма и {{count}} место(мест).",
+    "scheduleLabel": "Новый сеанс",
+    "schedulePlaceholder": "Выберите сеанс",
+    "seatsLabel": "Выбрано мест: {{selected}}/{{required}}",
+    "failed": "Не удалось изменить сеанс."
   }
 }

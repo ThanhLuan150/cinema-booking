@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "Мой график",
-      "refunds": "Возвраты"
+      "refunds": "Возвраты",
+      "supportTickets": "Служба поддержки"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

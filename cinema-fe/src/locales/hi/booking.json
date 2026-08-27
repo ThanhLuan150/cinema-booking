@@ -100,7 +100,18 @@
     "cancel": "रद्द करें",
     "confirmCancel": "क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?",
     "cancelSuccess": "बुकिंग सफलतापूर्वक रद्द कर दी गई।",
-    "cancelFailed": "बुकिंग रद्द नहीं की जा सकी।"
+    "cancelFailed": "बुकिंग रद्द नहीं की जा सकी।",
+    "requestRefund": "रिफंड का अनुरोध करें",
+    "refundRequestSuccess": "रिफंड अनुरोध सबमिट किया गया।",
+    "refundModalTitle": "रिफंड का अनुरोध करें",
+    "refundReasonLabel": "कारण (वैकल्पिक)",
+    "acceptReschedule": "नया शो समय स्वीकार करें",
+    "declineReschedule": "अस्वीकार करें और रिफंड करें",
+    "rescheduleSuccess": "प्रतिक्रिया दर्ज की गई।",
+    "checkPayment": "भुगतान स्थिति जांचें",
+    "paymentStatusResult": "भुगतान स्थिति: {{status}} · {{amount}}đ",
+    "changeShowtime": "शो टाइम बदलें",
+    "changeShowtimeSuccess": "शो टाइम सफलतापूर्वक बदल दिया गया।"
   },
   "voucher": {
     "title": "डिस्काउंट कोड",
@@ -108,5 +119,13 @@
     "apply": "लागू करें",
     "applied": "लागू किया गया: -{{amount}}",
     "applyFailed": "डिस्काउंट कोड लागू नहीं किया जा सका।"
+  },
+  "changeShowtime": {
+    "title": "शो टाइम बदलें",
+    "description": "उसी फिल्म के लिए नया शो टाइम चुनें और {{count}} सीटें चुनें।",
+    "scheduleLabel": "नया शो टाइम",
+    "schedulePlaceholder": "शो टाइम चुनें",
+    "seatsLabel": "चयनित सीटें: {{selected}}/{{required}}",
+    "failed": "शो टाइम नहीं बदला जा सका।"
   }
 }

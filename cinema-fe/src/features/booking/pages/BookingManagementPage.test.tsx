@@ -27,6 +27,21 @@ vi.mock('../hooks/useBookings', () => ({ useBookings: (...args: unknown[]) => us
 const cancelMutate = vi.fn();
 vi.mock('../hooks/useCancelBooking', () => ({ useCancelBooking: () => ({ mutateAsync: cancelMutate }) }));
 
+const refundMutate = vi.fn();
+vi.mock('@/features/refund/hooks/useRequestRefund', () => ({ useRequestRefund: () => ({ mutateAsync: refundMutate, isPending: false }) }));
+
+const rescheduleMutate = vi.fn();
+vi.mock('../hooks/useRespondToReschedule', () => ({ useRespondToReschedule: () => ({ mutateAsync: rescheduleMutate }) }));
+
+const getPaymentStatusMock = vi.fn();
+vi.mock('@/features/payment/api/payment.api', () => ({ getPaymentStatus: (...args: unknown[]) => getPaymentStatusMock(...args) }));
+
+vi.mock('@/features/customerService/components/CustomerPicker', () => ({ CustomerPicker: () => <div>customer-picker</div> }));
+
+vi.mock('../components/ChangeShowtimeModal', () => ({
+  ChangeShowtimeModal: () => <div>change-showtime-modal</div>,
+}));
+
 const hasPermissionMock = vi.fn();
 vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: hasPermissionMock }) }));
 
@@ -66,6 +81,9 @@ describe('BookingManagementPage', () => {
   beforeEach(() => {
     useBookingsMock.mockReset();
     cancelMutate.mockReset();
+    refundMutate.mockReset();
+    rescheduleMutate.mockReset();
+    getPaymentStatusMock.mockReset();
     hasPermissionMock.mockReset();
     confirmDialogMock.mockReset();
   });
@@ -94,5 +112,70 @@ describe('BookingManagementPage', () => {
     useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'COMPLETED' })], totalPages: 1 } });
     renderPage();
     expect(screen.queryByText('bookingManagement.cancel')).not.toBeInTheDocument();
+  });
+
+  it('shows the customer picker only with user.read', () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'user.read');
+    useBookingsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    expect(screen.getByText('customer-picker')).toBeInTheDocument();
+  });
+
+  it('hides the customer picker without user.read', () => {
+    hasPermissionMock.mockReturnValue(false);
+    useBookingsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    expect(screen.queryByText('customer-picker')).not.toBeInTheDocument();
+  });
+
+  it('requests a refund for a PAID booking when the caller has refund.request', async () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'refund.request');
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'PAID' })], totalPages: 1 } });
+    refundMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('bookingManagement.requestRefund'));
+    fireEvent.click(screen.getByText('common:actions.confirm'));
+    await vi.waitFor(() => expect(refundMutate).toHaveBeenCalledWith({ bookingId: 1, reason: undefined }));
+  });
+
+  it('hides the refund action for a booking that is not PAID', () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'refund.request');
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'PENDING' })], totalPages: 1 } });
+    renderPage();
+    expect(screen.queryByText('bookingManagement.requestRefund')).not.toBeInTheDocument();
+  });
+
+  it('shows reschedule response actions when needs_reschedule_response is set', async () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'booking.reschedule');
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ needs_reschedule_response: true })], totalPages: 1 } });
+    rescheduleMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('bookingManagement.acceptReschedule'));
+    await vi.waitFor(() => expect(rescheduleMutate).toHaveBeenCalledWith({ bookingId: 1, action: 'ACCEPT' }));
+  });
+
+  it('checks payment status when the caller has payment.read', async () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'payment.read');
+    useBookingsMock.mockReturnValue({ data: { data: [booking()], totalPages: 1 } });
+    getPaymentStatusMock.mockResolvedValue({ status: 'PAID', amount: 100000 });
+    renderPage();
+    fireEvent.click(screen.getByText('bookingManagement.checkPayment'));
+    await vi.waitFor(() => expect(getPaymentStatusMock).toHaveBeenCalledWith('BK-1'));
+  });
+
+  it('opens the change-showtime modal for a cancellable booking when the caller has booking.changeShowtime', () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'booking.changeShowtime');
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'PAID' })], totalPages: 1 } });
+    renderPage();
+    expect(screen.queryByText('change-showtime-modal')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('bookingManagement.changeShowtime'));
+    expect(screen.getByText('change-showtime-modal')).toBeInTheDocument();
+  });
+
+  it('hides the change-showtime action for a booking that is not cancellable, even with permission', () => {
+    hasPermissionMock.mockImplementation((code: string) => code === 'booking.changeShowtime');
+    useBookingsMock.mockReturnValue({ data: { data: [booking({ status: 'COMPLETED' })], totalPages: 1 } });
+    renderPage();
+    expect(screen.queryByText('bookingManagement.changeShowtime')).not.toBeInTheDocument();
   });
 });

@@ -96,6 +96,18 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.maintenance')}
                 </NavLink>
               )}
+              {hasPermission('refund.read') && (
+                <NavLink to={ROUTES.refundManagement} className={navLinkClass}>
+                  <ion-icon name="cash-outline" />
+                  {t('adminLayout.nav.refunds')}
+                </NavLink>
+              )}
+              {hasPermission('supportTicket.read') && (
+                <NavLink to={ROUTES.supportTickets} className={navLinkClass}>
+                  <ion-icon name="headset" />
+                  {t('adminLayout.nav.supportTickets')}
+                </NavLink>
+              )}
               <NavLink to={ROUTES.employeeMySchedule} className={navLinkClass}>
                 <ion-icon name="calendar" />
                 {t('adminLayout.nav.mySchedule')}
@@ -169,6 +181,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                 <NavLink to={ROUTES.refundManagement} className={navLinkClass}>
                   <ion-icon name="cash-outline" />
                   {t('adminLayout.nav.refunds')}
+                </NavLink>
+              )}
+              {hasPermission('supportTicket.read') && (
+                <NavLink to={ROUTES.supportTickets} className={navLinkClass}>
+                  <ion-icon name="headset" />
+                  {t('adminLayout.nav.supportTickets')}
                 </NavLink>
               )}
               {hasPermission('combo.order.view') && (

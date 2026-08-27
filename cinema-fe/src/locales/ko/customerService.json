@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "고객 서비스",
+  "branchPlaceholder": "지점 선택",
+  "allBranches": "모든 지점",
+  "statusFilterPlaceholder": "모든 상태",
+  "newButton": "새 티켓",
+  "createTitle": "지원 티켓 생성",
+  "categoryLabel": "분류",
+  "subjectLabel": "제목",
+  "descriptionLabel": "설명",
+  "submit": "제출",
+  "createSuccess": "지원 티켓이 생성되었습니다.",
+  "validation": {
+    "subjectRequired": "제목을 입력해주세요"
+  },
+  "assignTitle": "티켓 배정",
+  "employeeLabel": "직원",
+  "employeePlaceholder": "직원 선택",
+  "assignSuccess": "티켓이 배정되었습니다.",
+  "resolveTitle": "티켓 처리",
+  "resolutionNoteLabel": "처리 메모",
+  "resolveSuccess": "티켓이 처리되었습니다.",
+  "closeSuccess": "티켓이 종료되었습니다.",
+  "deleteConfirm": "이 지원 티켓을 삭제하시겠습니까?",
+  "deleteSuccess": "티켓이 삭제되었습니다.",
+  "claim": "담당하기",
+  "claimSuccess": "티켓을 담당하게 되었습니다.",
+  "assign": "배정",
+  "resolve": "처리 완료",
+  "close": "종료",
+  "delete": "삭제",
+  "unassigned": "미배정",
+  "headers": {
+    "id": "ID",
+    "branch": "지점",
+    "customer": "고객",
+    "category": "분류",
+    "subject": "제목",
+    "assignee": "담당자",
+    "status": "상태",
+    "actions": "작업"
+  },
+  "status": {
+    "OPEN": "대기",
+    "IN_PROGRESS": "처리 중",
+    "RESOLVED": "처리됨",
+    "CLOSED": "종료됨"
+  },
+  "category": {
+    "GENERAL": "일반",
+    "COMPLAINT": "불만",
+    "BOOKING_SUPPORT": "예매 지원",
+    "REFUND_SUPPORT": "환불 지원",
+    "SHOWTIME_CHANGE": "상영 시간 변경"
+  },
+  "customerPicker": {
+    "label": "고객",
+    "placeholder": "이름, 이메일 또는 전화번호로 검색",
+    "noName": "이름 없음",
+    "change": "변경",
+    "noResults": "고객을 찾을 수 없습니다"
+  }
+}

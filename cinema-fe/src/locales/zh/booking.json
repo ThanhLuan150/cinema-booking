@@ -100,7 +100,18 @@
     "cancel": "取消",
     "confirmCancel": "确定要取消此订单吗？",
     "cancelSuccess": "订单取消成功。",
-    "cancelFailed": "无法取消该订单。"
+    "cancelFailed": "无法取消该订单。",
+    "requestRefund": "申请退款",
+    "refundRequestSuccess": "退款申请已提交。",
+    "refundModalTitle": "申请退款",
+    "refundReasonLabel": "原因（可选）",
+    "acceptReschedule": "接受新场次",
+    "declineReschedule": "拒绝并退款",
+    "rescheduleSuccess": "已记录您的回复。",
+    "checkPayment": "查看付款状态",
+    "paymentStatusResult": "付款状态：{{status}} · {{amount}}đ",
+    "changeShowtime": "更改场次",
+    "changeShowtimeSuccess": "场次已成功更改。"
   },
   "voucher": {
     "title": "优惠码",
@@ -108,5 +119,13 @@
     "apply": "使用",
     "applied": "已使用：-{{amount}}",
     "applyFailed": "无法使用该优惠码。"
+  },
+  "changeShowtime": {
+    "title": "更改场次",
+    "description": "为同一部电影选择新场次，并选择 {{count}} 个座位。",
+    "scheduleLabel": "新场次",
+    "schedulePlaceholder": "选择场次",
+    "seatsLabel": "已选座位：{{selected}}/{{required}}",
+    "failed": "无法更改场次。"
   }
 }

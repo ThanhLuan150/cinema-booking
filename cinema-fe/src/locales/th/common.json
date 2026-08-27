@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "ตารางงานของฉัน",
-      "refunds": "การคืนเงิน"
+      "refunds": "การคืนเงิน",
+      "supportTickets": "บริการลูกค้า"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

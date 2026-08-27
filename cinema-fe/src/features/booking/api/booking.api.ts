@@ -79,6 +79,9 @@ export const getBookingById = (id: number | string) =>
 
 export const cancelBooking = (id: number | string) => apiClient.post(`/bookings/${id}/cancel`);
 
+export const changeBookingShowtime = (id: number | string, payload: { schedule_id: number | string; seatCodes: string[] }) =>
+  apiClient.post<Booking>(`/bookings/${id}/change-showtime`, payload).then((res) => res.data);
+
 export const respondToReschedule = (id: number | string, action: 'ACCEPT' | 'REFUND') =>
   apiClient.post(`/bookings/${id}/reschedule-response`, { action });
 

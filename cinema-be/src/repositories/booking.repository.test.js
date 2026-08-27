@@ -946,6 +946,79 @@ describe('booking.repository', () => {
       expect(invoices.every((inv) => inv.status === 0)).toBe(true);
     });
 
+    describe('changeBookingShowtime', () => {
+      it('releases the old tickets, books the new ones, and moves the booking', async () => {
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 },
+          { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B1', status: 1 },
+        ]);
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-4',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1],
+          total_price: 100000,
+          status: 'PENDING',
+        });
+
+        const updated = await bookingRepository.changeBookingShowtime(booking, { newScheduleId: 2, newTicketIds: [2] });
+
+        expect(updated.schedule_id).toBe(2);
+        expect(updated.ticket_ids).toEqual([2]);
+        expect((await Ticket.findOne({ id: 1 })).status).toBe(1);
+        expect((await Ticket.findOne({ id: 2 })).status).toBe(0);
+      });
+
+      it('re-points sibling invoices at the new ticket ids (paired 1:1 by array position) only for a PAID booking', async () => {
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 },
+          { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B1', status: 1 },
+        ]);
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-5',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1],
+          total_price: 100000,
+          status: 'PAID',
+        });
+        await Invoice.create({ id: 1, booking_id: 1, ticket_id: 1, account_id: 1, code: 'BK-5', total_price: 100000, status: 1, ticket_status: 'ISSUED' });
+
+        await bookingRepository.changeBookingShowtime(booking, { newScheduleId: 2, newTicketIds: [2] });
+
+        const invoice = await Invoice.findOne({ id: 1 });
+        expect(invoice.ticket_id).toBe(2);
+        expect(invoice.ticket_status).toBe('ISSUED'); // untouched
+        expect(invoice.total_price).toBe(100000); // price carried over, not recomputed
+      });
+
+      it('does not touch invoices for a PENDING booking (none exist yet)', async () => {
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 1 },
+          { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B1', status: 1 },
+        ]);
+        const booking = await Booking.create({
+          id: 1,
+          code: 'BK-7',
+          account_id: 1,
+          schedule_id: 1,
+          branch_id: 1,
+          ticket_ids: [1],
+          total_price: 100000,
+          status: 'PENDING',
+        });
+
+        await bookingRepository.changeBookingShowtime(booking, { newScheduleId: 2, newTicketIds: [2] });
+
+        expect(await Invoice.countDocuments({ booking_id: 1 })).toBe(0);
+        expect((await Ticket.findOne({ id: 1 })).held_by).toBeNull();
+      });
+    });
+
     describe('findBookingsBySchedule', () => {
       it('returns only bookings matching the given statuses on that schedule', async () => {
         await Booking.create([

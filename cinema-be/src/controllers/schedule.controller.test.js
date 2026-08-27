@@ -85,6 +85,17 @@ describe('schedule.controller list', () => {
     await scheduleController.list({ query: { branchId: '2' }, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1, data: [expect.objectContaining({ cinema_id: 2 })] }));
   });
+
+  it('filters by movieId — used by Customer Service to find another showtime for the same movie', async () => {
+    await Branch.create([{ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' }]);
+    await Schedule.create([
+      { id: 1, movie_id: 1, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 1 },
+      { id: 2, movie_id: 2, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '14:00', time_end: '16:00', price: 1 },
+    ]);
+    const res = mockRes();
+    await scheduleController.list({ query: { movieId: '2' }, account: { accountId: 1 }, permissionScope: 'ALL' }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ total: 1, data: [expect.objectContaining({ id: 2 })] }));
+  });
 });
 
 describe('schedule.controller getById', () => {

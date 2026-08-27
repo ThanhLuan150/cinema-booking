@@ -286,6 +286,26 @@ export interface MaintenanceRequest {
   createdAt: string;
 }
 
+export type SupportTicketCategory = 'GENERAL' | 'COMPLAINT' | 'BOOKING_SUPPORT' | 'REFUND_SUPPORT' | 'SHOWTIME_CHANGE';
+export type SupportTicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+
+export interface SupportTicket {
+  id: number;
+  customer_id: number;
+  branch_id: number;
+  category: SupportTicketCategory;
+  subject: string;
+  description: string;
+  status: SupportTicketStatus;
+  created_by: number;
+  assigned_employee_id: number | null;
+  assigned_at: string | null;
+  resolution_note: string | null;
+  resolved_at: string | null;
+  closed_at: string | null;
+  createdAt: string;
+}
+
 export interface Actor {
   id: number;
   full_name: string;

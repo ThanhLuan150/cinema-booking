@@ -13,9 +13,7 @@ const { parsePagination, buildPaginatedResult } = require('../utils/pagination')
 const { sendShowtimeCancelledEmail, sendShowtimeRescheduledEmail } = require('../utils/mailer');
 const { emitToAccount, emitToOwner, emitToAdmin } = require('../utils/socket');
 
-// GET /api/schedule?branchId=&roomId=&page=&limit= -> management list (schedule.read
-// permission). ALL scope (super admin) sees every showtime; BRANCH scope (branch admin,
-// employee) is restricted to the caller's own branch(es).
+// GET /api/schedule?branchId=&roomId=&movieId=&page=&limit= -> management list (schedule.read
 async function list(req, res) {
   const { page, limit, skip } = parsePagination(req.query);
   const accessibleCinemaIds =
@@ -26,6 +24,7 @@ async function list(req, res) {
     accessibleCinemaIds,
     cinemaId: req.query.branchId,
     roomId: req.query.roomId,
+    movieId: req.query.movieId,
     skip,
     limit,
   });

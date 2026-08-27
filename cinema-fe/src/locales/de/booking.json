@@ -100,7 +100,18 @@
     "cancel": "Stornieren",
     "confirmCancel": "Möchten Sie diese Buchung wirklich stornieren?",
     "cancelSuccess": "Buchung erfolgreich storniert.",
-    "cancelFailed": "Die Buchung konnte nicht storniert werden."
+    "cancelFailed": "Die Buchung konnte nicht storniert werden.",
+    "requestRefund": "Erstattung anfordern",
+    "refundRequestSuccess": "Erstattungsanfrage gesendet.",
+    "refundModalTitle": "Erstattung anfordern",
+    "refundReasonLabel": "Grund (optional)",
+    "acceptReschedule": "Neue Vorstellungszeit akzeptieren",
+    "declineReschedule": "Ablehnen & erstatten",
+    "rescheduleSuccess": "Antwort gespeichert.",
+    "checkPayment": "Zahlungsstatus prüfen",
+    "paymentStatusResult": "Zahlungsstatus: {{status}} · {{amount}}đ",
+    "changeShowtime": "Vorstellung ändern",
+    "changeShowtimeSuccess": "Vorstellung erfolgreich geändert."
   },
   "voucher": {
     "title": "Gutscheincode",
@@ -108,5 +119,13 @@
     "apply": "Anwenden",
     "applied": "Angewendet: -{{amount}}",
     "applyFailed": "Der Gutscheincode konnte nicht angewendet werden."
+  },
+  "changeShowtime": {
+    "title": "Vorstellung ändern",
+    "description": "Wählen Sie eine neue Vorstellung für denselben Film und {{count}} Sitzplatz/-plätze.",
+    "scheduleLabel": "Neue Vorstellung",
+    "schedulePlaceholder": "Vorstellung auswählen",
+    "seatsLabel": "Ausgewählte Plätze: {{selected}}/{{required}}",
+    "failed": "Vorstellung konnte nicht geändert werden."
   }
 }

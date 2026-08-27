@@ -84,6 +84,14 @@ describe('schedule.repository', () => {
       });
       expect(result.total).toBe(0);
     });
+
+    it('scopes results to a movie id when provided', async () => {
+      await seedShowtimes();
+      await Schedule.create({ id: 3, movie_id: 2, room_id: 1, cinema_id: 1, movie_date: '2026-01-01', time_begin: '18:00', time_end: '20:00', price: 1000 });
+      const result = await scheduleRepository.findFiltered({ scope: 'ALL', movieId: 2 });
+      expect(result.total).toBe(1);
+      expect(result.data[0].id).toBe(3);
+    });
   });
 
   it('findById returns the matching schedule', async () => {

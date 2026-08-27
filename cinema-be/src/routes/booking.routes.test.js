@@ -171,4 +171,36 @@ describe('booking.routes wiring', () => {
     // Reaches the controller (past the permission gate) and 404s since invoice 1 doesn't exist.
     expect(res.status).toBe(404);
   });
+
+  it('POST /api/bookings/:id/change-showtime requires auth', async () => {
+    const res = await request(app).post('/api/bookings/1/change-showtime').send({});
+    expect(res.status).toBe(401);
+  });
+
+  it('POST /api/bookings/:id/change-showtime is forbidden for a plain customer (no booking.changeShowtime permission)', async () => {
+    const res = await request(app)
+      .post('/api/bookings/1/change-showtime')
+      .set('Authorization', authHeader({ role: 1 }))
+      .send({ schedule_id: 2, seatCodes: ['A1'] });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/bookings/:id/change-showtime is reachable for a Customer Service employee', async () => {
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
+    const customerService = await Position.findOne({ code: 'CUSTOMER_SERVICE' });
+    await Employee.create({
+      id: 1,
+      user_id: 7,
+      branch_id: 1,
+      employee_code: 'EMP-000001',
+      position_id: customerService.id,
+      status: 1,
+    });
+    const res = await request(app)
+      .post('/api/bookings/1/change-showtime')
+      .set('Authorization', authHeader({ role: 3, accountId: 7 }))
+      .send({ schedule_id: 2, seatCodes: ['A1'] });
+    // Reaches the controller (past the permission gate) and 404s since booking 1 doesn't exist.
+    expect(res.status).toBe(404);
+  });
 });

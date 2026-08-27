@@ -52,7 +52,7 @@ const PERMISSIONS = [
   ['position.read', 'position'],
   ['payment.create', 'payment'],
   ['payment.read', 'payment'],
-  ['booking.cancel', 'booking'], ['booking.reschedule', 'booking'],
+  ['booking.cancel', 'booking'], ['booking.reschedule', 'booking'], ['booking.changeShowtime', 'booking'],
   ['combo.sell', 'combo'], ['combo.order.view', 'combo'], ['combo.order.update', 'combo'],
   ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
   ['shiftAssignment.create', 'shiftAssignment'], ['shiftAssignment.read', 'shiftAssignment'],
@@ -67,6 +67,9 @@ const PERMISSIONS = [
   ['maintenance.create', 'maintenance'], ['maintenance.read', 'maintenance'],
   ['maintenance.update', 'maintenance'], ['maintenance.assign', 'maintenance'],
   ['maintenance.close', 'maintenance'], ['maintenance.delete', 'maintenance'],
+  ['supportTicket.create', 'supportTicket'], ['supportTicket.read', 'supportTicket'],
+  ['supportTicket.update', 'supportTicket'], ['supportTicket.assign', 'supportTicket'],
+  ['supportTicket.close', 'supportTicket'], ['supportTicket.delete', 'supportTicket'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -83,6 +86,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'schedule.reschedule': 'BRANCH',
   'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
   'booking.create': 'BRANCH', 'booking.read': 'BRANCH', 'booking.cancel': 'BRANCH',
+  'booking.changeShowtime': 'BRANCH',
   'voucher.create': 'BRANCH', 'voucher.read': 'BRANCH', 'voucher.update': 'BRANCH', 'voucher.delete': 'BRANCH',
   'promotion.create': 'BRANCH', 'promotion.read': 'BRANCH', 'promotion.update': 'BRANCH', 'promotion.delete': 'BRANCH',
   'combo.create': 'BRANCH', 'combo.view': 'BRANCH', 'combo.update': 'BRANCH', 'combo.delete': 'BRANCH',
@@ -102,6 +106,11 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'inventory.view': 'BRANCH', 'inventory.manage': 'BRANCH',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
   'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
+  // Branch Admin oversees Customer Service: full support-ticket authority in their own branch,
+  // plus the ability to look up a customer account (accounts aren't branch-scoped data).
+  'user.read': 'ALL',
+  'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
+  'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {

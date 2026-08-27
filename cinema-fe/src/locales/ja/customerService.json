@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "カスタマーサービス",
+  "branchPlaceholder": "支店を選択",
+  "allBranches": "すべての支店",
+  "statusFilterPlaceholder": "すべてのステータス",
+  "newButton": "新規チケット",
+  "createTitle": "サポートチケットを作成",
+  "categoryLabel": "カテゴリ",
+  "subjectLabel": "件名",
+  "descriptionLabel": "説明",
+  "submit": "送信",
+  "createSuccess": "サポートチケットを作成しました。",
+  "validation": {
+    "subjectRequired": "件名を入力してください"
+  },
+  "assignTitle": "チケットを割り当て",
+  "employeeLabel": "担当者",
+  "employeePlaceholder": "担当者を選択",
+  "assignSuccess": "チケットを割り当てました。",
+  "resolveTitle": "チケットを解決",
+  "resolutionNoteLabel": "対応メモ",
+  "resolveSuccess": "チケットを解決しました。",
+  "closeSuccess": "チケットをクローズしました。",
+  "deleteConfirm": "このサポートチケットを削除しますか?",
+  "deleteSuccess": "チケットを削除しました。",
+  "claim": "担当する",
+  "claimSuccess": "このチケットを担当しました。",
+  "assign": "割り当て",
+  "resolve": "解決",
+  "close": "クローズ",
+  "delete": "削除",
+  "unassigned": "未割り当て",
+  "headers": {
+    "id": "ID",
+    "branch": "支店",
+    "customer": "顧客",
+    "category": "カテゴリ",
+    "subject": "件名",
+    "assignee": "担当者",
+    "status": "ステータス",
+    "actions": "操作"
+  },
+  "status": {
+    "OPEN": "未対応",
+    "IN_PROGRESS": "対応中",
+    "RESOLVED": "解決済み",
+    "CLOSED": "クローズ済み"
+  },
+  "category": {
+    "GENERAL": "一般",
+    "COMPLAINT": "苦情",
+    "BOOKING_SUPPORT": "予約サポート",
+    "REFUND_SUPPORT": "返金サポート",
+    "SHOWTIME_CHANGE": "上映回変更"
+  },
+  "customerPicker": {
+    "label": "顧客",
+    "placeholder": "名前・メール・電話番号で検索",
+    "noName": "名前なし",
+    "change": "変更",
+    "noResults": "顧客が見つかりません"
+  }
+}

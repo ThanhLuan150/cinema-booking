@@ -93,6 +93,16 @@ router.post(
   asyncHandler(bookingController.respondToReschedule),
 );
 
+// POST /api/bookings/:id/change-showtime { schedule_id, seatCodes } -> staff moves a booking to
+// a different showtime for the same movie/branch, keeping seat count & price unchanged (scope
+// checked inside the controller via canAccessBooking, same pattern as cancelBooking above)
+router.post(
+  '/bookings/:id/change-showtime',
+  requireAuth,
+  requirePermission('booking.changeShowtime'),
+  asyncHandler(bookingController.changeBookingShowtime),
+);
+
 // GET /api/admin/invoices -> all transactions system-wide, newest first (booking.admin permission — super admin only)
 router.get('/admin/invoices', requireAuth, requirePermission('booking.admin'), asyncHandler(bookingController.adminInvoices));
 

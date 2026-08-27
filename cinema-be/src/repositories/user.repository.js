@@ -9,10 +9,20 @@ async function updateOwnProfile(accountId, updates) {
   return Account.findOneAndUpdate({ id: accountId }, { $set: updates }, { new: true });
 }
 
-async function findAll({ skip = 0, limit = 20 } = {}) {
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// q: case-insensitive substring match against name/email/phone (Customer Service account lookup).
+async function findAll({ skip = 0, limit = 20, q } = {}) {
+  const filter = {};
+  if (q && q.trim()) {
+    const pattern = new RegExp(escapeRegex(q.trim()), 'i');
+    filter.$or = [{ name: pattern }, { email: pattern }, { phone: pattern }];
+  }
   const [data, total] = await Promise.all([
-    Account.find().sort({ id: -1 }).skip(skip).limit(limit),
-    Account.countDocuments(),
+    Account.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    Account.countDocuments(filter),
   ]);
   return { data, total };
 }

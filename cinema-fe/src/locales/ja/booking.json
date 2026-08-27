@@ -100,7 +100,18 @@
     "cancel": "キャンセル",
     "confirmCancel": "この予約をキャンセルしてもよろしいですか?",
     "cancelSuccess": "予約をキャンセルしました。",
-    "cancelFailed": "予約をキャンセルできませんでした。"
+    "cancelFailed": "予約をキャンセルできませんでした。",
+    "requestRefund": "返金をリクエスト",
+    "refundRequestSuccess": "返金リクエストを送信しました。",
+    "refundModalTitle": "返金をリクエスト",
+    "refundReasonLabel": "理由（任意）",
+    "acceptReschedule": "新しい上映時間を承諾",
+    "declineReschedule": "拒否して返金",
+    "rescheduleSuccess": "回答を記録しました。",
+    "checkPayment": "支払い状況を確認",
+    "paymentStatusResult": "支払い状況: {{status}} · {{amount}}đ",
+    "changeShowtime": "上映回を変更",
+    "changeShowtimeSuccess": "上映回を変更しました。"
   },
   "voucher": {
     "title": "割引コード",
@@ -108,5 +119,13 @@
     "apply": "適用",
     "applied": "適用済み: -{{amount}}",
     "applyFailed": "割引コードを適用できませんでした。"
+  },
+  "changeShowtime": {
+    "title": "上映回を変更",
+    "description": "同じ映画の新しい上映回を選び、{{count}}席選択してください。",
+    "scheduleLabel": "新しい上映回",
+    "schedulePlaceholder": "上映回を選択",
+    "seatsLabel": "選択済みの座席: {{selected}}/{{required}}",
+    "failed": "上映回を変更できませんでした。"
   }
 }

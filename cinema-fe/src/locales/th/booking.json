@@ -100,7 +100,18 @@
     "cancel": "ยกเลิก",
     "confirmCancel": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?",
     "cancelSuccess": "ยกเลิกการจองสำเร็จแล้ว",
-    "cancelFailed": "ไม่สามารถยกเลิกการจองได้"
+    "cancelFailed": "ไม่สามารถยกเลิกการจองได้",
+    "requestRefund": "ขอคืนเงิน",
+    "refundRequestSuccess": "ส่งคำขอคืนเงินแล้ว",
+    "refundModalTitle": "ขอคืนเงิน",
+    "refundReasonLabel": "เหตุผล (ไม่บังคับ)",
+    "acceptReschedule": "ยอมรับรอบฉายใหม่",
+    "declineReschedule": "ปฏิเสธ & คืนเงิน",
+    "rescheduleSuccess": "บันทึกการตอบกลับแล้ว",
+    "checkPayment": "ตรวจสอบสถานะการชำระเงิน",
+    "paymentStatusResult": "สถานะการชำระเงิน: {{status}} · {{amount}}đ",
+    "changeShowtime": "เปลี่ยนรอบฉาย",
+    "changeShowtimeSuccess": "เปลี่ยนรอบฉายเรียบร้อยแล้ว"
   },
   "voucher": {
     "title": "คูปองส่วนลด",
@@ -108,5 +119,13 @@
     "apply": "ใช้คูปอง",
     "applied": "ใช้แล้ว: -{{amount}}",
     "applyFailed": "ไม่สามารถใช้รหัสคูปองส่วนลดได้"
+  },
+  "changeShowtime": {
+    "title": "เปลี่ยนรอบฉาย",
+    "description": "เลือกรอบฉายใหม่สำหรับภาพยนตร์เรื่องเดิมและเลือกที่นั่ง {{count}} ที่นั่ง",
+    "scheduleLabel": "รอบฉายใหม่",
+    "schedulePlaceholder": "เลือกรอบฉาย",
+    "seatsLabel": "เลือกที่นั่งแล้ว: {{selected}}/{{required}}",
+    "failed": "ไม่สามารถเปลี่ยนรอบฉายได้"
   }
 }

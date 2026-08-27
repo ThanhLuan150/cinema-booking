@@ -1,0 +1,63 @@
+{
+  "breadcrumb": "Service client",
+  "branchPlaceholder": "Sélectionner une succursale",
+  "allBranches": "Toutes les succursales",
+  "statusFilterPlaceholder": "Tous les statuts",
+  "newButton": "Nouveau ticket",
+  "createTitle": "Créer un ticket d'assistance",
+  "categoryLabel": "Catégorie",
+  "subjectLabel": "Objet",
+  "descriptionLabel": "Description",
+  "submit": "Envoyer",
+  "createSuccess": "Ticket d'assistance créé.",
+  "validation": {
+    "subjectRequired": "L'objet est requis"
+  },
+  "assignTitle": "Assigner le ticket",
+  "employeeLabel": "Employé",
+  "employeePlaceholder": "Sélectionner un employé",
+  "assignSuccess": "Ticket assigné.",
+  "resolveTitle": "Résoudre le ticket",
+  "resolutionNoteLabel": "Note de résolution",
+  "resolveSuccess": "Ticket résolu.",
+  "closeSuccess": "Ticket clôturé.",
+  "deleteConfirm": "Supprimer ce ticket d'assistance ?",
+  "deleteSuccess": "Ticket supprimé.",
+  "claim": "Prendre en charge",
+  "claimSuccess": "Vous avez pris en charge ce ticket.",
+  "assign": "Assigner",
+  "resolve": "Résoudre",
+  "close": "Clôturer",
+  "delete": "Supprimer",
+  "unassigned": "Non assigné",
+  "headers": {
+    "id": "ID",
+    "branch": "Succursale",
+    "customer": "Client",
+    "category": "Catégorie",
+    "subject": "Objet",
+    "assignee": "Responsable",
+    "status": "Statut",
+    "actions": "Actions"
+  },
+  "status": {
+    "OPEN": "Ouvert",
+    "IN_PROGRESS": "En cours",
+    "RESOLVED": "Résolu",
+    "CLOSED": "Clôturé"
+  },
+  "category": {
+    "GENERAL": "Général",
+    "COMPLAINT": "Réclamation",
+    "BOOKING_SUPPORT": "Assistance réservation",
+    "REFUND_SUPPORT": "Assistance remboursement",
+    "SHOWTIME_CHANGE": "Changement de séance"
+  },
+  "customerPicker": {
+    "label": "Client",
+    "placeholder": "Rechercher par nom, email ou téléphone",
+    "noName": "Sans nom",
+    "change": "Changer",
+    "noResults": "Aucun client trouvé"
+  }
+}

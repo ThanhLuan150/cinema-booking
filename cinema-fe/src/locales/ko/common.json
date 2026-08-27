@@ -64,7 +64,8 @@
       "counterSale": "Counter sale",
       "checkIn": "Check-in",
       "mySchedule": "내 스케줄",
-      "refunds": "환불"
+      "refunds": "환불",
+      "supportTickets": "고객 서비스"
     },
     "toggleMenu": "관리자 메뉴 열기/닫기",
     "adminFallback": "관리자",
