@@ -636,5 +636,81 @@
       "seatRequired": "Vui lòng chọn ghế.",
       "resourceNameRequired": "Vui lòng nhập tên thiết bị."
     }
+  },
+  "devices": {
+    "breadcrumb": "Máy quét QR",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranches": "Tất cả chi nhánh",
+    "statusFilterPlaceholder": "Tất cả trạng thái",
+    "addButton": "Đăng ký máy quét +",
+    "addTitle": "Đăng ký máy quét QR",
+    "editTitle": "Sửa máy quét",
+    "manageEntrances": "Cửa vào",
+    "entrancesTitle": "Cửa vào của chi nhánh",
+    "addEntranceButton": "Thêm cửa vào +",
+    "addEntranceTitle": "Thêm cửa vào",
+    "editEntranceTitle": "Sửa cửa vào",
+    "noEntrances": "Chi nhánh này chưa có cửa vào nào.",
+    "noEntrance": "Chưa gán cửa",
+    "never": "Chưa bao giờ",
+    "deviceIdLabel": "Mã thiết bị (in trên máy)",
+    "nameLabel": "Tên",
+    "entranceLabel": "Cửa vào",
+    "statusLabel": "Trạng thái",
+    "entranceNameLabel": "Tên cửa vào",
+    "entranceCodeLabel": "Mã (không bắt buộc)",
+    "submit": "Lưu",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "rotateKey": "Đổi khóa",
+    "viewLogs": "Nhật ký",
+    "createSuccess": "Đã đăng ký máy quét.",
+    "updateSuccess": "Đã cập nhật máy quét.",
+    "deleteSuccess": "Đã xóa máy quét.",
+    "deleteConfirm": "Xóa máy quét này? Khóa API sẽ ngừng hoạt động ngay lập tức.",
+    "rotateConfirm": "Đổi khóa cho máy quét này? Khóa hiện tại sẽ ngừng hoạt động ngay.",
+    "entranceCreateSuccess": "Đã thêm cửa vào.",
+    "entranceUpdateSuccess": "Đã cập nhật cửa vào.",
+    "entranceDeleteSuccess": "Đã xóa cửa vào.",
+    "entranceDeleteConfirm": "Xóa cửa vào này?",
+    "keyTitle": "Khóa API của máy quét",
+    "keyHint": "Hãy sao chép khóa này vào máy quét {{deviceId}} ngay — khóa chỉ hiển thị một lần và không thể lấy lại.",
+    "keyDone": "Xong",
+    "logsTitle": "Nhật ký soát vé — {{name}}",
+    "noLogs": "Chưa ghi nhận lượt soát vé nào.",
+    "status": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Ngừng",
+      "MAINTENANCE": "Bảo trì"
+    },
+    "entranceStatus": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Ngừng"
+    },
+    "result": {
+      "SUCCESS": "Cho vào",
+      "REJECTED": "Từ chối"
+    },
+    "headers": {
+      "deviceId": "Mã thiết bị",
+      "branch": "Chi nhánh",
+      "name": "Tên",
+      "entrance": "Cửa vào",
+      "status": "Trạng thái",
+      "lastSeen": "Lần cuối hoạt động",
+      "actions": "Hành động"
+    },
+    "entranceHeaders": {
+      "name": "Tên",
+      "code": "Mã",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "logHeaders": {
+      "time": "Thời gian",
+      "result": "Kết quả",
+      "invoice": "Hóa đơn",
+      "reason": "Lý do"
+    }
   }
 }

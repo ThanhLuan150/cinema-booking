@@ -306,6 +306,52 @@ export interface SupportTicket {
   createdAt: string;
 }
 
+// Ticket 23 — QR scanner device management
+export type EntranceStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface Entrance {
+  id: number;
+  branch_id: number;
+  name: string;
+  code: string;
+  status: EntranceStatus;
+  createdAt: string;
+}
+
+export type DeviceStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
+
+export interface Device {
+  id: number;
+  device_id: string;
+  name: string;
+  branch_id: number;
+  entrance_id: number | null;
+  status: DeviceStatus;
+  last_seen_at: string | null;
+  createdAt: string;
+}
+
+// Only ever present on the create / rotate-key responses — the plaintext key is shown once.
+export interface DeviceWithKey extends Device {
+  api_key: string;
+}
+
+export type CheckinResult = 'SUCCESS' | 'REJECTED';
+
+export interface CheckinLog {
+  id: number;
+  device_id: number | null;
+  entrance_id: number | null;
+  branch_id: number;
+  invoice_id: number | null;
+  qr_token: string | null;
+  checked_in_by: number | null;
+  checked_in_at: string;
+  result: CheckinResult;
+  reason: string | null;
+  createdAt: string;
+}
+
 export interface Actor {
   id: number;
   full_name: string;

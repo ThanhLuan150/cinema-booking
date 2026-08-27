@@ -1,5 +1,6 @@
 const bookingRepository = require('../repositories/booking.repository');
 const paymentRepository = require('../repositories/payment.repository');
+const checkinLogRepository = require('../repositories/checkinLog.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
@@ -562,6 +563,19 @@ async function checkInInvoice(req, res) {
   }
 
   await bookingRepository.maybeCompleteBooking(updated.booking_id);
+
+  // Audit the staff-operated check-in in the same log the QR scanners write to (device_id null).
+  await checkinLogRepository
+    .record({
+      device_id: null,
+      entrance_id: null,
+      branch_id: updated.checkin_branch_id ?? req.branchId ?? null,
+      invoice_id: updated.id,
+      qr_token: updated.qr_token ?? null,
+      checked_in_by: req.account ? req.account.accountId : null,
+      result: 'SUCCESS',
+    })
+    .catch(() => {});
 
   res.json(updated);
 }

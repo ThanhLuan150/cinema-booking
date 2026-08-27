@@ -636,5 +636,81 @@
       "seatRequired": "Please select a seat.",
       "resourceNameRequired": "Please enter the equipment name."
     }
+  },
+  "devices": {
+    "breadcrumb": "QR Scanners",
+    "branchPlaceholder": "Select branch",
+    "allBranches": "All branches",
+    "statusFilterPlaceholder": "All statuses",
+    "addButton": "Register scanner +",
+    "addTitle": "Register a QR scanner",
+    "editTitle": "Edit scanner",
+    "manageEntrances": "Entrances",
+    "entrancesTitle": "Branch entrances",
+    "addEntranceButton": "Add entrance +",
+    "addEntranceTitle": "Add an entrance",
+    "editEntranceTitle": "Edit entrance",
+    "noEntrances": "No entrances yet for this branch.",
+    "noEntrance": "No entrance",
+    "never": "Never",
+    "deviceIdLabel": "Device ID (hardware id printed on the unit)",
+    "nameLabel": "Name",
+    "entranceLabel": "Entrance",
+    "statusLabel": "Status",
+    "entranceNameLabel": "Entrance name",
+    "entranceCodeLabel": "Code (optional)",
+    "submit": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "rotateKey": "Rotate key",
+    "viewLogs": "Logs",
+    "createSuccess": "Scanner registered.",
+    "updateSuccess": "Scanner updated.",
+    "deleteSuccess": "Scanner deleted.",
+    "deleteConfirm": "Delete this scanner? Its API key stops working immediately.",
+    "rotateConfirm": "Rotate this scanner's key? The current key stops working immediately.",
+    "entranceCreateSuccess": "Entrance added.",
+    "entranceUpdateSuccess": "Entrance updated.",
+    "entranceDeleteSuccess": "Entrance deleted.",
+    "entranceDeleteConfirm": "Delete this entrance?",
+    "keyTitle": "Scanner API key",
+    "keyHint": "Copy this key into scanner {{deviceId}} now — it is shown only once and cannot be retrieved later.",
+    "keyDone": "Done",
+    "logsTitle": "Check-in log — {{name}}",
+    "noLogs": "No check-in attempts recorded yet.",
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "MAINTENANCE": "Maintenance"
+    },
+    "entranceStatus": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "result": {
+      "SUCCESS": "Admitted",
+      "REJECTED": "Rejected"
+    },
+    "headers": {
+      "deviceId": "Device ID",
+      "branch": "Branch",
+      "name": "Name",
+      "entrance": "Entrance",
+      "status": "Status",
+      "lastSeen": "Last seen",
+      "actions": "Actions"
+    },
+    "entranceHeaders": {
+      "name": "Name",
+      "code": "Code",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "logHeaders": {
+      "time": "Time",
+      "result": "Result",
+      "invoice": "Invoice",
+      "reason": "Reason"
+    }
   }
 }

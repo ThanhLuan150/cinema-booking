@@ -70,6 +70,10 @@ const PERMISSIONS = [
   ['supportTicket.create', 'supportTicket'], ['supportTicket.read', 'supportTicket'],
   ['supportTicket.update', 'supportTicket'], ['supportTicket.assign', 'supportTicket'],
   ['supportTicket.close', 'supportTicket'], ['supportTicket.delete', 'supportTicket'],
+  ['entrance.create', 'entrance'], ['entrance.read', 'entrance'],
+  ['entrance.update', 'entrance'], ['entrance.delete', 'entrance'],
+  ['device.create', 'device'], ['device.read', 'device'],
+  ['device.update', 'device'], ['device.delete', 'device'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -106,6 +110,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'inventory.view': 'BRANCH', 'inventory.manage': 'BRANCH',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
   'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
+  // QR scanner devices & branch entrances are per-branch equipment the Branch Admin manages.
+  'entrance.create': 'BRANCH', 'entrance.read': 'BRANCH', 'entrance.update': 'BRANCH', 'entrance.delete': 'BRANCH',
+  'device.create': 'BRANCH', 'device.read': 'BRANCH', 'device.update': 'BRANCH', 'device.delete': 'BRANCH',
   // Branch Admin oversees Customer Service: full support-ticket authority in their own branch,
   // plus the ability to look up a customer account (accounts aren't branch-scoped data).
   'user.read': 'ALL',

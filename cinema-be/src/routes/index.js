@@ -35,6 +35,8 @@ const inventoryRoutes = require('./inventory.routes');
 const loyaltyRoutes = require('./loyalty.routes');
 const maintenanceRequestRoutes = require('./maintenanceRequest.routes');
 const supportTicketRoutes = require('./supportTicket.routes');
+const entranceRoutes = require('./entrance.routes');
+const deviceRoutes = require('./device.routes');
 
 const router = express.Router();
 
@@ -73,6 +75,10 @@ router.use('/pricingHoliday', holidayRoutes);
 router.use('/inventory', inventoryRoutes);
 router.use('/maintenance', maintenanceRequestRoutes);
 router.use('/support-tickets', supportTicketRoutes);
+// QR Scanner device management: /entrance (branch entrances), /devices (scanners + check-in
+// logs), and the device-authenticated /devices/checkin door endpoint.
+router.use('/entrance', entranceRoutes);
+router.use('/devices', deviceRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);
