@@ -24,8 +24,6 @@ services:
         value: 30d
       - key: CORS_ORIGIN
         sync: false
-      - key: SEAT_HOLD_TTL_MS
-        value: 300000
       - key: SEAT_HOLD_SWEEP_INTERVAL_MS
         value: 30000
       - key: CLOUDINARY_CLOUD_NAME

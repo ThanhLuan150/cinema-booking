@@ -16,7 +16,7 @@
   "OTP_RESENT": "Bestätigungscode erneut gesendet",
   "PAYMENT_FAILED": "Zahlung fehlgeschlagen",
   "TICKET_ALREADY_CANCELLED": "Dieses Ticket wurde bereits storniert",
-  "CANCEL_WINDOW_EXPIRED": "Tickets können nur bis mindestens 2 Stunden vor der Vorstellung storniert werden",
+  "CANCEL_WINDOW_EXPIRED": "Tickets können nur bis mindestens {{hours}} Stunde(n) vor der Vorstellung storniert werden",
   "ALREADY_REFUNDED": "Diese Transaktion wurde bereits erstattet",
   "INVOICE_NOT_FOUND_BY_CODE": "Kein Ticket mit diesem Code gefunden",
   "VOUCHER_NOT_FOUND": "Gutscheincode existiert nicht",

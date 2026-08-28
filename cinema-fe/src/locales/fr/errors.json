@@ -16,7 +16,7 @@
   "OTP_RESENT": "Code de vérification renvoyé",
   "PAYMENT_FAILED": "Le paiement a échoué",
   "TICKET_ALREADY_CANCELLED": "Ce billet a déjà été annulé",
-  "CANCEL_WINDOW_EXPIRED": "Les billets ne peuvent être annulés qu'au moins 2 heures avant la séance",
+  "CANCEL_WINDOW_EXPIRED": "Les billets ne peuvent être annulés qu'au moins {{hours}} heure(s) avant la séance",
   "ALREADY_REFUNDED": "Cette transaction a déjà été remboursée",
   "INVOICE_NOT_FOUND_BY_CODE": "Aucun billet trouvé avec ce code",
   "VOUCHER_NOT_FOUND": "Ce code promo n'existe pas",

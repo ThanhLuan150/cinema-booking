@@ -361,7 +361,8 @@ export type AuditLogEntityType =
   | 'BOOKING'
   | 'PAYMENT'
   | 'REFUND'
-  | 'TICKET';
+  | 'TICKET'
+  | 'SYSTEM_CONFIG';
 
 export interface AuditLog {
   id: number;
@@ -509,4 +510,53 @@ export interface User {
 export interface Account {
   id: number;
   email: string;
+}
+
+export type SystemSettingType = 'NUMBER' | 'STRING' | 'BOOLEAN' | 'JSON';
+export type SystemSettingKey =
+  | 'BOOKING_HOLD_TIME'
+  | 'CHECKIN_BEFORE_SHOWTIME'
+  | 'CANCELLATION_LIMIT'
+  | 'DEFAULT_CURRENCY'
+  | 'TAX_RATE'
+  | 'MAX_BOOKING_SEATS'
+  | 'REFUND_POLICY';
+
+export interface RefundPolicyTier {
+  minHours: number;
+  percent: number;
+}
+
+/** Registry shape for one setting — never includes any stored override, just its definition. */
+export interface SystemSettingMeta {
+  key: SystemSettingKey;
+  module: string;
+  type: SystemSettingType;
+  unit: string | null;
+  label: string;
+  description: string;
+  default: number | string | boolean | RefundPolicyTier[];
+  min: number | null;
+  max: number | null;
+  allowedValues: string[] | null;
+  branchOverridable: boolean;
+}
+
+export type SystemSettingSource = 'DEFAULT' | 'GLOBAL' | 'BRANCH';
+
+/** One setting resolved for a branch context: branch override -> global override -> default. */
+export interface SystemSettingEffective extends SystemSettingMeta {
+  value: number | string | boolean | RefundPolicyTier[];
+  source: SystemSettingSource;
+  branchId: number | null;
+  id: number | null;
+}
+
+export interface SystemConfigMeta {
+  settings: SystemSettingMeta[];
+}
+
+export interface SystemConfigListResponse {
+  branchId: number | null;
+  settings: SystemSettingEffective[];
 }

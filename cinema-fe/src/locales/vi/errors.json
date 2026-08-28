@@ -16,7 +16,7 @@
   "OTP_RESENT": "Đã gửi lại mã xác minh",
   "PAYMENT_FAILED": "Thanh toán không thành công",
   "TICKET_ALREADY_CANCELLED": "Vé này đã được hủy trước đó",
-  "CANCEL_WINDOW_EXPIRED": "Chỉ có thể hủy vé trước giờ chiếu ít nhất 2 giờ",
+  "CANCEL_WINDOW_EXPIRED": "Chỉ có thể hủy vé trước giờ chiếu ít nhất {{hours}} giờ",
   "ALREADY_REFUNDED": "Giao dịch này đã được hoàn tiền trước đó",
   "INVOICE_NOT_FOUND_BY_CODE": "Không tìm thấy vé với mã này",
   "VOUCHER_NOT_FOUND": "Mã giảm giá không tồn tại",

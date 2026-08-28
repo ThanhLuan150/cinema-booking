@@ -77,7 +77,8 @@
       "comboOrders": "Combo Orders",
       "supportTickets": "Support Tickets",
       "auditLog": "Audit Log",
-      "notificationTemplates": "Notification Templates"
+      "notificationTemplates": "Notification Templates",
+      "systemConfig": "System Configuration"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

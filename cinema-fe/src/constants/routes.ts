@@ -56,6 +56,7 @@ export const ROUTES = {
   supportTickets: '/SupportTickets',
   auditLog: '/AuditLog',
   notificationTemplates: '/NotificationTemplates',
+  systemConfig: '/SystemConfig',
   comboOrders: '/ComboOrders',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',

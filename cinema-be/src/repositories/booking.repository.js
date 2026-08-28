@@ -443,14 +443,20 @@ const EXPIRY_GRACE_MINUTES = 30;
 const DEFAULT_MOVIE_DURATION_MINUTES = 180;
 const EARLY_CHECKIN_MINUTES = 60;
 
-// Shared by expireIssuedTickets (auto-expiry sweep) and checkInInvoice (door check-in) so the
-// two never disagree about when a ticket stops being checkinable. Door check-in opens
-// EARLY_CHECKIN_MINUTES before the showtime and closes at the same cutoff the expiry sweep uses.
-function getShowtimeCheckinWindow(schedule, movie) {
+// Shared by expireIssuedTickets (auto-expiry sweep) and checkInInvoice/device check-in (door
+// check-in) so they never disagree about when a ticket stops being checkinable. Door check-in
+// opens `earlyCheckinMinutes` before the showtime and closes at the same cutoff the expiry
+// sweep uses. `earlyCheckinMinutes` is Ticket 27's centralized CHECKIN_BEFORE_SHOWTIME setting —
+// callers resolve it via systemConfig.service and pass it in; this stays a plain sync helper so
+// the request-scoped callers can resolve a branch-specific override while the batch sweep below
+// resolves one system-wide value per run instead of once per ticket. EARLY_CHECKIN_MINUTES is
+// only the fallback for a caller that doesn't pass one (keeps this function's own unit tests
+// working unchanged).
+function getShowtimeCheckinWindow(schedule, movie, earlyCheckinMinutes = EARLY_CHECKIN_MINUTES) {
   const durationMinutes = movie?.duration || DEFAULT_MOVIE_DURATION_MINUTES;
   const showtimeStart = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`).getTime();
   return {
-    opensAt: showtimeStart - EARLY_CHECKIN_MINUTES * 60 * 1000,
+    opensAt: showtimeStart - earlyCheckinMinutes * 60 * 1000,
     startsAt: showtimeStart,
     closesAt: showtimeStart + (durationMinutes + EXPIRY_GRACE_MINUTES) * 60 * 1000,
   };

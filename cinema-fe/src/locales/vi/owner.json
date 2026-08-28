@@ -820,5 +820,43 @@
       "previewTitle": "Xem trước (dữ liệu mẫu)",
       "submit": "Lưu mẫu"
     }
+  },
+  "systemConfig": {
+    "breadcrumb": "Cấu hình hệ thống",
+    "filters": {
+      "branch": "Chi nhánh",
+      "globalSettings": "Cấu hình toàn hệ thống"
+    },
+    "branchViewHint": "Giá trị hiển thị ở đây sẽ lấy theo Cấu hình toàn hệ thống nếu chi nhánh này chưa có cấu hình riêng.",
+    "headers": {
+      "setting": "Cấu hình",
+      "value": "Giá trị hiện tại",
+      "source": "Nguồn",
+      "actions": "Hành động"
+    },
+    "source": {
+      "DEFAULT": "Mặc định",
+      "GLOBAL": "Toàn hệ thống",
+      "BRANCH": "Riêng chi nhánh"
+    },
+    "globalOnly": "Chỉ cấu hình toàn hệ thống",
+    "edit": "Sửa",
+    "reset": "Đặt lại",
+    "empty": "Không có cấu hình nào.",
+    "yes": "Có",
+    "no": "Không",
+    "tiersCount": "{{count}} bậc",
+    "editTitle": "Sửa {{label}}",
+    "resetConfirm": "Đặt lại \"{{label}}\" về giá trị mặc định ở cấp này?",
+    "updateSuccess": "Đã cập nhật cấu hình",
+    "resetSuccess": "Đã đặt lại cấu hình",
+    "form": {
+      "value": "Giá trị",
+      "minHours": "Số giờ tối thiểu trước suất chiếu",
+      "percent": "% hoàn tiền",
+      "addTier": "Thêm bậc",
+      "removeTier": "Xoá",
+      "submit": "Lưu cấu hình"
+    }
   }
 }

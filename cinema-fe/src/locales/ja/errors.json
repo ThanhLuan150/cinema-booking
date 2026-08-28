@@ -16,7 +16,7 @@
   "OTP_RESENT": "確認コードを再送信しました",
   "PAYMENT_FAILED": "決済に失敗しました",
   "TICKET_ALREADY_CANCELLED": "このチケットは既にキャンセルされています",
-  "CANCEL_WINDOW_EXPIRED": "チケットのキャンセルは上映開始の2時間前までに行ってください",
+  "CANCEL_WINDOW_EXPIRED": "チケットのキャンセルは上映開始の{{hours}}時間前までに行ってください",
   "ALREADY_REFUNDED": "この取引は既に返金済みです",
   "INVOICE_NOT_FOUND_BY_CODE": "このコードのチケットが見つかりません",
   "VOUCHER_NOT_FOUND": "クーポンコードが存在しません",

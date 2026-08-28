@@ -221,6 +221,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.notificationTemplates')}
                 </NavLink>
               )}
+              {hasPermission('systemConfig.read') && (
+                <NavLink to={ROUTES.systemConfig} className={navLinkClass}>
+                  <ion-icon name="settings" />
+                  {t('adminLayout.nav.systemConfig')}
+                </NavLink>
+              )}
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-border" />

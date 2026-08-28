@@ -7,6 +7,7 @@ const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
 const Invoice = require('../models/Invoice');
 const { calculateRefundAmount } = require('../utils/refundPolicy');
+const systemConfigService = require('../services/systemConfig.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const notificationService = require('../services/notification.service');
 
@@ -98,9 +99,13 @@ async function requestRefund(req, res) {
   const schedule = await bookingRepository.findScheduleById(booking.schedule_id);
   if (!schedule) return res.status(400).json({ message: 'Unable to resolve this booking\'s showtime' });
 
+  // Ticket 27: REFUND_POLICY, resolved for the booking's own branch (falls back to the
+  // hardcoded REFUND_TIERS default when nothing has been configured).
+  const tiers = await systemConfigService.getValue('REFUND_POLICY', booking.branch_id ?? null);
   const { percent, amount, eligible } = calculateRefundAmount({
     totalPrice: booking.total_price,
     hoursUntilShowtime: hoursUntil(schedule),
+    tiers,
   });
   if (!eligible) {
     return res.status(400).json({

@@ -820,5 +820,43 @@
       "previewTitle": "Preview (sample data)",
       "submit": "Save template"
     }
+  },
+  "systemConfig": {
+    "breadcrumb": "System Configuration",
+    "filters": {
+      "branch": "Branch",
+      "globalSettings": "Global Settings"
+    },
+    "branchViewHint": "Values shown here fall back to the Global Setting when this branch has no override of its own.",
+    "headers": {
+      "setting": "Setting",
+      "value": "Current value",
+      "source": "Source",
+      "actions": "Actions"
+    },
+    "source": {
+      "DEFAULT": "Default",
+      "GLOBAL": "Global",
+      "BRANCH": "Branch override"
+    },
+    "globalOnly": "Global only",
+    "edit": "Edit",
+    "reset": "Reset",
+    "empty": "No settings to show.",
+    "yes": "Yes",
+    "no": "No",
+    "tiersCount": "{{count}} tier(s)",
+    "editTitle": "Edit {{label}}",
+    "resetConfirm": "Reset \"{{label}}\" back to its default at this level?",
+    "updateSuccess": "Setting updated",
+    "resetSuccess": "Setting reset",
+    "form": {
+      "value": "Value",
+      "minHours": "Min. hours before showtime",
+      "percent": "Refund %",
+      "addTier": "Add tier",
+      "removeTier": "Remove",
+      "submit": "Save setting"
+    }
   }
 }
