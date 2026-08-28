@@ -428,6 +428,51 @@ export interface Notification {
   updatedAt: string;
 }
 
+// Ticket 26 — Notification Template management
+export type NotificationTemplateEvent =
+  | 'BOOKING_SUCCESS'
+  | 'PAYMENT_SUCCESS'
+  | 'TICKET_ISSUED'
+  | 'BOOKING_CANCELLED'
+  | 'REFUND_SUCCESS'
+  | 'SHOWTIME_CANCELLED'
+  | 'SHOWTIME_CHANGED';
+
+// Architecture is prepared for all three; only EMAIL + IN_APP are deliverable today.
+export type NotificationTemplateChannel = 'EMAIL' | 'IN_APP' | 'SMS';
+export type NotificationTemplateStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface NotificationTemplate {
+  id: number;
+  event: NotificationTemplateEvent;
+  channel: NotificationTemplateChannel;
+  subject: string;
+  content: string;
+  language: string;
+  status: NotificationTemplateStatus;
+  description: string;
+  updated_by: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationTemplateMeta {
+  events: NotificationTemplateEvent[];
+  channels: NotificationTemplateChannel[];
+  supportedChannels: NotificationTemplateChannel[];
+  languages: string[];
+  defaultLanguage: string;
+  statuses: NotificationTemplateStatus[];
+  variablesByEvent: Record<NotificationTemplateEvent, string[]>;
+  sampleVariables: Record<string, string>;
+}
+
+export interface NotificationTemplatePreview {
+  subject: string;
+  content: string;
+  variablesUsed: string[];
+}
+
 export interface Actor {
   id: number;
   full_name: string;

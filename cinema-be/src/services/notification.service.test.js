@@ -5,7 +5,9 @@ jest.mock('../utils/mailer', () => ({ sendNotificationEmail: jest.fn().mockResol
 
 const notificationService = require('./notification.service');
 const notificationRepository = require('../repositories/notification.repository');
+const notificationTemplateRepository = require('../repositories/notificationTemplate.repository');
 const Notification = require('../models/Notification');
+const NotificationTemplate = require('../models/NotificationTemplate');
 const Account = require('../models/Account');
 const { emitToAccount } = require('../utils/socket');
 const { sendNotificationEmail } = require('../utils/mailer');
@@ -13,6 +15,7 @@ const { sendNotificationEmail } = require('../utils/mailer');
 beforeAll(async () => {
   await connect();
   await Notification.init();
+  await NotificationTemplate.init();
 });
 afterEach(async () => {
   await clearDatabase();
@@ -127,6 +130,66 @@ describe('notification.service retry', () => {
     expect(after.next_attempt_at).toBeNull();
     expect(await notificationRepository.findRetryable(new Date(Date.now() + 1e9))).toHaveLength(0);
     consoleSpy.mockRestore();
+  });
+});
+
+describe('notification.service — NotificationTemplate integration (Ticket 26)', () => {
+  it('renders an ACTIVE IN_APP template instead of the built-in copy', async () => {
+    await notificationTemplateRepository.create({
+      event: NotificationTemplate.EVENT.BOOKING_SUCCESS, // maps from internal BOOKING_CREATED
+      channel: NotificationTemplate.CHANNEL.IN_APP,
+      subject: 'Đặt vé OK',
+      content: 'Đơn {{booking_code}} cho {{movie_name}}',
+      language: 'vi',
+      status: NotificationTemplate.STATUS.ACTIVE,
+    });
+
+    const n = await notificationService.notify({
+      event: EVENT.BOOKING_CREATED,
+      accountId: 7,
+      data: { bookingCode: 'BK-42', movie: 'Dune' },
+    });
+
+    expect(n.title).toBe('Đặt vé OK');
+    expect(n.body).toBe('Đơn BK-42 cho Dune');
+  });
+
+  it('uses the EMAIL template subject/body for the e-mail copy', async () => {
+    await Account.create({ id: 7, email: 'a@b.com', password: 'x', name: 'Lan' });
+    await notificationTemplateRepository.create({
+      event: NotificationTemplate.EVENT.PAYMENT_SUCCESS,
+      channel: NotificationTemplate.CHANNEL.EMAIL,
+      subject: 'Thanh toán {{booking_code}}',
+      content: 'Xin chào {{customer_name}}, đơn {{booking_code}} đã thanh toán.',
+      language: 'vi',
+      status: NotificationTemplate.STATUS.ACTIVE,
+    });
+
+    await notificationService.notify({
+      event: EVENT.PAYMENT_SUCCESS,
+      accountId: 7,
+      data: { bookingCode: 'BK-7' },
+      channels: [CHANNEL.IN_APP, CHANNEL.EMAIL],
+    });
+
+    expect(sendNotificationEmail).toHaveBeenCalledWith('a@b.com', {
+      subject: 'Thanh toán BK-7',
+      text: 'Xin chào Lan, đơn BK-7 đã thanh toán.',
+    });
+  });
+
+  it('falls back to the built-in copy when the template is INACTIVE', async () => {
+    await notificationTemplateRepository.create({
+      event: NotificationTemplate.EVENT.BOOKING_SUCCESS,
+      channel: NotificationTemplate.CHANNEL.IN_APP,
+      subject: 'Custom',
+      content: 'Custom {{booking_code}}',
+      language: 'vi',
+      status: NotificationTemplate.STATUS.INACTIVE,
+    });
+
+    const n = await notificationService.notify({ event: EVENT.BOOKING_CREATED, accountId: 7, data: { bookingCode: 'BK-9' } });
+    expect(n.title).toBe('Booking created');
   });
 });
 

@@ -11,6 +11,7 @@ const nextId = require('../utils/nextId');
 const seedRbac = require('./seedRbac');
 const seedPositions = require('./seedPositions');
 const seedLoyalty = require('./seedLoyalty');
+const seedNotificationTemplates = require('./seedNotificationTemplates');
 
 const ADMIN_EMAIL = 'admin@cinema.local';
 const ADMIN_PASSWORD = 'admin123';
@@ -44,6 +45,7 @@ async function seed() {
   await seedRbac();
   await seedPositions();
   await seedLoyalty();
+  await seedNotificationTemplates();
 
   // Categories
   for (const name of CATEGORIES) {

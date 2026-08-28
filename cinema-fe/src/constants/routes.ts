@@ -55,6 +55,7 @@ export const ROUTES = {
   refundManagement: '/RefundManagement',
   supportTickets: '/SupportTickets',
   auditLog: '/AuditLog',
+  notificationTemplates: '/NotificationTemplates',
   comboOrders: '/ComboOrders',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',

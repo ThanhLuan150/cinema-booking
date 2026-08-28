@@ -76,7 +76,8 @@
       "refunds": "Hoàn tiền",
       "comboOrders": "Đơn Combo",
       "supportTickets": "Hỗ trợ khách hàng",
-      "auditLog": "Nhật ký kiểm toán"
+      "auditLog": "Nhật ký kiểm toán",
+      "notificationTemplates": "Mẫu thông báo"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

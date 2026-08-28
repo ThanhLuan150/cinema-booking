@@ -76,7 +76,8 @@
       "refunds": "Refunds",
       "comboOrders": "Combo Orders",
       "supportTickets": "Support Tickets",
-      "auditLog": "Audit Log"
+      "auditLog": "Audit Log",
+      "notificationTemplates": "Notification Templates"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

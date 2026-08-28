@@ -215,6 +215,12 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
                   {t('adminLayout.nav.auditLog')}
                 </NavLink>
               )}
+              {hasPermission('notificationTemplate.read') && (
+                <NavLink to={ROUTES.notificationTemplates} className={navLinkClass}>
+                  <ion-icon name="mail-open" />
+                  {t('adminLayout.nav.notificationTemplates')}
+                </NavLink>
+              )}
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-border" />

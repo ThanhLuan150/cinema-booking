@@ -39,6 +39,7 @@ const entranceRoutes = require('./entrance.routes');
 const deviceRoutes = require('./device.routes');
 const auditLogRoutes = require('./auditLog.routes');
 const notificationRoutes = require('./notification.routes');
+const notificationTemplateRoutes = require('./notificationTemplate.routes');
 
 const router = express.Router();
 
@@ -87,6 +88,9 @@ router.use('/audit-logs', auditLogRoutes);
 // Notification history (Ticket 25): a caller's own feed of booking/payment/showtime events,
 // raised server-side by notification.service. Read + mark-read only.
 router.use('/notifications', notificationRoutes);
+// Notification Template management (Ticket 26): admin CRUD for the editable subject/content
+// behind each notification event + channel + language, gated by notificationTemplate.*.
+router.use('/notification-templates', notificationTemplateRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);
