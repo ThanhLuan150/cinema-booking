@@ -8,6 +8,7 @@ const nextId = require('../utils/nextId');
 const { generateDeviceKey, hashDeviceKey } = require('../utils/deviceKey');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+const systemConfigService = require('../services/systemConfig.service');
 
 const STATUSES = Device.STATUSES;
 
@@ -188,7 +189,8 @@ async function checkin(req, res) {
   }
 
   const movie = await bookingRepository.findMovieById(schedule.movie_id);
-  const { opensAt, closesAt } = bookingRepository.getShowtimeCheckinWindow(schedule, movie);
+  const earlyMinutes = await systemConfigService.getValue('CHECKIN_BEFORE_SHOWTIME', device.branch_id);
+  const { opensAt, closesAt } = bookingRepository.getShowtimeCheckinWindow(schedule, movie, earlyMinutes);
   const now = Date.now();
   if (now < opensAt) return reject(400, 'CHECKIN_TOO_EARLY', 'Check-in has not opened yet for this showtime');
   if (now > closesAt) return reject(400, 'CHECKIN_TOO_LATE', 'Check-in has closed for this showtime');

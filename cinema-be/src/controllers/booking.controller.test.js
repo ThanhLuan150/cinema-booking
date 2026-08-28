@@ -13,6 +13,7 @@ const Combo = require('../models/Combo');
 const ComboOrder = require('../models/ComboOrder');
 const Promotion = require('../models/Promotion');
 const paymentRepository = require('../repositories/payment.repository');
+const systemConfigService = require('../services/systemConfig.service');
 
 function mockRes() {
   const res = {};
@@ -38,6 +39,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
   await clearDatabase();
+  systemConfigService.invalidateAll();
   logSpy.mockRestore();
 });
 afterAll(async () => closeDatabase());
@@ -867,6 +869,37 @@ describe('POST /api/invoice/:id/cancel', () => {
 
     const ticket = await Ticket.findOne({ id: 1 });
     expect(ticket.status).toBe(0);
+  });
+
+  it('echoes the configured CANCELLATION_LIMIT (Ticket 27) as `hours` instead of a hardcoded number', async () => {
+    const { movie_date, time_begin } = dateAt(1);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 100000 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 100000, status: 1 });
+
+    const res = mockRes();
+    await bookingController.cancelInvoice({ params: { id: 1 }, account: { accountId: 1, role: 1 } }, res);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCEL_WINDOW_EXPIRED', hours: 2 }));
+  });
+
+  it('respects a branch override of CANCELLATION_LIMIT — a booking 3h away is still blocked once the cutoff is raised to 4h', async () => {
+    const { movie_date, time_begin } = dateAt(3);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, cinema_id: 7, movie_date, time_begin, time_end: '23:59', price: 100000 });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 0 });
+    await Invoice.create({ id: 1, ticket_id: 1, account_id: 1, code: 'ABC', total_price: 100000, status: 1 });
+
+    // Unaffected without an override — 3h clears the default 2h cutoff.
+    const before = mockRes();
+    await bookingController.cancelInvoice({ params: { id: 1 }, account: { accountId: 1, role: 1 } }, before);
+    expect(before.status).not.toHaveBeenCalledWith(400);
+
+    await Invoice.updateOne({ id: 1 }, { status: 1 });
+    await Ticket.updateOne({ id: 1 }, { status: 0 });
+    await systemConfigService.setValue({ key: 'CANCELLATION_LIMIT', branchId: 7, value: 4, accountId: 1 });
+
+    const after = mockRes();
+    await bookingController.cancelInvoice({ params: { id: 1 }, account: { accountId: 1, role: 1 } }, after);
+    expect(after.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCEL_WINDOW_EXPIRED', hours: 4 }));
   });
 
   it('cancels the invoice and reopens the seat when more than 2 hours away', async () => {

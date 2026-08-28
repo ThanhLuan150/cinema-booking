@@ -40,6 +40,7 @@ const deviceRoutes = require('./device.routes');
 const auditLogRoutes = require('./auditLog.routes');
 const notificationRoutes = require('./notification.routes');
 const notificationTemplateRoutes = require('./notificationTemplate.routes');
+const systemConfigRoutes = require('./systemConfig.routes');
 
 const router = express.Router();
 
@@ -91,6 +92,10 @@ router.use('/notifications', notificationRoutes);
 // Notification Template management (Ticket 26): admin CRUD for the editable subject/content
 // behind each notification event + channel + language, gated by notificationTemplate.*.
 router.use('/notification-templates', notificationTemplateRoutes);
+// System Configuration (Ticket 27): centralized business settings (booking hold time, check-in
+// window, cancellation cutoff, currency, tax, max seats, refund policy), gated by
+// systemConfig.* and branch-scoped for a Branch Admin.
+router.use('/system-config', systemConfigRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

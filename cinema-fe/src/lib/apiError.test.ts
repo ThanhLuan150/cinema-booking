@@ -37,4 +37,18 @@ describe('getApiErrorMessage', () => {
     const t = makeT({ 'errors:GENERIC': 'Something went wrong' });
     expect(getApiErrorMessage(new Error('network fail'), t)).toBe('Something went wrong');
   });
+
+  // Ticket 27: CANCEL_WINDOW_EXPIRED's copy interpolates {{hours}} from the backend's response
+  // (the configured CANCELLATION_LIMIT) instead of hardcoding "2 hours" — verify the payload's
+  // extra fields actually reach i18next's interpolation, not just the `code` lookup.
+  it('passes the full error payload through as interpolation values for the translated message', () => {
+    const t = ((key: string, opts?: Record<string, unknown>) => {
+      if (key === 'errors:CANCEL_WINDOW_EXPIRED') {
+        return `Tickets can only be cancelled at least ${opts?.hours} hour(s) before showtime`;
+      }
+      return '';
+    }) as any;
+    const error = { response: { data: { code: 'CANCEL_WINDOW_EXPIRED', hours: 4 } } };
+    expect(getApiErrorMessage(error, t)).toBe('Tickets can only be cancelled at least 4 hour(s) before showtime');
+  });
 });

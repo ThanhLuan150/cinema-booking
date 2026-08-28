@@ -11,20 +11,22 @@ const Ticket = require('../models/Ticket');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
-const { HOLD_TTL_MS } = require('../config/seatHold');
+const systemConfigService = require('../services/systemConfig.service');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
 const RESCHEDULE_RESPONSE_ACTIONS = ['ACCEPT', 'REFUND'];
 
-// ≥2h before showtime, matching the same policy cancelInvoice already enforces for a
-// single ticket. Returns null (no restriction) when the schedule can't be resolved.
+// Returns null (cancellable) or { code, hours } — `hours` is the actual configured limit so
+// callers can echo it back to the client instead of hardcoding "2 hours" in the response copy
+// (the FE's errors.json interpolates it via {{hours}}; see CANCEL_WINDOW_EXPIRED there).
 async function assertCancellableBeforeShowtime(scheduleId) {
   const schedule = await bookingRepository.findScheduleById(scheduleId);
   if (!schedule) return null;
   const showtime = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`);
   const hoursUntilShowtime = (showtime.getTime() - Date.now()) / (1000 * 60 * 60);
-  return hoursUntilShowtime < 2 ? 'CANCEL_WINDOW_EXPIRED' : null;
+  const limitHours = await systemConfigService.getValue('CANCELLATION_LIMIT', schedule.cinema_id ?? null);
+  return hoursUntilShowtime < limitHours ? { code: 'CANCEL_WINDOW_EXPIRED', hours: limitHours } : null;
 }
 
 // OWN: caller must be the booking's own account. BRANCH: caller must have access to the
@@ -91,8 +93,20 @@ async function holdSeats(req, res) {
     return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
   }
 
+  const branchId = schedule ? (schedule.cinema_id ?? null) : null;
+  const maxSeats = await systemConfigService.getValue('MAX_BOOKING_SEATS', branchId);
+  if (seatCodes.length > maxSeats) {
+    return res.status(400).json({
+      message: `A booking cannot hold more than ${maxSeats} seat(s) at once`,
+      code: 'MAX_BOOKING_SEATS_EXCEEDED',
+    });
+  }
+
   await bookingRepository.expireHeldTickets(req.params.scheduleId);
-  const heldUntil = new Date(Date.now() + HOLD_TTL_MS);
+  // Ticket 27: BOOKING_HOLD_TIME, resolved for this showtime's own branch (falls back to the
+  // global/default when the branch has no override).
+  const holdMinutes = await systemConfigService.getValue('BOOKING_HOLD_TIME', branchId);
+  const heldUntil = new Date(Date.now() + holdMinutes * 60 * 1000);
   const accountId = req.account.accountId;
   const tickets = await bookingRepository.holdTickets({
     scheduleId: req.params.scheduleId,
@@ -182,8 +196,9 @@ async function createMomoPayment(req, res) {
 
   // Ticket 15: a CANCELLED showtime must not accept new bookings, even if its seats still show
   // as AVAILABLE after being released by the cancellation cascade.
+  let schedule = null;
   if (tickets.length > 0) {
-    const schedule = await bookingRepository.findScheduleById(tickets[0].schedule_id);
+    schedule = await bookingRepository.findScheduleById(tickets[0].schedule_id);
     if (schedule && schedule.status === 'CANCELLED') {
       return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
     }
@@ -216,7 +231,9 @@ async function createMomoPayment(req, res) {
   }
 
   // Re-hold (or extend the hold on) these seats for the duration of the MoMo redirect so they
-  const heldUntil = new Date(Date.now() + HOLD_TTL_MS);
+  // don't lapse mid-payment (Ticket 27: same centralized BOOKING_HOLD_TIME as the initial hold).
+  const holdMinutes = await systemConfigService.getValue('BOOKING_HOLD_TIME', schedule ? (schedule.cinema_id ?? null) : null);
+  const heldUntil = new Date(Date.now() + holdMinutes * 60 * 1000);
   await bookingRepository.holdTickets({
     scheduleId: tickets[0].schedule_id,
     seatCodes: tickets.map((t) => t.seat_code),
@@ -468,16 +485,15 @@ async function cancelInvoice(req, res) {
 
   const ticket = await bookingRepository.findTicketById(invoice.ticket_id);
   if (ticket) {
-    const schedule = await bookingRepository.findScheduleById(ticket.schedule_id);
-    if (schedule) {
-      const showtime = new Date(`${schedule.movie_date}T${schedule.time_begin}:00`);
-      const hoursUntilShowtime = (showtime.getTime() - Date.now()) / (1000 * 60 * 60);
-      if (hoursUntilShowtime < 2) {
-        return res.status(400).json({
-          message: 'Tickets can only be cancelled at least 2 hours before showtime',
-          code: 'CANCEL_WINDOW_EXPIRED',
-        });
-      }
+    // Ticket 27: same centralized CANCELLATION_LIMIT check cancelBooking/changeShowtime use,
+    // instead of a second hardcoded copy of the 2h rule.
+    const windowError = await assertCancellableBeforeShowtime(ticket.schedule_id);
+    if (windowError) {
+      return res.status(400).json({
+        message: 'Tickets can only be cancelled before the configured cancellation cutoff',
+        code: windowError.code,
+        hours: windowError.hours,
+      });
     }
     await bookingRepository.updateTicketStatus(ticket.id, 1);
   }
@@ -637,7 +653,9 @@ async function checkInInvoice(req, res) {
   }
 
   const movie = await bookingRepository.findMovieById(schedule.movie_id);
-  const { opensAt, closesAt } = bookingRepository.getShowtimeCheckinWindow(schedule, movie);
+  // Ticket 27: CHECKIN_BEFORE_SHOWTIME, resolved for this showtime's own branch.
+  const earlyMinutes = await systemConfigService.getValue('CHECKIN_BEFORE_SHOWTIME', schedule.cinema_id ?? null);
+  const { opensAt, closesAt } = bookingRepository.getShowtimeCheckinWindow(schedule, movie, earlyMinutes);
   const now = Date.now();
   if (now < opensAt) {
     return res.status(400).json({ message: 'Check-in has not opened yet for this showtime', code: 'CHECKIN_TOO_EARLY' });
@@ -774,8 +792,9 @@ async function cancelBooking(req, res) {
   const windowError = await assertCancellableBeforeShowtime(booking.schedule_id);
   if (windowError) {
     return res.status(400).json({
-      message: 'Bookings can only be cancelled at least 2 hours before showtime',
-      code: windowError,
+      message: 'This booking is past the configured cancellation cutoff for its showtime',
+      code: windowError.code,
+      hours: windowError.hours,
     });
   }
 
@@ -884,8 +903,9 @@ async function changeBookingShowtime(req, res) {
   const windowError = await assertCancellableBeforeShowtime(booking.schedule_id);
   if (windowError) {
     return res.status(400).json({
-      message: 'A booking can only be moved to a different showtime at least 2 hours before its current showtime',
-      code: windowError,
+      message: 'This booking is past the configured cancellation cutoff for its current showtime',
+      code: windowError.code,
+      hours: windowError.hours,
     });
   }
 

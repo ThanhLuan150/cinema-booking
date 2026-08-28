@@ -33,6 +33,7 @@ import OwnerMaintenance from '@/features/owner/maintenance/pages/List';
 import OwnerDevices from '@/features/owner/devices/pages/List';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
 import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
+import SystemConfigPage from '@/features/admin/systemConfig/pages/SystemConfigPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
@@ -206,6 +207,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <NotificationTemplatesPage />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.systemConfig}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <SystemConfigPage />
           </RequireRole>
         }
       />

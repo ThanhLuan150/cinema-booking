@@ -77,7 +77,8 @@
       "comboOrders": "Đơn Combo",
       "supportTickets": "Hỗ trợ khách hàng",
       "auditLog": "Nhật ký kiểm toán",
-      "notificationTemplates": "Mẫu thông báo"
+      "notificationTemplates": "Mẫu thông báo",
+      "systemConfig": "Cấu hình hệ thống"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

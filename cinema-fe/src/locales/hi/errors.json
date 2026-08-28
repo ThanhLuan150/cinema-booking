@@ -16,7 +16,7 @@
   "OTP_RESENT": "सत्यापन कोड फिर से भेज दिया गया",
   "PAYMENT_FAILED": "भुगतान विफल रहा",
   "TICKET_ALREADY_CANCELLED": "यह टिकट पहले ही रद्द की जा चुकी है",
-  "CANCEL_WINDOW_EXPIRED": "टिकट केवल शो टाइम से कम से कम 2 घंटे पहले रद्द की जा सकती है",
+  "CANCEL_WINDOW_EXPIRED": "टिकट केवल शो टाइम से कम से कम {{hours}} घंटे पहले रद्द की जा सकती है",
   "ALREADY_REFUNDED": "इस लेन-देन का पहले ही रिफंड हो चुका है",
   "INVOICE_NOT_FOUND_BY_CODE": "इस कोड से कोई टिकट नहीं मिली",
   "VOUCHER_NOT_FOUND": "वाउचर कोड मौजूद नहीं है",

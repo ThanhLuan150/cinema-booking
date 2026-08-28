@@ -16,7 +16,7 @@
   "OTP_RESENT": "验证码已重新发送",
   "PAYMENT_FAILED": "支付失败",
   "TICKET_ALREADY_CANCELLED": "该票券此前已被取消",
-  "CANCEL_WINDOW_EXPIRED": "只能在放映开始前至少 2 小时取消票券",
+  "CANCEL_WINDOW_EXPIRED": "只能在放映开始前至少 {{hours}} 小时取消票券",
   "ALREADY_REFUNDED": "该笔交易此前已完成退款",
   "INVOICE_NOT_FOUND_BY_CODE": "未找到对应票号的票券",
   "VOUCHER_NOT_FOUND": "优惠码不存在",
