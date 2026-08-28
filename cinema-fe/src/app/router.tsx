@@ -32,6 +32,7 @@ import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerMaintenance from '@/features/owner/maintenance/pages/List';
 import OwnerDevices from '@/features/owner/devices/pages/List';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
+import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
@@ -197,6 +198,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <AuditLogPage />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.notificationTemplates}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <NotificationTemplatesPage />
           </RequireRole>
         }
       />

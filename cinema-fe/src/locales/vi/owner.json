@@ -762,5 +762,63 @@
       "TICKET_CHECKIN": "Soát vé",
       "TICKET_CANCELLED": "Hủy vé"
     }
+  },
+  "notificationTemplates": {
+    "breadcrumb": "Mẫu thông báo",
+    "addButton": "Thêm mẫu",
+    "addTitle": "Tạo mẫu thông báo",
+    "editTitle": "Sửa mẫu thông báo",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "empty": "Không có mẫu thông báo nào khớp với bộ lọc.",
+    "deleteConfirm": "Xóa mẫu thông báo này? Sự kiện sẽ dùng lại nội dung mặc định có sẵn.",
+    "createSuccess": "Đã tạo mẫu",
+    "updateSuccess": "Đã cập nhật mẫu",
+    "deleteSuccess": "Đã xóa mẫu",
+    "filters": {
+      "event": "Sự kiện",
+      "channel": "Kênh",
+      "language": "Ngôn ngữ",
+      "status": "Trạng thái",
+      "any": "Tất cả",
+      "reset": "Đặt lại"
+    },
+    "headers": {
+      "event": "Sự kiện",
+      "channel": "Kênh",
+      "language": "Ngôn ngữ",
+      "subject": "Tiêu đề / xem trước",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "ACTIVE": "Đang dùng",
+      "INACTIVE": "Tạm tắt"
+    },
+    "events": {
+      "BOOKING_SUCCESS": "Đặt vé thành công",
+      "PAYMENT_SUCCESS": "Thanh toán thành công",
+      "TICKET_ISSUED": "Phát hành vé",
+      "BOOKING_CANCELLED": "Hủy đơn đặt vé",
+      "REFUND_SUCCESS": "Hoàn tiền thành công",
+      "SHOWTIME_CANCELLED": "Hủy suất chiếu",
+      "SHOWTIME_CHANGED": "Thay đổi suất chiếu"
+    },
+    "form": {
+      "event": "Sự kiện",
+      "channel": "Kênh",
+      "language": "Ngôn ngữ",
+      "selectEvent": "Chọn sự kiện",
+      "selectChannel": "Chọn kênh",
+      "subject": "Tiêu đề",
+      "subjectOptional": "Không bắt buộc với thông báo trong ứng dụng",
+      "content": "Nội dung",
+      "status": "Trạng thái",
+      "description": "Ghi chú (nội bộ)",
+      "variablesHint": "Biến có thể dùng:",
+      "preview": "Xem trước",
+      "previewTitle": "Xem trước (dữ liệu mẫu)",
+      "submit": "Lưu mẫu"
+    }
   }
 }

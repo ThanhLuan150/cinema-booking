@@ -762,5 +762,63 @@
       "TICKET_CHECKIN": "Ticket checked in",
       "TICKET_CANCELLED": "Ticket cancelled"
     }
+  },
+  "notificationTemplates": {
+    "breadcrumb": "Notification Templates",
+    "addButton": "New template",
+    "addTitle": "New notification template",
+    "editTitle": "Edit notification template",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No notification templates match these filters.",
+    "deleteConfirm": "Delete this notification template? The event will fall back to the built-in copy.",
+    "createSuccess": "Template created",
+    "updateSuccess": "Template updated",
+    "deleteSuccess": "Template deleted",
+    "filters": {
+      "event": "Event",
+      "channel": "Channel",
+      "language": "Language",
+      "status": "Status",
+      "any": "Any",
+      "reset": "Reset"
+    },
+    "headers": {
+      "event": "Event",
+      "channel": "Channel",
+      "language": "Lang",
+      "subject": "Subject / preview",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "events": {
+      "BOOKING_SUCCESS": "Booking success",
+      "PAYMENT_SUCCESS": "Payment success",
+      "TICKET_ISSUED": "Ticket issued",
+      "BOOKING_CANCELLED": "Booking cancelled",
+      "REFUND_SUCCESS": "Refund success",
+      "SHOWTIME_CANCELLED": "Showtime cancelled",
+      "SHOWTIME_CHANGED": "Showtime changed"
+    },
+    "form": {
+      "event": "Event",
+      "channel": "Channel",
+      "language": "Language",
+      "selectEvent": "Select an event",
+      "selectChannel": "Select a channel",
+      "subject": "Subject",
+      "subjectOptional": "Optional for in-app",
+      "content": "Content",
+      "status": "Status",
+      "description": "Note (internal)",
+      "variablesHint": "Available variables:",
+      "preview": "Preview",
+      "previewTitle": "Preview (sample data)",
+      "submit": "Save template"
+    }
   }
 }

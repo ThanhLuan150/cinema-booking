@@ -75,6 +75,8 @@ const PERMISSIONS = [
   ['device.create', 'device'], ['device.read', 'device'],
   ['device.update', 'device'], ['device.delete', 'device'],
   ['auditLog.read', 'auditLog'],
+  ['notificationTemplate.read', 'notificationTemplate'], ['notificationTemplate.create', 'notificationTemplate'],
+  ['notificationTemplate.update', 'notificationTemplate'], ['notificationTemplate.delete', 'notificationTemplate'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);

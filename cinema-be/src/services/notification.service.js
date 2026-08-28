@@ -1,6 +1,7 @@
 const Notification = require('../models/Notification');
 const Account = require('../models/Account');
 const notificationRepository = require('../repositories/notification.repository');
+const notificationTemplateService = require('./notificationTemplate.service');
 const { emitToAccount } = require('../utils/socket');
 const { sendNotificationEmail } = require('../utils/mailer');
 
@@ -23,8 +24,9 @@ function backoffFor(attempts) {
   return Math.min(MAX_BACKOFF_MS, BASE_BACKOFF_MS * 2 ** Math.max(0, attempts - 1));
 }
 
-// Human-readable fallback text. The frontend localises off `type` + `data`; this is what an
-// email (or a non-localised client) shows.
+// Human-readable fallback text, used whenever no ACTIVE NotificationTemplate matches the event
+// (Ticket 26). The frontend localises off `type` + `data`; this is what an email (or a
+// non-localised client) shows.
 function buildContent(event, ctx = {}) {
   const movie = ctx.movie ? `"${ctx.movie}"` : 'your movie';
   const when = ctx.showtime ? ` on ${ctx.showtime.date} at ${ctx.showtime.time_begin}` : '';
@@ -67,10 +69,20 @@ async function attemptDelivery(notification) {
     if ((notification.channels || []).includes(CHANNEL.EMAIL)) {
       const account = await Account.findOne({ id: notification.account_id });
       if (account && account.email) {
-        await sendNotificationEmail(account.email, {
-          subject: `Cinema Booking - ${notification.title}`,
-          text: notification.body,
+        // Prefer an EMAIL template for this event; fall back to the row's generated copy.
+        let subject = `Cinema Booking - ${notification.title}`;
+        let text = notification.body;
+        const tmpl = await notificationTemplateService.resolveContent({
+          event: notification.type,
+          channel: CHANNEL.EMAIL,
+          ctx: notification.data || {},
+          accountId: notification.account_id,
         });
+        if (tmpl) {
+          if (tmpl.subject) subject = tmpl.subject;
+          if (tmpl.body) text = tmpl.body;
+        }
+        await sendNotificationEmail(account.email, { subject, text });
       }
     }
 
@@ -99,7 +111,22 @@ async function notify({ event, accountId, bookingId = null, data = {}, channels,
     if (!event || !accountId) return null;
 
     const ctx = { ...(await notificationRepository.loadContext(bookingId)), ...(data || {}) };
-    const { title, body } = buildContent(event, ctx);
+    let { title, body } = buildContent(event, ctx);
+
+    // Ticket 26 — if an admin has authored an ACTIVE IN_APP template for this event, its
+    // rendered subject/content replaces the built-in copy for the stored (in-app) row.
+    const tmpl = await notificationTemplateService.resolveContent({
+      event,
+      channel: CHANNEL.IN_APP,
+      language: (data && data.language) || undefined,
+      ctx,
+      accountId,
+    });
+    if (tmpl) {
+      if (tmpl.subject) title = tmpl.subject;
+      if (tmpl.body) body = tmpl.body;
+    }
+
     const key = dedupeKey || `${event}:${accountId}:${bookingId ?? ctx.ref ?? 'na'}`;
 
     const notification = await notificationRepository.create({
