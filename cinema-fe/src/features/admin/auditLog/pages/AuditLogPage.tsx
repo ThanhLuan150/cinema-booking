@@ -108,7 +108,7 @@ function AuditLogPage() {
             options={(meta?.actions ?? []).map((a) => ({ label: actionLabel(a), value: a }))}
           />
         </div>
-        <div className="max-w-[10rem]">
+        <div className="max-w-xs flex-1">
           <Input
             id="audit-filter-actor"
             label={t('auditLog.filters.actor')}
@@ -117,7 +117,7 @@ function AuditLogPage() {
             onChange={(e) => patchFilter({ performedBy: e.target.value.replace(/\D/g, '') })}
           />
         </div>
-        <div className="max-w-[12rem]">
+        <div className="max-w-xs flex-1">
           <DateInput
             id="audit-filter-from"
             label={t('auditLog.filters.from')}
@@ -125,7 +125,7 @@ function AuditLogPage() {
             onChange={(e) => patchFilter({ from: e.target.value })}
           />
         </div>
-        <div className="max-w-[12rem]">
+        <div className="max-w-xs flex-1">
           <DateInput
             id="audit-filter-to"
             label={t('auditLog.filters.to')}

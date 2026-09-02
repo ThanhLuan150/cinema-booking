@@ -66,6 +66,26 @@ describe('DateInput', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  // A full month calendar opened right above a table inevitably overlaps several rows of it;
+  // without a dim backdrop that reads as the table having broken, not as a floating panel.
+  it('renders a dim backdrop behind the calendar, below its own z-index', () => {
+    const { container } = render(<DateInput id="dob" label="Date of birth" />);
+    fireEvent.click(screen.getByLabelText('Date of birth'));
+    const backdrop = container.ownerDocument.querySelector('[aria-hidden="true"].fixed.inset-0');
+    expect(backdrop).toBeInTheDocument();
+    expect(backdrop?.className).toMatch(/z-\[59\]/);
+    expect(screen.getByRole('dialog').className).toMatch(/z-\[60\]/);
+  });
+
+  it('closes the calendar when the backdrop is clicked', () => {
+    render(<DateInput id="dob" label="Date of birth" />);
+    fireEvent.click(screen.getByLabelText('Date of birth'));
+    const backdrop = document.querySelector('[aria-hidden="true"].fixed.inset-0');
+    expect(backdrop).toBeInTheDocument();
+    fireEvent.mouseDown(backdrop as Element);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
   it('closes the calendar on outside click', () => {
     render(
       <div>
