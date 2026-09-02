@@ -24,13 +24,18 @@ const POSITION_PERMISSIONS = {
     'booking.create': 'BRANCH',
     'booking.cancel': 'BRANCH',
     'ticket.read': 'BRANCH',
+    'ticket.create': 'BRANCH',
+    'combo.view': 'BRANCH',
+    'combo.sell': 'BRANCH',
     'payment.create': 'BRANCH',
   },
 
   CASHIER: {
+    'schedule.read': 'BRANCH',
     'booking.read': 'BRANCH',
     'booking.create': 'BRANCH',
     'ticket.read': 'BRANCH',
+    'ticket.create': 'BRANCH',
     'combo.view': 'BRANCH',
     'combo.sell': 'BRANCH',
     'payment.create': 'BRANCH',
@@ -46,9 +51,6 @@ const POSITION_PERMISSIONS = {
     'ticket.read': 'BRANCH',
     'ticket.checkin': 'BRANCH',
   },
-  // Ticket 22: search across permission-granted data (booking/ticket/payment/showtime/customer
-  // account) plus the support actions below — everything here is opt-in via this position, never
-  // a default Employee permission, so revenue/RBAC/branch/employee management stay out of reach.
   CUSTOMER_SERVICE: {
     'movie.read': 'ALL',
     'schedule.read': 'BRANCH',

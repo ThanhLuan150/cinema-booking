@@ -199,7 +199,7 @@ function NotificationTemplatesPage() {
             value={filters.language}
             onChange={(e) => patchFilter({ language: e.target.value })}
             placeholder={t('notificationTemplates.filters.any')}
-            options={languages.map((l) => ({ label: l, value: l }))}
+            options={languages.map((l) => ({ label: l.toUpperCase(), value: l }))}
           />
         </div>
         <div className="max-w-[10rem] flex-1">
@@ -315,7 +315,7 @@ function NotificationTemplatesPage() {
               <Select
                 label={t('notificationTemplates.form.language')}
                 value={form.language}
-                options={languages.map((l) => ({ label: l, value: l }))}
+                options={languages.map((l) => ({ label: l.toUpperCase(), value: l }))}
                 onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}
               />
             </div>

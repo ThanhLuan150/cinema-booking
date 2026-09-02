@@ -150,6 +150,8 @@ export interface BookingListParams {
   status?: BookingStatus;
   // Lets branch/all-scoped staff (e.g. Customer Service) narrow the list to one customer.
   accountId?: number | string;
+  // Box Office "find booking" search — the order code printed on a customer's receipt.
+  code?: string;
 }
 
 export type TicketStatus = 'ISSUED' | 'USED' | 'CANCELLED' | 'REFUNDED' | 'EXPIRED';

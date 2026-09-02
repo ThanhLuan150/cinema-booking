@@ -122,6 +122,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.counterSale')}
             </NavLink>
           )}
+          {hasPermission('ticket.create') && (
+            <NavLink to={ROUTES.employeeBoxOffice} className={navLinkClass}>
+              <ion-icon name="storefront" />
+              {t('adminLayout.nav.boxOffice')}
+            </NavLink>
+          )}
           {hasPermission('ticket.checkin') && (
             <NavLink to={ROUTES.employeeCheckIn} className={navLinkClass}>
               <ion-icon name="qr-code" />

@@ -5,6 +5,7 @@ import { DataTable } from '@/components/ui/DataTable';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Modal } from '@/components/ui/Modal';
 import { Select } from '@/components/ui/Select';
 import { Pagination } from '@/components/ui/Pagination';
@@ -117,18 +118,16 @@ function AuditLogPage() {
           />
         </div>
         <div className="max-w-[12rem]">
-          <Input
+          <DateInput
             id="audit-filter-from"
-            type="date"
             label={t('auditLog.filters.from')}
             value={filters.from}
             onChange={(e) => patchFilter({ from: e.target.value })}
           />
         </div>
         <div className="max-w-[12rem]">
-          <Input
+          <DateInput
             id="audit-filter-to"
-            type="date"
             label={t('auditLog.filters.to')}
             value={filters.to}
             onChange={(e) => patchFilter({ to: e.target.value })}

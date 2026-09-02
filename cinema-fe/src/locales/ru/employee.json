@@ -38,6 +38,35 @@
     "confirmCheckIn": "Confirm check-in",
     "checkInSuccess": "Checked in successfully."
   },
+  "boxOffice": {
+    "breadcrumb": "Box Office",
+    "movieLabel": "Movie",
+    "moviePlaceholder": "Select a movie",
+    "lockSeats": "Lock seats",
+    "seatsLocked": "Seats locked — proceed to payment",
+    "comboTitle": "Combos",
+    "voucherLabel": "Voucher code",
+    "promotionLabel": "Promotion code",
+    "methodLabel": "Payment method",
+    "methods": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "QR_PAYMENT": "QR payment"
+    },
+    "pay": "Pay & issue ticket",
+    "saleSuccess": "Sale completed. Tickets issued.",
+    "receipt": {
+      "title": "Ticket receipt",
+      "print": "Print",
+      "loading": "Loading ticket…",
+      "seat": "Seat: {{code}}"
+    },
+    "search": {
+      "title": "Find booking / reprint",
+      "placeholder": "Order code (e.g. POS-12)",
+      "action": "Search"
+    }
+  },
   "mySchedule": {
     "breadcrumb": "Мой график",
     "emptyTitle": "У вас нет запланированных смен",

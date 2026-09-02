@@ -44,6 +44,11 @@ describe('Payment model', () => {
     expect(new Payment({ ...base, method: 'BOGUS' }).validateSync().errors.method).toBeDefined();
   });
 
+  it('accepts the counter-only CARD and QR_PAYMENT methods', () => {
+    expect(new Payment({ ...base, method: 'CARD' }).validateSync()).toBeUndefined();
+    expect(new Payment({ ...base, method: 'QR_PAYMENT' }).validateSync()).toBeUndefined();
+  });
+
   it('enforces unique id and unique code', async () => {
     await Payment.create(base);
     await expect(Payment.create({ ...base, code: 'BK-2' })).rejects.toThrow();
@@ -79,6 +84,6 @@ describe('Payment model', () => {
       REFUNDED: 'REFUNDED',
     });
     expect(Payment.TYPE).toEqual({ ONLINE: 'ONLINE', COUNTER: 'COUNTER' });
-    expect(Payment.METHOD).toEqual({ MOMO: 'MOMO', CASH: 'CASH' });
+    expect(Payment.METHOD).toEqual({ MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT' });
   });
 });

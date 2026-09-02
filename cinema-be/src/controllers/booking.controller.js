@@ -103,8 +103,6 @@ async function holdSeats(req, res) {
   }
 
   await bookingRepository.expireHeldTickets(req.params.scheduleId);
-  // Ticket 27: BOOKING_HOLD_TIME, resolved for this showtime's own branch (falls back to the
-  // global/default when the branch has no override).
   const holdMinutes = await systemConfigService.getValue('BOOKING_HOLD_TIME', branchId);
   const heldUntil = new Date(Date.now() + holdMinutes * 60 * 1000);
   const accountId = req.account.accountId;
@@ -194,8 +192,6 @@ async function createMomoPayment(req, res) {
   const accountId = req.account.accountId;
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
 
-  // Ticket 15: a CANCELLED showtime must not accept new bookings, even if its seats still show
-  // as AVAILABLE after being released by the cancellation cascade.
   let schedule = null;
   if (tickets.length > 0) {
     schedule = await bookingRepository.findScheduleById(tickets[0].schedule_id);
@@ -299,9 +295,6 @@ async function createMomoPayment(req, res) {
   res.type('text/plain').send(payUrl);
 }
 
-// Ticket 24: audit a MoMo callback's outcome. Both callbacks (IPN + browser confirm) funnel
-// through here so PAYMENT_SUCCESS / PAYMENT_FAILED (and TICKET_ISSUED on success) land exactly
-// once per order. The actor is the paying customer's account (the gateway holds no session).
 async function auditMomoOutcome(req, orderId, { success }) {
   try {
     const payment = await paymentRepository.findByCode(orderId);
@@ -327,8 +320,6 @@ async function auditMomoOutcome(req, orderId, { success }) {
           metadata: { code: orderId },
         });
       }
-      // Ticket 25: payment confirmed -> booking confirmed -> ticket generated -> notify.
-      // An email copy is worth it here since the customer may have closed the tab.
       if (performedBy) {
         await notificationService.notify({
           event: notificationService.EVENT.PAYMENT_SUCCESS,
@@ -485,8 +476,6 @@ async function cancelInvoice(req, res) {
 
   const ticket = await bookingRepository.findTicketById(invoice.ticket_id);
   if (ticket) {
-    // Ticket 27: same centralized CANCELLATION_LIMIT check cancelBooking/changeShowtime use,
-    // instead of a second hardcoded copy of the 2h rule.
     const windowError = await assertCancellableBeforeShowtime(ticket.schedule_id);
     if (windowError) {
       return res.status(400).json({
@@ -756,6 +745,7 @@ async function listBookings(req, res) {
   // Lets branch/all-scoped staff (e.g. Customer Service) pull up one customer's bookings; OWN
   // scope already forces account_id above, so this would only narrow it to themselves anyway.
   if (req.query.accountId && req.permissionScope !== 'OWN') filter.account_id = Number(req.query.accountId);
+  if (req.query.code) filter.code = req.query.code;
 
   const { data: bookings, total } = await bookingRepository.findBookings(filter, { skip, limit });
   const result = await enrichBookings(bookings);
@@ -993,7 +983,6 @@ async function createCounterSale(req, res) {
     }
   }
 
-  // Ticket 15: a CANCELLED showtime must not accept new bookings, counter sales included.
   const firstTicket = await bookingRepository.findTicketById(ticketIds[0]);
   const scheduleForSale = firstTicket ? await bookingRepository.findScheduleById(firstTicket.schedule_id) : null;
   if (scheduleForSale && scheduleForSale.status === 'CANCELLED') {
@@ -1052,9 +1041,7 @@ async function createCounterSale(req, res) {
       entityId: result.bookingId,
       branchId: req.branchId ?? null,
       metadata: { channel: 'COUNTER', count: ticketIds.length },
-    });
-    // Ticket 25: a counter sale is booking + payment + ticket in one step — notify the customer
-    // whose account the tickets were sold to.
+    })
     await notificationService.notify({
       event: notificationService.EVENT.BOOKING_CREATED,
       accountId: Number(accountId),

@@ -53,6 +53,35 @@
     "statusRefunded": "Đã hoàn tiền",
     "statusExpired": "Đã hết hạn"
   },
+  "boxOffice": {
+    "breadcrumb": "Quầy vé",
+    "movieLabel": "Phim",
+    "moviePlaceholder": "Chọn phim",
+    "lockSeats": "Giữ ghế",
+    "seatsLocked": "Đã giữ ghế — tiến hành thanh toán",
+    "comboTitle": "Combo",
+    "voucherLabel": "Mã voucher",
+    "promotionLabel": "Mã khuyến mãi",
+    "methodLabel": "Phương thức thanh toán",
+    "methods": {
+      "CASH": "Tiền mặt",
+      "CARD": "Thẻ",
+      "QR_PAYMENT": "Quét mã QR"
+    },
+    "pay": "Thanh toán & phát hành vé",
+    "saleSuccess": "Bán vé thành công. Vé đã được phát hành.",
+    "receipt": {
+      "title": "Vé điện tử",
+      "print": "In vé",
+      "loading": "Đang tải vé…",
+      "seat": "Ghế: {{code}}"
+    },
+    "search": {
+      "title": "Tìm booking / in lại vé",
+      "placeholder": "Mã đơn hàng (vd: POS-12)",
+      "action": "Tìm kiếm"
+    }
+  },
   "mySchedule": {
     "breadcrumb": "Lịch làm việc của tôi",
     "emptyTitle": "Bạn chưa được phân ca làm việc nào",
