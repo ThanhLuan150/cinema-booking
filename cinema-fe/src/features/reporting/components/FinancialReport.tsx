@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isAxiosError } from 'axios';
 import {
   Bar,
   BarChart,
@@ -12,9 +13,11 @@ import {
 } from 'recharts';
 import { Button } from '@/components/ui/Button';
 import { DataTable } from '@/components/ui/DataTable';
-import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
+import { Spinner } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { useFinancialReport } from '../hooks/useFinancialReport';
+import type { FinancialReport as FinancialReportData } from '../types/reporting.types';
 
 const ACCENT = '#C1121F';
 const POSITIVE = '#2E9E6B';
@@ -30,6 +33,36 @@ const TOOLTIP_STYLE = {
 const fmt = (value: number) => `${Math.round(value).toLocaleString()}đ`;
 const tooltipFmt = (value: unknown) => fmt(Number(value) || 0);
 
+const EMPTY_REPORT: FinancialReportData = {
+  scope: 'ALL',
+  branchIds: null,
+  range: { from: null, to: null },
+  totals: {
+    branchCount: 0,
+    employeeCount: 0,
+    movieCount: 0,
+    showtimeCount: 0,
+    bookingCount: 0,
+    ticketCount: 0,
+  },
+  revenue: { ticketRevenue: 0, comboRevenue: 0, discount: 0, refund: 0, netRevenue: 0 },
+  revenueByBranch: [],
+  topMovies: [],
+  refundSummary: {
+    count: 0,
+    amount: 0,
+    byStatus: {
+      REQUESTED: { count: 0, amount: 0 },
+      APPROVED: { count: 0, amount: 0 },
+      REJECTED: { count: 0, amount: 0 },
+      PROCESSING: { count: 0, amount: 0 },
+      COMPLETED: { count: 0, amount: 0 },
+      FAILED: { count: 0, amount: 0 },
+    },
+  },
+  revenueByDay: [],
+};
+
 export interface FinancialReportProps {
   variant: 'system' | 'branch';
   branchId?: string;
@@ -44,72 +77,44 @@ interface StatTile {
 export function FinancialReport({ variant, branchId }: FinancialReportProps) {
   const { t } = useTranslation('reporting');
   const [range, setRange] = useState({ from: '', to: '' });
-  const { data: report, isLoading } = useFinancialReport({
+  const { data, isLoading, isFetching, isError, error, refetch } = useFinancialReport({
     branchId,
     from: range.from || undefined,
     to: range.to || undefined,
   });
 
+  const report = data ?? EMPTY_REPORT;
+  const hasData = Boolean(data);
+  const forbidden = isError && isAxiosError(error) && error.response?.status === 403;
+  // First visit, nothing cached yet: show a plain loading screen, then swap to the report
+  // once it arrives. A background refresh (date-range change) keeps the data on screen and
+  // only shows the small "updating" chip below.
+  const firstLoad = isLoading && !hasData;
+
   const tiles = useMemo<StatTile[]>(() => {
-    if (!report) return [];
     const { totals, revenue } = report;
-    const list: StatTile[] = [{ label: t('stats.netRevenue'), value: fmt(revenue.netRevenue), accent: true }];
+    const cell = (n: number | null) => (hasData && n != null ? String(n) : '—');
+    const list: StatTile[] = [
+      { label: t('stats.netRevenue'), value: hasData ? fmt(revenue.netRevenue) : '—', accent: true },
+    ];
     if (variant === 'system') {
-      list.push({ label: t('stats.branches'), value: String(totals.branchCount) });
+      list.push({ label: t('stats.branches'), value: cell(totals.branchCount) });
     }
     list.push(
-      { label: t('stats.employees'), value: String(totals.employeeCount) },
-      { label: t('stats.showtimes'), value: String(totals.showtimeCount) },
-      { label: t('stats.bookings'), value: String(totals.bookingCount) },
-      { label: t('stats.tickets'), value: String(totals.ticketCount) },
+      { label: t('stats.employees'), value: cell(totals.employeeCount) },
+      { label: t('stats.showtimes'), value: cell(totals.showtimeCount) },
+      { label: t('stats.bookings'), value: cell(totals.bookingCount) },
+      { label: t('stats.tickets'), value: cell(totals.ticketCount) },
     );
-    if (variant === 'system' && totals.movieCount != null) {
-      list.push({ label: t('stats.movies'), value: String(totals.movieCount) });
+    if (variant === 'system') {
+      list.push({ label: t('stats.movies'), value: cell(totals.movieCount) });
     }
     return list;
-  }, [report, variant, t]);
-
-  const rangePicker = (
-    <div className="mb-4 flex flex-wrap items-end gap-3">
-      <div className="max-w-[12rem]">
-        <Input
-          id="report-range-from"
-          type="date"
-          label={t('range.from')}
-          value={range.from}
-          max={range.to || undefined}
-          onChange={(e) => setRange((r) => ({ ...r, from: e.target.value }))}
-        />
-      </div>
-      <div className="max-w-[12rem]">
-        <Input
-          id="report-range-to"
-          type="date"
-          label={t('range.to')}
-          value={range.to}
-          min={range.from || undefined}
-          onChange={(e) => setRange((r) => ({ ...r, to: e.target.value }))}
-        />
-      </div>
-      {(range.from || range.to) && (
-        <Button type="button" variant="outline" onClick={() => setRange({ from: '', to: '' })}>
-          {t('range.reset')}
-        </Button>
-      )}
-    </div>
-  );
-
-  if (!report) {
-    return (
-      <>
-        {rangePicker}
-        <p className="text-txt/70">{isLoading ? t('loading') : t('noData')}</p>
-      </>
-    );
-  }
+  }, [report, hasData, variant, t]);
 
   const { revenue, revenueByBranch, topMovies, refundSummary, revenueByDay } = report;
   const showByBranch = variant === 'system' || revenueByBranch.length > 1;
+  const refundsEmpty = Object.values(refundSummary.byStatus).every((b) => b.count === 0);
 
   const breakdownRows: { label: string; value: number; sign: 1 | -1 }[] = [
     { label: t('breakdown.ticketRevenue'), value: revenue.ticketRevenue, sign: 1 },
@@ -118,9 +123,68 @@ export function FinancialReport({ variant, branchId }: FinancialReportProps) {
     { label: t('breakdown.refund'), value: revenue.refund, sign: -1 },
   ];
 
+  if (firstLoad) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-24 text-txt/60">
+        <Spinner size="lg" />
+        <p>{t('loading')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {rangePicker}
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="w-44">
+          <DateInput
+            id="report-range-from"
+            label={t('range.from')}
+            placeholder={t('range.from')}
+            value={range.from}
+            onChange={(e) =>
+              setRange((r) => {
+                const from = e.target.value;
+                return { from, to: r.to && from && from > r.to ? '' : r.to };
+              })
+            }
+          />
+        </div>
+        <div className="w-44">
+          <DateInput
+            id="report-range-to"
+            label={t('range.to')}
+            placeholder={t('range.to')}
+            value={range.to}
+            onChange={(e) =>
+              setRange((r) => {
+                const to = e.target.value;
+                return { to, from: r.from && to && to < r.from ? '' : r.from };
+              })
+            }
+          />
+        </div>
+        {(range.from || range.to) && (
+          <Button type="button" variant="outline" onClick={() => setRange({ from: '', to: '' })}>
+            {t('range.reset')}
+          </Button>
+        )}
+        {isFetching && (
+          <span className="mb-1 flex items-center gap-2 self-center rounded-full bg-white/5 px-3 py-1 text-xs text-txt/60">
+            <Spinner size="sm" />
+            {t('updating')}
+          </span>
+        )}
+      </div>
+
+      {isError && (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          <i className="fa-solid fa-triangle-exclamation" />
+          <span>{forbidden ? t('error.forbidden') : t('error.generic')}</span>
+          <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => refetch()}>
+            {t('error.retry')}
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
         {tiles.map((tile) => (
@@ -160,18 +224,22 @@ export function FinancialReport({ variant, branchId }: FinancialReportProps) {
             <span className="text-sm text-txt/60">{t('refunds.completedCount')}</span>
             <span className="ml-auto text-lg font-semibold text-red-400">−{fmt(refundSummary.amount)}</span>
           </div>
-          <dl className="space-y-1 text-sm">
-            {Object.entries(refundSummary.byStatus)
-              .filter(([, bucket]) => bucket.count > 0)
-              .map(([status, bucket]) => (
-                <div key={status} className="flex items-center justify-between gap-4">
-                  <dt className="text-txt/60">{t(`refunds.status.${status}`, { defaultValue: status })}</dt>
-                  <dd className="text-txt/80">
-                    {bucket.count} · {fmt(bucket.amount)}
-                  </dd>
-                </div>
-              ))}
-          </dl>
+          {refundsEmpty ? (
+            <p className="text-sm text-txt/50">{t('noData')}</p>
+          ) : (
+            <dl className="space-y-1 text-sm">
+              {Object.entries(refundSummary.byStatus)
+                .filter(([, bucket]) => bucket.count > 0)
+                .map(([status, bucket]) => (
+                  <div key={status} className="flex items-center justify-between gap-4">
+                    <dt className="text-txt/60">{t(`refunds.status.${status}`, { defaultValue: status })}</dt>
+                    <dd className="text-txt/80">
+                      {bucket.count} · {fmt(bucket.amount)}
+                    </dd>
+                  </div>
+                ))}
+            </dl>
+          )}
         </div>
       </div>
 

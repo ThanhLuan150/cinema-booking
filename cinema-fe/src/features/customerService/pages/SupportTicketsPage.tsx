@@ -81,7 +81,7 @@ function SupportTicketsPage() {
     }
   }, [cinemas, selectedbranchId, isAdmin, isEmployee, currentUser]);
 
-  const { data } = useSupportTickets(
+  const { data, isLoading } = useSupportTickets(
     isAllBranches ? undefined : selectedbranchId || undefined,
     page,
     DEFAULT_PAGE_SIZE,
@@ -202,7 +202,7 @@ function SupportTicketsPage() {
   const categoryOptions = CATEGORIES.map((category) => ({ label: t(`category.${category}`), value: category }));
 
   return (
-    <AdminLayout breadcrumb={t('breadcrumb')}>
+    <AdminLayout breadcrumb={t('breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         {!isEmployee && (
           <div className="max-w-xs flex-1">

@@ -170,7 +170,7 @@ function NotificationTemplatesPage() {
     t(`notificationTemplates.events.${event}`, { defaultValue: event.replace(/_/g, ' ') });
 
   return (
-    <AdminLayout breadcrumb={t('notificationTemplates.breadcrumb')}>
+    <AdminLayout breadcrumb={t('notificationTemplates.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-end gap-3">
         <div className="max-w-xs flex-1">
           <Select

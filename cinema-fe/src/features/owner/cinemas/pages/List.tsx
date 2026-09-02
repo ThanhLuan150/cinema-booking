@@ -12,7 +12,7 @@ import { ROUTES } from '@/constants/routes';
 function CinemaList() {
   const { t } = useTranslation('owner');
   const queryClient = useQueryClient();
-  const { data: cinemasPage } = useMyCinemas();
+  const { data: cinemasPage, isLoading } = useMyCinemas();
   const cinemas = cinemasPage?.data ?? [];
 
   const statusVersion = useAppSelector((state) => state.realtime.cinemaStatusVersion);
@@ -21,7 +21,7 @@ function CinemaList() {
   }, [statusVersion, queryClient]);
 
   return (
-    <AdminLayout breadcrumb={t('cinemas.breadcrumb')}>
+    <AdminLayout breadcrumb={t('cinemas.breadcrumb')} loading={isLoading}>
       <div className="mt-6">
         <DataTable
           headers={[

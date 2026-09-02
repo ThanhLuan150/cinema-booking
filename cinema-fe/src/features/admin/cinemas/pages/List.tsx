@@ -41,7 +41,7 @@ function AdminCinemas() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
-  const { data } = useAdminCinemas(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useAdminCinemas(page, DEFAULT_PAGE_SIZE);
   const cinemas = data?.data ?? [];
   const activateMutation = useActivateCinema();
   const disableMutation = useDisableCinema();
@@ -134,7 +134,7 @@ function AdminCinemas() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('cinemas.breadcrumb')}>
+    <AdminLayout breadcrumb={t('cinemas.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => setShowAddModal(true)}>
         {t('cinemas.addBranchAdmin.addButton')}
       </Button>

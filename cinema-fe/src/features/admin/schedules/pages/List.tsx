@@ -39,7 +39,7 @@ const List = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [rescheduleTarget, setRescheduleTarget] = useState<Schedule | null>(null);
 
-  const { data } = useSchedules({ branchId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useSchedules({ branchId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
   const schedules = data?.data ?? [];
   const cancelScheduleMutation = useCancelSchedule();
 
@@ -83,7 +83,7 @@ const List = () => {
   };
 
   return (
-    <AdminLayout breadcrumb={t('schedules.list.breadcrumb')}>
+    <AdminLayout breadcrumb={t('schedules.list.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-3">
           <Select

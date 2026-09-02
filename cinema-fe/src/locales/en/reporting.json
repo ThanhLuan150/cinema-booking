@@ -1,6 +1,12 @@
 {
   "loading": "Loading report...",
+  "updating": "Updating…",
   "noData": "No data yet",
+  "error": {
+    "generic": "Couldn't load the report.",
+    "forbidden": "You don't have permission to view this report yet. If reporting was just set up, an admin needs to re-run the RBAC seed and you may need to sign in again.",
+    "retry": "Retry"
+  },
   "range": {
     "from": "From",
     "to": "To",

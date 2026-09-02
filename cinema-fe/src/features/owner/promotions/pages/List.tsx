@@ -113,7 +113,7 @@ function PromotionList() {
 
   const defaultBranchId = isAdmin ? '' : cinemas.length > 0 ? String(cinemas[0].id) : '';
 
-  const { data } = useOwnerPromotions(undefined, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerPromotions(undefined, page, DEFAULT_PAGE_SIZE);
   const promotions = useMemo(() => data?.data ?? [], [data]);
   const { showAddModal, editingPromotionId } = useAppSelector((state) => state.ownerPromotions);
   const editingPromotion = useMemo(
@@ -321,7 +321,7 @@ function PromotionList() {
   };
 
   return (
-    <AdminLayout breadcrumb={t('promotions.breadcrumb')}>
+    <AdminLayout breadcrumb={t('promotions.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('promotions.addButton')}
       </Button>

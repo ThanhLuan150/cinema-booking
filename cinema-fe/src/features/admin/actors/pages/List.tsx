@@ -25,7 +25,7 @@ function ActorList() {
   const { t } = useTranslation('admin');
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
-  const { data } = useActors(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useActors(page, DEFAULT_PAGE_SIZE);
   const actors = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.adminActors);
   const createActorMutation = useCreateActor();
@@ -72,7 +72,7 @@ function ActorList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('actors.breadcrumb')}>
+    <AdminLayout breadcrumb={t('actors.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('actors.addButton')}
       </Button>

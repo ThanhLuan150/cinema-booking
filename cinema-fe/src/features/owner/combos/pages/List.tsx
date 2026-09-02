@@ -94,7 +94,7 @@ function ComboList() {
   const [page, setPage] = useState(1);
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
-  const { data } = useOwnerCombos(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerCombos(page, DEFAULT_PAGE_SIZE);
   const combos = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerCombos);
   const createComboMutation = useCreateCombo();
@@ -158,7 +158,7 @@ function ComboList() {
   const cinemaNameById = useMemo(() => new Map(cinemas.map((c) => [c.id, c.name])), [cinemas]);
 
   return (
-    <AdminLayout breadcrumb={t('combos.breadcrumb')}>
+    <AdminLayout breadcrumb={t('combos.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('combos.addButton')}
       </Button>

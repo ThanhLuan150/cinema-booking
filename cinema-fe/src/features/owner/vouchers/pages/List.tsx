@@ -35,7 +35,7 @@ function VoucherList() {
   const [page, setPage] = useState(1);
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
-  const { data } = useOwnerVouchers(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerVouchers(page, DEFAULT_PAGE_SIZE);
   const vouchers = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerVouchers);
   const createVoucherMutation = useCreateVoucher();
@@ -106,7 +106,7 @@ function VoucherList() {
   const cinemaNameById = useMemo(() => new Map<number | null, string>(cinemas.map((c) => [c.id, c.name])), [cinemas]);
 
   return (
-    <AdminLayout breadcrumb={t('vouchers.breadcrumb')}>
+    <AdminLayout breadcrumb={t('vouchers.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('vouchers.addButton')}
       </Button>

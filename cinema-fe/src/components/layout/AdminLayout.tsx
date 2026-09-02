@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, NavLink, Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +12,18 @@ import { AdminShellContext } from '@/contexts';
 import { toast } from '@/features/notifications/toast';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { Avatar } from '@/components/ui/Avatar';
+import { Spinner } from '@/components/ui/Spinner';
 import { ROLES } from '@/constants/roles';
 import { ROUTES } from '@/constants/routes';
+
+const SIDEBAR_SCROLL_KEY = 'adminSidebarScroll';
 
 export interface AdminLayoutProps {
   breadcrumb: string;
   children: ReactNode;
+  /** When true, the content region shows a centered spinner over the page. Each page passes
+   *  its own primary query's loading flag (e.g. `loading={isPending}`). */
+  loading?: boolean;
 }
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -28,7 +34,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
       : 'text-txt/70 hover:bg-white/5 hover:text-txt',
   );
 
-export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
+export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayoutProps) {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -39,6 +45,31 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [footerEl, setFooterEl] = useState<HTMLDivElement | null>(null);
   const shellValue = useMemo(() => ({ footerEl }), [footerEl]);
+  const sidebarRef = useRef<HTMLElement | null>(null);
+
+  // Each page renders its own <AdminLayout>, so navigating remounts the sidebar and its
+  // scroll position would snap back to the top. Persist and restore it (synchronously,
+  // before paint) so the item you clicked stays put.
+  useLayoutEffect(() => {
+    const el = sidebarRef.current;
+    if (!el) return undefined;
+    try {
+      const saved = Number(sessionStorage.getItem(SIDEBAR_SCROLL_KEY) || 0);
+      if (saved) el.scrollTop = saved;
+    } catch {
+      /* sessionStorage unavailable (private mode) — no-op */
+    }
+    const onScroll = () => {
+      try {
+        sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(el.scrollTop));
+      } catch {
+        /* ignore */
+      }
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   const isAdmin = user?.role === ROLES.admin;
   const isEmployee = user?.role === ROLES.employee;
   const dashboardRoute = isAdmin
@@ -283,7 +314,10 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
     // A fixed viewport shell at every breakpoint: the page itself never scrolls. Only the
     // sidebar and the data region do, and both hide their scrollbar chrome.
     <div className="flex h-screen overflow-hidden bg-main font-sans">
-      <aside className="no-scrollbar hidden w-64 shrink-0 flex-col overflow-y-auto border-r border-border bg-surface px-4 py-6 lg:flex">
+      <aside
+        ref={sidebarRef}
+        className="no-scrollbar hidden w-64 shrink-0 flex-col overflow-y-auto border-r border-border bg-surface px-4 py-6 lg:flex"
+      >
         {brand}
         {nav}
       </aside>
@@ -368,7 +402,13 @@ export function AdminLayout({ breadcrumb, children }: AdminLayoutProps) {
           </div>
         </div>
         {/* The only scrolling region in the main column. */}
-        <div className="no-scrollbar flex-1 overflow-y-auto p-6 md:p-8">
+        <div className="no-scrollbar relative flex-1 overflow-y-auto p-6 md:p-8">
+          {loading && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-main text-txt/60">
+              <Spinner size="lg" />
+              <p>{t('adminLayout.loading')}</p>
+            </div>
+          )}
           <AdminShellContext.Provider value={shellValue}>{children}</AdminShellContext.Provider>
         </div>
         {/* Fixed footer the page's Pagination portals into, so it sits at the bottom of the

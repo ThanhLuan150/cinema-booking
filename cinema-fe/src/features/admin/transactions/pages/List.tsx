@@ -14,7 +14,7 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 function AdminTransactions() {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
-  const { data } = useAdminInvoices(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useAdminInvoices(page, DEFAULT_PAGE_SIZE);
   const invoices = data?.data ?? [];
   const refundMutation = useRefundInvoice();
 
@@ -32,7 +32,7 @@ function AdminTransactions() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('transactions.breadcrumb')}>
+    <AdminLayout breadcrumb={t('transactions.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('transactions.headers', { returnObjects: true }) as unknown as string[]}>
         {invoices.map((inv) => {
           const status = INVOICE_STATUS_META[inv.status] || INVOICE_STATUS_META[INVOICE_STATUS.booked];

@@ -79,10 +79,51 @@ const report: FinancialReportData = {
 describe('FinancialReport', () => {
   beforeEach(() => useFinancialReportMock.mockReset());
 
-  it('shows a loading message while the report is unavailable', () => {
-    useFinancialReportMock.mockReturnValue({ data: undefined, isLoading: true });
+  it('shows a loading screen on the first visit, before any data is available', () => {
+    useFinancialReportMock.mockReturnValue({ data: undefined, isLoading: true, isFetching: true });
     render(<FinancialReport variant="system" />);
     expect(screen.getByText('loading')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument(); // the spinner
+    // the report itself isn't rendered yet
+    expect(screen.queryByText('stats.branches')).not.toBeInTheDocument();
+    expect(screen.queryByText('breakdown.title')).not.toBeInTheDocument();
+  });
+
+  it('keeps the data on screen with an "updating" indicator during a background refresh', () => {
+    useFinancialReportMock.mockReturnValue({ data: report, isLoading: false, isFetching: true });
+    render(<FinancialReport variant="system" />);
+    expect(screen.getByText('updating')).toBeInTheDocument();
+    // ...and the real numbers are still visible, not a spinner screen
+    expect(screen.getByText('stats.branches')).toBeInTheDocument();
+    expect(screen.queryByText('loading')).not.toBeInTheDocument();
+  });
+
+  it('surfaces a permission error with guidance instead of a bare empty state', () => {
+    useFinancialReportMock.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { isAxiosError: true, response: { status: 403 } },
+      refetch: vi.fn(),
+    });
+    render(<FinancialReport variant="system" />);
+    expect(screen.getByText('error.forbidden')).toBeInTheDocument();
+    expect(screen.getByText('error.retry')).toBeInTheDocument();
+    // ...and the page shell is still there.
+    expect(screen.getByText('stats.branches')).toBeInTheDocument();
+  });
+
+  it('shows the generic error for a non-permission failure', () => {
+    useFinancialReportMock.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { isAxiosError: true, response: { status: 500 } },
+      refetch: vi.fn(),
+    });
+    render(<FinancialReport variant="system" />);
+    expect(screen.getByText('error.generic')).toBeInTheDocument();
+    expect(screen.queryByText('error.forbidden')).not.toBeInTheDocument();
   });
 
   it('renders the system stat tiles including branch and movie totals', () => {
@@ -140,31 +181,28 @@ describe('FinancialReport', () => {
     expect(useFinancialReportMock).toHaveBeenCalledWith({ branchId: '5', from: undefined, to: undefined });
   });
 
-  it('re-requests the report when a date range is picked, and clears it again', () => {
+  it('re-requests the report when a day is picked from the calendar, and clears it with reset', () => {
     useFinancialReportMock.mockReturnValue({ data: report, isLoading: false });
     render(<FinancialReport variant="system" />);
 
-    fireEvent.change(screen.getByLabelText('range.from'), { target: { value: '2026-01-01' } });
-    fireEvent.change(screen.getByLabelText('range.to'), { target: { value: '2026-01-31' } });
-    expect(useFinancialReportMock).toHaveBeenLastCalledWith({
-      branchId: undefined,
-      from: '2026-01-01',
-      to: '2026-01-31',
-    });
+    // DateInput opens a calendar dialog; day 15 exists in every month.
+    fireEvent.click(screen.getByLabelText('range.from'));
+    fireEvent.click(screen.getByRole('gridcell', { name: '15' }));
+
+    const afterPick = useFinancialReportMock.mock.calls.at(-1)![0];
+    expect(afterPick.from).toMatch(/^\d{4}-\d{2}-15$/);
+    expect(afterPick.branchId).toBeUndefined();
 
     fireEvent.click(screen.getByText('range.reset'));
-    expect(useFinancialReportMock).toHaveBeenLastCalledWith({
-      branchId: undefined,
-      from: undefined,
-      to: undefined,
-    });
+    expect(useFinancialReportMock.mock.calls.at(-1)![0]).toMatchObject({ from: undefined, to: undefined });
   });
 
-  it('keeps the range picker visible when a range returns nothing, so it can be widened', () => {
+  it('keeps the range picker and the card shells visible when there is no data', () => {
     useFinancialReportMock.mockReturnValue({ data: undefined, isLoading: false });
     render(<FinancialReport variant="system" />);
     expect(screen.getByLabelText('range.from')).toBeInTheDocument();
-    expect(screen.getByText('noData')).toBeInTheDocument();
+    // charts + refund card fall back to their empty states
+    expect(screen.getAllByText('noData').length).toBeGreaterThanOrEqual(3);
   });
 
   it('shows empty states when there is nothing to chart', () => {

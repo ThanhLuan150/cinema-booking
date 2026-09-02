@@ -59,7 +59,7 @@ function ShiftList() {
     }
   }, [cinemas, selectedbranchId, dispatch]);
 
-  const { data } = useShifts(selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useShifts(selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE);
   const shifts = useMemo(() => data?.data ?? [], [data]);
   const editingShift = useMemo(() => shifts.find((s) => s.id === editingShiftId) ?? null, [shifts, editingShiftId]);
   const createShiftMutation = useCreateShift();
@@ -139,7 +139,7 @@ function ShiftList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('shifts.breadcrumb')}>
+    <AdminLayout breadcrumb={t('shifts.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select

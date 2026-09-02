@@ -83,7 +83,8 @@
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",
     "breadcrumbPrefix": "Người dùng",
-    "hello": "Xin chào!"
+    "hello": "Xin chào!",
+    "loading": "Đang tải…"
   },
   "language": {
     "label": "Ngôn ngữ"

@@ -83,7 +83,8 @@
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",
     "breadcrumbPrefix": "User",
-    "hello": "Hello!"
+    "hello": "Hello!",
+    "loading": "Loading…"
   },
   "language": {
     "label": "Language"

@@ -1,6 +1,12 @@
 {
   "loading": "Đang tải báo cáo...",
+  "updating": "Đang cập nhật…",
   "noData": "Chưa có dữ liệu",
+  "error": {
+    "generic": "Không tải được báo cáo.",
+    "forbidden": "Bạn chưa có quyền xem báo cáo này. Nếu module báo cáo vừa được thêm, quản trị viên cần chạy lại RBAC seed và bạn có thể phải đăng nhập lại.",
+    "retry": "Thử lại"
+  },
   "range": {
     "from": "Từ ngày",
     "to": "Đến ngày",
