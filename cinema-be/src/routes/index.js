@@ -24,7 +24,7 @@ const comboOrderRoutes = require('./comboOrder.routes');
 const voucherRoutes = require('./voucher.routes');
 const promotionRoutes = require('./promotion.routes');
 const reviewRoutes = require('./review.routes');
-const dashboardRoutes = require('./dashboard.routes');
+const reportingRoutes = require('./reporting.routes');
 const employeeRoutes = require('./employee.routes');
 const positionRoutes = require('./position.routes');
 const shiftRoutes = require('./shift.routes');
@@ -96,10 +96,10 @@ router.use('/notification-templates', notificationTemplateRoutes);
 // window, cancellation cutoff, currency, tax, max seats, refund policy), gated by
 // systemConfig.* and branch-scoped for a Branch Admin.
 router.use('/system-config', systemConfigRoutes);
+router.use('/reports', reportingRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);
-router.use('/', dashboardRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice
 router.use('/', bookingRoutes);

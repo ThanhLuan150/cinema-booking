@@ -48,7 +48,7 @@ const PERMISSIONS = [
   ['actor.create', 'actor'], ['actor.read', 'actor'], ['actor.update', 'actor'], ['actor.delete', 'actor'],
   ['director.create', 'director'], ['director.read', 'director'],
   ['director.update', 'director'], ['director.delete', 'director'],
-  ['dashboard.view', 'dashboard'], ['dashboard.viewSystem', 'dashboard'],
+  ['report.viewFinancial', 'report'], ['report.viewOperational', 'report'],
   ['position.read', 'position'],
   ['payment.create', 'payment'],
   ['payment.read', 'payment'],
@@ -101,7 +101,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'review.read': 'ALL',
   'employee.create': 'BRANCH', 'employee.read': 'BRANCH', 'employee.update': 'BRANCH', 'employee.delete': 'BRANCH',
   'actor.read': 'ALL', 'director.read': 'ALL',
-  'dashboard.view': 'BRANCH',
+  'report.viewFinancial': 'BRANCH', 'report.viewOperational': 'BRANCH',
   'position.read': 'ALL',
   'payment.create': 'BRANCH',
   'payment.read': 'BRANCH',
@@ -117,8 +117,6 @@ const BRANCH_ADMIN_PERMISSIONS = {
   // QR scanner devices & branch entrances are per-branch equipment the Branch Admin manages.
   'entrance.create': 'BRANCH', 'entrance.read': 'BRANCH', 'entrance.update': 'BRANCH', 'entrance.delete': 'BRANCH',
   'device.create': 'BRANCH', 'device.read': 'BRANCH', 'device.update': 'BRANCH', 'device.delete': 'BRANCH',
-  // Branch Admin oversees Customer Service: full support-ticket authority in their own branch,
-  // plus the ability to look up a customer account (accounts aren't branch-scoped data).
   'user.read': 'ALL',
   'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
@@ -133,11 +131,8 @@ const EMPLOYEE_PERMISSIONS = {
   'review.read': 'ALL',
   'room.read': 'ALL', 'seat.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
-  // Own work schedule only — see the Ticket 04 note against auto-restricting this per Position.
+  'report.viewOperational': 'BRANCH',
   'shiftAssignment.read': 'OWN',
-  // Any staffed employee may report/view a maintenance issue at their own branch ("Phát hiện
-  // lỗi"); actually working a ticket (assign/start/resolve/close) is gated further below, either
-  // to Branch Admin or, for start/resolve, to the MAINTENANCE_STAFF position (see seedPositions.js).
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH',
 };
 

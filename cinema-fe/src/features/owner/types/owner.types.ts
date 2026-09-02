@@ -2,19 +2,6 @@ import type { DISCOUNT_TYPE } from '@/constants/discountType';
 import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
 import type { MAINTENANCE_RESOURCE_TYPE } from '@/constants/maintenanceResourceType';
 
-export interface RevenueByDay {
-  date: string;
-  total: number;
-}
-
-export interface OwnerDashboardStats {
-  revenue: number;
-  totalTicketsSold: number;
-  occupancyRate: number;
-  scheduleCount: number;
-  revenueByDay: RevenueByDay[];
-}
-
 export interface GenerateSeatMapPayload {
   rows: string[];
   seatsPerRow: number;

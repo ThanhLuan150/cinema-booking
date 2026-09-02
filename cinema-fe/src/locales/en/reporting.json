@@ -1,0 +1,58 @@
+{
+  "loading": "Loading report...",
+  "noData": "No data yet",
+  "range": {
+    "from": "From",
+    "to": "To",
+    "reset": "All time"
+  },
+  "stats": {
+    "netRevenue": "Net revenue",
+    "branches": "Branches",
+    "employees": "Employees",
+    "movies": "Movies",
+    "showtimes": "Showtimes",
+    "bookings": "Bookings",
+    "tickets": "Tickets"
+  },
+  "breakdown": {
+    "title": "Revenue breakdown",
+    "ticketRevenue": "Ticket revenue",
+    "comboRevenue": "Combo revenue",
+    "discount": "Discount",
+    "refund": "Refund",
+    "netRevenue": "Net revenue"
+  },
+  "refunds": {
+    "title": "Refunds",
+    "completedCount": "completed refunds",
+    "status": {
+      "REQUESTED": "Requested",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed"
+    }
+  },
+  "byBranch": {
+    "title": "Revenue by branch"
+  },
+  "topMovies": {
+    "title": "Top movies",
+    "movie": "Movie",
+    "ticketsSold": "Tickets sold",
+    "revenue": "Revenue"
+  },
+  "byDay": {
+    "title": "Revenue by day"
+  },
+  "operational": {
+    "title": "Today at your branch",
+    "showtimesToday": "Showtimes today",
+    "ticketsIssuedToday": "Tickets issued today",
+    "ticketsCheckedInToday": "Checked in today",
+    "pendingComboOrders": "Combo orders in queue",
+    "openMaintenance": "Open maintenance"
+  }
+}

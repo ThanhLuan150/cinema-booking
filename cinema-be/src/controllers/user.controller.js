@@ -1,9 +1,6 @@
 const userRepository = require('../repositories/user.repository');
 const employeeRepository = require('../repositories/employee.repository');
-const roleRepository = require('../repositories/role.repository');
-const rolePermissionRepository = require('../repositories/rolePermission.repository');
-const positionRepository = require('../repositories/position.repository');
-const positionPermissionRepository = require('../repositories/positionPermission.repository');
+const permissionService = require('../services/permission.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // Employees additionally need to know which cinema they're staffed at, since every
@@ -43,25 +40,13 @@ async function updateMe(req, res) {
   res.json(await toProfileJson(account));
 }
 async function myPermissions(req, res) {
-  const role = await roleRepository.findByLegacyNumber(req.account.role);
-  if (!role) return res.status(403).json({ message: 'Forbidden' });
+  const resolved = await permissionService.resolvePermissionCodes({
+    accountId: req.account.accountId,
+    role: req.account.role,
+  });
+  if (!resolved) return res.status(403).json({ message: 'Forbidden' });
 
-  const permissionCodes = new Set(await rolePermissionRepository.findPermissionCodesForRole(role.id));
-
-  let positionCode = null;
-  if (role.code === 'EMPLOYEE') {
-    const employee = await employeeRepository.findByAccountId(req.account.accountId);
-    if (employee && employee.status === 1 && employee.position_id) {
-      const position = await positionRepository.findById(employee.position_id);
-      if (position) {
-        positionCode = position.code;
-        const positionCodes = await positionPermissionRepository.findPermissionCodesForPosition(position.id);
-        for (const code of positionCodes) permissionCodes.add(code);
-      }
-    }
-  }
-
-  res.json({ roleCode: role.code, positionCode, permissions: [...permissionCodes] });
+  res.json({ roleCode: resolved.roleCode, positionCode: resolved.positionCode, permissions: [...resolved.codes] });
 }
 
 // GET /api/users?page=&limit=&q= (user.read permission) — q searches name/email/phone, used by

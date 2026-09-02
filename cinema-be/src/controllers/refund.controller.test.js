@@ -18,8 +18,9 @@ function mockRes() {
 
 function showtimeParts(hoursFromNow) {
   const dt = new Date(Date.now() + hoursFromNow * 60 * 60 * 1000);
-  const movie_date = dt.toISOString().split('T')[0];
-  const time_begin = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+  const pad = (n) => String(n).padStart(2, '0');
+  const movie_date = `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  const time_begin = `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
   return { movie_date, time_begin };
 }
 

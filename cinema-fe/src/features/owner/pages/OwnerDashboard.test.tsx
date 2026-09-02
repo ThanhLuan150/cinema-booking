@@ -23,9 +23,12 @@ vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermissio
 const useMyCinemasMock = vi.fn();
 vi.mock('../hooks/useMyCinemas', () => ({ useMyCinemas: (...args: unknown[]) => useMyCinemasMock(...args) }));
 
-const useOwnerDashboardStatsMock = vi.fn();
-vi.mock('../hooks/useOwnerDashboardStats', () => ({
-  useOwnerDashboardStats: (...args: unknown[]) => useOwnerDashboardStatsMock(...args),
+const financialReportMock = vi.fn();
+vi.mock('@/features/reporting/components/FinancialReport', () => ({
+  FinancialReport: (props: Record<string, unknown>) => {
+    financialReportMock(props);
+    return <div data-testid="financial-report" />;
+  },
 }));
 
 import OwnerDashboard from './OwnerDashboard';
@@ -47,47 +50,20 @@ function renderPage() {
 describe('OwnerDashboard', () => {
   beforeEach(() => {
     useMyCinemasMock.mockReset();
-    useOwnerDashboardStatsMock.mockReset();
+    financialReportMock.mockReset();
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A' }] } });
   });
 
-  it('shows a loading message while stats are unavailable', () => {
-    useOwnerDashboardStatsMock.mockReturnValue({ data: undefined });
+  it('renders the branch-scoped financial report', () => {
     renderPage();
-    expect(screen.getByText('dashboard.loading')).toBeInTheDocument();
+    expect(screen.getByTestId('financial-report')).toBeInTheDocument();
+    expect(financialReportMock).toHaveBeenCalledWith({ variant: 'branch', branchId: '' });
   });
 
-  it('renders stat tiles once loaded', () => {
-    useOwnerDashboardStatsMock.mockReturnValue({
-      data: {
-        revenue: 500000,
-        totalTicketsSold: 40,
-        occupancyRate: 75,
-        scheduleCount: 5,
-        revenueByDay: [{ date: '2026-01-01', total: 500000 }],
-      },
-    });
-    renderPage();
-    expect(screen.getByText('40')).toBeInTheDocument();
-    expect(screen.getByText('5')).toBeInTheDocument();
-    expect(screen.getByText('75%')).toBeInTheDocument();
-  });
-
-  it('shows an empty state when there is no revenue-by-day data', () => {
-    useOwnerDashboardStatsMock.mockReturnValue({
-      data: { revenue: 0, totalTicketsSold: 0, occupancyRate: 0, scheduleCount: 0, revenueByDay: [] },
-    });
-    renderPage();
-    expect(screen.getByText('dashboard.noData')).toBeInTheDocument();
-  });
-
-  it('requests stats for the cinema selected from the dropdown', () => {
-    useOwnerDashboardStatsMock.mockReturnValue({
-      data: { revenue: 0, totalTicketsSold: 0, occupancyRate: 0, scheduleCount: 0, revenueByDay: [] },
-    });
+  it('scopes the report to the cinema selected from the dropdown', () => {
     renderPage();
     fireEvent.click(screen.getByText('dashboard.allMyCinemas'));
     fireEvent.click(screen.getByText('Cinema A'));
-    expect(useOwnerDashboardStatsMock).toHaveBeenLastCalledWith('1');
+    expect(financialReportMock).toHaveBeenLastCalledWith({ variant: 'branch', branchId: '1' });
   });
 });

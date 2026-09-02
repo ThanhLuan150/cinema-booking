@@ -40,8 +40,8 @@ describe('routes/index composition', () => {
     expect(res.status).toBe(401); // reached booking route's auth guard
   });
 
-  it('mounts the dashboard routes', async () => {
-    const res = await request(app).get('/api/admin/dashboard');
+  it('mounts the reporting routes', async () => {
+    const res = await request(app).get('/api/reports/financial');
     expect(res.status).toBe(401);
   });
 

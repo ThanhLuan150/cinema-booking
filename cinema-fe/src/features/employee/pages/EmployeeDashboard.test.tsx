@@ -16,7 +16,19 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: { role: 3 } }) }));
-vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
+
+const hasPermissionMock = vi.fn();
+vi.mock('@/hooks/usePermissions', () => ({
+  usePermissions: () => ({ hasPermission: (code: string) => hasPermissionMock(code) }),
+}));
+
+const operationalSummaryMock = vi.fn();
+vi.mock('@/features/reporting/components/OperationalSummary', () => ({
+  OperationalSummary: (props: Record<string, unknown>) => {
+    operationalSummaryMock(props);
+    return <div data-testid="operational-summary" />;
+  },
+}));
 
 const useMySchedulesMock = vi.fn();
 vi.mock('../hooks/useMySchedules', () => ({ useMySchedules: (...args: unknown[]) => useMySchedulesMock(...args) }));
@@ -61,6 +73,9 @@ describe('EmployeeDashboard', () => {
     useMoviesMock.mockReset();
     useRoomsListMock.mockReset();
     navigateMock.mockReset();
+    hasPermissionMock.mockReset();
+    operationalSummaryMock.mockReset();
+    hasPermissionMock.mockReturnValue(true);
     useMoviesMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Movie A' }] } });
     useRoomsListMock.mockReturnValue({ data: [{ id: 1, name: 'Room 1' }] });
   });
@@ -83,6 +98,20 @@ describe('EmployeeDashboard', () => {
     renderPage();
     expect(screen.getByText('Movie A')).toBeInTheDocument();
     expect(screen.getByText('Room 1')).toBeInTheDocument();
+  });
+
+  it('shows the operational summary when the employee holds report.viewOperational', () => {
+    useMySchedulesMock.mockReturnValue({ data: { data: [] } });
+    renderPage();
+    expect(screen.getByTestId('operational-summary')).toBeInTheDocument();
+    expect(hasPermissionMock).toHaveBeenCalledWith('report.viewOperational');
+  });
+
+  it('hides the operational summary without that permission', () => {
+    hasPermissionMock.mockImplementation((code: string) => code !== 'report.viewOperational');
+    useMySchedulesMock.mockReturnValue({ data: { data: [] } });
+    renderPage();
+    expect(screen.queryByTestId('operational-summary')).not.toBeInTheDocument();
   });
 
   it('navigates to counter sale with the schedule id when clicking sell tickets on a row', () => {
