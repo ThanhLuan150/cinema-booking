@@ -29,7 +29,7 @@ function BookingManagementPage() {
   const [refundBookingId, setRefundBookingId] = useState<number | null>(null);
   const [refundReason, setRefundReason] = useState('');
   const [changeShowtimeBooking, setChangeShowtimeBooking] = useState<Booking | null>(null);
-  const { data } = useBookings({ page, limit: DEFAULT_PAGE_SIZE, accountId: customer?.id });
+  const { data, isLoading } = useBookings({ page, limit: DEFAULT_PAGE_SIZE, accountId: customer?.id });
   const bookings = data?.data ?? [];
   const { hasPermission } = usePermissions();
   const cancelMutation = useCancelBooking();
@@ -84,7 +84,7 @@ function BookingManagementPage() {
   };
 
   return (
-    <AdminLayout breadcrumb={t('bookingManagement.breadcrumb')}>
+    <AdminLayout breadcrumb={t('bookingManagement.breadcrumb')} loading={isLoading}>
       {canSearchCustomer && (
         <div className="mb-4 max-w-sm">
           <CustomerPicker selected={customer} onSelect={setCustomer} />

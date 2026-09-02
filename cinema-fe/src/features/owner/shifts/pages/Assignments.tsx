@@ -69,7 +69,7 @@ function ShiftAssignmentList() {
     [employeeFilter, dateFilter, statusFilter],
   );
 
-  const { data } = useShiftAssignments(selectedbranchId || undefined, filters, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useShiftAssignments(selectedbranchId || undefined, filters, page, DEFAULT_PAGE_SIZE);
   const assignments = data?.data ?? [];
 
   const employeeById = useMemo(() => new Map(employees.map((employee) => [employee.id, employee])), [employees]);
@@ -131,7 +131,7 @@ function ShiftAssignmentList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('shiftAssignments.breadcrumb')}>
+    <AdminLayout breadcrumb={t('shiftAssignments.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select

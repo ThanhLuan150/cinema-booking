@@ -16,7 +16,7 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 function AdminPaymentsList() {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
-  const { data } = useAdminPayments({ page, limit: DEFAULT_PAGE_SIZE });
+  const { data, isLoading } = useAdminPayments({ page, limit: DEFAULT_PAGE_SIZE });
   const payments = data?.data ?? [];
   const requestRefundMutation = useRequestPaymentRefund();
   const confirmRefundMutation = useConfirmPaymentRefund();
@@ -48,7 +48,7 @@ function AdminPaymentsList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('payments.breadcrumb')}>
+    <AdminLayout breadcrumb={t('payments.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('payments.headers', { returnObjects: true }) as unknown as string[]}>
         {payments.map((payment) => {
           const status = PAYMENT_STATUS_META[payment.status];

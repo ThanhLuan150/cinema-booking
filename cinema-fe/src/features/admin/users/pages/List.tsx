@@ -24,7 +24,7 @@ const ROLE_KEY: Record<number, string> = {
 const List = () => {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
-  const { data } = useAdminUsers(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useAdminUsers(page, DEFAULT_PAGE_SIZE);
   const users = data?.data ?? [];
   const approveUserMutation = useApproveUser();
 
@@ -41,7 +41,7 @@ const List = () => {
   );
 
   return (
-    <AdminLayout breadcrumb={t('users.list.breadcrumb')}>
+    <AdminLayout breadcrumb={t('users.list.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('users.list.headers', { returnObjects: true }) as unknown as string[]}>
         {users.map((user) => (
           <tr key={user.id}>

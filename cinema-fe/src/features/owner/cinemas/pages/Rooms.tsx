@@ -198,7 +198,7 @@ function Rooms() {
     }
   }, [branchIdParam, cinemas]);
 
-  const { data: roomsPage } = useRoomsByCinema(selectedbranchId || undefined);
+  const { data: roomsPage, isLoading } = useRoomsByCinema(selectedbranchId || undefined);
   const rooms = useMemo(() => roomsPage?.data ?? [], [roomsPage]);
   const { showAddRoomModal, seatMapRoomId, editingRoomId } = useAppSelector((state) => state.ownerCinemas);
   const createRoomMutation = useCreateRoom();
@@ -280,7 +280,7 @@ function Rooms() {
   const roomStatusOptions = ROOM_STATUSES.map((status) => ({ label: t(`rooms.statusLabels.${status}`), value: status }));
 
   return (
-    <AdminLayout breadcrumb={t('rooms.breadcrumb')}>
+    <AdminLayout breadcrumb={t('rooms.breadcrumb')} loading={isLoading}>
       <div className="mb-4 max-w-xs">
         <Select
           value={selectedbranchId}

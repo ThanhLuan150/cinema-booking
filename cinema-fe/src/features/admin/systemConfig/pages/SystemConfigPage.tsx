@@ -149,7 +149,7 @@ function SystemConfigPage() {
   };
 
   return (
-    <AdminLayout breadcrumb={t('systemConfig.breadcrumb')}>
+    <AdminLayout breadcrumb={t('systemConfig.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-end gap-3">
         <div className="max-w-xs flex-1">
           <Select

@@ -62,7 +62,7 @@ function EmployeeList() {
     }
   }, [cinemas, selectedbranchId, isAdmin, dispatch]);
 
-  const { data } = useMyEmployees(isAllBranches ? undefined : selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE, {
+  const { data, isLoading } = useMyEmployees(isAllBranches ? undefined : selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE, {
     enabled: Boolean(selectedbranchId),
   });
   const employees = data?.data ?? [];
@@ -137,7 +137,7 @@ function EmployeeList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('employees.breadcrumb')}>
+    <AdminLayout breadcrumb={t('employees.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select

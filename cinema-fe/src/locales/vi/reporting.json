@@ -1,0 +1,64 @@
+{
+  "loading": "Đang tải báo cáo...",
+  "updating": "Đang cập nhật…",
+  "noData": "Chưa có dữ liệu",
+  "error": {
+    "generic": "Không tải được báo cáo.",
+    "forbidden": "Bạn chưa có quyền xem báo cáo này. Nếu module báo cáo vừa được thêm, quản trị viên cần chạy lại RBAC seed và bạn có thể phải đăng nhập lại.",
+    "retry": "Thử lại"
+  },
+  "range": {
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "reset": "Toàn thời gian"
+  },
+  "stats": {
+    "netRevenue": "Doanh thu thuần",
+    "branches": "Chi nhánh",
+    "employees": "Nhân viên",
+    "movies": "Phim",
+    "showtimes": "Suất chiếu",
+    "bookings": "Đơn đặt vé",
+    "tickets": "Vé"
+  },
+  "breakdown": {
+    "title": "Cơ cấu doanh thu",
+    "ticketRevenue": "Doanh thu vé",
+    "comboRevenue": "Doanh thu combo",
+    "discount": "Giảm giá",
+    "refund": "Hoàn tiền",
+    "netRevenue": "Doanh thu thuần"
+  },
+  "refunds": {
+    "title": "Hoàn tiền",
+    "completedCount": "yêu cầu đã hoàn tất",
+    "status": {
+      "REQUESTED": "Đã yêu cầu",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Đã từ chối",
+      "PROCESSING": "Đang xử lý",
+      "COMPLETED": "Hoàn tất",
+      "FAILED": "Thất bại"
+    }
+  },
+  "byBranch": {
+    "title": "Doanh thu theo chi nhánh"
+  },
+  "topMovies": {
+    "title": "Phim doanh thu cao nhất",
+    "movie": "Phim",
+    "ticketsSold": "Vé đã bán",
+    "revenue": "Doanh thu"
+  },
+  "byDay": {
+    "title": "Doanh thu theo ngày"
+  },
+  "operational": {
+    "title": "Hôm nay tại chi nhánh",
+    "showtimesToday": "Suất chiếu hôm nay",
+    "ticketsIssuedToday": "Vé phát hành hôm nay",
+    "ticketsCheckedInToday": "Đã soát vé hôm nay",
+    "pendingComboOrders": "Đơn combo đang chờ",
+    "openMaintenance": "Bảo trì đang mở"
+  }
+}

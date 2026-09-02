@@ -25,7 +25,7 @@ function DirectorList() {
   const { t } = useTranslation('admin');
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
-  const { data } = useDirectors(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useDirectors(page, DEFAULT_PAGE_SIZE);
   const directors = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.adminDirectors);
   const createDirectorMutation = useCreateDirector();
@@ -72,7 +72,7 @@ function DirectorList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('directors.breadcrumb')}>
+    <AdminLayout breadcrumb={t('directors.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('directors.addButton')}
       </Button>

@@ -14,11 +14,11 @@ function formatTime(iso: string) {
 
 function MySchedule() {
   const { t } = useTranslation('employee');
-  const { data } = useMyShiftAssignments();
+  const { data, isLoading } = useMyShiftAssignments();
   const assignments = useMemo(() => data?.data ?? [], [data]);
 
   return (
-    <AdminLayout breadcrumb={t('mySchedule.breadcrumb')}>
+    <AdminLayout breadcrumb={t('mySchedule.breadcrumb')} loading={isLoading}>
       {assignments.length === 0 ? (
         <EmptyState title={t('mySchedule.emptyTitle')} />
       ) : (

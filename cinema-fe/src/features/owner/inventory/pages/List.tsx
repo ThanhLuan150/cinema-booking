@@ -108,7 +108,7 @@ function InventoryList() {
   const { data: combosPage } = useOwnerCombos(1, FULL_LIST_FETCH_LIMIT);
   const comboNameById = useMemo(() => new Map((combosPage?.data ?? []).map((c) => [c.id, c.name])), [combosPage]);
 
-  const { data } = useOwnerInventory(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerInventory(page, DEFAULT_PAGE_SIZE);
   const items = data?.data ?? [];
   const { data: alerts } = useInventoryAlerts();
 
@@ -215,7 +215,7 @@ function InventoryList() {
   }, [dispatch]);
 
   return (
-    <AdminLayout breadcrumb={t('inventory.breadcrumb')}>
+    <AdminLayout breadcrumb={t('inventory.breadcrumb')} loading={isLoading}>
       {alerts && alerts.length > 0 && (
         <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-600/40 bg-amber-600/10 px-4 py-3 text-sm text-amber-200">
           <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" />

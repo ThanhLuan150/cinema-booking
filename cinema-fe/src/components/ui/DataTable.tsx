@@ -13,7 +13,7 @@ export function DataTable({ headers, children, emptyMessage }: DataTableProps) {
   const isEmpty = Children.count(children) === 0;
 
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-border">
+    <div className="no-scrollbar w-full overflow-x-auto rounded-xl border border-border">
       <table className="w-full min-w-[900px] border-collapse text-left text-sm text-txt [&_td]:border-b [&_td]:border-border [&_td]:px-4 [&_td]:py-2.5 [&_th]:px-4 [&_th]:py-2.5 [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-white/[0.03]">
         <thead>
           <tr className="bg-surface-raised">

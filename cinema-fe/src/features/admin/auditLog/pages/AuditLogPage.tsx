@@ -70,7 +70,7 @@ function AuditLogPage() {
   const actionLabel = (action: string) => t(`auditLog.actions.${action}`, { defaultValue: action.replace(/_/g, ' ') });
 
   return (
-    <AdminLayout breadcrumb={t('auditLog.breadcrumb')}>
+    <AdminLayout breadcrumb={t('auditLog.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-end gap-3">
         <div className="max-w-xs flex-1">
           <Select

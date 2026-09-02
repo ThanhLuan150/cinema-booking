@@ -218,11 +218,6 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/pricingHoliday/1');
   });
 
-  it('getOwnerDashboard gets /owner/dashboard with branchId param', async () => {
-    await ownerApi.getOwnerDashboard(1);
-    expect(getMock).toHaveBeenCalledWith('/owner/dashboard', { params: { branchId: 1 } });
-  });
-
   it('lookupInvoiceByCode gets /invoice/lookup/:code', async () => {
     await ownerApi.lookupInvoiceByCode('ABC');
     expect(getMock).toHaveBeenCalledWith('/invoice/lookup/ABC');

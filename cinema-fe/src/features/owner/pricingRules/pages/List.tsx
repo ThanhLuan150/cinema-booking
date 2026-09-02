@@ -102,7 +102,7 @@ function PricingRuleList() {
 
   const defaultBranchId = isAdmin ? '' : cinemas.length > 0 ? String(cinemas[0].id) : '';
 
-  const { data } = useOwnerPricingRules(undefined, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerPricingRules(undefined, page, DEFAULT_PAGE_SIZE);
   const rules = useMemo(() => data?.data ?? [], [data]);
   const { showAddModal, editingRuleId } = useAppSelector((state) => state.ownerPricingRules);
   const editingRule = useMemo(() => rules.find((r) => r.id === editingRuleId) ?? null, [rules, editingRuleId]);
@@ -316,7 +316,7 @@ function PricingRuleList() {
   };
 
   return (
-    <AdminLayout breadcrumb={t('pricingRules.breadcrumb')}>
+    <AdminLayout breadcrumb={t('pricingRules.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('pricingRules.addButton')}
       </Button>

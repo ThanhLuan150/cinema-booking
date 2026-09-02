@@ -20,12 +20,12 @@ const List = () => {
   const dispatch = useAppDispatch();
   const isAdmin = useAuthRole() === ROLES.admin;
   const [page, setPage] = useState(1);
-  const { data } = useMyMovies(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useMyMovies(page, DEFAULT_PAGE_SIZE);
   const movies = data?.data ?? [];
   const { showAddModal, showEditModal, showScheduleModal, activeMovieId } = useAppSelector((state) => state.adminMovies);
 
   return (
-    <AdminLayout breadcrumb={t('movies.list.breadcrumb')}>
+    <AdminLayout breadcrumb={t('movies.list.breadcrumb')} loading={isLoading}>
       {/* Movie Catalog CRUD is Super Admin only — a branch admin only ever views it. */}
       {isAdmin && (
         <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>

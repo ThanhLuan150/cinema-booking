@@ -23,7 +23,7 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 function AdminRefundsList() {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
-  const { data } = useAdminRefunds({ page, limit: DEFAULT_PAGE_SIZE });
+  const { data, isLoading } = useAdminRefunds({ page, limit: DEFAULT_PAGE_SIZE });
   const refunds = data?.data ?? [];
   const { hasPermission } = usePermissions();
 
@@ -99,7 +99,7 @@ function AdminRefundsList() {
   const isSubmittingReason = rejectMutation.isPending || failMutation.isPending;
 
   return (
-    <AdminLayout breadcrumb={t('refunds.breadcrumb')}>
+    <AdminLayout breadcrumb={t('refunds.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('refunds.headers', { returnObjects: true }) as unknown as string[]}>
         {refunds.map((refund) => {
           const status = REFUND_STATUS_META[refund.status];

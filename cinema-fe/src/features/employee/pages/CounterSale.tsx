@@ -22,7 +22,7 @@ function CounterSale() {
   const { t } = useTranslation('employee');
   const [searchParams] = useSearchParams();
   const { data: currentUser } = useCurrentUser();
-  const { data: schedulesPage } = useMySchedules();
+  const { data: schedulesPage, isLoading } = useMySchedules();
   const { data: moviesPage } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
   const movieNameById = useMemo(
     () => new Map((moviesPage?.data ?? []).map((movie) => [movie.id, movie.name])),
@@ -99,7 +99,7 @@ function CounterSale() {
   }, [scheduleId, selectedTicketIds, customerAccountId, currentUser, totalPrice, createCounterSaleMutation, t]);
 
   return (
-    <AdminLayout breadcrumb={t('counterSale.breadcrumb')}>
+    <AdminLayout breadcrumb={t('counterSale.breadcrumb')} loading={isLoading}>
       <div className="max-w-md">
         <Select
           label={t('counterSale.scheduleLabel')}

@@ -41,7 +41,7 @@ function HolidayList() {
 
   const defaultBranchId = isAdmin ? '' : cinemas.length > 0 ? String(cinemas[0].id) : '';
 
-  const { data } = useOwnerHolidays(undefined, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useOwnerHolidays(undefined, page, DEFAULT_PAGE_SIZE);
   const holidays = data?.data ?? [];
   const { showAddModal } = useAppSelector((state) => state.ownerHolidays);
   const createHolidayMutation = useCreateHoliday();
@@ -84,7 +84,7 @@ function HolidayList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('holidays.breadcrumb')}>
+    <AdminLayout breadcrumb={t('holidays.breadcrumb')} loading={isLoading}>
       <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
         {t('holidays.addButton')}
       </Button>

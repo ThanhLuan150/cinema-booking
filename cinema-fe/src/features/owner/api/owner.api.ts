@@ -25,7 +25,6 @@ import type {
   GenerateSeatMapPayload,
   HolidayFormValues,
   LookedUpInvoice,
-  OwnerDashboardStats,
   PricingRuleFormValues,
   VoucherFormValues,
 } from '../types/owner.types';
@@ -173,9 +172,6 @@ export const createHoliday = (payload: Omit<HolidayFormValues, 'branch_id'> & { 
   apiClient.post('/pricingHoliday', payload);
 
 export const deleteHoliday = (id: number | string) => apiClient.delete(`/pricingHoliday/${id}`);
-
-export const getOwnerDashboard = (branchId?: number | string) =>
-  apiClient.get<OwnerDashboardStats>('/owner/dashboard', { params: { branchId } }).then((res) => res.data);
 
 export const lookupInvoiceByCode = (code: string) =>
   apiClient.get<LookedUpInvoice>(`/invoice/lookup/${code}`).then((res) => res.data);

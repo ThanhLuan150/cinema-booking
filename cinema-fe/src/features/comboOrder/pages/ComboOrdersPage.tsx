@@ -33,7 +33,7 @@ function ComboOrdersPage() {
 
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
-  const { data } = useComboOrders({
+  const { data, isLoading } = useComboOrders({
     page,
     limit: DEFAULT_PAGE_SIZE,
     status: (status || undefined) as ComboOrderStatus | undefined,
@@ -157,7 +157,7 @@ function ComboOrdersPage() {
   const totalQuantity = Object.values(quantities).reduce((sum, quantity) => sum + quantity, 0);
 
   return (
-    <AdminLayout breadcrumb={t('breadcrumb')}>
+    <AdminLayout breadcrumb={t('breadcrumb')} loading={isLoading}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="w-56">
           <Select

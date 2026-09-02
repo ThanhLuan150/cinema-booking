@@ -13,7 +13,7 @@ import { useDeleteReview, useHideReview } from '../hooks/useReviewModeration';
 function AdminReviews() {
   const { t } = useTranslation('admin');
   const [page, setPage] = useState(1);
-  const { data } = useAdminReviews(page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useAdminReviews(page, DEFAULT_PAGE_SIZE);
   const reviews = data?.data ?? [];
   const hideMutation = useHideReview();
   const deleteMutation = useDeleteReview();
@@ -44,7 +44,7 @@ function AdminReviews() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('reviews.breadcrumb')}>
+    <AdminLayout breadcrumb={t('reviews.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('reviews.headers', { returnObjects: true }) as unknown as string[]}>
         {reviews.map((review) => (
           <tr key={review.id}>

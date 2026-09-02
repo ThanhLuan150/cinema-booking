@@ -1,5 +1,8 @@
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/cn';
+import { useAdminShell } from '@/contexts';
 
 export interface PaginationProps {
   page: number;
@@ -9,11 +12,17 @@ export interface PaginationProps {
 
 export function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
   const { t } = useTranslation('common');
+  const shell = useAdminShell();
 
   if (totalPages <= 1) return null;
 
-  return (
-    <div className="mt-8 flex items-center justify-center gap-4">
+  const bar = (
+    <div
+      className={cn(
+        'flex items-center justify-center gap-4',
+        shell ? 'border-t border-border bg-surface px-6 py-3 md:px-8' : 'mt-8',
+      )}
+    >
       <Button
         type="button"
         variant="outline"
@@ -39,4 +48,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
       </Button>
     </div>
   );
+
+  if (!shell) return bar;
+  return shell.footerEl ? createPortal(bar, shell.footerEl) : null;
 }

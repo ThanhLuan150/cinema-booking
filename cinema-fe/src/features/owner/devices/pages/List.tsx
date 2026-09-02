@@ -84,7 +84,7 @@ function DevicesList() {
   const branchParam = isAllBranches ? undefined : selectedbranchId || undefined;
   const listEnabled = Boolean(selectedbranchId);
 
-  const { data: devicesPage } = useDevices(
+  const { data: devicesPage, isLoading } = useDevices(
     branchParam,
     page,
     DEFAULT_PAGE_SIZE,
@@ -244,7 +244,7 @@ function DevicesList() {
   const formatLastSeen = (value: string | null) => (value ? new Date(value).toLocaleString() : t('devices.never'));
 
   return (
-    <AdminLayout breadcrumb={t('devices.breadcrumb')}>
+    <AdminLayout breadcrumb={t('devices.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="max-w-xs flex-1">
           <Select

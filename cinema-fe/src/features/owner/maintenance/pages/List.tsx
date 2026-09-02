@@ -101,7 +101,7 @@ function MaintenanceList() {
     }
   }, [cinemas, selectedbranchId, isAdmin, isEmployee, currentUser, dispatch]);
 
-  const { data } = useOwnerMaintenance(isAllBranches ? undefined : selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE, statusFilter || undefined, {
+  const { data, isLoading } = useOwnerMaintenance(isAllBranches ? undefined : selectedbranchId || undefined, page, DEFAULT_PAGE_SIZE, statusFilter || undefined, {
     enabled: Boolean(selectedbranchId),
   });
   const requests = useMemo(() => data?.data ?? [], [data]);
@@ -247,7 +247,7 @@ function MaintenanceList() {
   );
 
   return (
-    <AdminLayout breadcrumb={t('maintenance.breadcrumb')}>
+    <AdminLayout breadcrumb={t('maintenance.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         {!isEmployee && (
           <div className="max-w-xs flex-1">

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -17,9 +17,15 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
 
-const useAdminDashboardStatsMock = vi.fn();
-vi.mock('../hooks/useAdminDashboardStats', () => ({ useAdminDashboardStats: () => useAdminDashboardStatsMock() }));
+const financialReportMock = vi.fn();
+vi.mock('@/features/reporting/components/FinancialReport', () => ({
+  FinancialReport: (props: Record<string, unknown>) => {
+    financialReportMock(props);
+    return <div data-testid="financial-report" />;
+  },
+}));
 
 import AdminDashboard from './AdminDashboard';
 
@@ -38,44 +44,14 @@ function renderPage() {
 }
 
 describe('AdminDashboard', () => {
-  beforeEach(() => useAdminDashboardStatsMock.mockReset());
-
-  it('shows a loading message while stats are unavailable', () => {
-    useAdminDashboardStatsMock.mockReturnValue({ data: undefined });
+  it('renders the system-wide financial report', () => {
     renderPage();
-    expect(screen.getByText('dashboard.loading')).toBeInTheDocument();
+    expect(screen.getByTestId('financial-report')).toBeInTheDocument();
+    expect(financialReportMock).toHaveBeenCalledWith(expect.objectContaining({ variant: 'system' }));
   });
 
-  it('renders stat tiles once loaded', () => {
-    useAdminDashboardStatsMock.mockReturnValue({
-      data: {
-        totalRevenue: 500000,
-        totalUsers: 10,
-        totalOwners: 2,
-        totalCinemas: 3,
-        totalTicketsSold: 40,
-        totalTransactions: 15,
-        revenueByDay: [{ date: '2026-01-01', total: 500000 }],
-      },
-    });
+  it('does not scope the report to a branch', () => {
     renderPage();
-    expect(screen.getByText('10')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
-  });
-
-  it('shows an empty state when there is no revenue data', () => {
-    useAdminDashboardStatsMock.mockReturnValue({
-      data: {
-        totalRevenue: 0,
-        totalUsers: 0,
-        totalOwners: 0,
-        totalCinemas: 0,
-        totalTicketsSold: 0,
-        totalTransactions: 0,
-        revenueByDay: [],
-      },
-    });
-    renderPage();
-    expect(screen.getByText('dashboard.noData')).toBeInTheDocument();
+    expect(financialReportMock).not.toHaveBeenCalledWith(expect.objectContaining({ branchId: expect.anything() }));
   });
 });
