@@ -1,6 +1,7 @@
 const comboOrderRepository = require('../repositories/comboOrder.repository');
 const comboRepository = require('../repositories/combo.repository');
 const bookingRepository = require('../repositories/booking.repository');
+const cashierShiftService = require('../services/cashierShift.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // BRANCH: caller must have access to the order's branch (owner or staffed employee, same as
@@ -105,7 +106,10 @@ async function payOrder(req, res) {
   if (!(await canAccessOrder(req, order))) return res.status(403).json({ message: 'Forbidden' });
 
   const method = req.body?.method === 'MOMO' ? 'MOMO' : 'CASH';
-  const updated = await comboOrderRepository.markPaid(order.id, method);
+  const openShift = await cashierShiftService.getOpenShiftForAccount(req.account?.accountId);
+  const updated = await comboOrderRepository.markPaid(order.id, method, {
+    shiftId: openShift ? openShift.id : null,
+  });
   if (!updated) {
     return res.status(400).json({
       message: `Only a PENDING order can be paid (current status: ${order.status})`,
@@ -168,6 +172,13 @@ async function cancelOrder(req, res) {
   const order = await comboOrderRepository.findById(req.params.id);
   if (!order) return res.status(404).json({ message: 'Combo order not found' });
   if (!(await canAccessOrder(req, order))) return res.status(403).json({ message: 'Forbidden' });
+
+  if (await cashierShiftService.isTransactionLocked(order.shift_id)) {
+    return res.status(409).json({
+      message: 'This order was paid in a shift that is already closed and can no longer be changed',
+      code: 'SHIFT_CLOSED',
+    });
+  }
 
   const updated = await comboOrderRepository.cancel(order.id, req.body?.reason);
   if (!updated) {

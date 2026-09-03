@@ -1,0 +1,45 @@
+{
+  "breadcrumb": "Ca thu ngân",
+  "statusFilterPlaceholder": "Tất cả trạng thái",
+  "status": {
+    "open": "Đang mở",
+    "closed": "Đã đóng"
+  },
+  "headers": {
+    "id": "ID",
+    "employee": "Thu ngân",
+    "openedAt": "Giờ mở ca",
+    "closedAt": "Giờ đóng ca",
+    "openingCash": "Tiền quỹ đầu ca",
+    "expectedCash": "Tiền dự kiến",
+    "actualCash": "Tiền thực đếm",
+    "difference": "Chênh lệch",
+    "status": "Trạng thái",
+    "actions": "Thao tác"
+  },
+  "currentShift": {
+    "title": "Ca thu ngân của tôi",
+    "noShiftOpen": "Bạn chưa mở ca làm việc. Hãy đếm tiền quỹ đầu ca và mở ca trước khi bán vé.",
+    "openButton": "Mở ca",
+    "openModalTitle": "Mở ca thu ngân",
+    "openingCashLabel": "Tiền quỹ đầu ca",
+    "openingCashPlaceholder": "Số tiền đầu ca đã đếm",
+    "noteLabel": "Ghi chú (tùy chọn)",
+    "openSubmit": "Mở ca",
+    "openSuccess": "Đã mở ca.",
+    "openedAt": "Mở lúc {{time}}",
+    "closeButton": "Đóng ca",
+    "closeModalTitle": "Đóng ca thu ngân",
+    "actualCashLabel": "Tiền mặt thực đếm",
+    "actualCashPlaceholder": "Số tiền mặt đã kiểm đếm",
+    "closeNoteLabel": "Ghi chú (tùy chọn)",
+    "closeSubmit": "Đóng ca",
+    "closeSuccess": "Đã đóng ca."
+  },
+  "reconciliation": {
+    "openingCash": "Tiền quỹ đầu ca",
+    "cashSales": "Doanh thu tiền mặt",
+    "cashRefunds": "Hoàn tiền mặt",
+    "expectedCash": "Tiền dự kiến"
+  }
+}

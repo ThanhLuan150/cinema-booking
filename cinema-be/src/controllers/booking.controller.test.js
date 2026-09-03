@@ -14,6 +14,7 @@ const ComboOrder = require('../models/ComboOrder');
 const Promotion = require('../models/Promotion');
 const paymentRepository = require('../repositories/payment.repository');
 const systemConfigService = require('../services/systemConfig.service');
+const CashierShift = require('../models/CashierShift');
 
 function mockRes() {
   const res = {};
@@ -1336,6 +1337,91 @@ describe('POST /api/bookings/:id/cancel', () => {
     await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 5 }, permissionScope: 'BRANCH' }, res);
 
     expect(res.status).not.toHaveBeenCalledWith(403);
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+  });
+
+  // Ticket 30 — "Không cho sửa giao dịch sau khi Shift đã đóng": a counter-sold booking's
+  // Payment is stamped with the cashier's shift; once that shift is reconciled the sale is
+  // frozen and can no longer be voided through cancellation.
+  it('refuses to cancel a booking whose counter-sale payment was made in a now-closed shift', async () => {
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    await CashierShift.create({
+      id: 1,
+      employee_id: 9,
+      account_id: 9,
+      branch_id: 1,
+      opening_cash: 500000,
+      status: 'CLOSED',
+      closed_at: new Date(),
+    });
+    await Payment.create({
+      id: 1,
+      code: 'BK-1',
+      booking_id: 1,
+      account_id: 1,
+      branch_id: 1,
+      type: 'COUNTER',
+      method: 'CASH',
+      amount: 1,
+      status: 'PAID',
+      shift_id: 1,
+    });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'SHIFT_CLOSED' }));
+    expect((await Booking.findOne({ id: 1 })).status).toBe('PAID');
+  });
+
+  it('still allows cancelling a counter-sold booking while its shift is open', async () => {
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    await CashierShift.create({ id: 1, employee_id: 9, account_id: 9, branch_id: 1, opening_cash: 500000, status: 'OPEN' });
+    await Payment.create({
+      id: 1,
+      code: 'BK-1',
+      booking_id: 1,
+      account_id: 1,
+      branch_id: 1,
+      type: 'COUNTER',
+      method: 'CASH',
+      amount: 1,
+      status: 'PAID',
+      shift_id: 1,
+    });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+
+    expect(res.status).not.toHaveBeenCalledWith(409);
+    expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
+  });
+
+  it('still allows cancelling an online booking, which carries no shift at all', async () => {
+    const { movie_date, time_begin } = dateAt(5);
+    await Schedule.create({ id: 1, movie_id: 1, room_id: 1, movie_date, time_begin, time_end: '23:59', price: 1 });
+    await Booking.create({ id: 1, code: 'BK-1', account_id: 1, schedule_id: 1, branch_id: 1, total_price: 1, status: 'PAID' });
+    await Payment.create({
+      id: 1,
+      code: 'BK-1',
+      booking_id: 1,
+      account_id: 1,
+      branch_id: 1,
+      type: 'ONLINE',
+      method: 'MOMO',
+      amount: 1,
+      status: 'PAID',
+    });
+
+    const res = mockRes();
+    await bookingController.cancelBooking({ params: { id: 1 }, body: {}, account: { accountId: 1 }, permissionScope: 'OWN' }, res);
+
+    expect(res.status).not.toHaveBeenCalledWith(409);
     expect((await Booking.findOne({ id: 1 })).status).toBe('CANCELLED');
   });
 });

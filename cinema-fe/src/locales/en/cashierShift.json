@@ -1,0 +1,45 @@
+{
+  "breadcrumb": "Cashier Shifts",
+  "statusFilterPlaceholder": "All statuses",
+  "status": {
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "headers": {
+    "id": "ID",
+    "employee": "Cashier",
+    "openedAt": "Opened at",
+    "closedAt": "Closed at",
+    "openingCash": "Opening cash",
+    "expectedCash": "Expected cash",
+    "actualCash": "Actual cash",
+    "difference": "Difference",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "currentShift": {
+    "title": "My cash drawer",
+    "noShiftOpen": "You have no open shift. Count your starting cash and open a shift before selling.",
+    "openButton": "Open shift",
+    "openModalTitle": "Open cashier shift",
+    "openingCashLabel": "Opening cash",
+    "openingCashPlaceholder": "Counted starting cash",
+    "noteLabel": "Note (optional)",
+    "openSubmit": "Open shift",
+    "openSuccess": "Shift opened.",
+    "openedAt": "Opened {{time}}",
+    "closeButton": "Close shift",
+    "closeModalTitle": "Close cashier shift",
+    "actualCashLabel": "Actual cash counted",
+    "actualCashPlaceholder": "Physically counted cash",
+    "closeNoteLabel": "Note (optional)",
+    "closeSubmit": "Close shift",
+    "closeSuccess": "Shift closed."
+  },
+  "reconciliation": {
+    "openingCash": "Opening cash",
+    "cashSales": "Cash sales",
+    "cashRefunds": "Cash refunds",
+    "expectedCash": "Expected cash"
+  }
+}

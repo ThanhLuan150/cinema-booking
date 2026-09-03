@@ -13,6 +13,7 @@ async function createPayment({
   idempotencyKey = null,
   createdBy = null,
   payUrl = null,
+  shiftId = null,
 }) {
   if (idempotencyKey) {
     const existing = await Payment.findOne({ idempotency_key: idempotencyKey });
@@ -33,6 +34,7 @@ async function createPayment({
     status,
     created_by: createdBy,
     pay_url: payUrl,
+    shift_id: shiftId,
   };
   if (status === Payment.STATUS.PAID) doc.paid_at = new Date();
   if (idempotencyKey) doc.idempotency_key = idempotencyKey;

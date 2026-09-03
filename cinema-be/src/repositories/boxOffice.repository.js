@@ -34,6 +34,7 @@ async function sell({
   branchId,
   method,
   idempotencyKey = null,
+  shiftId = null,
 }) {
   if (idempotencyKey) {
     const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
@@ -73,6 +74,7 @@ async function sell({
     status: Payment.STATUS.PAID,
     idempotencyKey,
     createdBy: employeeId,
+    shiftId,
   });
 
   return { ...result, code: orderId };

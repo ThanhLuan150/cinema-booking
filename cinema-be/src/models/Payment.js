@@ -8,6 +8,7 @@ const paymentSchema = new mongoose.Schema(
     booking_id: { type: Number, required: true, index: true },
     account_id: { type: Number, required: true, index: true },
     branch_id: { type: Number, default: null, index: true },
+    shift_id: { type: Number, default: null, index: true },
     type: { type: String, enum: ['ONLINE', 'COUNTER'], required: true },
     method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT'], required: true },
     amount: { type: Number, required: true },

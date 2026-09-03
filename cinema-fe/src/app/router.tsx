@@ -56,6 +56,7 @@ import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import RefundManagement from '@/features/admin/refunds/pages/List';
 import SupportTickets from '@/features/customerService/pages/SupportTicketsPage';
 import ComboOrders from '@/features/comboOrder/pages/ComboOrdersPage';
+import CashierShifts from '@/features/cashierShift/pages/CashierShiftsPage';
 import AdminDashboard from '@/features/admin/dashboard/pages/AdminDashboard';
 import AdminCinemas from '@/features/admin/cinemas/pages/List';
 import AdminTransactions from '@/features/admin/transactions/pages/List';
@@ -368,6 +369,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={STAFF_ROLES}>
             <ComboOrders />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.cashierShifts}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <CashierShifts />
           </RequireRole>
         }
       />

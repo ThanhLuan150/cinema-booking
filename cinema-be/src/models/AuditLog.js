@@ -12,6 +12,7 @@ const ENTITY_TYPE = {
   REFUND: 'REFUND',
   TICKET: 'TICKET',
   SYSTEM_CONFIG: 'SYSTEM_CONFIG',
+  CASHIER_SHIFT: 'CASHIER_SHIFT',
 };
 
 const ACTION = {
@@ -60,6 +61,10 @@ const ACTION = {
   REFUND_FAILED: 'REFUND_FAILED',
   UPDATE_SYSTEM_CONFIG: 'UPDATE_SYSTEM_CONFIG',
   RESET_SYSTEM_CONFIG: 'RESET_SYSTEM_CONFIG',
+
+  // Cashier shift & cash reconciliation (Ticket 30)
+  SHIFT_OPENED: 'SHIFT_OPENED',
+  SHIFT_CLOSED: 'SHIFT_CLOSED',
 };
 
 const auditLogSchema = new mongoose.Schema(

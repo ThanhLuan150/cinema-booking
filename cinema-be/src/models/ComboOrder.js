@@ -32,6 +32,7 @@ const comboOrderSchema = new mongoose.Schema(
       index: true,
     },
     payment_method: { type: String, enum: ['CASH', 'MOMO', 'CARD', 'QR_PAYMENT'], default: null },
+    shift_id: { type: Number, default: null, index: true },
     paid_at: { type: Date, default: null },
     prepared_at: { type: Date, default: null },
     ready_at: { type: Date, default: null },

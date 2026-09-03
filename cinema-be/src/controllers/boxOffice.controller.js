@@ -4,6 +4,7 @@ const paymentRepository = require('../repositories/payment.repository');
 const boxOfficeRepository = require('../repositories/boxOffice.repository');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const notificationService = require('../services/notification.service');
+const cashierShiftService = require('../services/cashierShift.service');
 
 const PAYMENT_METHODS = [Payment.METHOD.CASH, Payment.METHOD.CARD, Payment.METHOD.QR_PAYMENT];
 const CHANNEL = 'BOX_OFFICE';
@@ -86,6 +87,8 @@ async function sellTickets(req, res) {
     return res.status(400).json({ message: 'Unable to price this order', code: 'PRICING_FAILED' });
   }
 
+  const openShift = await cashierShiftService.getOpenShiftForAccount(req.account.accountId);
+
   const result = await boxOfficeRepository.sell({
     ticketIds,
     comboIds: comboIds || [],
@@ -100,6 +103,7 @@ async function sellTickets(req, res) {
     branchId: req.branchId,
     method: paymentMethod,
     idempotencyKey,
+    shiftId: openShift ? openShift.id : null,
   });
 
   if (result.skipped) {
