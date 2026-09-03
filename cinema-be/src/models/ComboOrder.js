@@ -31,7 +31,7 @@ const comboOrderSchema = new mongoose.Schema(
       default: 'PENDING',
       index: true,
     },
-    payment_method: { type: String, enum: ['CASH', 'MOMO'], default: null },
+    payment_method: { type: String, enum: ['CASH', 'MOMO', 'CARD', 'QR_PAYMENT'], default: null },
     paid_at: { type: Date, default: null },
     prepared_at: { type: Date, default: null },
     ready_at: { type: Date, default: null },

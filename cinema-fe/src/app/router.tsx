@@ -49,6 +49,7 @@ import AdminActors from '@/features/admin/actors/pages/List';
 import AdminDirectors from '@/features/admin/directors/pages/List';
 import EmployeeDashboard from '@/features/employee/pages/EmployeeDashboard';
 import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
+import EmployeeBoxOffice from '@/features/employee/pages/BoxOffice';
 import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
 import BookingManagement from '@/features/booking/pages/BookingManagementPage';
@@ -319,6 +320,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={STAFF_ROLES}>
             <EmployeeCounterSale />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeBoxOffice}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <EmployeeBoxOffice />
           </RequireRole>
         }
       />

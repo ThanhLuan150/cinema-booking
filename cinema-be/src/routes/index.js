@@ -41,6 +41,7 @@ const auditLogRoutes = require('./auditLog.routes');
 const notificationRoutes = require('./notification.routes');
 const notificationTemplateRoutes = require('./notificationTemplate.routes');
 const systemConfigRoutes = require('./systemConfig.routes');
+const boxOfficeRoutes = require('./boxOffice.routes');
 
 const router = express.Router();
 
@@ -80,21 +81,11 @@ router.use('/inventory', inventoryRoutes);
 router.use('/maintenance', maintenanceRequestRoutes);
 router.use('/support-tickets', supportTicketRoutes);
 // QR Scanner device management: /entrance (branch entrances), /devices (scanners + check-in
-// logs), and the device-authenticated /devices/checkin door endpoint.
 router.use('/entrance', entranceRoutes);
 router.use('/devices', deviceRoutes);
-// Audit Log viewer (Ticket 24): read-only trail of important actions, gated by auditLog.read
-// and branch-scoped for a Branch Admin.
 router.use('/audit-logs', auditLogRoutes);
-// Notification history (Ticket 25): a caller's own feed of booking/payment/showtime events,
-// raised server-side by notification.service. Read + mark-read only.
 router.use('/notifications', notificationRoutes);
-// Notification Template management (Ticket 26): admin CRUD for the editable subject/content
-// behind each notification event + channel + language, gated by notificationTemplate.*.
 router.use('/notification-templates', notificationTemplateRoutes);
-// System Configuration (Ticket 27): centralized business settings (booking hold time, check-in
-// window, cancellation cutoff, currency, tax, max seats, refund policy), gated by
-// systemConfig.* and branch-scoped for a Branch Admin.
 router.use('/system-config', systemConfigRoutes);
 router.use('/reports', reportingRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
@@ -103,6 +94,9 @@ router.use('/', loyaltyRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice
 router.use('/', bookingRoutes);
+
+// Box Office / POS (Ticket 29): counter ticket sale + reprint for CASHIER/TICKET_STAFF.
+router.use('/box-office', boxOfficeRoutes);
 
 // Payment lifecycle: /payments/my, /payments, /payments/:code/status, /payments/:id/refund/*
 router.use('/', paymentRoutes);

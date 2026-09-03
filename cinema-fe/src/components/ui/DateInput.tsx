@@ -243,81 +243,84 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
           {isOpen &&
             position &&
             createPortal(
-              <div
-                ref={dropdownRef}
-                role="dialog"
-                aria-label="Choose a date"
-                style={{
-                  top: position.top,
-                  left: position.left,
-                  width: Math.max(position.width, 280),
-                }}
-                className="fixed z-[60] rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised"
-              >
-                <div className="mb-2 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={() => goToMonth(-1)}
-                    aria-label="Previous month"
-                    className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
-                  >
-                    <i className="fa-solid fa-chevron-left text-xs" />
-                  </button>
-                  <span className="text-sm font-medium text-txt">{monthLabel}</span>
-                  <button
-                    type="button"
-                    onClick={() => goToMonth(1)}
-                    aria-label="Next month"
-                    className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
-                  >
-                    <i className="fa-solid fa-chevron-right text-xs" />
-                  </button>
-                </div>
+              <>
+                <div className="w-full fixed inset-0 z-[59] bg-black/40" aria-hidden="true" />
+                <div
+                  ref={dropdownRef}
+                  role="dialog"
+                  aria-label="Choose a date"
+                  style={{
+                    top: position.top,
+                    left: position.left,
+                    width: Math.max(position.width, 280),
+                  }}
+                  className="fixed z-[60] rounded-lg border border-border-strong bg-surface-raised p-3 shadow-raised"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => goToMonth(-1)}
+                      aria-label="Previous month"
+                      className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
+                    >
+                      <i className="fa-solid fa-chevron-left text-xs" />
+                    </button>
+                    <span className="text-sm font-medium text-txt">{monthLabel}</span>
+                    <button
+                      type="button"
+                      onClick={() => goToMonth(1)}
+                      aria-label="Next month"
+                      className="flex h-7 w-7 items-center justify-center rounded-md text-txt/70 hover:bg-white/10 hover:text-txt"
+                    >
+                      <i className="fa-solid fa-chevron-right text-xs" />
+                    </button>
+                  </div>
 
-                <div className="grid grid-cols-7 gap-1 text-center text-xs text-txt/50">
-                  {weekdayLabels.map((wd) => (
-                    <span key={wd} className="py-1">
-                      {wd}
-                    </span>
-                  ))}
-                </div>
+                  <div className="grid grid-cols-7 gap-1 text-center text-xs text-txt/50">
+                    {weekdayLabels.map((wd) => (
+                      <span key={wd} className="py-1">
+                        {wd}
+                      </span>
+                    ))}
+                  </div>
 
-                <div role="grid" className="grid grid-cols-7 gap-1">
-                  {weeks.flatMap((week, wi) =>
-                    week.map((day, di) => {
-                      if (!day) return <span key={`${wi}-${di}`} />;
-                      const iso = toISODate(day);
-                      const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
-                      const isToday = isSameDay(day, today);
-                      const isFocused = isSameDay(day, focusedDate);
-                      return (
-                        <button
-                          key={iso}
-                          ref={(el) => {
-                            if (el) dayRefs.current.set(iso, el);
-                            else dayRefs.current.delete(iso);
-                          }}
-                          type="button"
-                          role="gridcell"
-                          tabIndex={isFocused ? 0 : -1}
-                          onClick={() => selectDay(day)}
-                          onKeyDown={handleGridKeyDown}
-                          onFocus={() => setFocusedDate(day)}
-                          aria-selected={isSelected}
-                          className={cn(
-                            'flex h-8 w-8 items-center justify-center rounded-md text-sm text-txt transition-colors hover:bg-accent/15',
-                            'focus:outline-none focus:ring-2 focus:ring-accent/50',
-                            isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
-                            !isSelected && isToday && 'ring-1 ring-accent/60',
-                          )}
-                        >
-                          {day.getDate()}
-                        </button>
-                      );
-                    }),
-                  )}
+                  <div role="grid" className="grid grid-cols-7 gap-1">
+                    {weeks.flatMap((week, wi) =>
+                      week.map((day, di) => {
+                        if (!day) return <span key={`${wi}-${di}`} />;
+                        const iso = toISODate(day);
+                        const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
+                        const isToday = isSameDay(day, today);
+                        const isFocused = isSameDay(day, focusedDate);
+                        return (
+                          <button
+                            key={iso}
+                            ref={(el) => {
+                              if (el) dayRefs.current.set(iso, el);
+                              else dayRefs.current.delete(iso);
+                            }}
+                            type="button"
+                            role="gridcell"
+                            tabIndex={isFocused ? 0 : -1}
+                            onClick={() => selectDay(day)}
+                            onKeyDown={handleGridKeyDown}
+                            onFocus={() => setFocusedDate(day)}
+                            aria-selected={isSelected}
+                            className={cn(
+                              'flex h-8 w-8 items-center justify-center rounded-md text-sm text-txt transition-colors hover:bg-accent/15',
+                              'focus:outline-none focus:ring-2 focus:ring-accent/50',
+                              isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
+                              !isSelected && isToday && 'ring-1 ring-accent/60',
+                            )}
+                          >
+                            {day.getDate()}
+                          </button>
+                        );
+                      }),
+                    )}
+                  </div>
                 </div>
-              </div>,
+              </>,
               document.body,
             )}
         </div>

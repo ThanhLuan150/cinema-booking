@@ -65,6 +65,7 @@ export const ROUTES = {
   adminDirectors: '/AdminDirectors',
   employeeDashboard: '/EmployeeDashboard',
   employeeCounterSale: '/EmployeeCounterSale',
+  employeeBoxOffice: '/BoxOffice',
   employeeCheckIn: '/EmployeeCheckIn',
   employeeMySchedule: '/EmployeeMySchedule',
 } as const;

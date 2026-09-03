@@ -5,6 +5,7 @@ import { DataTable } from '@/components/ui/DataTable';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { DateInput } from '@/components/ui/DateInput';
 import { Modal } from '@/components/ui/Modal';
 import { Select } from '@/components/ui/Select';
 import { Pagination } from '@/components/ui/Pagination';
@@ -107,7 +108,7 @@ function AuditLogPage() {
             options={(meta?.actions ?? []).map((a) => ({ label: actionLabel(a), value: a }))}
           />
         </div>
-        <div className="max-w-[10rem]">
+        <div className="max-w-xs flex-1">
           <Input
             id="audit-filter-actor"
             label={t('auditLog.filters.actor')}
@@ -116,19 +117,17 @@ function AuditLogPage() {
             onChange={(e) => patchFilter({ performedBy: e.target.value.replace(/\D/g, '') })}
           />
         </div>
-        <div className="max-w-[12rem]">
-          <Input
+        <div className="max-w-xs flex-1">
+          <DateInput
             id="audit-filter-from"
-            type="date"
             label={t('auditLog.filters.from')}
             value={filters.from}
             onChange={(e) => patchFilter({ from: e.target.value })}
           />
         </div>
-        <div className="max-w-[12rem]">
-          <Input
+        <div className="max-w-xs flex-1">
+          <DateInput
             id="audit-filter-to"
-            type="date"
             label={t('auditLog.filters.to')}
             value={filters.to}
             onChange={(e) => patchFilter({ to: e.target.value })}

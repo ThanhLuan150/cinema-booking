@@ -420,6 +420,11 @@ async function findTicketViewsForAccount(accountId) {
   return buildTicketViews(invoices);
 }
 
+async function findTicketViewsForBooking(bookingId) {
+  const invoices = await Invoice.find({ booking_id: Number(bookingId) }).sort({ id: 1 });
+  return buildTicketViews(invoices);
+}
+
 async function findTicketViewById(id) {
   const invoice = await Invoice.findOne({ id: Number(id) });
   if (!invoice) return null;
@@ -892,6 +897,7 @@ module.exports = {
   getShowtimeCheckinWindow,
   findInvoiceByQrToken,
   findTicketViewsForAccount,
+  findTicketViewsForBooking,
   findTicketViewById,
   findTicketViewByQrToken,
   expireIssuedTickets,

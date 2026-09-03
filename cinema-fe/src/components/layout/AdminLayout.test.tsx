@@ -73,6 +73,7 @@ describe('AdminLayout', () => {
     useCurrentUserMock.mockReturnValue({ data: { role: 3, name: 'Staff' } });
     renderLayout();
     expect(screen.getByText('adminLayout.nav.counterSale')).toBeInTheDocument();
+    expect(screen.getByText('adminLayout.nav.boxOffice')).toBeInTheDocument();
     expect(screen.getByText('adminLayout.nav.checkIn')).toBeInTheDocument();
     expect(screen.getByText('adminLayout.nav.bookingManagement')).toBeInTheDocument();
     expect(screen.queryByText('adminLayout.nav.films')).not.toBeInTheDocument();
