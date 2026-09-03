@@ -1,0 +1,57 @@
+{
+  "title": "Mua vé",
+  "branchLine": "{{branch}}",
+  "startOver": "Bắt đầu lại",
+  "back": "Quay lại",
+  "next": "Tiếp tục",
+  "skip": "Bỏ qua",
+  "key": {
+    "title": "Kích hoạt kiosk này",
+    "hint": "Dán khoá API của kiosk được cấp khi đăng ký thiết bị.",
+    "activate": "Kích hoạt"
+  },
+  "steps": {
+    "movie": "Chọn phim",
+    "showtime": "Chọn suất chiếu",
+    "seat": "Chọn ghế",
+    "combo": "Thêm combo",
+    "promo": "Voucher hoặc khuyến mãi",
+    "payment": "Kiểm tra & thanh toán"
+  },
+  "empty": {
+    "movies": "Hiện chưa có phim nào chiếu tại chi nhánh này.",
+    "showtimes": "Không có suất chiếu sắp tới cho phim này.",
+    "combos": "Không có combo nào."
+  },
+  "seat": {
+    "selected": "Đã chọn {{count}} ghế · {{total}}đ",
+    "confirm": "Xác nhận ghế"
+  },
+  "promo": {
+    "voucher": "Mã voucher",
+    "promotion": "Mã khuyến mãi",
+    "hint": "Chỉ áp dụng voucher HOẶC khuyến mãi, không dùng cả hai.",
+    "review": "Xem lại đơn"
+  },
+  "payment": {
+    "seats": "Ghế",
+    "combos": "Combo",
+    "discount": "Giảm giá",
+    "total": "Tổng cộng",
+    "pay": "Thanh toán",
+    "terminalPrompt": "Làm theo hướng dẫn trên máy thẻ / QR.",
+    "simCardOk": "Giả lập thẻ thành công",
+    "simQrOk": "Giả lập QR thành công",
+    "simFail": "Giả lập thất bại"
+  },
+  "ticket": {
+    "title": "Vé của bạn",
+    "hint": "Quét mã QR ở cửa vào, hoặc in vé.",
+    "seat": "Ghế {{code}}",
+    "print": "In vé",
+    "done": "Xong"
+  },
+  "errors": {
+    "paymentFailed": "Thanh toán thất bại — ghế đã được nhả. Vui lòng thử lại."
+  }
+}

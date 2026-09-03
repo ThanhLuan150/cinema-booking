@@ -70,5 +70,18 @@
   "SHIFT_BRANCH_MISMATCH": "The shift must belong to the branch you are staffed at",
   "SHIFT_ALREADY_OPEN": "You already have an open cashier shift",
   "SHIFT_ALREADY_CLOSED": "This shift is already closed",
-  "SHIFT_CLOSED": "This transaction was made in a shift that is already closed and can no longer be changed"
+  "SHIFT_CLOSED": "This transaction was made in a shift that is already closed and can no longer be changed",
+  "KIOSK_KEY_MISSING": "This kiosk needs to be activated with its API key.",
+  "KIOSK_KEY_INVALID": "This kiosk key is not valid.",
+  "KIOSK_NOT_ACTIVE": "This kiosk is not active.",
+  "KIOSK_BRANCH_MISMATCH": "This kiosk can only sell tickets for its own branch.",
+  "KIOSK_CODE_TAKEN": "A kiosk with this code already exists.",
+  "SEAT_NOT_LOCKED": "One or more seats are no longer held — please pick your seats again.",
+  "SCHEDULE_NOT_FOUND": "This showtime could not be found.",
+  "PRICING_FAILED": "We could not price this order. Please try again.",
+  "DISCOUNT_CONFLICT": "Apply a voucher or a promotion, not both.",
+  "MAX_BOOKING_SEATS_EXCEEDED": "You have selected more seats than allowed in one booking.",
+  "INVALID_OUTCOME": "Invalid payment result.",
+  "PAYMENT_NOT_FOUND": "This payment could not be found.",
+  "BOOKING_NOT_PAID": "This booking has not been paid."
 }

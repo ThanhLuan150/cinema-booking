@@ -858,5 +858,44 @@
       "removeTier": "Xoá",
       "submit": "Lưu cấu hình"
     }
+  },
+  "kiosks": {
+    "breadcrumb": "Kiosk",
+    "intro": "Kiosk tự phục vụ cho phép khách mua vé trên màn hình cảm ứng tại sảnh. Đăng ký thiết bị ở đây rồi dán khoá vào ứng dụng kiosk.",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranches": "Tất cả chi nhánh",
+    "statusFilterPlaceholder": "Tất cả trạng thái",
+    "addButton": "Đăng ký kiosk +",
+    "addTitle": "Đăng ký kiosk",
+    "editTitle": "Sửa kiosk",
+    "never": "Chưa bao giờ",
+    "kioskCodeLabel": "Mã kiosk (mã phần cứng in trên thiết bị)",
+    "nameLabel": "Tên",
+    "statusLabel": "Trạng thái",
+    "submit": "Lưu",
+    "edit": "Sửa",
+    "delete": "Xoá",
+    "rotateKey": "Đổi khoá",
+    "createSuccess": "Đã đăng ký kiosk.",
+    "updateSuccess": "Đã cập nhật kiosk.",
+    "deleteSuccess": "Đã xoá kiosk.",
+    "deleteConfirm": "Xoá kiosk này? Khoá API sẽ ngừng hoạt động ngay lập tức.",
+    "rotateConfirm": "Đổi khoá kiosk này? Khoá hiện tại sẽ ngừng hoạt động ngay.",
+    "keyTitle": "Khoá API của kiosk",
+    "keyHint": "Dán khoá này vào kiosk {{kioskCode}} ngay — khoá chỉ hiển thị một lần và không thể lấy lại.",
+    "keyDone": "Xong",
+    "status": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Ngừng",
+      "MAINTENANCE": "Bảo trì"
+    },
+    "headers": {
+      "kioskCode": "Mã kiosk",
+      "branch": "Chi nhánh",
+      "name": "Tên",
+      "status": "Trạng thái",
+      "lastSeen": "Lần cuối hoạt động",
+      "actions": "Thao tác"
+    }
   }
 }

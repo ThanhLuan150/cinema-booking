@@ -1,0 +1,57 @@
+{
+  "title": "Buy tickets",
+  "branchLine": "{{branch}}",
+  "startOver": "Start over",
+  "back": "Back",
+  "next": "Next",
+  "skip": "Skip",
+  "key": {
+    "title": "Activate this kiosk",
+    "hint": "Paste the kiosk API key given to you when the kiosk was registered.",
+    "activate": "Activate"
+  },
+  "steps": {
+    "movie": "Choose a movie",
+    "showtime": "Choose a showtime",
+    "seat": "Choose your seats",
+    "combo": "Add combos",
+    "promo": "Voucher or promotion",
+    "payment": "Review & pay"
+  },
+  "empty": {
+    "movies": "No movies are playing at this branch right now.",
+    "showtimes": "No upcoming showtimes for this movie.",
+    "combos": "No combos available."
+  },
+  "seat": {
+    "selected": "{{count}} seat(s) selected · {{total}}đ",
+    "confirm": "Confirm seats"
+  },
+  "promo": {
+    "voucher": "Voucher code",
+    "promotion": "Promotion code",
+    "hint": "Apply a voucher OR a promotion, not both.",
+    "review": "Review order"
+  },
+  "payment": {
+    "seats": "Seats",
+    "combos": "Combos",
+    "discount": "Discount",
+    "total": "Total",
+    "pay": "Pay now",
+    "terminalPrompt": "Follow the prompts on the card / QR terminal.",
+    "simCardOk": "Simulate card success",
+    "simQrOk": "Simulate QR success",
+    "simFail": "Simulate failure"
+  },
+  "ticket": {
+    "title": "Your tickets",
+    "hint": "Scan the QR at the entrance, or print your tickets.",
+    "seat": "Seat {{code}}",
+    "print": "Print tickets",
+    "done": "Done"
+  },
+  "errors": {
+    "paymentFailed": "Payment failed — your seats have been released. Please try again."
+  }
+}

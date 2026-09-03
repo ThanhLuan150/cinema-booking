@@ -43,6 +43,7 @@ const notificationTemplateRoutes = require('./notificationTemplate.routes');
 const systemConfigRoutes = require('./systemConfig.routes');
 const boxOfficeRoutes = require('./boxOffice.routes');
 const cashierShiftRoutes = require('./cashierShift.routes');
+const kioskRoutes = require('./kiosk.routes');
 
 const router = express.Router();
 
@@ -98,8 +99,9 @@ router.use('/', bookingRoutes);
 
 router.use('/box-office', boxOfficeRoutes);
 
+router.use('/kiosks', kioskRoutes);
+
 // Cashier shift & cash reconciliation (Ticket 30): open/close a drawer session, then settle
-// the counted cash against what the shift's own transactions say it should hold.
 router.use('/cashier-shifts', cashierShiftRoutes);
 
 // Payment lifecycle: /payments/my, /payments, /payments/:code/status, /payments/:id/refund/*
