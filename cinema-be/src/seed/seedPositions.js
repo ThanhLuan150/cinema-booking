@@ -28,6 +28,9 @@ const POSITION_PERMISSIONS = {
     'combo.view': 'BRANCH',
     'combo.sell': 'BRANCH',
     'payment.create': 'BRANCH',
+    'cashierShift.open': 'BRANCH',
+    'cashierShift.close': 'OWN',
+    'cashierShift.read': 'OWN',
   },
 
   CASHIER: {
@@ -39,6 +42,9 @@ const POSITION_PERMISSIONS = {
     'combo.view': 'BRANCH',
     'combo.sell': 'BRANCH',
     'payment.create': 'BRANCH',
+    'cashierShift.open': 'BRANCH',
+    'cashierShift.close': 'OWN',
+    'cashierShift.read': 'OWN',
   },
   COMBO_STAFF: {
     'combo.view': 'BRANCH',

@@ -63,5 +63,12 @@
   "INVALID_POINTS": "Số điểm không hợp lệ",
   "BELOW_MIN_REDEEM": "Số điểm đổi tối thiểu chưa đạt yêu cầu",
   "INSUFFICIENT_POINTS": "Số điểm hiện có không đủ",
-  "LEVEL_CODE_EXISTS": "Hạng thành viên với mã này đã tồn tại"
+  "LEVEL_CODE_EXISTS": "Hạng thành viên với mã này đã tồn tại",
+  "INVALID_OPENING_CASH": "Tiền quỹ đầu ca là bắt buộc và phải là số lớn hơn hoặc bằng 0",
+  "INVALID_ACTUAL_CASH": "Tiền mặt thực đếm là bắt buộc và phải là số lớn hơn hoặc bằng 0",
+  "NOT_AN_EMPLOYEE": "Chỉ nhân viên đang hoạt động mới có thể mở ca thu ngân",
+  "SHIFT_BRANCH_MISMATCH": "Ca làm việc phải thuộc chi nhánh bạn đang làm việc",
+  "SHIFT_ALREADY_OPEN": "Bạn đang có một ca thu ngân đang mở",
+  "SHIFT_ALREADY_CLOSED": "Ca làm việc này đã được đóng trước đó",
+  "SHIFT_CLOSED": "Giao dịch này thuộc một ca đã đóng nên không thể thay đổi"
 }

@@ -58,6 +58,7 @@ export const ROUTES = {
   notificationTemplates: '/NotificationTemplates',
   systemConfig: '/SystemConfig',
   comboOrders: '/ComboOrders',
+  cashierShifts: '/CashierShifts',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',
   ownerShiftAssignments: '/OwnerShifts/Assignments',

@@ -49,10 +49,10 @@ async function markProcessing(id, { processedBy }) {
   );
 }
 
-async function complete(id) {
+async function complete(id, { shiftId = null } = {}) {
   return Refund.findOneAndUpdate(
     { id: Number(id), status: Refund.STATUS.PROCESSING },
-    { $set: { status: Refund.STATUS.COMPLETED, completed_at: new Date() } },
+    { $set: { status: Refund.STATUS.COMPLETED, completed_at: new Date(), shift_id: shiftId } },
     { new: true },
   );
 }

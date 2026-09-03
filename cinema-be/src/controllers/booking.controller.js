@@ -12,6 +12,7 @@ const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const systemConfigService = require('../services/systemConfig.service');
+const cashierShiftService = require('../services/cashierShift.service');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
@@ -779,6 +780,18 @@ async function cancelBooking(req, res) {
     });
   }
 
+  // Ticket 30 — "Không cho sửa giao dịch sau khi Shift đã đóng": a counter sale's Payment is
+  // stamped with the cashier's shift; cancelling it here would silently void a sale that a
+  // now-reconciled shift was already signed off on. Online/self-service bookings are unaffected
+  // (their Payment carries no shift_id, so this is a no-op lookup for them).
+  const existingPayment = await paymentRepository.findByCode(booking.code);
+  if (existingPayment && (await cashierShiftService.isTransactionLocked(existingPayment.shift_id))) {
+    return res.status(409).json({
+      message: 'This booking was paid in a shift that is already closed and can no longer be changed',
+      code: 'SHIFT_CLOSED',
+    });
+  }
+
   const windowError = await assertCancellableBeforeShowtime(booking.schedule_id);
   if (windowError) {
     return res.status(400).json({
@@ -1000,6 +1013,9 @@ async function createCounterSale(req, res) {
     return res.status(400).json({ message: 'Invalid counter sale payload' });
   }
 
+  
+  const openShift = await cashierShiftService.getOpenShiftForAccount(req.account.accountId);
+
   const result = await bookingRepository.createCounterSale({
     ticketIds,
     comboIds: comboIds || [],
@@ -1013,6 +1029,7 @@ async function createCounterSale(req, res) {
     createdBy: req.account.accountId,
     branchId: req.branchId,
     idempotencyKey: req.headers?.['idempotency-key'] || null,
+    shiftId: openShift ? openShift.id : null,
   });
 
   if (result.skipped) return res.status(400).json({ message: 'Invalid counter sale payload' });

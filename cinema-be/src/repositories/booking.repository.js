@@ -567,6 +567,7 @@ async function createCounterSale({
   comboTotal,
   branchId = null,
   idempotencyKey = null,
+  shiftId = null,
 }) {
   if (idempotencyKey) {
     const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
@@ -592,6 +593,7 @@ async function createCounterSale({
       status: Payment.STATUS.PAID,
       idempotencyKey,
       createdBy,
+      shiftId,
     });
   }
 

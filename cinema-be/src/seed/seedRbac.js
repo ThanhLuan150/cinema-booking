@@ -78,6 +78,8 @@ const PERMISSIONS = [
   ['notificationTemplate.read', 'notificationTemplate'], ['notificationTemplate.create', 'notificationTemplate'],
   ['notificationTemplate.update', 'notificationTemplate'], ['notificationTemplate.delete', 'notificationTemplate'],
   ['systemConfig.read', 'systemConfig'], ['systemConfig.manage', 'systemConfig'],
+  ['cashierShift.open', 'cashierShift'], ['cashierShift.close', 'cashierShift'],
+  ['cashierShift.read', 'cashierShift'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -122,6 +124,10 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
   'auditLog.read': 'BRANCH',
   'systemConfig.read': 'BRANCH', 'systemConfig.manage': 'BRANCH',
+  // A Branch Admin oversees the drawers at their branch: they read every cashier's shift and
+  // can settle one a cashier walked away from, but they do not work a drawer themselves
+  // (no cashierShift.open) — that stays with the CASHIER/TICKET_STAFF Positions.
+  'cashierShift.read': 'BRANCH', 'cashierShift.close': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {

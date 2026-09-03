@@ -10,6 +10,7 @@ const { calculateRefundAmount } = require('../utils/refundPolicy');
 const systemConfigService = require('../services/systemConfig.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const notificationService = require('../services/notification.service');
+const cashierShiftService = require('../services/cashierShift.service');
 
 // OWN: caller must own the refund's booking. BRANCH: caller must have access to the refund's
 // branch. ALL: no restriction. Same shape as canAccessBooking/canAccessPayment. Used for
@@ -259,7 +260,13 @@ async function completeRefund(req, res) {
   if (!refund) return res.status(404).json({ message: 'Refund not found' });
   if (!(await canManageRefund(req, refund))) return res.status(403).json({ message: 'Forbidden' });
 
-  const updated = await refundRepository.complete(refund.id);
+  const originalPayment = await paymentRepository.findById(refund.payment_id);
+  const openShift =
+    originalPayment && originalPayment.method === Payment.METHOD.CASH
+      ? await cashierShiftService.getOpenShiftForAccount(req.account.accountId)
+      : null;
+
+  const updated = await refundRepository.complete(refund.id, { shiftId: openShift ? openShift.id : null });
   if (!updated) {
     return res.status(400).json({
       message: `Only a PROCESSING refund can be completed (current status: ${refund.status})`,

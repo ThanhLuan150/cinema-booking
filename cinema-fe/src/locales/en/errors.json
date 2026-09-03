@@ -63,5 +63,12 @@
   "INVALID_POINTS": "Points must be a valid amount",
   "BELOW_MIN_REDEEM": "The minimum redeemable points has not been met",
   "INSUFFICIENT_POINTS": "Not enough points balance",
-  "LEVEL_CODE_EXISTS": "A membership level with this code already exists"
+  "LEVEL_CODE_EXISTS": "A membership level with this code already exists",
+  "INVALID_OPENING_CASH": "Opening cash is required and must be a number greater than or equal to 0",
+  "INVALID_ACTUAL_CASH": "Actual cash is required and must be a number greater than or equal to 0",
+  "NOT_AN_EMPLOYEE": "Only an active employee can open a cashier shift",
+  "SHIFT_BRANCH_MISMATCH": "The shift must belong to the branch you are staffed at",
+  "SHIFT_ALREADY_OPEN": "You already have an open cashier shift",
+  "SHIFT_ALREADY_CLOSED": "This shift is already closed",
+  "SHIFT_CLOSED": "This transaction was made in a shift that is already closed and can no longer be changed"
 }

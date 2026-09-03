@@ -8,6 +8,7 @@ const refundSchema = new mongoose.Schema(
     payment_id: { type: Number, required: true, index: true },
     account_id: { type: Number, required: true, index: true }, // the booking's owner (customer)
     branch_id: { type: Number, default: null, index: true }, // denormalized from Booking.branch_id, for BRANCH-scope filtering
+    shift_id: { type: Number, default: null, index: true },
     amount: { type: Number, required: true }, // backend-computed from the cancellation policy — never trust a client-supplied amount
     policy_percent: { type: Number, required: true }, // 0-100, the refund policy tier applied at request time
     reason: { type: String, default: null }, // customer's stated reason (informational only)
