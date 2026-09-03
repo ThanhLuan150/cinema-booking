@@ -44,6 +44,16 @@ async function findUpcomingSchedulesForMovie(movieId, fromDate) {
   });
 }
 
+async function findBranchMoviesPlaying(branchId, fromDate) {
+  const schedules = await Schedule.find({
+    cinema_id: Number(branchId),
+    movie_date: { $gte: fromDate },
+    status: { $ne: 'CANCELLED' },
+  }).sort({ movie_date: 1, time_begin: 1 });
+  const movieIds = [...new Set(schedules.map((s) => s.movie_id))];
+  return Movie.find({ id: { $in: movieIds } });
+}
+
 // Groups a flat combo_ids list (one entry per unit) into a Combo Staff-visible ComboOrder,
 // already PAID since the booking's own payment already covers it, so it shows up in the
 // PREPARING/READY/DELIVERED queue for whoever bought combo alongside their tickets — not just
@@ -877,6 +887,7 @@ module.exports = {
   findScheduleByMovieDateTime,
   findTicketsByScheduleId,
   findUpcomingSchedulesForMovie,
+  findBranchMoviesPlaying,
   finalizeMomoOrder,
   findInvoicesByAccountId,
   findTicketsByIds,

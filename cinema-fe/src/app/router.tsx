@@ -31,6 +31,8 @@ import OwnerCinemas from '@/features/owner/cinemas/pages/List';
 import OwnerRooms from '@/features/owner/cinemas/pages/Rooms';
 import OwnerMaintenance from '@/features/owner/maintenance/pages/List';
 import OwnerDevices from '@/features/owner/devices/pages/List';
+import OwnerKiosks from '@/features/owner/kiosks/pages/List';
+import KioskApp from '@/features/kiosk/pages/KioskApp';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
 import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
 import SystemConfigPage from '@/features/admin/systemConfig/pages/SystemConfigPage';
@@ -196,6 +198,16 @@ export function AppRouter() {
           </RequireRole>
         }
       />
+      <Route
+        path={ROUTES.ownerKiosks}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerKiosks />
+          </RequireRole>
+        }
+      />
+      {/* Self-service kiosk app — authenticated by a device key, not a user session. */}
+      <Route path={ROUTES.kiosk} element={<KioskApp />} />
       <Route
         path={ROUTES.auditLog}
         element={

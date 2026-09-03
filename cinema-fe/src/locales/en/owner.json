@@ -858,5 +858,44 @@
       "removeTier": "Remove",
       "submit": "Save setting"
     }
+  },
+  "kiosks": {
+    "breadcrumb": "Kiosks",
+    "intro": "Self-service kiosks let customers buy tickets on a lobby touchscreen. Register a unit here, then paste its key into the kiosk app.",
+    "branchPlaceholder": "Select branch",
+    "allBranches": "All branches",
+    "statusFilterPlaceholder": "All statuses",
+    "addButton": "Register kiosk +",
+    "addTitle": "Register a kiosk",
+    "editTitle": "Edit kiosk",
+    "never": "Never",
+    "kioskCodeLabel": "Kiosk code (hardware id printed on the unit)",
+    "nameLabel": "Name",
+    "statusLabel": "Status",
+    "submit": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "rotateKey": "Rotate key",
+    "createSuccess": "Kiosk registered.",
+    "updateSuccess": "Kiosk updated.",
+    "deleteSuccess": "Kiosk deleted.",
+    "deleteConfirm": "Delete this kiosk? Its API key stops working immediately.",
+    "rotateConfirm": "Rotate this kiosk's key? The current key stops working immediately.",
+    "keyTitle": "Kiosk API key",
+    "keyHint": "Paste this key into kiosk {{kioskCode}} now — it is shown only once and cannot be retrieved later.",
+    "keyDone": "Done",
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "MAINTENANCE": "Maintenance"
+    },
+    "headers": {
+      "kioskCode": "Kiosk code",
+      "branch": "Branch",
+      "name": "Name",
+      "status": "Status",
+      "lastSeen": "Last seen",
+      "actions": "Actions"
+    }
   }
 }

@@ -336,6 +336,24 @@ export interface DeviceWithKey extends Device {
   api_key: string;
 }
 
+export type KioskStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
+
+export interface Kiosk {
+  id: number;
+  kiosk_code: string;
+  name: string;
+  branch_id: number;
+  guest_account_id: number;
+  status: KioskStatus;
+  last_seen_at: string | null;
+  createdAt: string;
+}
+
+// Only ever present on the create / rotate-key responses — the plaintext key is shown once.
+export interface KioskWithKey extends Kiosk {
+  api_key: string;
+}
+
 export type CheckinResult = 'SUCCESS' | 'REJECTED';
 
 export interface CheckinLog {

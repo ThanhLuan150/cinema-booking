@@ -70,5 +70,18 @@
   "SHIFT_BRANCH_MISMATCH": "Ca làm việc phải thuộc chi nhánh bạn đang làm việc",
   "SHIFT_ALREADY_OPEN": "Bạn đang có một ca thu ngân đang mở",
   "SHIFT_ALREADY_CLOSED": "Ca làm việc này đã được đóng trước đó",
-  "SHIFT_CLOSED": "Giao dịch này thuộc một ca đã đóng nên không thể thay đổi"
+  "SHIFT_CLOSED": "Giao dịch này thuộc một ca đã đóng nên không thể thay đổi",
+  "KIOSK_KEY_MISSING": "Kiosk này cần được kích hoạt bằng khoá API.",
+  "KIOSK_KEY_INVALID": "Khoá kiosk không hợp lệ.",
+  "KIOSK_NOT_ACTIVE": "Kiosk này không ở trạng thái hoạt động.",
+  "KIOSK_BRANCH_MISMATCH": "Kiosk chỉ bán vé cho chi nhánh của chính nó.",
+  "KIOSK_CODE_TAKEN": "Đã tồn tại kiosk với mã này.",
+  "SEAT_NOT_LOCKED": "Một số ghế không còn được giữ — vui lòng chọn lại ghế.",
+  "SCHEDULE_NOT_FOUND": "Không tìm thấy suất chiếu này.",
+  "PRICING_FAILED": "Không thể tính giá đơn hàng. Vui lòng thử lại.",
+  "DISCOUNT_CONFLICT": "Chỉ áp dụng voucher hoặc khuyến mãi, không dùng cả hai.",
+  "MAX_BOOKING_SEATS_EXCEEDED": "Bạn đã chọn nhiều ghế hơn mức cho phép trong một lần đặt.",
+  "INVALID_OUTCOME": "Kết quả thanh toán không hợp lệ.",
+  "PAYMENT_NOT_FOUND": "Không tìm thấy khoản thanh toán này.",
+  "BOOKING_NOT_PAID": "Đơn đặt vé này chưa được thanh toán."
 }
