@@ -315,7 +315,10 @@
       "discount": "Giảm giá",
       "used": "Đã dùng",
       "status": "Trạng thái",
-      "actions": "Hành động"
+      "actions": "Hành động",
+      "date": "Thời gian",
+      "account": "Tài khoản",
+      "discountAmount": "Giảm giá"
     },
     "validation": {
       "cinemaRequired": "Vui lòng chọn rạp.",
@@ -323,8 +326,19 @@
       "discountValueRequired": "Vui lòng nhập giá trị giảm.",
       "discountValueInvalid": "Nhập giá trị giảm từ 1-100 cho loại phần trăm, hoặc lớn hơn 0 cho loại giảm cố định.",
       "minOrderValueRequired": "Vui lòng nhập giá trị đơn hàng tối thiểu.",
-      "minOrderValueInvalid": "Giá trị đơn hàng tối thiểu không được âm."
-    }
+      "minOrderValueInvalid": "Giá trị đơn hàng tối thiểu không được âm.",
+      "freeQuantityInvalid": "Số lượng phải từ 1 trở lên."
+    },
+    "discountTypeFreeTicket": "Miễn phí vé",
+    "discountTypeFreeCombo": "Miễn phí combo",
+    "freeQuantityLabel": "Số lượng",
+    "comboLabel": "Combo áp dụng",
+    "anyCombo": "Combo bất kỳ",
+    "freeTicketSummary": "{{count}} vé miễn phí",
+    "freeComboSummary": "{{count}}x miễn phí {{combo}}",
+    "viewHistory": "Lịch sử",
+    "historyTitle": "Lịch sử sử dụng voucher",
+    "historyEmpty": "Chưa có lượt sử dụng nào."
   },
   "promotions": {
     "breadcrumb": "Khuyến mãi",
@@ -896,6 +910,57 @@
       "status": "Trạng thái",
       "lastSeen": "Lần cuối hoạt động",
       "actions": "Thao tác"
+    }
+  },
+  "giftCards": {
+    "breadcrumb": "Thẻ quà tặng",
+    "addButton": "Phát hành thẻ +",
+    "addTitle": "Phát hành thẻ quà tặng",
+    "cinemaLabel": "Rạp",
+    "cinemaPlaceholder": "Chọn rạp (để trống nếu áp dụng toàn hệ thống)",
+    "codeLabel": "Mã thẻ",
+    "initialBalanceLabel": "Số dư ban đầu",
+    "expiresAtLabel": "Ngày hết hạn",
+    "submit": "Phát hành",
+    "createSuccess": "Đã phát hành thẻ quà tặng.",
+    "blockConfirm": "Khóa thẻ quà tặng này? Thẻ sẽ không thể dùng để thanh toán nữa.",
+    "blockSuccess": "Đã khóa thẻ quà tặng.",
+    "systemWide": "Toàn hệ thống",
+    "unclaimed": "Chưa có chủ",
+    "block": "Khóa",
+    "viewHistory": "Lịch sử",
+    "historyTitle": "Lịch sử giao dịch thẻ quà tặng",
+    "historyEmpty": "Chưa có giao dịch nào.",
+    "headers": {
+      "id": "ID",
+      "cinema": "Rạp",
+      "code": "Mã thẻ",
+      "balance": "Số dư",
+      "owner": "Chủ thẻ",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "date": "Thời gian",
+      "type": "Loại",
+      "amount": "Số tiền",
+      "balanceAfter": "Số dư sau"
+    },
+    "status": {
+      "ACTIVE": "Đang hoạt động",
+      "USED": "Đã dùng hết",
+      "EXPIRED": "Hết hạn",
+      "BLOCKED": "Đã khóa"
+    },
+    "historyType": {
+      "ISSUE": "Phát hành",
+      "REDEEM": "Đã đổi",
+      "USE": "Đã dùng thanh toán",
+      "REFUND": "Hoàn tiền",
+      "BLOCK": "Đã khóa"
+    },
+    "validation": {
+      "cinemaRequired": "Vui lòng chọn rạp.",
+      "codeRequired": "Vui lòng nhập mã thẻ.",
+      "initialBalanceInvalid": "Nhập số dư ban đầu lớn hơn 0."
     }
   }
 }

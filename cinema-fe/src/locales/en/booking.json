@@ -156,7 +156,8 @@
     "applied": "Applied: -{{amount}}",
     "applyFailed": "Could not apply the voucher code.",
     "remove": "Remove",
-    "disabledHint": "Remove the promotion code above to use a voucher."
+    "disabledHint": "Remove the promotion code above to use a voucher.",
+    "disabledByGiftCardHint": "Remove the gift card code below to use a voucher."
   },
   "promotion": {
     "title": "Promotion code",
@@ -165,7 +166,8 @@
     "applied": "Applied: -{{amount}}",
     "applyFailed": "Could not apply the promotion code.",
     "remove": "Remove",
-    "disabledHint": "Remove the voucher code above to use a promotion."
+    "disabledHint": "Remove the voucher code above to use a promotion.",
+    "disabledByGiftCardHint": "Remove the gift card code below to use a promotion."
   },
   "changeShowtime": {
     "title": "Change showtime",
@@ -174,5 +176,17 @@
     "schedulePlaceholder": "Select a showtime",
     "seatsLabel": "Seats selected: {{selected}}/{{required}}",
     "failed": "Could not change the showtime."
+  },
+  "giftCard": {
+    "title": "Gift card code",
+    "placeholder": "Enter gift card code...",
+    "apply": "Check balance",
+    "applicable": "Available to apply: {{amount}}",
+    "applyFailed": "Could not check this gift card.",
+    "remove": "Remove",
+    "payButton": "Pay with Gift Card",
+    "paySuccess": "Payment successful — your booking is confirmed.",
+    "payFailed": "Could not pay with this gift card.",
+    "disabledHint": "Remove the voucher/promotion code above to pay with a gift card."
   }
 }

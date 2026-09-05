@@ -6,6 +6,7 @@ const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
 const Promotion = require('../models/Promotion');
 const promotionRepository = require('./promotion.repository');
+const voucherRepository = require('./voucher.repository');
 const Room = require('../models/Room');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
@@ -23,6 +24,7 @@ const pricingEngine = require('../services/pricingEngine');
 const loyaltyService = require('../services/loyaltyService');
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
 const { isPromotionEligible, computePromotionDiscount } = require('../utils/promotionPricing');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
 async function findScheduleByMovieDateTime({ movie_id, movie_date, time_begin }) {
   return Schedule.findOne({ movie_id: Number(movie_id), movie_date, time_begin, status: { $ne: 'CANCELLED' } });
@@ -54,11 +56,6 @@ async function findBranchMoviesPlaying(branchId, fromDate) {
   return Movie.find({ id: { $in: movieIds } });
 }
 
-// Groups a flat combo_ids list (one entry per unit) into a Combo Staff-visible ComboOrder,
-// already PAID since the booking's own payment already covers it, so it shows up in the
-// PREPARING/READY/DELIVERED queue for whoever bought combo alongside their tickets — not just
-// combo sold standalone at the counter via POST /combo-orders. Ids that no longer resolve to a
-// live Combo (e.g. deleted since) are silently dropped rather than failing the whole booking.
 async function createLinkedComboOrder({ bookingId, branchId, accountId, comboIds, createdBy, paymentMethod }) {
   const quantityById = new Map();
   for (const id of comboIds) {
@@ -89,9 +86,6 @@ async function createLinkedComboOrder({ bookingId, branchId, accountId, comboIds
   return comboOrderRepository.markPaid(order.id, paymentMethod);
 }
 
-// Creates the Invoice rows + marks tickets sold for a paid MoMo order. Idempotent on
-// `orderId` (stored as Invoice.code) so a retried IPN call or a user landing on the
-// redirect page twice never double-books.
 async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = null } = {}) {
   const existing = await Invoice.findOne({ code: orderId });
   if (existing) return { alreadyProcessed: true };
@@ -109,20 +103,6 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
     comboTotal = 0,
   } = orderPayload;
   if (!accountId || ticketIds.length === 0) return { alreadyProcessed: false, skipped: true };
-
-  // A customer applies a voucher OR a promotion to an order, never both — enforced when the
-  // order is first priced (computeOrderPricing) / created (booking.controller.js).
-  if (voucherCode) {
-    const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase() });
-    if (voucher) {
-      await Voucher.updateOne({ id: voucher.id }, { $inc: { used_count: 1 } });
-    }
-  } else if (promotionCode) {
-    const promotion = await Promotion.findOne({ code: String(promotionCode).toUpperCase() });
-    if (promotion) {
-      await promotionRepository.recordUsage(promotion.id, accountId);
-    }
-  }
 
   // Upsert the parent Booking: a PENDING one created by createMomoPayment gets flipped to
   // PAID here; a counter sale never had a PENDING phase, so it's created PAID directly.
@@ -152,6 +132,36 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
       paid_at: new Date(),
       created_by: createdBy,
     });
+  }
+
+  // A customer applies a voucher OR a promotion to an order, never both — enforced when the
+  // order is first priced (computeOrderPricing) / created (booking.controller.js). Recorded
+  // here (after the Booking exists) so the Voucher's usage-history row can reference it.
+  if (voucherCode) {
+    const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase() });
+    if (voucher) {
+      const recorded = await voucherRepository.recordUsage({
+        voucherId: voucher.id,
+        accountId,
+        bookingId: booking.id,
+        discountAmount,
+      });
+      if (recorded) {
+        await recordAudit({
+          action: ACTION.VOUCHER_USED,
+          entityType: ENTITY_TYPE.VOUCHER,
+          entityId: voucher.id,
+          branchId: booking.branch_id,
+          performedBy: accountId,
+          metadata: { code: voucher.code, bookingId: booking.id, discountAmount },
+        });
+      }
+    }
+  } else if (promotionCode) {
+    const promotion = await Promotion.findOne({ code: String(promotionCode).toUpperCase() });
+    if (promotion) {
+      await promotionRepository.recordUsage(promotion.id, accountId);
+    }
   }
 
   // Customer -> Booking -> Payment -> Earn Points. finalizeMomoOrder already only reaches this
@@ -824,10 +834,11 @@ async function calculateTicketPrices(schedule, tickets, accountId) {
   return results;
 }
 
-// A customer may apply a voucher OR a promotion to an order, never both — the controller
-// rejects a request that sends both before this is ever called; if it somehow still receives
-// both, voucherCode wins and promotionCode is ignored (defensive, not the primary guard).
-async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, promotionCode, accountId }) {
+// Prices the raw items (tickets + combos) of an order, with no voucher/promotion/gift-card
+// applied — the shared, authoritative building block for computeOrderPricing below AND for
+// any other module (e.g. the Voucher preview endpoint, Gift Card payment) that needs a
+// backend-computed order total from real ticket/combo ids rather than an FE-supplied number.
+async function priceOrderItems({ ticketIds, comboIds = [], accountId = null }) {
   const tickets = await findTicketsByIds(ticketIds);
   if (tickets.length === 0) return null;
 
@@ -836,21 +847,41 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, prom
   if (!schedule) return null;
 
   const priceByTicketId = await calculateTicketPrices(schedule, tickets, accountId);
-  const ticketPrices = tickets.map((t) => ({ ticketId: t.id, price: priceByTicketId.get(t.id)?.price ?? 0 }));
-  const seatTotal = ticketPrices.reduce((sum, t) => sum + t.price, 0);
+  const ticketPriceRows = tickets.map((t) => ({ ticketId: t.id, price: priceByTicketId.get(t.id)?.price ?? 0 }));
+  const seatTotal = ticketPriceRows.reduce((sum, t) => sum + t.price, 0);
 
   const combos = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
   const comboTotal = combos.reduce((sum, c) => sum + c.price, 0);
-  const orderValue = seatTotal + comboTotal;
+
+  return {
+    scheduleId,
+    schedule,
+    cinemaId: schedule.cinema_id ?? null,
+    seatTotal,
+    comboTotal,
+    orderValue: seatTotal + comboTotal,
+    ticketPriceRows,
+    ticketPrices: ticketPriceRows.map((t) => t.price),
+    combos: combos.map((c) => ({ id: c.id, price: c.price })),
+  };
+}
+
+// A customer may apply a voucher OR a promotion to an order, never both — the controller
+// rejects a request that sends both before this is ever called; if it somehow still receives
+// both, voucherCode wins and promotionCode is ignored (defensive, not the primary guard).
+async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, promotionCode, accountId }) {
+  const priced = await priceOrderItems({ ticketIds, comboIds, accountId });
+  if (!priced) return null;
+  const { scheduleId, schedule, seatTotal, comboTotal, orderValue, ticketPrices, combos, ticketPriceRows } = priced;
 
   let discountAmount = 0;
   let appliedVoucherCode = null;
   let appliedPromotionCode = null;
   if (voucherCode) {
     const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase(), active: true });
-    const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue });
+    const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue, comboIds });
     if (eligibility.eligible) {
-      discountAmount = computeVoucherDiscount(voucher, orderValue);
+      discountAmount = computeVoucherDiscount(voucher, orderValue, { ticketPrices, combos });
       appliedVoucherCode = voucher.code;
     }
   } else if (promotionCode) {
@@ -879,11 +910,12 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, prom
     totalPrice,
     voucherCode: appliedVoucherCode,
     promotionCode: appliedPromotionCode,
-    ticketPrices,
+    ticketPrices: ticketPriceRows,
   };
 }
 
 module.exports = {
+  priceOrderItems,
   findScheduleByMovieDateTime,
   findTicketsByScheduleId,
   findUpcomingSchedulesForMovie,

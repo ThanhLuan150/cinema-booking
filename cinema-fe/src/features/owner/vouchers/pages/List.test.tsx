@@ -29,6 +29,12 @@ vi.mock('../../hooks/useOwnerVouchers', () => ({
   useOwnerVouchers: (...args: unknown[]) => useOwnerVouchersMock(...args),
 }));
 
+const useOwnerCombosMock = vi.fn();
+vi.mock('../../hooks/useOwnerCombos', () => ({ useOwnerCombos: (...args: unknown[]) => useOwnerCombosMock(...args) }));
+
+const useVoucherHistoryMock = vi.fn();
+vi.mock('../hooks/useVoucherHistory', () => ({ useVoucherHistory: (...args: unknown[]) => useVoucherHistoryMock(...args) }));
+
 const createVoucherMutate = vi.fn();
 const updateVoucherMutate = vi.fn();
 const deleteVoucherMutate = vi.fn();
@@ -61,11 +67,15 @@ describe('Owner Vouchers List', () => {
   beforeEach(() => {
     useMyCinemasMock.mockReset();
     useOwnerVouchersMock.mockReset();
+    useOwnerCombosMock.mockReset();
+    useVoucherHistoryMock.mockReset();
     createVoucherMutate.mockReset();
     updateVoucherMutate.mockReset();
     deleteVoucherMutate.mockReset();
     confirmDialogMock.mockReset();
     useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Cinema A' }] } });
+    useOwnerCombosMock.mockReturnValue({ data: { data: [] } });
+    useVoucherHistoryMock.mockReturnValue({ data: { data: [], totalPages: 1 }, isLoading: false });
   });
 
   it('renders voucher rows with cinema name, discount and status', () => {
@@ -76,7 +86,7 @@ describe('Owner Vouchers List', () => {
             id: 1,
             cinema_id: 1,
             code: 'SUMMER10',
-            discount_type: 'percent',
+            discount_type: 'PERCENTAGE',
             discount_value: 10,
             used_count: 2,
             max_uses: 100,
@@ -96,7 +106,7 @@ describe('Owner Vouchers List', () => {
   it('toggles a voucher active state', async () => {
     useOwnerVouchersMock.mockReturnValue({
       data: {
-        data: [{ id: 1, cinema_id: 1, code: 'A', discount_type: 'percent', discount_value: 10, used_count: 0, max_uses: null, active: true }],
+        data: [{ id: 1, cinema_id: 1, code: 'A', discount_type: 'PERCENTAGE', discount_value: 10, used_count: 0, max_uses: null, active: true }],
         totalPages: 1,
       },
     });
@@ -109,7 +119,7 @@ describe('Owner Vouchers List', () => {
   it('deletes a voucher after confirming', async () => {
     useOwnerVouchersMock.mockReturnValue({
       data: {
-        data: [{ id: 1, cinema_id: 1, code: 'A', discount_type: 'percent', discount_value: 10, used_count: 0, max_uses: null, active: false }],
+        data: [{ id: 1, cinema_id: 1, code: 'A', discount_type: 'PERCENTAGE', discount_value: 10, used_count: 0, max_uses: null, active: false }],
         totalPages: 1,
       },
     });

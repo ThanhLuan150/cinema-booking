@@ -60,6 +60,16 @@ vi.mock('../hooks/useMomoPayment', () => ({
   useMomoPayment: () => ({ mutateAsync: momoPaymentMutate, isPending: false }),
 }));
 
+const validateGiftCardMutate = vi.fn();
+vi.mock('@/features/giftCards/hooks/useValidateGiftCard', () => ({
+  useValidateGiftCard: () => ({ mutateAsync: validateGiftCardMutate, isPending: false }),
+}));
+
+const payWithGiftCardMutate = vi.fn();
+vi.mock('@/features/giftCards/hooks/usePayWithGiftCard', () => ({
+  usePayWithGiftCard: () => ({ mutateAsync: payWithGiftCardMutate, isPending: false }),
+}));
+
 import BookSeatPage from './BookSeatPage';
 
 function renderPage(query = '?movieId=1&day=2026-01-01&time=10:00') {

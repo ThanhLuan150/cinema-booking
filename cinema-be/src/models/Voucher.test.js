@@ -13,7 +13,7 @@ describe('Voucher model', () => {
     const voucher = await Voucher.create({
       id: 1,
       code: 'save10',
-      discount_type: 'percent',
+      discount_type: 'PERCENTAGE',
       discount_value: 10,
     });
     expect(voucher.code).toBe('SAVE10'); // uppercased
@@ -47,17 +47,17 @@ describe('Voucher model', () => {
   });
 
   it('enforces unique id and code', async () => {
-    await Voucher.create({ id: 1, code: 'A', discount_type: 'fixed', discount_value: 1 });
+    await Voucher.create({ id: 1, code: 'A', discount_type: 'FIXED_AMOUNT', discount_value: 1 });
     await expect(
-      Voucher.create({ id: 1, code: 'B', discount_type: 'fixed', discount_value: 2 }),
+      Voucher.create({ id: 1, code: 'B', discount_type: 'FIXED_AMOUNT', discount_value: 2 }),
     ).rejects.toThrow();
     await expect(
-      Voucher.create({ id: 2, code: 'A', discount_type: 'fixed', discount_value: 2 }),
+      Voucher.create({ id: 2, code: 'A', discount_type: 'FIXED_AMOUNT', discount_value: 2 }),
     ).rejects.toThrow();
   });
 
   it('toJSON strips _id and __v', async () => {
-    const voucher = await Voucher.create({ id: 1, code: 'A', discount_type: 'fixed', discount_value: 1 });
+    const voucher = await Voucher.create({ id: 1, code: 'A', discount_type: 'FIXED_AMOUNT', discount_value: 1 });
     const json = voucher.toJSON();
     expect(json._id).toBeUndefined();
     expect(json.__v).toBeUndefined();

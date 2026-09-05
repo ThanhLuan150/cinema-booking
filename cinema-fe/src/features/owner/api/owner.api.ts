@@ -3,6 +3,8 @@ import type {
   Cinema,
   Combo,
   Employee,
+  GiftCard,
+  GiftCardTransaction,
   Holiday,
   Inventory,
   InventoryTransaction,
@@ -15,6 +17,7 @@ import type {
   Shift,
   ShiftAssignment,
   Voucher,
+  VoucherUsage,
 } from '@/types/entities';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type {
@@ -23,6 +26,7 @@ import type {
   CreateInventoryPayload,
   EmployeeFormValues,
   GenerateSeatMapPayload,
+  GiftCardFormValues,
   HolidayFormValues,
   LookedUpInvoice,
   PricingRuleFormValues,
@@ -96,8 +100,10 @@ export const getOwnerVouchers = (branchId?: number | string, params?: Pagination
   apiClient.get<PaginatedResponse<Voucher>>('/voucher', { params: { branchId, ...params } }).then((res) => res.data);
 
 export const createVoucher = (
-  payload: Omit<VoucherFormValues, 'discount_value' | 'min_order_value'> & {
-    discount_value: number;
+  payload: Omit<VoucherFormValues, 'discount_value' | 'free_quantity' | 'combo_id' | 'min_order_value'> & {
+    discount_value: number | null;
+    free_quantity: number | null;
+    combo_id: number | null;
     min_order_value: number;
   },
 ) => apiClient.post('/voucher', payload);
@@ -106,6 +112,28 @@ export const updateVoucher = (id: number | string, payload: Record<string, unkno
   apiClient.put(`/voucher/${id}`, payload);
 
 export const deleteVoucher = (id: number | string) => apiClient.delete(`/voucher/${id}`);
+
+export const getVoucherHistory = (id: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<VoucherUsage>>(`/voucher/${id}/history`, { params }).then((res) => res.data);
+
+export const getOwnerGiftCards = (branchId?: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<GiftCard>>('/gift-cards', { params: { branchId, ...params } })
+    .then((res) => res.data);
+
+export const createGiftCard = (
+  payload: Omit<GiftCardFormValues, 'initial_balance'> & { initial_balance: number },
+) => apiClient.post('/gift-cards', payload);
+
+export const updateGiftCard = (id: number | string, payload: Record<string, unknown>) =>
+  apiClient.put(`/gift-cards/${id}`, payload);
+
+export const blockGiftCard = (id: number | string) => apiClient.post(`/gift-cards/${id}/block`);
+
+export const getGiftCardHistory = (id: number | string, params?: PaginationParams) =>
+  apiClient
+    .get<PaginatedResponse<GiftCardTransaction>>(`/gift-cards/${id}/history`, { params })
+    .then((res) => res.data);
 
 export const getOwnerPromotions = (branchId?: number | string, params?: PaginationParams) =>
   apiClient

@@ -11,6 +11,7 @@ const Invoice = require('../models/Invoice');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
 const Voucher = require('../models/Voucher');
+const VoucherUsage = require('../models/VoucherUsage');
 const Promotion = require('../models/Promotion');
 const PromotionUsage = require('../models/PromotionUsage');
 const Room = require('../models/Room');
@@ -20,6 +21,7 @@ const Movie = require('../models/Movie');
 const Combo = require('../models/Combo');
 const ComboOrder = require('../models/ComboOrder');
 const PointsTransaction = require('../models/PointsTransaction');
+const AuditLog = require('../models/AuditLog');
 
 beforeAll(async () => connect());
 afterEach(async () => {
@@ -153,7 +155,7 @@ describe('booking.repository', () => {
 
     it('increments used_count when a voucher code is present', async () => {
       await seedOrder();
-      await Voucher.create({ id: 1, code: 'SAVE10', discount_type: 'fixed', discount_value: 1000, used_count: 0 });
+      await Voucher.create({ id: 1, code: 'SAVE10', discount_type: 'FIXED_AMOUNT', discount_value: 1000, used_count: 0 });
 
       await bookingRepository.finalizeMomoOrder('ORDER-2', {
         ticketIds: [1],
@@ -168,6 +170,38 @@ describe('booking.repository', () => {
       const invoice = await Invoice.findOne({ ticket_id: 1 });
       expect(invoice.voucher_code).toBe('SAVE10');
       expect(invoice.discount_amount).toBe(10000);
+
+      const booking = await Booking.findOne({ code: 'ORDER-2' });
+      const usage = await VoucherUsage.findOne({ voucher_id: 1 });
+      expect(usage.account_id).toBe(10);
+      expect(usage.booking_id).toBe(booking.id);
+      expect(usage.discount_amount).toBe(10000);
+
+      const auditEntry = await AuditLog.findOne({ action: 'VOUCHER_USED', entity_id: 1 });
+      expect(auditEntry).not.toBeNull();
+      expect(auditEntry.performed_by).toBe(10);
+      expect(auditEntry.branch_id).toBe(booking.branch_id);
+      expect(auditEntry.metadata.code).toBe('SAVE10');
+    });
+
+    it('never records a voucher usage (nor an audit entry) once its usage limit is already reached', async () => {
+      await seedOrder();
+      await Voucher.create({ id: 1, code: 'MAXED', discount_type: 'FIXED_AMOUNT', discount_value: 1000, max_uses: 1, used_count: 1 });
+
+      await bookingRepository.finalizeMomoOrder('ORDER-2C', {
+        ticketIds: [1],
+        totalPrice: 90000,
+        accountId: 10,
+        voucherCode: 'MAXED',
+        discountAmount: 10000,
+      });
+
+      expect((await Voucher.findOne({ id: 1 })).used_count).toBe(1);
+      expect(await VoucherUsage.countDocuments({ voucher_id: 1 })).toBe(0);
+      expect(await AuditLog.countDocuments({ action: 'VOUCHER_USED' })).toBe(0);
+      // The booking itself still finalizes — the atomic usage-limit guard only stops the
+      // Voucher's own bookkeeping from over-counting, it never blocks order fulfillment.
+      expect(await Booking.findOne({ code: 'ORDER-2C' })).not.toBeNull();
     });
 
     it('records usage when a promotion code is present, and never touches Voucher.used_count', async () => {
@@ -1250,7 +1284,7 @@ describe('booking.repository', () => {
 
       it('applies a voucher when both a voucher and a promotion code are somehow both sent', async () => {
         await seedSchedule();
-        await Voucher.create({ id: 1, code: 'SAVE10', discount_type: 'fixed', discount_value: 5000 });
+        await Voucher.create({ id: 1, code: 'SAVE10', discount_type: 'FIXED_AMOUNT', discount_value: 5000 });
         await Promotion.create({
           id: 1,
           code: 'PROMO10',
@@ -1338,6 +1372,69 @@ describe('booking.repository', () => {
         });
         expect(pricing.promotionCode).toBeNull();
         expect(pricing.discountAmount).toBe(0);
+      });
+
+      it('waives the cheapest ticket for a FREE_TICKET voucher', async () => {
+        await Schedule.create({
+          id: 1, movie_id: 7, room_id: 1, cinema_id: 5,
+          movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 100000,
+        });
+        await Ticket.create([
+          { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
+          { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 1, seat_type: 1 }, // vip, pricier
+        ]);
+        await Voucher.create({ id: 1, code: 'FREE1', discount_type: 'FREE_TICKET', discount_value: 0, free_quantity: 1 });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1, 2],
+          voucherCode: 'free1',
+          accountId: 42,
+        });
+        expect(pricing.discountAmount).toBe(100000); // regular seat, cheaper than the VIP one
+        expect(pricing.totalPrice).toBe(120000);
+      });
+
+      it('waives a targeted combo for a FREE_COMBO voucher', async () => {
+        await seedSchedule();
+        await Combo.create([
+          { id: 1, cinema_id: 5, name: 'Small', price: 40000 },
+          { id: 2, cinema_id: 5, name: 'Large', price: 70000 },
+        ]);
+        await Voucher.create({
+          id: 1, code: 'FREEBO', discount_type: 'FREE_COMBO', discount_value: 0, free_quantity: 1, combo_id: 2,
+        });
+
+        const pricing = await bookingRepository.computeOrderPricing({
+          ticketIds: [1],
+          comboIds: [1, 2],
+          voucherCode: 'freebo',
+          accountId: 42,
+        });
+        expect(pricing.discountAmount).toBe(70000);
+        expect(pricing.totalPrice).toBe(100000 + 40000 + 70000 - 70000);
+      });
+    });
+
+    describe('priceOrderItems', () => {
+      it('returns null for an unknown ticket id', async () => {
+        expect(await bookingRepository.priceOrderItems({ ticketIds: [999] })).toBeNull();
+      });
+
+      it('prices tickets + combos and returns per-item breakdowns', async () => {
+        await Schedule.create({
+          id: 1, movie_id: 7, room_id: 1, cinema_id: 5,
+          movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 100000,
+        });
+        await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+        await Combo.create({ id: 1, cinema_id: 5, name: 'Small', price: 40000 });
+
+        const priced = await bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1] });
+        expect(priced.cinemaId).toBe(5);
+        expect(priced.seatTotal).toBe(100000);
+        expect(priced.comboTotal).toBe(40000);
+        expect(priced.orderValue).toBe(140000);
+        expect(priced.ticketPrices).toEqual([100000]);
+        expect(priced.combos).toEqual([{ id: 1, price: 40000 }]);
       });
     });
   });

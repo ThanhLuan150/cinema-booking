@@ -24,7 +24,8 @@
     "bookNow": "Đặt vé ngay",
     "myRefunds": "Hoàn tiền của tôi",
     "myMembership": "Hạng thành viên",
-    "notifications": "Thông báo"
+    "notifications": "Thông báo",
+    "myGiftCards": "Thẻ quà tặng của tôi"
   },
   "footer": {
     "tagline": "Chúng tôi cam kết chất lượng và sự hài lòng khi bạn đặt vé xem phim tại đây.",
@@ -81,7 +82,8 @@
       "supportTickets": "Hỗ trợ khách hàng",
       "auditLog": "Nhật ký kiểm toán",
       "notificationTemplates": "Mẫu thông báo",
-      "systemConfig": "Cấu hình hệ thống"
+      "systemConfig": "Cấu hình hệ thống",
+      "giftCards": "Thẻ quà tặng"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

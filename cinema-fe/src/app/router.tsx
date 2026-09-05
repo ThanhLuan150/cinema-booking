@@ -20,6 +20,7 @@ import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import MyRefunds from '@/features/refund/pages/MyRefundsPage';
 import MyMembership from '@/features/membership/pages/MyMembershipPage';
+import MyGiftCards from '@/features/giftCards/pages/MyGiftCardsPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -40,6 +41,7 @@ import NotificationsPage from '@/features/notifications/pages/NotificationsPage'
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
+import OwnerGiftCards from '@/features/owner/giftCards/pages/List';
 import OwnerPromotions from '@/features/owner/promotions/pages/List';
 import OwnerPricingRules from '@/features/owner/pricingRules/pages/List';
 import OwnerHolidays from '@/features/owner/holidays/pages/List';
@@ -101,6 +103,7 @@ export function AppRouter() {
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
       <Route path={ROUTES.myMembership} element={<MyMembership />} />
+      <Route path={ROUTES.myGiftCards} element={<MyGiftCards />} />
       <Route path={ROUTES.notifications} element={<NotificationsPage />} />
       <Route
         path={ROUTES.adminUsers}
@@ -253,6 +256,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerVouchers />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerGiftCards}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerGiftCards />
           </RequireRole>
         }
       />

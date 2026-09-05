@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Thẻ quà tặng của tôi",
+  "redeem": {
+    "title": "Đổi thẻ quà tặng",
+    "description": "Nhập mã thẻ quà tặng để cộng số dư vào tài khoản của bạn.",
+    "placeholder": "Nhập mã thẻ quà tặng...",
+    "button": "Đổi thẻ",
+    "success": "Đổi thẻ quà tặng thành công."
+  },
+  "list": {
+    "title": "Thẻ quà tặng của bạn",
+    "empty": "Bạn chưa có thẻ quà tặng nào.",
+    "expiresAt": "Hết hạn {{date}}",
+    "noExpiry": "Không có ngày hết hạn",
+    "ofInitial": "trên tổng {{amount}}{{currency}}",
+    "viewHistory": "Lịch sử"
+  },
+  "status": {
+    "ACTIVE": "Đang hoạt động",
+    "USED": "Đã dùng hết",
+    "EXPIRED": "Hết hạn",
+    "BLOCKED": "Đã khóa"
+  },
+  "history": {
+    "title": "Lịch sử giao dịch",
+    "date": "Thời gian",
+    "type": "Loại",
+    "amount": "Số tiền",
+    "balanceAfter": "Số dư sau",
+    "empty": "Chưa có giao dịch nào."
+  },
+  "historyType": {
+    "ISSUE": "Phát hành",
+    "REDEEM": "Đã đổi",
+    "USE": "Đã dùng thanh toán",
+    "REFUND": "Hoàn tiền",
+    "BLOCK": "Đã khóa"
+  }
+}

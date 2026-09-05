@@ -9,7 +9,7 @@ function voucher(overrides = {}) {
     max_uses: null,
     used_count: 0,
     min_order_value: 0,
-    discount_type: 'fixed',
+    discount_type: 'FIXED_AMOUNT',
     discount_value: 10000,
     ...overrides,
   };
@@ -59,11 +59,11 @@ describe('isVoucherEligible', () => {
 
 describe('computeVoucherDiscount', () => {
   it('returns the flat amount for a fixed voucher', () => {
-    expect(computeVoucherDiscount(voucher({ discount_type: 'fixed', discount_value: 10000 }), 100000)).toBe(10000);
+    expect(computeVoucherDiscount(voucher({ discount_type: 'FIXED_AMOUNT', discount_value: 10000 }), 100000)).toBe(10000);
   });
 
   it('computes a rounded percent discount', () => {
-    expect(computeVoucherDiscount(voucher({ discount_type: 'percent', discount_value: 15 }), 99999)).toBe(
+    expect(computeVoucherDiscount(voucher({ discount_type: 'PERCENTAGE', discount_value: 15 }), 99999)).toBe(
       Math.round((99999 * 15) / 100),
     );
   });

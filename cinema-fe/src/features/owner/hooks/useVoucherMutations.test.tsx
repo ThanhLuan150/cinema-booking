@@ -35,18 +35,45 @@ describe('voucher mutation hooks', () => {
     const { result } = renderHook(() => useCreateVoucher(), { wrapper });
     result.current.mutate({
       code: 'SAVE10',
-      discount_type: 'fixed',
+      discount_type: 'FIXED_AMOUNT',
       discount_value: '10000',
+      free_quantity: '',
+      combo_id: '',
       min_order_value: '',
     } as any);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(createVoucherMock).toHaveBeenCalledWith({
       code: 'SAVE10',
-      discount_type: 'fixed',
+      discount_type: 'FIXED_AMOUNT',
       discount_value: 10000,
+      free_quantity: null,
+      combo_id: null,
       min_order_value: 0,
     });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['ownerVouchers'] });
+  });
+
+  it('useCreateVoucher sends a null discount_value and coerces free_quantity for FREE_TICKET', async () => {
+    createVoucherMock.mockResolvedValue({});
+    const { wrapper } = makeWrapper();
+    const { result } = renderHook(() => useCreateVoucher(), { wrapper });
+    result.current.mutate({
+      code: 'FREE1',
+      discount_type: 'FREE_TICKET',
+      discount_value: '',
+      free_quantity: '2',
+      combo_id: '',
+      min_order_value: '',
+    } as any);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(createVoucherMock).toHaveBeenCalledWith({
+      code: 'FREE1',
+      discount_type: 'FREE_TICKET',
+      discount_value: null,
+      free_quantity: 2,
+      combo_id: null,
+      min_order_value: 0,
+    });
   });
 
   it('useUpdateVoucher toggles active and invalidates ownerVouchers', async () => {

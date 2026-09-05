@@ -34,7 +34,7 @@ describe('voucher.routes wiring', () => {
     const res = await request(app)
       .post('/api/voucher')
       .set('Authorization', authHeader({ role: 1 }))
-      .send({ code: 'X', discount_type: 'fixed', discount_value: 1 });
+      .send({ code: 'X', discount_type: 'FIXED_AMOUNT', discount_value: 1 });
     expect(res.status).toBe(403);
   });
 });

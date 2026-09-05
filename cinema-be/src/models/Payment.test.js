@@ -84,6 +84,12 @@ describe('Payment model', () => {
       REFUNDED: 'REFUNDED',
     });
     expect(Payment.TYPE).toEqual({ ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK' });
-    expect(Payment.METHOD).toEqual({ MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT' });
+    expect(Payment.METHOD).toEqual({
+      MOMO: 'MOMO',
+      CASH: 'CASH',
+      CARD: 'CARD',
+      QR_PAYMENT: 'QR_PAYMENT',
+      GIFT_CARD: 'GIFT_CARD',
+    });
   });
 });

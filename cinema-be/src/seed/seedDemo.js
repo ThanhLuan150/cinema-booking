@@ -359,9 +359,9 @@ async function run() {
     async () => Boolean(await Voucher.findOne({ code: /^DEMO/ })),
     async () => {
       const rows = [
-        { code: 'DEMOWELCOME', cinema_id: null, discount_type: 'percent', discount_value: 10, min_order_value: 100000, max_uses: 500 },
-        { code: 'DEMOFLAT50', cinema_id: null, discount_type: 'fixed', discount_value: 50000, min_order_value: 250000, max_uses: 200 },
-        { code: 'DEMOCENTRAL15', cinema_id: branches[1].id, discount_type: 'percent', discount_value: 15, min_order_value: 150000 },
+        { code: 'DEMOWELCOME', cinema_id: null, discount_type: 'PERCENTAGE', discount_value: 10, min_order_value: 100000, max_uses: 500 },
+        { code: 'DEMOFLAT50', cinema_id: null, discount_type: 'FIXED_AMOUNT', discount_value: 50000, min_order_value: 250000, max_uses: 200 },
+        { code: 'DEMOCENTRAL15', cinema_id: branches[1].id, discount_type: 'PERCENTAGE', discount_value: 15, min_order_value: 150000 },
       ];
       for (const r of rows) {
         await Voucher.create({

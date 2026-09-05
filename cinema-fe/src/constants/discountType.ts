@@ -1,4 +1,6 @@
 export const DISCOUNT_TYPE = {
-  percent: 'percent',
-  fixed: 'fixed',
+  FIXED_AMOUNT: 'FIXED_AMOUNT',
+  PERCENTAGE: 'PERCENTAGE',
+  FREE_TICKET: 'FREE_TICKET',
+  FREE_COMBO: 'FREE_COMBO',
 } as const;
