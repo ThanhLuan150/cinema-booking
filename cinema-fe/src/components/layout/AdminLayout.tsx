@@ -232,6 +232,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <ion-icon name="pricetag" />
             {t('adminLayout.nav.vouchers')}
           </NavLink>
+          {hasPermission('giftCard.read') && (
+            <NavLink to={ROUTES.ownerGiftCards} className={navLinkClass}>
+              <ion-icon name="card" />
+              {t('adminLayout.nav.giftCards')}
+            </NavLink>
+          )}
           <NavLink to={ROUTES.ownerPromotions} className={navLinkClass}>
             <ion-icon name="megaphone" />
             {t('adminLayout.nav.promotions')}

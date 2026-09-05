@@ -1,0 +1,39 @@
+{
+  "pageTitle": "My Gift Cards",
+  "redeem": {
+    "title": "Redeem a gift card",
+    "description": "Enter a gift card code to add its balance to your account.",
+    "placeholder": "Enter gift card code...",
+    "button": "Redeem",
+    "success": "Gift card redeemed successfully."
+  },
+  "list": {
+    "title": "Your gift cards",
+    "empty": "You have no gift cards yet.",
+    "expiresAt": "Expires {{date}}",
+    "noExpiry": "No expiry date",
+    "ofInitial": "of {{amount}}{{currency}}",
+    "viewHistory": "History"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "USED": "Used",
+    "EXPIRED": "Expired",
+    "BLOCKED": "Blocked"
+  },
+  "history": {
+    "title": "Transaction history",
+    "date": "Date",
+    "type": "Type",
+    "amount": "Amount",
+    "balanceAfter": "Balance after",
+    "empty": "No transactions yet."
+  },
+  "historyType": {
+    "ISSUE": "Issued",
+    "REDEEM": "Redeemed",
+    "USE": "Used for payment",
+    "REFUND": "Refunded",
+    "BLOCK": "Blocked"
+  }
+}

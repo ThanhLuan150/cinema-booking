@@ -24,7 +24,8 @@
     "bookNow": "Book Now",
     "myRefunds": "My Refunds",
     "myMembership": "My Membership",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "myGiftCards": "My Gift Cards"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
@@ -81,7 +82,8 @@
       "supportTickets": "Support Tickets",
       "auditLog": "Audit Log",
       "notificationTemplates": "Notification Templates",
-      "systemConfig": "System Configuration"
+      "systemConfig": "System Configuration",
+      "giftCards": "Gift Cards"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

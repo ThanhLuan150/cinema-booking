@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +30,9 @@ import { useCombos } from '../hooks/useCombos';
 import { useValidateVoucher } from '../hooks/useValidateVoucher';
 import { useValidatePromotion } from '../hooks/useValidatePromotion';
 import { useMomoPayment } from '../hooks/useMomoPayment';
+import { useValidateGiftCard } from '@/features/giftCards/hooks/useValidateGiftCard';
+import { usePayWithGiftCard } from '@/features/giftCards/hooks/usePayWithGiftCard';
+import type { GiftCardValidationResult } from '@/features/giftCards/types/giftCard.types';
 import {
   applyPromotionFailure,
   applyPromotionSuccess,
@@ -211,8 +214,16 @@ function BookSeatPage() {
   const { t } = useTranslation('booking');
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isLoggedIn = useIsAuthenticated();
+
+  // Paying with a Gift Card is its own checkout flow (it fully settles the booking on the
+  // spot, ignoring any voucher/promotion code) — kept as local state rather than in
+  // bookingSlice since it never survives a checkout attempt either way.
+  const [giftCardCode, setGiftCardCode] = useState('');
+  const [giftCardPreview, setGiftCardPreview] = useState<GiftCardValidationResult | null>(null);
+  const [giftCardError, setGiftCardError] = useState('');
 
   const movieId = searchParams.get('movieId') ?? '';
   const movieDate = searchParams.get('day') ?? '';
@@ -283,6 +294,8 @@ function BookSeatPage() {
   const { data: combos = [] } = useCombos();
   const validateVoucherMutation = useValidateVoucher();
   const validatePromotionMutation = useValidatePromotion();
+  const validateGiftCardMutation = useValidateGiftCard();
+  const payWithGiftCardMutation = usePayWithGiftCard();
   const momoPaymentMutation = useMomoPayment();
 
   const seatTotal = useMemo(
@@ -334,6 +347,47 @@ function BookSeatPage() {
       idempotencyKeyRef.current = { key: crypto.randomUUID(), forOrder: orderSignature };
     }
     return idempotencyKeyRef.current.key;
+  };
+
+  const handleApplyGiftCard = async () => {
+    if (!giftCardCode.trim()) return;
+    setGiftCardError('');
+    try {
+      const result = await validateGiftCardMutation.mutateAsync({
+        code: giftCardCode.trim(),
+        orderValue: seatTotal + comboTotal,
+      });
+      setGiftCardPreview(result);
+    } catch (error) {
+      setGiftCardPreview(null);
+      setGiftCardError(getApiErrorMessage(error, t) || t('giftCard.applyFailed'));
+    }
+  };
+
+  const handleClearGiftCard = () => {
+    setGiftCardPreview(null);
+    setGiftCardError('');
+    setGiftCardCode('');
+  };
+
+  const handlePayWithGiftCard = async () => {
+    if (selectedSeatCodes.length === 0 || selectedTickets.length === 0) {
+      toast.error(t('bookSeat.selectSeatFirst'));
+      return;
+    }
+    const ticketIds = selectedTickets.map((ticket) => ticket.id);
+    const giftCardOrderSignature = JSON.stringify(['giftCard', ticketIds, selectedComboIds, giftCardCode.trim().toUpperCase()]);
+    try {
+      await payWithGiftCardMutation.mutateAsync({
+        payload: { code: giftCardCode.trim(), ticketIds, comboIds: selectedComboIds },
+        idempotencyKey: getIdempotencyKey(giftCardOrderSignature),
+      });
+      toast.success(t('giftCard.paySuccess'));
+      dispatch(resetBookingSelection());
+      navigate(ROUTES.myBookings);
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t) || t('giftCard.payFailed'));
+    }
   };
 
   const handleCheckout = async () => {
@@ -501,7 +555,7 @@ function BookSeatPage() {
                     value={voucherCode}
                     onChange={(e) => dispatch(setVoucherCode(e.target.value))}
                     placeholder={t('voucher.placeholder')}
-                    disabled={!!promotionResult}
+                    disabled={!!promotionResult || !!giftCardPreview}
                     className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <Button
@@ -509,7 +563,7 @@ function BookSeatPage() {
                     variant="secondary"
                     size="sm"
                     onClick={handleApplyVoucher}
-                    disabled={!!promotionResult}
+                    disabled={!!promotionResult || !!giftCardPreview}
                   >
                     {t('voucher.apply')}
                   </Button>
@@ -530,6 +584,7 @@ function BookSeatPage() {
                 )}
                 {voucherError && <p className="mt-2 text-sm text-red-400">{voucherError}</p>}
                 {promotionResult && <p className="mt-2 text-sm text-txt/50">{t('voucher.disabledHint')}</p>}
+                {giftCardPreview && <p className="mt-2 text-sm text-txt/50">{t('voucher.disabledByGiftCardHint')}</p>}
               </div>
 
               <div className="border-b border-border py-4">
@@ -540,7 +595,7 @@ function BookSeatPage() {
                     value={promotionCode}
                     onChange={(e) => dispatch(setPromotionCode(e.target.value))}
                     placeholder={t('promotion.placeholder')}
-                    disabled={!!voucherResult}
+                    disabled={!!voucherResult || !!giftCardPreview}
                     className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <Button
@@ -548,7 +603,7 @@ function BookSeatPage() {
                     variant="secondary"
                     size="sm"
                     onClick={handleApplyPromotion}
-                    disabled={!!voucherResult}
+                    disabled={!!voucherResult || !!giftCardPreview}
                   >
                     {t('promotion.apply')}
                   </Button>
@@ -569,6 +624,61 @@ function BookSeatPage() {
                 )}
                 {promotionError && <p className="mt-2 text-sm text-red-400">{promotionError}</p>}
                 {voucherResult && <p className="mt-2 text-sm text-txt/50">{t('promotion.disabledHint')}</p>}
+                {giftCardPreview && <p className="mt-2 text-sm text-txt/50">{t('promotion.disabledByGiftCardHint')}</p>}
+              </div>
+
+              <div className="border-b border-border py-4">
+                <p className="mb-2 text-sm text-txt/60">{t('giftCard.title')}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={giftCardCode}
+                    onChange={(e) => setGiftCardCode(e.target.value)}
+                    placeholder={t('giftCard.placeholder')}
+                    disabled={!!voucherResult || !!promotionResult}
+                    className="min-w-0 flex-1 rounded-lg border border-border-strong bg-surface-soft px-3 py-2 text-sm text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleApplyGiftCard}
+                    disabled={!!voucherResult || !!promotionResult}
+                    loading={validateGiftCardMutation.isPending}
+                  >
+                    {t('giftCard.apply')}
+                  </Button>
+                </div>
+                {giftCardPreview && (
+                  <>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-emerald-400">
+                      {t('giftCard.applicable', {
+                        amount: `${giftCardPreview.applicable_amount.toLocaleString()}${giftCardPreview.currency}`,
+                      })}
+                      <button
+                        type="button"
+                        onClick={handleClearGiftCard}
+                        className="text-txt/50 underline transition-colors hover:text-txt"
+                      >
+                        {t('giftCard.remove')}
+                      </button>
+                    </p>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="sm"
+                      className="mt-3 w-full"
+                      onClick={handlePayWithGiftCard}
+                      loading={payWithGiftCardMutation.isPending}
+                    >
+                      {t('giftCard.payButton')}
+                    </Button>
+                  </>
+                )}
+                {giftCardError && <p className="mt-2 text-sm text-red-400">{giftCardError}</p>}
+                {(voucherResult || promotionResult) && (
+                  <p className="mt-2 text-sm text-txt/50">{t('giftCard.disabledHint')}</p>
+                )}
               </div>
 
               <div className="flex items-end justify-between py-4">

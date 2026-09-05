@@ -157,12 +157,52 @@ export interface Voucher {
   code: string;
   discount_type: (typeof DISCOUNT_TYPE)[keyof typeof DISCOUNT_TYPE];
   discount_value: number;
+  free_quantity: number | null;
+  combo_id: number | null;
   max_uses: number | null;
   used_count: number;
   valid_from: string | null;
   valid_to: string | null;
   min_order_value: number;
   active: boolean;
+}
+
+export interface VoucherUsage {
+  id: number;
+  voucher_id: number;
+  account_id: number;
+  booking_id: number | null;
+  discount_amount: number;
+  createdAt: string;
+}
+
+export type GiftCardStatus = 'ACTIVE' | 'USED' | 'EXPIRED' | 'BLOCKED';
+
+export interface GiftCard {
+  id: number;
+  code: string;
+  cinema_id: number | null;
+  initial_balance: number;
+  remaining_balance: number;
+  currency: string;
+  owner_account_id: number | null;
+  issued_by: number | null;
+  redeemed_at: string | null;
+  expires_at: string | null;
+  status: GiftCardStatus;
+  createdAt: string;
+}
+
+export interface GiftCardTransaction {
+  id: number;
+  gift_card_id: number;
+  account_id: number | null;
+  type: 'ISSUE' | 'REDEEM' | 'USE' | 'REFUND' | 'BLOCK';
+  amount: number;
+  balance_after: number;
+  booking_id: number | null;
+  reason: string | null;
+  createdAt: string;
 }
 
 export interface PricingRule {

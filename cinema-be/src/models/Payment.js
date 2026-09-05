@@ -10,7 +10,7 @@ const paymentSchema = new mongoose.Schema(
     branch_id: { type: Number, default: null, index: true },
     shift_id: { type: Number, default: null, index: true },
     type: { type: String, enum: ['ONLINE', 'COUNTER', 'KIOSK'], required: true },
-    method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT'], required: true },
+    method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT', 'GIFT_CARD'], required: true },
     amount: { type: Number, required: true },
     status: {
       type: String,
@@ -46,8 +46,6 @@ Payment.STATUS = {
   REFUNDED: 'REFUNDED',
 };
 Payment.TYPE = { ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK' };
-// CARD/QR_PAYMENT are counter-only methods (Ticket 29: Box Office / POS) — MOMO stays the
-// online gateway, CASH/CARD/QR_PAYMENT are what a cashier can take at the counter.
-Payment.METHOD = { MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT' };
+Payment.METHOD = { MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT', GIFT_CARD: 'GIFT_CARD' };
 
 module.exports = Payment;

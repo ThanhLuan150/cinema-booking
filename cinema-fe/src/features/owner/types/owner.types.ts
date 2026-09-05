@@ -51,7 +51,17 @@ export interface VoucherFormValues {
   code: string;
   discount_type: (typeof DISCOUNT_TYPE)[keyof typeof DISCOUNT_TYPE];
   discount_value: string;
+  free_quantity: string;
+  combo_id: string;
   min_order_value: string;
+}
+
+export interface GiftCardFormValues {
+  cinema_id: string;
+  code: string;
+  initial_balance: string;
+  currency: string;
+  expires_at: string;
 }
 
 // branch_id === 'ALL' means a system-wide (branch_id: null) rule — admin only. Every other
@@ -149,6 +159,10 @@ export interface OwnerInventoryState {
 }
 
 export interface OwnerVouchersState {
+  showAddModal: boolean;
+}
+
+export interface OwnerGiftCardsState {
   showAddModal: boolean;
 }
 

@@ -1,5 +1,7 @@
 const Voucher = require('../models/Voucher');
+const VoucherUsage = require('../models/VoucherUsage');
 const Branch = require('../models/Branch');
+const nextId = require('../utils/nextId');
 
 async function findOwnedCinemaIds(accountId) {
   const ownedBranches = await Branch.find({ owner_id: accountId });
@@ -35,7 +37,38 @@ async function updateFields(id, updates) {
 }
 
 async function remove(id) {
+  await VoucherUsage.deleteMany({ voucher_id: Number(id) });
   return Voucher.deleteOne({ id: Number(id) });
+}
+
+async function recordUsage({ voucherId, accountId, bookingId = null, discountAmount = 0 }) {
+  const voucher = await Voucher.findOneAndUpdate(
+    {
+      id: Number(voucherId),
+      $or: [{ max_uses: null }, { $expr: { $lt: ['$used_count', '$max_uses'] } }],
+    },
+    { $inc: { used_count: 1 } },
+    { new: true },
+  );
+  if (!voucher) return null;
+
+  await VoucherUsage.create({
+    id: await nextId('voucherUsage'),
+    voucher_id: voucher.id,
+    account_id: Number(accountId),
+    booking_id: bookingId !== null && bookingId !== undefined ? Number(bookingId) : null,
+    discount_amount: Number(discountAmount) || 0,
+  });
+  return voucher;
+}
+
+async function findUsageHistory(voucherId, { skip = 0, limit = 20 } = {}) {
+  const filter = { voucher_id: Number(voucherId) };
+  const [data, total] = await Promise.all([
+    VoucherUsage.find(filter).sort({ id: -1 }).skip(skip).limit(limit),
+    VoucherUsage.countDocuments(filter),
+  ]);
+  return { data, total };
 }
 
 module.exports = {
@@ -47,4 +80,6 @@ module.exports = {
   create,
   updateFields,
   remove,
+  recordUsage,
+  findUsageHistory,
 };

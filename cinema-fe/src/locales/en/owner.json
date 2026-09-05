@@ -315,7 +315,10 @@
       "discount": "Discount",
       "used": "Used",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "date": "Date",
+      "account": "Account",
+      "discountAmount": "Discount"
     },
     "validation": {
       "cinemaRequired": "Please select a cinema.",
@@ -323,8 +326,19 @@
       "discountValueRequired": "Please enter a discount value.",
       "discountValueInvalid": "Enter a value between 1-100 for a percentage, or greater than 0 for a fixed amount.",
       "minOrderValueRequired": "Please enter a minimum order value.",
-      "minOrderValueInvalid": "Minimum order value cannot be negative."
-    }
+      "minOrderValueInvalid": "Minimum order value cannot be negative.",
+      "freeQuantityInvalid": "Quantity must be at least 1."
+    },
+    "discountTypeFreeTicket": "Free ticket(s)",
+    "discountTypeFreeCombo": "Free combo(s)",
+    "freeQuantityLabel": "Quantity",
+    "comboLabel": "Target combo",
+    "anyCombo": "Any combo",
+    "freeTicketSummary": "{{count}} free ticket(s)",
+    "freeComboSummary": "{{count}}x free {{combo}}",
+    "viewHistory": "History",
+    "historyTitle": "Voucher usage history",
+    "historyEmpty": "No usage yet."
   },
   "promotions": {
     "breadcrumb": "Promotions",
@@ -896,6 +910,57 @@
       "status": "Status",
       "lastSeen": "Last seen",
       "actions": "Actions"
+    }
+  },
+  "giftCards": {
+    "breadcrumb": "Gift Cards",
+    "addButton": "Issue gift card +",
+    "addTitle": "Issue gift card",
+    "cinemaLabel": "Cinema",
+    "cinemaPlaceholder": "Select cinema (leave empty for system-wide)",
+    "codeLabel": "Code",
+    "initialBalanceLabel": "Initial balance",
+    "expiresAtLabel": "Expires at",
+    "submit": "Issue",
+    "createSuccess": "Gift card issued.",
+    "blockConfirm": "Block this gift card? It can no longer be used to pay.",
+    "blockSuccess": "Gift card blocked.",
+    "systemWide": "System-wide",
+    "unclaimed": "Unclaimed",
+    "block": "Block",
+    "viewHistory": "History",
+    "historyTitle": "Gift card transaction history",
+    "historyEmpty": "No transactions yet.",
+    "headers": {
+      "id": "ID",
+      "cinema": "Cinema",
+      "code": "Code",
+      "balance": "Balance",
+      "owner": "Owner",
+      "status": "Status",
+      "actions": "Actions",
+      "date": "Date",
+      "type": "Type",
+      "amount": "Amount",
+      "balanceAfter": "Balance after"
+    },
+    "status": {
+      "ACTIVE": "Active",
+      "USED": "Used",
+      "EXPIRED": "Expired",
+      "BLOCKED": "Blocked"
+    },
+    "historyType": {
+      "ISSUE": "Issued",
+      "REDEEM": "Redeemed",
+      "USE": "Used for payment",
+      "REFUND": "Refunded",
+      "BLOCK": "Blocked"
+    },
+    "validation": {
+      "cinemaRequired": "Please select a cinema.",
+      "codeRequired": "Please enter a code.",
+      "initialBalanceInvalid": "Enter an initial balance greater than 0."
     }
   }
 }

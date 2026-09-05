@@ -9,7 +9,11 @@ const router = express.Router();
 // GET /api/voucher?branchId= -> management view (owner sees only their own cinemas' vouchers, admin sees all)
 router.get('/', requireAuth, requirePermission('voucher.read'), asyncHandler(voucherController.list));
 
-// POST /api/voucher/validate { code, cinema_id, order_value } -> (auth) checks a code without consuming it
+// GET /api/voucher/:id/history -> usage history (voucher.read permission, scoped)
+router.get('/:id/history', requireAuth, requirePermission('voucher.read'), asyncHandler(voucherController.history));
+
+// POST /api/voucher/validate { code, cinema_id, order_value, ticket_ids?, combo_ids? } -> (auth)
+// checks a code without consuming it
 router.post('/validate', requireAuth, asyncHandler(voucherController.validate));
 
 // POST /api/voucher { cinema_id, code, discount_type, discount_value, ... } (voucher.create permission; cinema_id null = admin only)

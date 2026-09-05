@@ -156,7 +156,8 @@
     "applied": "Đã áp dụng: -{{amount}}đ",
     "applyFailed": "Không thể áp dụng mã giảm giá.",
     "remove": "Bỏ",
-    "disabledHint": "Bỏ mã khuyến mãi ở trên để dùng mã giảm giá."
+    "disabledHint": "Bỏ mã khuyến mãi ở trên để dùng mã giảm giá.",
+    "disabledByGiftCardHint": "Xóa mã thẻ quà tặng bên dưới để dùng voucher."
   },
   "promotion": {
     "title": "Mã khuyến mãi",
@@ -165,7 +166,8 @@
     "applied": "Đã áp dụng: -{{amount}}đ",
     "applyFailed": "Không thể áp dụng mã khuyến mãi.",
     "remove": "Bỏ",
-    "disabledHint": "Bỏ mã giảm giá ở trên để dùng mã khuyến mãi."
+    "disabledHint": "Bỏ mã giảm giá ở trên để dùng mã khuyến mãi.",
+    "disabledByGiftCardHint": "Xóa mã thẻ quà tặng bên dưới để dùng khuyến mãi."
   },
   "changeShowtime": {
     "title": "Đổi suất chiếu",
@@ -174,5 +176,17 @@
     "schedulePlaceholder": "Chọn suất chiếu",
     "seatsLabel": "Đã chọn ghế: {{selected}}/{{required}}",
     "failed": "Không thể đổi suất chiếu."
+  },
+  "giftCard": {
+    "title": "Mã thẻ quà tặng",
+    "placeholder": "Nhập mã thẻ quà tặng...",
+    "apply": "Kiểm tra số dư",
+    "applicable": "Có thể sử dụng: {{amount}}",
+    "applyFailed": "Không thể kiểm tra thẻ quà tặng này.",
+    "remove": "Xóa",
+    "payButton": "Thanh toán bằng thẻ quà tặng",
+    "paySuccess": "Thanh toán thành công — vé của bạn đã được xác nhận.",
+    "payFailed": "Không thể thanh toán bằng thẻ quà tặng này.",
+    "disabledHint": "Xóa mã voucher/khuyến mãi ở trên để thanh toán bằng thẻ quà tặng."
   }
 }

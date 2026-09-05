@@ -37,6 +37,7 @@ const PERMISSIONS = [
   ['booking.refund', 'booking'], ['booking.admin', 'booking'],
   ['voucher.create', 'voucher'], ['voucher.read', 'voucher'],
   ['voucher.update', 'voucher'], ['voucher.delete', 'voucher'],
+  ['giftCard.create', 'giftCard'], ['giftCard.read', 'giftCard'], ['giftCard.update', 'giftCard'],
   ['promotion.create', 'promotion'], ['promotion.read', 'promotion'],
   ['promotion.update', 'promotion'], ['promotion.delete', 'promotion'],
   ['combo.create', 'combo'], ['combo.view', 'combo'], ['combo.update', 'combo'], ['combo.delete', 'combo'],
@@ -100,6 +101,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'booking.create': 'BRANCH', 'booking.read': 'BRANCH', 'booking.cancel': 'BRANCH',
   'booking.changeShowtime': 'BRANCH',
   'voucher.create': 'BRANCH', 'voucher.read': 'BRANCH', 'voucher.update': 'BRANCH', 'voucher.delete': 'BRANCH',
+  'giftCard.create': 'BRANCH', 'giftCard.read': 'BRANCH', 'giftCard.update': 'BRANCH',
   'promotion.create': 'BRANCH', 'promotion.read': 'BRANCH', 'promotion.update': 'BRANCH', 'promotion.delete': 'BRANCH',
   'combo.create': 'BRANCH', 'combo.view': 'BRANCH', 'combo.update': 'BRANCH', 'combo.delete': 'BRANCH',
   'review.read': 'ALL',
@@ -159,6 +161,7 @@ const CUSTOMER_PERMISSIONS = {
   'payment.read': 'OWN',
   'refund.request': 'OWN', 'refund.read': 'OWN',
   'loyalty.read': 'OWN', 'loyalty.redeem': 'OWN', 'membershipLevel.read': 'ALL',
+  'giftCard.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {
