@@ -43,6 +43,7 @@ vi.mock('../hooks/useSignageSchedules', () => ({ useSignageSchedules: (...a: unk
 
 const createScreen = vi.fn();
 const updateScreen = vi.fn();
+const rotateScreenKey = vi.fn();
 const deleteScreen = vi.fn();
 const createContent = vi.fn();
 const updateContent = vi.fn();
@@ -53,6 +54,7 @@ const deleteEntry = vi.fn();
 vi.mock('../hooks/useSignageMutations', () => ({
   useCreateScreen: () => ({ mutateAsync: createScreen, isPending: false }),
   useUpdateScreen: () => ({ mutateAsync: updateScreen, isPending: false }),
+  useRotateScreenKey: () => ({ mutateAsync: rotateScreenKey, isPending: false }),
   useDeleteScreen: () => ({ mutateAsync: deleteScreen, isPending: false }),
   useCreateContent: () => ({ mutateAsync: createContent, isPending: false }),
   useUpdateContent: () => ({ mutateAsync: updateContent, isPending: false }),
@@ -102,8 +104,8 @@ describe('SignageList', () => {
     useScreenPlaybackMock.mockReset().mockReturnValue({ data: undefined, isLoading: false });
     useSignageContentsMock.mockReset().mockReturnValue({ data: { data: [] } });
     useSignageSchedulesMock.mockReset().mockReturnValue({ data: { data: [], totalPages: 1 } });
-    [createScreen, updateScreen, deleteScreen, createContent, deleteContent, createEntry, confirmDialogMock].forEach((m) =>
-      m.mockReset(),
+    [createScreen, updateScreen, rotateScreenKey, deleteScreen, createContent, deleteContent, createEntry, confirmDialogMock].forEach(
+      (m) => m.mockReset(),
     );
   });
 
@@ -122,8 +124,8 @@ describe('SignageList', () => {
     expect(screen.getByText('signage.preview')).toBeInTheDocument();
   });
 
-  it('creates a screen on the picked branch', async () => {
-    createScreen.mockResolvedValue({ id: 2 });
+  it('creates a screen on the picked branch and reveals the key once', async () => {
+    createScreen.mockResolvedValue({ id: 2, name: 'Concessions', api_key: 'SCR-secret' });
     renderPage();
     fireEvent.click(screen.getByText('signage.addScreen'));
     fireEvent.change(screen.getByLabelText('signage.nameLabel'), { target: { value: 'Concessions' } });
@@ -131,6 +133,16 @@ describe('SignageList', () => {
     await vi.waitFor(() =>
       expect(createScreen).toHaveBeenCalledWith(expect.objectContaining({ branch_id: 1, name: 'Concessions' })),
     );
+    expect(await screen.findByText('SCR-secret')).toBeInTheDocument();
+  });
+
+  it('rotates a screen key after confirmation', async () => {
+    confirmDialogMock.mockResolvedValue(true);
+    rotateScreenKey.mockResolvedValue({ api_key: 'SCR-rotated' });
+    renderPage();
+    fireEvent.click(screen.getByText('signage.rotateKey'));
+    await vi.waitFor(() => expect(rotateScreenKey).toHaveBeenCalledWith(1));
+    expect(await screen.findByText('SCR-rotated')).toBeInTheDocument();
   });
 
   it('deletes a screen after confirmation', async () => {

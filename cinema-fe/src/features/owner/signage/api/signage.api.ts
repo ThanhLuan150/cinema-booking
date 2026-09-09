@@ -31,10 +31,13 @@ export interface ScreenPayload {
 }
 
 export const createScreen = (payload: ScreenPayload) =>
-  apiClient.post<Screen>('/signage/screens', payload).then((res) => res.data);
+  apiClient.post<ScreenWithKey>('/signage/screens', payload).then((res) => res.data);
 
 export const updateScreen = (id: number | string, payload: ScreenPayload) =>
   apiClient.put(`/signage/screens/${id}`, payload);
+
+export const rotateScreenKey = (id: number | string) =>
+  apiClient.post<{ api_key: string }>(`/signage/screens/${id}/rotate-key`).then((res) => res.data);
 
 export const deleteScreen = (id: number | string) => apiClient.delete(`/signage/screens/${id}`);
 

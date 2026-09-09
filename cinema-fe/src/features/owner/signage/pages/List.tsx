@@ -37,6 +37,7 @@ import {
   useDeleteContent,
   useDeleteScreen,
   useDeleteSignageSchedule,
+  useRotateScreenKey,
   useUpdateContent,
   useUpdateScreen,
   useUpdateSignageSchedule,
@@ -143,6 +144,7 @@ function SignageList() {
 
   const createScreen = useCreateScreen();
   const updateScreen = useUpdateScreen();
+  const rotateScreenKey = useRotateScreenKey();
   const deleteScreen = useDeleteScreen();
   const createContent = useCreateContent();
   const updateContent = useUpdateContent();
@@ -155,6 +157,7 @@ function SignageList() {
   const [contentForm, setContentForm] = useState<ContentForm>(emptyContentForm);
   const [playlistScreen, setPlaylistScreen] = useState<Screen | null>(null);
   const [previewScreen, setPreviewScreen] = useState<Screen | null>(null);
+  const [revealedKey, setRevealedKey] = useState<{ name: string; api_key: string } | null>(null);
 
   // ---- Screen CRUD ------------------------------------------------------------
   const openCreateScreen = useCallback(() => {
@@ -171,13 +174,14 @@ function SignageList() {
     try {
       if (screenModal?.mode === 'create') {
         if (!concreteBranchId) return;
-        await createScreen.mutateAsync({
+        const created = await createScreen.mutateAsync({
           branch_id: concreteBranchId,
           name: screenForm.name.trim(),
           location: screenForm.location.trim(),
           device_id: screenForm.device_id.trim() || undefined,
           status: screenForm.status,
         });
+        setRevealedKey({ name: created.name, api_key: created.api_key });
         toast.success(t('signage.screenCreateSuccess'));
       } else if (screenModal?.screen) {
         await updateScreen.mutateAsync({
@@ -194,6 +198,19 @@ function SignageList() {
       toast.error(getApiErrorMessage(error, t));
     }
   }, [screenModal, screenForm, concreteBranchId, createScreen, updateScreen, t]);
+
+  const handleRotateScreenKey = useCallback(
+    async (screen: Screen) => {
+      if (!(await confirmDialog(t('signage.screenRotateConfirm')))) return;
+      try {
+        const { api_key } = await rotateScreenKey.mutateAsync(screen.id);
+        setRevealedKey({ name: screen.name, api_key });
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [rotateScreenKey, t],
+  );
 
   const handleDeleteScreen = useCallback(
     async (screen: Screen) => {
@@ -412,6 +429,13 @@ function SignageList() {
                   </button>
                   <button
                     type="button"
+                    className="text-sm font-medium text-accent hover:text-accent-hover"
+                    onClick={() => handleRotateScreenKey(s)}
+                  >
+                    {t('signage.rotateKey')}
+                  </button>
+                  <button
+                    type="button"
                     className="text-sm font-medium text-red-500 hover:text-red-400"
                     onClick={() => handleDeleteScreen(s)}
                   >
@@ -495,6 +519,20 @@ function SignageList() {
 
       {previewScreen && (
         <PreviewModal screen={previewScreen} contentById={contentById} onClose={() => setPreviewScreen(null)} />
+      )}
+
+      {revealedKey && (
+        <Modal open onClose={() => setRevealedKey(null)} title={t('signage.keyTitle')}>
+          <p className="text-sm text-txt/70">{t('signage.keyHint', { name: revealedKey.name })}</p>
+          <code className="mt-3 block break-all rounded-lg border border-border bg-surface p-3 font-mono text-sm text-accent">
+            {revealedKey.api_key}
+          </code>
+          <div className="mt-4 flex justify-end">
+            <Button type="button" variant="secondary" onClick={() => setRevealedKey(null)}>
+              {t('signage.keyDone')}
+            </Button>
+          </div>
+        </Modal>
       )}
     </AdminLayout>
   );

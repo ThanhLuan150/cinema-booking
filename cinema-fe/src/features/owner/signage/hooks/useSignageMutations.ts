@@ -6,6 +6,7 @@ import {
   deleteContent,
   deleteScreen,
   deleteSignageSchedule,
+  rotateScreenKey,
   updateContent,
   updateScreen,
   updateSignageSchedule,
@@ -41,6 +42,14 @@ export function useUpdateScreen() {
       invalidateScreens(qc);
       invalidateSchedules(qc);
     },
+  });
+}
+
+export function useRotateScreenKey() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number | string) => rotateScreenKey(id),
+    onSuccess: () => invalidateScreens(qc),
   });
 }
 
