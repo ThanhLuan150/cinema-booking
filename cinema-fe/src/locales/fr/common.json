@@ -67,7 +67,8 @@
       "mySchedule": "Mon planning",
       "refunds": "Remboursements",
       "supportTickets": "Service client",
-      "distribution": "Distribution"
+      "distribution": "Distribution",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

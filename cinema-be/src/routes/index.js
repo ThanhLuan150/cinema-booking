@@ -47,6 +47,7 @@ const systemConfigRoutes = require('./systemConfig.routes');
 const boxOfficeRoutes = require('./boxOffice.routes');
 const cashierShiftRoutes = require('./cashierShift.routes');
 const kioskRoutes = require('./kiosk.routes');
+const signageRoutes = require('./signage.routes');
 
 const router = express.Router();
 
@@ -92,6 +93,9 @@ router.use('/support-tickets', supportTicketRoutes);
 router.use('/entrance', entranceRoutes);
 router.use('/devices', deviceRoutes);
 router.use('/audit-logs', auditLogRoutes);
+// Digital Signage: /signage/screens (branch displays), /signage/contents (what can be shown),
+// /signage/schedules (playlist entries), /signage/screens/:id/playback (resolved live playlist).
+router.use('/signage', signageRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/notification-templates', notificationTemplateRoutes);
 router.use('/system-config', systemConfigRoutes);

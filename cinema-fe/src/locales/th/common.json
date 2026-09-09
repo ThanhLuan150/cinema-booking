@@ -67,7 +67,8 @@
       "mySchedule": "ตารางงานของฉัน",
       "refunds": "การคืนเงิน",
       "supportTickets": "บริการลูกค้า",
-      "distribution": "การจัดจำหน่าย"
+      "distribution": "การจัดจำหน่าย",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

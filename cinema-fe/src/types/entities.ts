@@ -447,6 +447,91 @@ export interface CheckinLog {
   createdAt: string;
 }
 
+// Ticket 36 — Digital Signage
+export type ScreenStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
+
+export interface Screen {
+  id: number;
+  branch_id: number;
+  name: string;
+  location: string;
+  device_id: string;
+  status: ScreenStatus;
+  last_seen_at: string | null;
+  createdAt: string;
+}
+
+// Only ever present on the create / rotate-key responses — the plaintext key is shown once.
+export interface ScreenWithKey extends Screen {
+  api_key: string;
+}
+
+export type SignageContentType =
+  | 'MOVIE_POSTER'
+  | 'SHOWTIME'
+  | 'COMING_SOON'
+  | 'PROMOTION'
+  | 'ADVERTISEMENT'
+  | 'ANNOUNCEMENT';
+
+export type SignageContentStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface SignageContent {
+  id: number;
+  branch_id: number;
+  type: SignageContentType;
+  title: string;
+  body: string;
+  image_url: string;
+  movie_id: number | null;
+  schedule_id: number | null;
+  promotion_id: number | null;
+  status: SignageContentStatus;
+  createdAt: string;
+}
+
+export type SignageScheduleStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface SignageSchedule {
+  id: number;
+  content_id: number;
+  screen_id: number;
+  start_at: string;
+  end_at: string;
+  priority: number;
+  status: SignageScheduleStatus;
+  createdAt: string;
+}
+
+export interface SignagePlaybackItem {
+  schedule_entry_id: number;
+  content_id: number;
+  type: SignageContentType;
+  title: string;
+  body: string;
+  image_url: string;
+  priority: number;
+  start_at: string;
+  end_at: string;
+  movie?: { id: number; name: string; poster: string; banner: string; premiere_date: string };
+  showtime?: {
+    id: number;
+    movie_id: number;
+    movie_date: string;
+    time_begin: string;
+    time_end: string;
+    room_id: number;
+  };
+  promotion?: { id: number; code: string; name: string; description: string; end_at: string };
+}
+
+export interface SignagePlayback {
+  screen: { id: number; name: string; branch_id: number; status: ScreenStatus; location: string };
+  generated_at: string;
+  items: SignagePlaybackItem[];
+  dropped: { entry_id: number; content_id: number; code: string }[];
+}
+
 // Ticket 24 — Audit Log
 export type AuditLogEntityType =
   | 'BRANCH'
