@@ -1,3 +1,5 @@
+import type { AgeRating } from '@/constants/ageRating';
+
 export interface MovieActorDraft {
   actor_id: number;
   character_name: string;
@@ -15,6 +17,13 @@ export interface MovieFormValues {
   producer: string;
   producerAvatar: string;
   status?: 'ACTIVE' | 'INACTIVE';
+  // Ticket 34 — Movie Content Management.
+  banner: string;
+  gallery: string[];
+  age_rating: AgeRating;
+  language: string;
+  subtitle: string;
+  featured: boolean;
 }
 
 export interface CreateMoviePayload extends MovieFormValues {
@@ -24,6 +33,8 @@ export interface CreateMoviePayload extends MovieFormValues {
   avatarFile?: File | null;
   trailerFile?: File | null;
   producerAvatarFile?: File | null;
+  bannerFile?: File | null;
+  galleryFiles?: File[];
 }
 
 export interface UpdateMoviePayload {
@@ -35,6 +46,8 @@ export interface UpdateMoviePayload {
   avatarFile?: File | null;
   trailerFile?: File | null;
   producerAvatarFile?: File | null;
+  bannerFile?: File | null;
+  galleryFiles?: File[];
 }
 
 export interface AdminMoviesState {

@@ -22,6 +22,8 @@ const uploadMoviePoster = upload.fields([
   { name: 'avatar', maxCount: 1 },
   { name: 'trailer', maxCount: 1 },
   { name: 'producerAvatar', maxCount: 1 },
+  { name: 'banner', maxCount: 1 },
+  { name: 'gallery', maxCount: 12 },
 ]);
 
 // POST /api/movie (movie.create permission)

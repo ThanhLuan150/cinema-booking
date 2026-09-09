@@ -12,7 +12,14 @@
     "showtimes": "상영 시간",
     "producer": "제작자",
     "watchTrailer": "예고편 보기",
-    "voteCount": "{{count}}개 평가"
+    "voteCount": "{{count}}개 평가",
+    "ageRatingLabel": "{{rating}} 등급",
+    "ageRatingHint": "관람 등급: {{rating}}",
+    "featured": "추천",
+    "language": "언어",
+    "subtitle": "자막",
+    "gallery": "갤러리",
+    "galleryAlt": "{{name}} — 스틸 {{index}}"
   },
   "reviews": {
     "title": "리뷰",

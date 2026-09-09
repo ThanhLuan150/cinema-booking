@@ -107,7 +107,26 @@
       "trailerRequired": "Vui lòng thêm trailer",
       "producerRequired": "Vui lòng nhập nhà sản xuất",
       "directorRequired": "Vui lòng chọn ít nhất một đạo diễn",
-      "categoryRequired": "Vui lòng chọn ít nhất một danh mục"
+      "categoryRequired": "Vui lòng chọn ít nhất một danh mục",
+      "ageRatingInvalid": "Phân loại độ tuổi không hợp lệ"
+    },
+    "content": {
+      "sectionTitle": "Nội dung & hình ảnh",
+      "fields": {
+        "banner": "Ảnh bìa:",
+        "currentBanner": "Ảnh bìa hiện tại:",
+        "uploadNewBanner": "Tải ảnh bìa mới:",
+        "gallery": "Thư viện ảnh:",
+        "addGalleryImages": "Thêm ảnh vào thư viện:",
+        "ageRating": "Phân loại độ tuổi:",
+        "language": "Ngôn ngữ:",
+        "subtitle": "Phụ đề:",
+        "featured": "Phim nổi bật"
+      },
+      "galleryCount": "Đã chọn {{count}} ảnh",
+      "galleryEmpty": "Chưa có ảnh nào",
+      "removeGalleryItem": "Xóa ảnh",
+      "featuredBadge": "Nổi bật"
     }
   },
   "actors": {

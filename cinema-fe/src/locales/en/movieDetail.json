@@ -14,7 +14,14 @@
     "showtimes": "Showtimes",
     "producer": "Producer",
     "watchTrailer": "Watch trailer",
-    "voteCount": "{{count}} votes"
+    "voteCount": "{{count}} votes",
+    "ageRatingLabel": "Rated {{rating}}",
+    "ageRatingHint": "Age rating: {{rating}}",
+    "featured": "Featured",
+    "language": "Language",
+    "subtitle": "Subtitle",
+    "gallery": "Gallery",
+    "galleryAlt": "{{name}} — still {{index}}"
   },
   "reviews": {
     "title": "Reviews",

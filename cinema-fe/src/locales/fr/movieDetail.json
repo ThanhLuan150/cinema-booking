@@ -12,7 +12,14 @@
     "showtimes": "Séances",
     "producer": "Producteur",
     "watchTrailer": "Voir la bande-annonce",
-    "voteCount": "{{count}} votes"
+    "voteCount": "{{count}} votes",
+    "ageRatingLabel": "Classé {{rating}}",
+    "ageRatingHint": "Classification d'âge : {{rating}}",
+    "featured": "À la une",
+    "language": "Langue",
+    "subtitle": "Sous-titres",
+    "gallery": "Galerie",
+    "galleryAlt": "{{name}} — image {{index}}"
   },
   "reviews": {
     "title": "Avis",

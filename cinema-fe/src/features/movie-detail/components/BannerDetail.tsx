@@ -80,6 +80,20 @@ const BannerDetail = () => {
               <i className="fa-regular fa-calendar text-accent" aria-hidden="true" />
               {releaseDate}
             </span>
+            {movie.age_rating && (
+              <span
+                className="rounded-md border border-accent/60 px-2 py-0.5 text-xs font-bold uppercase text-accent"
+                title={t('bannerDetail.ageRatingHint', { rating: movie.age_rating })}
+              >
+                {t('bannerDetail.ageRatingLabel', { rating: movie.age_rating })}
+              </span>
+            )}
+            {movie.featured && (
+              <span className="flex items-center gap-1.5 rounded-md bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
+                <i className="fa-solid fa-star" aria-hidden="true" />
+                {t('bannerDetail.featured')}
+              </span>
+            )}
           </div>
 
           {reviewCount > 0 && (
@@ -106,6 +120,16 @@ const BannerDetail = () => {
             {movie.producer && (
               <FactRow label={t('bannerDetail.producer')}>
                 <span className="pt-1.5 text-sm text-txt">{movie.producer}</span>
+              </FactRow>
+            )}
+            {movie.language && (
+              <FactRow label={t('bannerDetail.language')}>
+                <span className="pt-1.5 text-sm text-txt">{movie.language}</span>
+              </FactRow>
+            )}
+            {movie.subtitle && (
+              <FactRow label={t('bannerDetail.subtitle')}>
+                <span className="pt-1.5 text-sm text-txt">{movie.subtitle}</span>
               </FactRow>
             )}
             {categories.length > 0 && (
@@ -168,6 +192,33 @@ const BannerDetail = () => {
             {t('bannerDetail.content')}
           </h2>
           <p className="whitespace-pre-line leading-relaxed text-txt/75">{movie.description}</p>
+        </div>
+      )}
+
+      {(movie.gallery?.length ?? 0) > 0 && (
+        <div>
+          <h2 className="mb-4 flex items-center gap-3 text-lg font-bold uppercase tracking-wide text-white">
+            <span className="h-6 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+            {t('bannerDetail.gallery')}
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {movie.gallery?.map((url, index) => (
+              <a
+                key={url}
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="block overflow-hidden rounded-xl ring-1 ring-border-strong"
+              >
+                <img
+                  src={url}
+                  alt={t('bannerDetail.galleryAlt', { name: movie.name, index: index + 1 })}
+                  loading="lazy"
+                  className="aspect-video w-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </a>
+            ))}
+          </div>
         </div>
       )}
 

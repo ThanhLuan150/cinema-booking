@@ -5,7 +5,8 @@
     "nextSlide": "Следующий слайд",
     "goToSlide": "Перейти к слайду",
     "bookNow": "Забронировать",
-    "viewDetails": "Подробнее"
+    "viewDetails": "Подробнее",
+    "durationValue": "{{count}} мин"
   },
   "quickBooking": {
     "title": "Быстрый заказ",
@@ -30,5 +31,9 @@
     "addressUpdating": "Адрес уточняется",
     "newRating": "Новый",
     "ticketsBooked": "билетов забронировано"
+  },
+  "featured": {
+    "title": "Рекомендуемые фильмы",
+    "viewDetails": "Подробнее"
   }
 }

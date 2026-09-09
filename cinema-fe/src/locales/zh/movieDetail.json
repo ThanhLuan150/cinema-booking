@@ -12,7 +12,14 @@
     "showtimes": "放映时间",
     "producer": "制片人",
     "watchTrailer": "观看预告片",
-    "voteCount": "{{count}} 条评分"
+    "voteCount": "{{count}} 条评分",
+    "ageRatingLabel": "分级 {{rating}}",
+    "ageRatingHint": "年龄分级: {{rating}}",
+    "featured": "精选",
+    "language": "语言",
+    "subtitle": "字幕",
+    "gallery": "剧照",
+    "galleryAlt": "{{name}} — 剧照 {{index}}"
   },
   "reviews": {
     "title": "影评",

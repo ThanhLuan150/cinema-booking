@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { DateInput } from '@/components/ui/DateInput';
 import { Textarea } from '@/components/ui/Textarea';
+import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { AGE_RATINGS, DEFAULT_AGE_RATING } from '@/constants/ageRating';
 import { toast } from '@/features/notifications/toast';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useAppDispatch } from '@/hooks/redux';
@@ -33,10 +35,18 @@ const emptyValues = (): AddMovieFormValues => ({
   trailer: '',
   producer: '',
   producerAvatar: '',
+  banner: '',
+  gallery: [],
+  age_rating: DEFAULT_AGE_RATING,
+  language: '',
+  subtitle: '',
+  featured: false,
   categoryIds: [],
   directorIds: [],
   actors: [],
 });
+
+const AGE_RATING_OPTIONS = AGE_RATINGS.map((value) => ({ label: value, value }));
 
 const Add = () => {
   const { t } = useTranslation('admin');
@@ -50,9 +60,13 @@ const Add = () => {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const trailerInputRef = useRef<HTMLInputElement>(null);
   const producerAvatarInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [trailerFile, setTrailerFile] = useState<File | null>(null);
   const [producerAvatarFile, setProducerAvatarFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const movieSchema = useMemo(() => buildMovieSchema(t), [t]);
 
   const handleCloseAdd = () => dispatch(closeAddModal());
@@ -68,13 +82,19 @@ const Add = () => {
         avatarFile,
         trailerFile,
         producerAvatarFile,
+        bannerFile,
+        galleryFiles,
       });
       if (avatarInputRef.current) avatarInputRef.current.value = '';
       if (trailerInputRef.current) trailerInputRef.current.value = '';
       if (producerAvatarInputRef.current) producerAvatarInputRef.current.value = '';
+      if (bannerInputRef.current) bannerInputRef.current.value = '';
+      if (galleryInputRef.current) galleryInputRef.current.value = '';
       setAvatarFile(null);
       setTrailerFile(null);
       setProducerAvatarFile(null);
+      setBannerFile(null);
+      setGalleryFiles([]);
       toast.success(t('movies.add.toastSuccess'));
       handleCloseAdd();
     } catch (error) {
@@ -229,6 +249,72 @@ const Add = () => {
                 className="mt-2 border-l-2 border-border pl-3"
                 error={getError('producerAvatar')}
               />
+
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-txt/60">
+                  {t('movies.content.sectionTitle')}
+                </p>
+                <Input
+                  label={t('movies.content.fields.banner')}
+                  type="file"
+                  name="banner"
+                  accept="image/*"
+                  ref={bannerInputRef}
+                  onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
+                />
+                <Input
+                  label={t('movies.content.fields.gallery')}
+                  type="file"
+                  name="gallery"
+                  accept="image/*"
+                  multiple
+                  ref={galleryInputRef}
+                  className="mt-4"
+                  onChange={(e) => setGalleryFiles(Array.from(e.target.files ?? []))}
+                />
+                {galleryFiles.length > 0 && (
+                  <p className="mt-1 text-xs text-txt/60">
+                    {t('movies.content.galleryCount', { count: galleryFiles.length })}
+                  </p>
+                )}
+                <Select
+                  label={t('movies.content.fields.ageRating')}
+                  name="age_rating"
+                  id="age_rating"
+                  className="mt-4"
+                  value={formik.values.age_rating}
+                  onChange={(e) => formik.setFieldValue('age_rating', e.target.value)}
+                  options={AGE_RATING_OPTIONS}
+                  error={getError('age_rating')}
+                />
+                <Field
+                  as={Input}
+                  label={t('movies.content.fields.language')}
+                  type="text"
+                  name="language"
+                  id="language"
+                  className="mt-4"
+                  error={getError('language')}
+                />
+                <Field
+                  as={Input}
+                  label={t('movies.content.fields.subtitle')}
+                  type="text"
+                  name="subtitle"
+                  id="subtitle"
+                  className="mt-4"
+                  error={getError('subtitle')}
+                />
+                <label className="mt-4 flex items-center gap-2 text-sm font-medium">
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    checked={formik.values.featured}
+                    onChange={(e) => formik.setFieldValue('featured', e.target.checked)}
+                  />
+                  <span>{t('movies.content.fields.featured')}</span>
+                </label>
+              </div>
 
               <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.add.directors.label')}</label>
               <div className="flex flex-wrap gap-4">

@@ -107,7 +107,26 @@
       "trailerRequired": "Trailer is required",
       "producerRequired": "Producer is required",
       "directorRequired": "Select at least one director",
-      "categoryRequired": "Select at least one category"
+      "categoryRequired": "Select at least one category",
+      "ageRatingInvalid": "Age rating is invalid"
+    },
+    "content": {
+      "sectionTitle": "Content & media",
+      "fields": {
+        "banner": "Banner:",
+        "currentBanner": "Current banner:",
+        "uploadNewBanner": "Upload new banner:",
+        "gallery": "Gallery:",
+        "addGalleryImages": "Add gallery images:",
+        "ageRating": "Age rating:",
+        "language": "Language:",
+        "subtitle": "Subtitle:",
+        "featured": "Featured movie"
+      },
+      "galleryCount": "{{count}} image(s) selected",
+      "galleryEmpty": "No gallery images yet",
+      "removeGalleryItem": "Remove image",
+      "featuredBadge": "Featured"
     }
   },
   "actors": {

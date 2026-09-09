@@ -14,6 +14,12 @@ const validMovie = {
   trailer: 'trailer.mp4',
   producer: 'Emma Thomas',
   producerAvatar: '',
+  banner: '',
+  gallery: [],
+  age_rating: 'T13',
+  language: 'English',
+  subtitle: 'Tiếng Việt',
+  featured: false,
   categoryIds: [1],
   directorIds: [1],
   actors: [{ actor_id: 1, character_name: 'Cobb', is_lead: true }],
@@ -92,6 +98,29 @@ describe('movieSchema', () => {
 
   it('accepts an empty actors list', () => {
     const result = movieSchema.safeParse({ ...validMovie, actors: [] });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts each valid age rating', () => {
+    for (const rating of ['P', 'K', 'T13', 'T16', 'T18', 'C']) {
+      expect(movieSchema.safeParse({ ...validMovie, age_rating: rating }).success).toBe(true);
+    }
+  });
+
+  it('rejects an unknown age rating', () => {
+    const result = movieSchema.safeParse({ ...validMovie, age_rating: 'NC-17' });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts optional content fields left blank', () => {
+    const result = movieSchema.safeParse({
+      ...validMovie,
+      banner: '',
+      gallery: [],
+      language: '',
+      subtitle: '',
+      featured: false,
+    });
     expect(result.success).toBe(true);
   });
 });

@@ -7,7 +7,7 @@ import { Breadcrumb } from '@/components/common/Breadcrumb';
 import { Avatar } from '@/components/ui/Avatar';
 import { cn } from '@/lib/cn';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
-import { ROUTES } from '@/constants/routes';
+import { buildAccountNavItems } from '@/components/layout/accountNav';
 
 export interface AccountLayoutProps {
   title: string;
@@ -19,17 +19,7 @@ export function AccountLayout({ title, children }: AccountLayoutProps) {
   const { t } = useTranslation('common');
   const { data: user } = useCurrentUser();
 
-  const navItems = [
-    { to: ROUTES.profile, icon: 'fa-regular fa-user', label: t('header.viewProfile') },
-    { to: ROUTES.myMembership, icon: 'fa-solid fa-crown', label: t('header.myMembership') },
-    { to: ROUTES.myGiftCards, icon: 'fa-solid fa-gift', label: t('header.myGiftCards') },
-    { to: ROUTES.myBookings, icon: 'fa-solid fa-ticket', label: t('header.myBookings') },
-    { to: ROUTES.myTickets, icon: 'fa-solid fa-qrcode', label: t('header.myTickets') },
-    { to: ROUTES.paymentHistory, icon: 'fa-solid fa-receipt', label: t('header.paymentHistory') },
-    { to: ROUTES.myRefunds, icon: 'fa-solid fa-hand-holding-dollar', label: t('header.myRefunds') },
-    { to: ROUTES.notifications, icon: 'fa-regular fa-bell', label: t('header.notifications') },
-    { to: ROUTES.changePassword, icon: 'fa-solid fa-lock', label: t('header.changePassword') },
-  ];
+  const navItems = buildAccountNavItems(t);
 
   return (
     <div className="flex min-h-screen flex-col bg-main">

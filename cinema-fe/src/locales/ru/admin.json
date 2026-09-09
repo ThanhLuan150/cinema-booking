@@ -96,7 +96,26 @@
       "producerRequired": "Продюсер обязателен",
       "directorRequired": "Select at least one director",
       "categoryRequired": "Выберите хотя бы одну категорию",
-      "producerAvatarInvalid": "Недействительный URL фото продюсера"
+      "producerAvatarInvalid": "Недействительный URL фото продюсера",
+      "ageRatingInvalid": "Недопустимый возрастной рейтинг"
+    },
+    "content": {
+      "sectionTitle": "Контент и медиа",
+      "fields": {
+        "banner": "Баннер:",
+        "currentBanner": "Текущий баннер:",
+        "uploadNewBanner": "Загрузить новый баннер:",
+        "gallery": "Галерея:",
+        "addGalleryImages": "Добавить изображения в галерею:",
+        "ageRating": "Возрастной рейтинг:",
+        "language": "Язык:",
+        "subtitle": "Субтитры:",
+        "featured": "Рекомендуемый фильм"
+      },
+      "galleryCount": "Выбрано изображений: {{count}}",
+      "galleryEmpty": "Пока нет изображений в галерее",
+      "removeGalleryItem": "Удалить изображение",
+      "featuredBadge": "Рекомендуемое"
     }
   },
   "actors": {

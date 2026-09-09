@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { TFunction } from 'i18next';
+import { AGE_RATINGS } from '@/constants/ageRating';
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -23,6 +24,14 @@ export const buildMovieSchema = (t: TFunction) =>
     trailer: z.string().trim().min(1, t('admin:movies.validation.trailerRequired')),
     producer: z.string().trim().min(1, t('admin:movies.validation.producerRequired')),
     producerAvatar: z.string(),
+    banner: z.string(),
+    gallery: z.array(z.string()),
+    age_rating: z.enum(AGE_RATINGS, {
+      errorMap: () => ({ message: t('admin:movies.validation.ageRatingInvalid') }),
+    }),
+    language: z.string(),
+    subtitle: z.string(),
+    featured: z.boolean(),
     categoryIds: z.array(z.number()).min(1, t('admin:movies.validation.categoryRequired')),
     directorIds: z.array(z.number()).min(1, t('admin:movies.validation.directorRequired')),
     actors: z.array(

@@ -1,5 +1,6 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
 import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
+import type { AgeRating } from '@/constants/ageRating';
 
 export interface Movie {
   id: number;
@@ -14,6 +15,13 @@ export interface Movie {
   trailer: string;
   producer?: string;
   producerAvatar?: string;
+  // Ticket 34 — Movie Content Management (Company Catalog, shared across branches).
+  banner?: string;
+  gallery?: string[];
+  age_rating?: AgeRating;
+  language?: string;
+  subtitle?: string;
+  featured?: boolean;
   categories?: Category[];
   actors?: MovieActor[];
   directors?: Director[];

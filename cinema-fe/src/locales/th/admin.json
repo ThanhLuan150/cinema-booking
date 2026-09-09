@@ -96,7 +96,26 @@
       "producerRequired": "กรุณากรอกผู้อำนวยการสร้าง",
       "directorRequired": "Select at least one director",
       "categoryRequired": "กรุณาเลือกอย่างน้อยหนึ่งหมวดหมู่",
-      "producerAvatarInvalid": "URL รูปผู้อำนวยการสร้างไม่ถูกต้อง"
+      "producerAvatarInvalid": "URL รูปผู้อำนวยการสร้างไม่ถูกต้อง",
+      "ageRatingInvalid": "การจัดเรตอายุไม่ถูกต้อง"
+    },
+    "content": {
+      "sectionTitle": "เนื้อหาและสื่อ",
+      "fields": {
+        "banner": "แบนเนอร์:",
+        "currentBanner": "แบนเนอร์ปัจจุบัน:",
+        "uploadNewBanner": "อัปโหลดแบนเนอร์ใหม่:",
+        "gallery": "แกลเลอรี:",
+        "addGalleryImages": "เพิ่มรูปภาพในแกลเลอรี:",
+        "ageRating": "การจัดเรตอายุ:",
+        "language": "ภาษา:",
+        "subtitle": "คำบรรยาย:",
+        "featured": "ภาพยนตร์แนะนำ"
+      },
+      "galleryCount": "เลือกรูปภาพแล้ว {{count}} รูป",
+      "galleryEmpty": "ยังไม่มีรูปภาพในแกลเลอรี",
+      "removeGalleryItem": "ลบรูปภาพ",
+      "featuredBadge": "แนะนำ"
     }
   },
   "actors": {

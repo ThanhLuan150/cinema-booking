@@ -96,7 +96,26 @@
       "producerRequired": "Le producteur est requis",
       "directorRequired": "Select at least one director",
       "categoryRequired": "Veuillez sélectionner au moins une catégorie",
-      "producerAvatarInvalid": "L'URL de l'avatar du producteur est invalide"
+      "producerAvatarInvalid": "L'URL de l'avatar du producteur est invalide",
+      "ageRatingInvalid": "La classification d'âge est invalide"
+    },
+    "content": {
+      "sectionTitle": "Contenu et médias",
+      "fields": {
+        "banner": "Bannière :",
+        "currentBanner": "Bannière actuelle :",
+        "uploadNewBanner": "Téléverser une nouvelle bannière :",
+        "gallery": "Galerie :",
+        "addGalleryImages": "Ajouter des images à la galerie :",
+        "ageRating": "Classification d'âge :",
+        "language": "Langue :",
+        "subtitle": "Sous-titres :",
+        "featured": "Film à la une"
+      },
+      "galleryCount": "{{count}} image(s) sélectionnée(s)",
+      "galleryEmpty": "Aucune image dans la galerie",
+      "removeGalleryItem": "Supprimer l'image",
+      "featuredBadge": "À la une"
     }
   },
   "actors": {

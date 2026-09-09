@@ -5,7 +5,8 @@
     "nextSlide": "Slide tiếp theo",
     "goToSlide": "Đi đến slide",
     "bookNow": "Đặt vé ngay",
-    "viewDetails": "Xem chi tiết"
+    "viewDetails": "Xem chi tiết",
+    "durationValue": "{{count}} phút"
   },
   "quickBooking": {
     "title": "Đặt vé nhanh",
@@ -30,5 +31,9 @@
     "addressUpdating": "Đang cập nhật địa chỉ",
     "newRating": "Mới",
     "ticketsBooked": "vé đã đặt"
+  },
+  "featured": {
+    "title": "Phim nổi bật",
+    "viewDetails": "Xem chi tiết"
   }
 }

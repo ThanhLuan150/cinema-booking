@@ -127,6 +127,12 @@ async function run() {
         description: m.description,
         country: m.country,
         trailer: m.trailer,
+        banner: m.banner || m.avatar.replace('/400/600', '/1200/500'),
+        gallery: m.gallery || [1, 2, 3].map((n) => m.avatar.replace('/400/600', `/800/450?${n}`)),
+        age_rating: m.age_rating || 'P',
+        language: m.language || 'English',
+        subtitle: m.subtitle || 'Tiếng Việt',
+        featured: m.featured || i < 2,
       });
       console.log(`Created movie: ${m.name} (id=${id})`);
     }
