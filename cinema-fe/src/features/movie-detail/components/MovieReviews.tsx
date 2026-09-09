@@ -13,6 +13,7 @@ import { getApiErrorMessage } from '@/lib/apiError';
 import { MAX_RATING } from '@/constants/rating';
 import { ROUTES } from '@/constants/routes';
 import { useMovieReviews } from '../hooks/useMovieReviews';
+import { useEligibleBookings } from '../hooks/useEligibleBookings';
 import { usePostMovieReview } from '../hooks/usePostMovieReview';
 import { usePostMovieReply } from '../hooks/usePostMovieReply';
 import { useReactToReview } from '../hooks/useReactToReview';
@@ -33,6 +34,7 @@ const MovieReviews = () => {
   const isLoggedIn = useIsAuthenticated();
   const currentUserId = useCurrentAccountId();
   const { data, isLoading } = useMovieReviews(id);
+  const { data: eligibleBookings } = useEligibleBookings(id);
   const postReviewMutation = usePostMovieReview();
   const postReplyMutation = usePostMovieReply();
   const reactMutation = useReactToReview(id);
@@ -47,6 +49,12 @@ const MovieReviews = () => {
   const average = data?.average ?? 0;
   const count = data?.count ?? 0;
 
+  const [selectedBookingId, setSelectedBookingId] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    setSelectedBookingId(eligibleBookings && eligibleBookings.length > 0 ? eligibleBookings[0].booking_id : undefined);
+  }, [eligibleBookings]);
+  const hasNoEligibleBooking = isLoggedIn && (eligibleBookings?.length ?? 0) === 0;
+
   const requireLogin = () => {
     toast.error(t('reviews.loginRequired'));
     window.location.href = ROUTES.login;
@@ -60,9 +68,14 @@ const MovieReviews = () => {
       requireLogin();
       return;
     }
+    if (!selectedBookingId) {
+      toast.error(t('reviews.needEligibleBooking'));
+      return;
+    }
     try {
       await postReviewMutation.mutateAsync({
         movie_id: Number(id),
+        booking_id: selectedBookingId,
         rating: values.reviewRating,
         comment: values.reviewComment,
       });
@@ -136,42 +149,64 @@ const MovieReviews = () => {
         )}
       </h2>
 
-      <Formik<ReviewFormValues>
-        initialValues={{ reviewRating: MAX_RATING, reviewComment: '' }}
-        onSubmit={handleSubmit}
-      >
-        {(formik) => (
-          <Form className="mt-5 rounded-xl border border-border bg-surface p-5 shadow-card">
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-txt/70">{t('reviews.ratingLabel')}</span>
-              <StarRatingInput
-                value={formik.values.reviewRating}
-                onChange={(value) => formik.setFieldValue('reviewRating', value)}
+      {hasNoEligibleBooking ? (
+        <div className="mt-5 rounded-xl border border-border bg-surface p-5 text-sm text-txt/70 shadow-card">
+          {t('reviews.needEligibleBooking')}
+        </div>
+      ) : (
+        <Formik<ReviewFormValues>
+          initialValues={{ reviewRating: MAX_RATING, reviewComment: '' }}
+          onSubmit={handleSubmit}
+        >
+          {(formik) => (
+            <Form className="mt-5 rounded-xl border border-border bg-surface p-5 shadow-card">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-txt/70">{t('reviews.ratingLabel')}</span>
+                <StarRatingInput
+                  value={formik.values.reviewRating}
+                  onChange={(value) => formik.setFieldValue('reviewRating', value)}
+                />
+              </div>
+              {isLoggedIn && eligibleBookings && eligibleBookings.length > 1 && (
+                <div className="mt-3 flex items-center gap-3">
+                  <span className="text-sm text-txt/70">{t('reviews.bookingLabel')}</span>
+                  <select
+                    value={selectedBookingId}
+                    onChange={(e) => setSelectedBookingId(Number(e.target.value))}
+                    className="rounded-lg border border-border-strong bg-surface-soft px-3 py-1.5 text-sm text-txt focus:border-accent focus:outline-none"
+                  >
+                    {eligibleBookings.map((b) => (
+                      <option key={b.booking_id} value={b.booking_id}>
+                        {b.code}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <Field
+                as="textarea"
+                name="reviewComment"
+                placeholder={t('reviews.commentPlaceholder')}
+                className="mt-3 w-full rounded-lg border border-border-strong bg-surface-soft px-3 py-2.5 text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                rows={3}
+                onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
+                  if (e.key === 'Enter' && !e.shiftKey && !postReviewMutation.isPending) {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                  }
+                }}
               />
-            </div>
-            <Field
-              as="textarea"
-              name="reviewComment"
-              placeholder={t('reviews.commentPlaceholder')}
-              className="mt-3 w-full rounded-lg border border-border-strong bg-surface-soft px-3 py-2.5 text-txt placeholder:text-txt/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-              rows={3}
-              onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
-                if (e.key === 'Enter' && !e.shiftKey && !postReviewMutation.isPending) {
-                  e.preventDefault();
-                  e.currentTarget.form?.requestSubmit();
-                }
-              }}
-            />
-            <button
-              type="submit"
-              disabled={postReviewMutation.isPending}
-              className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-card transition-colors hover:bg-accent-hover disabled:opacity-50"
-            >
-              {t('reviews.submit')}
-            </button>
-          </Form>
-        )}
-      </Formik>
+              <button
+                type="submit"
+                disabled={postReviewMutation.isPending}
+                className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-card transition-colors hover:bg-accent-hover disabled:opacity-50"
+              >
+                {t('reviews.submit')}
+              </button>
+            </Form>
+          )}
+        </Formik>
+      )}
 
       <div className="mt-8 flex flex-col gap-4">
         {isLoading ? (

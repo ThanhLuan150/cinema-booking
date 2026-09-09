@@ -12,9 +12,10 @@ describe('Review model', () => {
   it('creates a valid review and applies defaults', async () => {
     const review = await Review.create({ id: 1, movie_id: 1, account_id: 1, rating: 5 });
     expect(review.cinema_id).toBeNull();
+    expect(review.booking_id).toBeNull();
     expect(review.parent_id).toBeNull();
     expect(review.comment).toBe('');
-    expect(review.hidden).toBe(false);
+    expect(review.status).toBe('VISIBLE');
     expect(review.reactions).toEqual([]);
     expect(review.reports).toEqual([]);
     expect(review.createdAt).toBeInstanceOf(Date);
@@ -40,9 +41,29 @@ describe('Review model', () => {
     expect(tooLow.validateSync().errors.rating).toBeDefined();
   });
 
-  it('allows only one top-level review per account per movie', async () => {
+  it('rejects a status outside the enum', () => {
+    const review = new Review({ id: 1, movie_id: 1, account_id: 1, rating: 5, status: 'BOGUS' });
+    const err = review.validateSync();
+    expect(err.errors.status).toBeDefined();
+  });
+
+  it('allows only one top-level review per booking (Ticket 33)', async () => {
+    await Review.create({ id: 1, movie_id: 1, account_id: 1, booking_id: 100, rating: 5 });
+    await expect(
+      Review.create({ id: 2, movie_id: 1, account_id: 1, booking_id: 100, rating: 4 }),
+    ).rejects.toThrow();
+  });
+
+  it('allows the same account to review the same movie again from a different booking', async () => {
+    await Review.create({ id: 1, movie_id: 1, account_id: 1, booking_id: 100, rating: 5 });
+    await expect(
+      Review.create({ id: 2, movie_id: 1, account_id: 1, booking_id: 101, rating: 4 }),
+    ).resolves.toBeDefined();
+  });
+
+  it('allows multiple movie reviews with no booking_id (e.g. cinema-style free-form use)', async () => {
     await Review.create({ id: 1, movie_id: 1, account_id: 1, rating: 5 });
-    await expect(Review.create({ id: 2, movie_id: 1, account_id: 1, rating: 4 })).rejects.toThrow();
+    await expect(Review.create({ id: 2, movie_id: 1, account_id: 2, rating: 4 })).resolves.toBeDefined();
   });
 
   it('allows only one top-level review per account per cinema', async () => {

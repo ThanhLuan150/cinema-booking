@@ -19,11 +19,12 @@ describe('usePostMovieReview', () => {
     function wrapper({ children }: { children: React.ReactNode }) {
       return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
     }
-    const payload = { movie_id: 5, rating: 4, comment: 'Nice' } as any;
+    const payload = { movie_id: 5, booking_id: 10, rating: 4, comment: 'Nice' } as any;
     const { result } = renderHook(() => usePostMovieReview(), { wrapper });
     result.current.mutate(payload);
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(postMovieReviewMock).toHaveBeenCalledWith(payload);
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['movieReviews', '5'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['movieReviewEligibleBookings', '5'] });
   });
 });

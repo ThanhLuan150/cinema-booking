@@ -16,6 +16,11 @@ vi.mock('../hooks/useMovieReviews', () => ({
   useMovieReviews: (...args: unknown[]) => useMovieReviewsMock(...args),
 }));
 
+const useEligibleBookingsMock = vi.fn();
+vi.mock('../hooks/useEligibleBookings', () => ({
+  useEligibleBookings: (...args: unknown[]) => useEligibleBookingsMock(...args),
+}));
+
 const postReviewMutate = vi.fn();
 vi.mock('../hooks/usePostMovieReview', () => ({
   usePostMovieReview: () => ({ mutateAsync: postReviewMutate, isPending: false }),
@@ -48,8 +53,10 @@ describe('MovieReviews', () => {
     useIsAuthenticatedMock.mockReset();
     useCurrentAccountIdMock.mockReset();
     useMovieReviewsMock.mockReset();
+    useEligibleBookingsMock.mockReset();
     postReviewMutate.mockReset();
     useCurrentAccountIdMock.mockReturnValue(1);
+    useEligibleBookingsMock.mockReturnValue({ data: [{ booking_id: 10, code: 'BK10', schedule_id: 1 }] });
   });
 
   it('shows an empty state when there are no reviews', () => {
@@ -98,9 +105,38 @@ describe('MovieReviews', () => {
     fireEvent.click(screen.getByText('reviews.submit'));
     await waitFor(() =>
       expect(postReviewMutate).toHaveBeenCalledWith(
-        expect.objectContaining({ movie_id: 5, comment: 'Loved it!' }),
+        expect.objectContaining({ movie_id: 5, booking_id: 10, comment: 'Loved it!' }),
       ),
     );
     await waitFor(() => expect(textarea).toHaveValue(''));
+  });
+
+  it('hides the review form and shows a message when the user has no eligible booking', () => {
+    useIsAuthenticatedMock.mockReturnValue(true);
+    useEligibleBookingsMock.mockReturnValue({ data: [] });
+    useMovieReviewsMock.mockReturnValue({
+      data: { reviews: [], average: 0, count: 0 },
+      isLoading: false,
+    });
+    renderWithId();
+    expect(screen.getByText('reviews.needEligibleBooking')).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('reviews.commentPlaceholder')).not.toBeInTheDocument();
+  });
+
+  it('lets the user pick among multiple eligible bookings', () => {
+    useIsAuthenticatedMock.mockReturnValue(true);
+    useEligibleBookingsMock.mockReturnValue({
+      data: [
+        { booking_id: 10, code: 'BK10', schedule_id: 1 },
+        { booking_id: 11, code: 'BK11', schedule_id: 2 },
+      ],
+    });
+    useMovieReviewsMock.mockReturnValue({
+      data: { reviews: [], average: 0, count: 0 },
+      isLoading: false,
+    });
+    renderWithId();
+    expect(screen.getByText('BK10')).toBeInTheDocument();
+    expect(screen.getByText('BK11')).toBeInTheDocument();
   });
 });

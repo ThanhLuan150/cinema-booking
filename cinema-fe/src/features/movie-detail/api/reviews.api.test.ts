@@ -30,9 +30,14 @@ describe('movie-detail reviews.api', () => {
   });
 
   it('postMovieReview posts to /review', async () => {
-    const payload = { movie_id: 5, rating: 4 } as any;
+    const payload = { movie_id: 5, booking_id: 10, rating: 4 } as any;
     await reviewsApi.postMovieReview(payload);
     expect(postMock).toHaveBeenCalledWith('/review', payload);
+  });
+
+  it('getEligibleBookings gets /review/movie/:id/eligible-bookings', async () => {
+    await reviewsApi.getEligibleBookings(5);
+    expect(getMock).toHaveBeenCalledWith('/review/movie/5/eligible-bookings');
   });
 
   it('postMovieReply posts to /review', async () => {

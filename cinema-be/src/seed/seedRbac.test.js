@@ -218,6 +218,44 @@ describe('seedRbac', () => {
     }
   });
 
+  it('grants customer review.view/create/update_own/delete_own at OWN scope, and review.moderate to no one but super admin (Ticket 33)', async () => {
+    await seedRbac();
+    const customer = await Role.findOne({ code: 'CUSTOMER' });
+    for (const code of ['review.view', 'review.create', 'review.update_own', 'review.delete_own']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: customer.id, permission_id: permission.id });
+      expect(link).not.toBeNull();
+      expect(link.scope).toBe('OWN');
+    }
+
+    const moderate = await Permission.findOne({ code: 'review.moderate' });
+    expect(await RolePermission.findOne({ role_id: customer.id, permission_id: moderate.id })).toBeNull();
+
+    const superAdmin = await Role.findOne({ code: 'SUPER_ADMIN' });
+    const superAdminLink = await RolePermission.findOne({ role_id: superAdmin.id, permission_id: moderate.id });
+    expect(superAdminLink.scope).toBe('ALL');
+  });
+
+  it('does not grant employee any review.* permission (Ticket 33)', async () => {
+    await seedRbac();
+    const employeeRole = await Role.findOne({ code: 'EMPLOYEE' });
+    for (const code of ['review.create', 'review.update_own', 'review.delete_own', 'review.moderate']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id });
+      expect(link).toBeNull();
+    }
+  });
+
+  it('does not grant branch admin review.create, review.update_own, review.delete_own or review.moderate (Ticket 33)', async () => {
+    await seedRbac();
+    const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
+    for (const code of ['review.create', 'review.update_own', 'review.delete_own', 'review.moderate']) {
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: branchAdmin.id, permission_id: permission.id });
+      expect(link).toBeNull();
+    }
+  });
+
   it('prunes a role-permission link that is no longer in the map on the next run', async () => {
     await seedRbac();
     const branchAdmin = await Role.findOne({ code: 'BRANCH_ADMIN' });
