@@ -96,7 +96,26 @@
       "producerRequired": "製作者を入力してください",
       "directorRequired": "Select at least one director",
       "categoryRequired": "少なくとも1つのジャンルを選択してください",
-      "producerAvatarInvalid": "製作の画像URLが無効です"
+      "producerAvatarInvalid": "製作の画像URLが無効です",
+      "ageRatingInvalid": "年齢レーティングが無効です"
+    },
+    "content": {
+      "sectionTitle": "コンテンツとメディア",
+      "fields": {
+        "banner": "バナー:",
+        "currentBanner": "現在のバナー:",
+        "uploadNewBanner": "新しいバナーをアップロード:",
+        "gallery": "ギャラリー:",
+        "addGalleryImages": "ギャラリー画像を追加:",
+        "ageRating": "年齢レーティング:",
+        "language": "言語:",
+        "subtitle": "字幕:",
+        "featured": "注目の映画"
+      },
+      "galleryCount": "{{count}} 枚の画像を選択",
+      "galleryEmpty": "ギャラリー画像はまだありません",
+      "removeGalleryItem": "画像を削除",
+      "featuredBadge": "注目"
     }
   },
   "actors": {

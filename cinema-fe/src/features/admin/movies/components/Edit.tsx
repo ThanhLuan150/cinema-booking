@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { AGE_RATINGS, DEFAULT_AGE_RATING } from '@/constants/ageRating';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { toFormikValidate } from '@/lib/formikZod';
@@ -41,10 +42,18 @@ const emptyValues = (): EditMovieFormValues => ({
   producer: '',
   producerAvatar: '',
   status: 'ACTIVE',
+  banner: '',
+  gallery: [],
+  age_rating: DEFAULT_AGE_RATING,
+  language: '',
+  subtitle: '',
+  featured: false,
   categoryIds: [],
   directorIds: [],
   actors: [],
 });
+
+const AGE_RATING_OPTIONS = AGE_RATINGS.map((value) => ({ label: value, value }));
 
 function Edit() {
   const { t } = useTranslation('admin');
@@ -63,6 +72,8 @@ function Edit() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [trailerFile, setTrailerFile] = useState<File | null>(null);
   const [producerAvatarFile, setProducerAvatarFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const movieSchema = useMemo(() => buildMovieSchema(t), [t]);
 
   const handleCloseEdit = () => dispatch(closeEditModal());
@@ -79,6 +90,12 @@ function Edit() {
         producer: movie.producer ?? '',
         producerAvatar: movie.producerAvatar ?? '',
         status: movie.status ?? 'ACTIVE',
+        banner: movie.banner ?? '',
+        gallery: movie.gallery ?? [],
+        age_rating: movie.age_rating ?? DEFAULT_AGE_RATING,
+        language: movie.language ?? '',
+        subtitle: movie.subtitle ?? '',
+        featured: movie.featured ?? false,
         categoryIds: movieCategoryIds ?? [],
         directorIds: movieDirectorLinks?.map((link) => link.director_id) ?? [],
         actors:
@@ -103,6 +120,8 @@ function Edit() {
         avatarFile,
         trailerFile,
         producerAvatarFile,
+        bannerFile,
+        galleryFiles,
       });
       toast.success(t('movies.edit.toastSuccess'));
       handleCloseEdit();
@@ -281,6 +300,111 @@ function Edit() {
                   { label: t('movies.status.inactive'), value: 'INACTIVE' },
                 ]}
               />
+
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-txt/60">
+                  {t('movies.content.sectionTitle')}
+                </p>
+                <Input
+                  label={t('movies.content.fields.currentBanner')}
+                  type="text"
+                  name="banner"
+                  id="banner"
+                  disabled
+                  value={formik.values.banner}
+                />
+                <Input
+                  label={t('movies.content.fields.uploadNewBanner')}
+                  type="file"
+                  name="up_banner"
+                  accept="image/*"
+                  className="mt-2"
+                  onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
+                />
+
+                <label className="mb-1 mt-4 block text-sm font-medium">
+                  {t('movies.content.fields.gallery')}
+                </label>
+                {formik.values.gallery.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {formik.values.gallery.map((url) => (
+                      <span
+                        key={url}
+                        className="flex items-center gap-1.5 rounded-md border border-txt/15 bg-txt/5 px-2 py-1 text-xs"
+                      >
+                        <img src={url} alt="" className="h-8 w-12 rounded object-cover" />
+                        <button
+                          type="button"
+                          className="text-red-500 hover:text-red-400"
+                          aria-label={t('movies.content.removeGalleryItem')}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              'gallery',
+                              formik.values.gallery.filter((u) => u !== url),
+                            )
+                          }
+                        >
+                          <i className="fa-solid fa-xmark" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-txt/50">{t('movies.content.galleryEmpty')}</p>
+                )}
+                <Input
+                  label={t('movies.content.fields.addGalleryImages')}
+                  type="file"
+                  name="up_gallery"
+                  accept="image/*"
+                  multiple
+                  className="mt-2"
+                  onChange={(e) => setGalleryFiles(Array.from(e.target.files ?? []))}
+                />
+                {galleryFiles.length > 0 && (
+                  <p className="mt-1 text-xs text-txt/60">
+                    {t('movies.content.galleryCount', { count: galleryFiles.length })}
+                  </p>
+                )}
+
+                <Select
+                  label={t('movies.content.fields.ageRating')}
+                  name="age_rating"
+                  id="age_rating"
+                  className="mt-4"
+                  value={formik.values.age_rating}
+                  onChange={(e) => formik.setFieldValue('age_rating', e.target.value)}
+                  options={AGE_RATING_OPTIONS}
+                  error={getError('age_rating')}
+                />
+                <Field
+                  as={Input}
+                  label={t('movies.content.fields.language')}
+                  type="text"
+                  name="language"
+                  id="language"
+                  className="mt-4"
+                  error={getError('language')}
+                />
+                <Field
+                  as={Input}
+                  label={t('movies.content.fields.subtitle')}
+                  type="text"
+                  name="subtitle"
+                  id="subtitle"
+                  className="mt-4"
+                  error={getError('subtitle')}
+                />
+                <label className="mt-4 flex items-center gap-2 text-sm font-medium">
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    checked={formik.values.featured}
+                    onChange={(e) => formik.setFieldValue('featured', e.target.checked)}
+                  />
+                  <span>{t('movies.content.fields.featured')}</span>
+                </label>
+              </div>
 
               <label className="mb-1 mt-5 block text-sm font-medium">{t('movies.edit.directors.label')}</label>
               <div className="flex flex-wrap gap-4">

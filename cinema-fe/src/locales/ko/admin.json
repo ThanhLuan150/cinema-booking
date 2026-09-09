@@ -96,7 +96,26 @@
       "producerRequired": "제작자를 입력해 주세요",
       "directorRequired": "Select at least one director",
       "categoryRequired": "장르를 하나 이상 선택해 주세요",
-      "producerAvatarInvalid": "제작자 이미지 URL이 유효하지 않습니다"
+      "producerAvatarInvalid": "제작자 이미지 URL이 유효하지 않습니다",
+      "ageRatingInvalid": "관람 등급이 올바르지 않습니다"
+    },
+    "content": {
+      "sectionTitle": "콘텐츠 및 미디어",
+      "fields": {
+        "banner": "배너:",
+        "currentBanner": "현재 배너:",
+        "uploadNewBanner": "새 배너 업로드:",
+        "gallery": "갤러리:",
+        "addGalleryImages": "갤러리 이미지 추가:",
+        "ageRating": "관람 등급:",
+        "language": "언어:",
+        "subtitle": "자막:",
+        "featured": "추천 영화"
+      },
+      "galleryCount": "{{count}}개 이미지 선택됨",
+      "galleryEmpty": "갤러리 이미지가 없습니다",
+      "removeGalleryItem": "이미지 제거",
+      "featuredBadge": "추천"
     }
   },
   "actors": {

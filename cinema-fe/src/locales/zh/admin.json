@@ -96,7 +96,26 @@
       "producerRequired": "请输入制片人",
       "directorRequired": "Select at least one director",
       "categoryRequired": "请至少选择一个分类",
-      "producerAvatarInvalid": "制片人头像URL无效"
+      "producerAvatarInvalid": "制片人头像URL无效",
+      "ageRatingInvalid": "年龄分级无效"
+    },
+    "content": {
+      "sectionTitle": "内容与媒体",
+      "fields": {
+        "banner": "横幅:",
+        "currentBanner": "当前横幅:",
+        "uploadNewBanner": "上传新横幅:",
+        "gallery": "剧照库:",
+        "addGalleryImages": "添加剧照:",
+        "ageRating": "年龄分级:",
+        "language": "语言:",
+        "subtitle": "字幕:",
+        "featured": "精选影片"
+      },
+      "galleryCount": "已选择 {{count}} 张图片",
+      "galleryEmpty": "暂无剧照",
+      "removeGalleryItem": "移除图片",
+      "featuredBadge": "精选"
     }
   },
   "actors": {

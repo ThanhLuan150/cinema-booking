@@ -51,6 +51,21 @@ describe('admin movies.api', () => {
       const formData = moviesApi.buildMovieFormData({ name: 'A', description: undefined } as any);
       expect(formData.has('description')).toBe(false);
     });
+
+    it('JSON-encodes the gallery url array and appends banner + gallery files', () => {
+      const formData = moviesApi.buildMovieFormData(
+        { name: 'A', gallery: ['https://cdn/x.jpg', 'https://cdn/y.jpg'], featured: true } as any,
+        null,
+        null,
+        null,
+        new File(['b'], 'banner.png'),
+        [new File(['g1'], 'g1.png'), new File(['g2'], 'g2.png')],
+      );
+      expect(formData.get('gallery')).toBe('["https://cdn/x.jpg","https://cdn/y.jpg"]');
+      expect(formData.get('featured')).toBe('true');
+      expect(formData.get('banner')).toBeInstanceOf(File);
+      expect(formData.getAll('gallery').filter((v) => v instanceof File)).toHaveLength(2);
+    });
   });
 
   it('getMyMovies gets /movie/mine', async () => {

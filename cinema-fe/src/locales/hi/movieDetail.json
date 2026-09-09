@@ -12,7 +12,14 @@
     "showtimes": "शो समय",
     "producer": "निर्माता",
     "watchTrailer": "ट्रेलर देखें",
-    "voteCount": "{{count}} रेटिंग"
+    "voteCount": "{{count}} रेटिंग",
+    "ageRatingLabel": "रेटिंग {{rating}}",
+    "ageRatingHint": "आयु रेटिंग: {{rating}}",
+    "featured": "विशेष",
+    "language": "भाषा",
+    "subtitle": "उपशीर्षक",
+    "gallery": "गैलरी",
+    "galleryAlt": "{{name}} — छवि {{index}}"
   },
   "reviews": {
     "title": "समीक्षाएं",

@@ -14,7 +14,14 @@
     "showtimes": "Lịch chiếu",
     "producer": "Nhà sản xuất",
     "watchTrailer": "Xem trailer",
-    "voteCount": "{{count}} đánh giá"
+    "voteCount": "{{count}} đánh giá",
+    "ageRatingLabel": "Phân loại {{rating}}",
+    "ageRatingHint": "Phân loại độ tuổi: {{rating}}",
+    "featured": "Nổi bật",
+    "language": "Ngôn ngữ",
+    "subtitle": "Phụ đề",
+    "gallery": "Thư viện ảnh",
+    "galleryAlt": "{{name}} — ảnh {{index}}"
   },
   "reviews": {
     "title": "Đánh giá",

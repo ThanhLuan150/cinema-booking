@@ -12,7 +12,14 @@
     "showtimes": "รอบฉาย",
     "producer": "ผู้อำนวยการสร้าง",
     "watchTrailer": "ดูตัวอย่าง",
-    "voteCount": "{{count}} รีวิว"
+    "voteCount": "{{count}} รีวิว",
+    "ageRatingLabel": "เรต {{rating}}",
+    "ageRatingHint": "การจัดเรตอายุ: {{rating}}",
+    "featured": "แนะนำ",
+    "language": "ภาษา",
+    "subtitle": "คำบรรยาย",
+    "gallery": "แกลเลอรี",
+    "galleryAlt": "{{name}} — ภาพนิ่ง {{index}}"
   },
   "reviews": {
     "title": "รีวิว",

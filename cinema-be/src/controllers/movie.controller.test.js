@@ -73,6 +73,18 @@ describe('movie.controller list', () => {
     expect(payload.data[0].directors).toEqual([expect.objectContaining({ full_name: 'Director One' })]);
   });
 
+  it('narrows to featured movies when featured=true', async () => {
+    await Movie.create([
+      { id: 1, name: 'Featured One', premiere_date: '2026-01-01', featured: true },
+      { id: 2, name: 'Plain One', premiere_date: '2026-01-01', featured: false },
+    ]);
+    const res = mockRes();
+    await movieController.list({ query: { featured: 'true' } }, res);
+    const payload = res.json.mock.calls[0][0];
+    expect(payload.total).toBe(1);
+    expect(payload.data[0].name).toBe('Featured One');
+  });
+
   it('excludes INACTIVE movies from the public catalog', async () => {
     await Movie.create([
       { id: 1, name: 'Active One', premiere_date: '2026-01-01', status: 'ACTIVE' },
@@ -196,6 +208,61 @@ describe('movie.controller create', () => {
     const created = await Movie.findOne({ name: 'With Producer URL' });
     expect(created.producerAvatar).toBe('https://example.com/p.jpg');
   });
+
+  it('stores content-management fields and coerces featured from a form string', async () => {
+    const res = mockRes();
+    await movieController.create(
+      {
+        body: {
+          name: 'Content Movie',
+          premiere_date: '2026-01-01',
+          age_rating: 'T16',
+          language: 'English',
+          subtitle: 'Tiếng Việt',
+          featured: 'true',
+          banner: 'https://example.com/banner.jpg',
+          gallery: '["https://example.com/g1.jpg", "https://example.com/g2.jpg"]',
+        },
+        account: { accountId: 1 },
+      },
+      res,
+    );
+    const created = await Movie.findOne({ name: 'Content Movie' });
+    expect(created.age_rating).toBe('T16');
+    expect(created.language).toBe('English');
+    expect(created.subtitle).toBe('Tiếng Việt');
+    expect(created.featured).toBe(true);
+    expect(created.banner).toBe('https://example.com/banner.jpg');
+    expect(created.gallery).toEqual(['https://example.com/g1.jpg', 'https://example.com/g2.jpg']);
+  });
+
+  it('rejects an unknown age_rating', async () => {
+    const res = mockRes();
+    await movieController.create(
+      { body: { name: 'Bad Rating', premiere_date: '2026-01-01', age_rating: 'X' }, account: { accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('uploads banner and gallery files and merges them with kept gallery urls', async () => {
+    const res = mockRes();
+    await movieController.create(
+      {
+        body: { name: 'Gallery Movie', premiere_date: '2026-01-01', gallery: 'https://example.com/keep.jpg' },
+        account: { accountId: 1 },
+        files: {
+          banner: [{ buffer: Buffer.from('b') }],
+          gallery: [{ buffer: Buffer.from('g1') }, { buffer: Buffer.from('g2') }],
+        },
+      },
+      res,
+    );
+    expect(uploadImage.uploadImage).toHaveBeenCalled();
+    const created = await Movie.findOne({ name: 'Gallery Movie' });
+    expect(created.banner).toBe('https://cdn.example.com/avatar.jpg');
+    expect(created.gallery).toEqual(['https://example.com/keep.jpg', 'https://cdn.example.com/avatar.jpg']);
+  });
 });
 
 describe('movie.controller update/remove', () => {
@@ -273,6 +340,63 @@ describe('movie.controller update/remove', () => {
       res,
     );
     expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('updates content-management fields and toggles featured off', async () => {
+    await Movie.create({
+      id: 1,
+      name: 'Old',
+      premiere_date: '2026-01-01',
+      age_rating: 'T16',
+      featured: true,
+      gallery: ['https://example.com/old.jpg'],
+    });
+    const res = mockRes();
+    await movieController.update(
+      {
+        params: { id: 1 },
+        body: {
+          age_rating: 'P',
+          language: 'Tiếng Việt',
+          subtitle: 'English',
+          featured: 'false',
+          gallery: '["https://example.com/new.jpg"]',
+        },
+        account: { role: 0, accountId: 1 },
+      },
+      res,
+    );
+    const updated = await Movie.findOne({ id: 1 });
+    expect(updated.age_rating).toBe('P');
+    expect(updated.language).toBe('Tiếng Việt');
+    expect(updated.featured).toBe(false);
+    expect(updated.gallery).toEqual(['https://example.com/new.jpg']);
+  });
+
+  it('rejects an unknown age_rating on update', async () => {
+    await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01' });
+    const res = mockRes();
+    await movieController.update(
+      { params: { id: 1 }, body: { age_rating: 'BOGUS' }, account: { role: 0, accountId: 1 } },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('appends uploaded gallery files to the existing gallery when no gallery field is sent', async () => {
+    await Movie.create({ id: 1, name: 'Old', premiere_date: '2026-01-01', gallery: ['https://example.com/a.jpg'] });
+    const res = mockRes();
+    await movieController.update(
+      {
+        params: { id: 1 },
+        body: {},
+        account: { role: 0, accountId: 1 },
+        files: { gallery: [{ buffer: Buffer.from('x') }] },
+      },
+      res,
+    );
+    const updated = await Movie.findOne({ id: 1 });
+    expect(updated.gallery).toEqual(['https://example.com/a.jpg', 'https://cdn.example.com/avatar.jpg']);
   });
 
   it('remove deletes the movie', async () => {

@@ -96,7 +96,26 @@
       "producerRequired": "निर्माता आवश्यक है",
       "directorRequired": "Select at least one director",
       "categoryRequired": "कम से कम एक श्रेणी चुनें",
-      "producerAvatarInvalid": "निर्माता की तस्वीर का URL अमान्य है"
+      "producerAvatarInvalid": "निर्माता की तस्वीर का URL अमान्य है",
+      "ageRatingInvalid": "आयु रेटिंग अमान्य है"
+    },
+    "content": {
+      "sectionTitle": "सामग्री और मीडिया",
+      "fields": {
+        "banner": "बैनर:",
+        "currentBanner": "वर्तमान बैनर:",
+        "uploadNewBanner": "नया बैनर अपलोड करें:",
+        "gallery": "गैलरी:",
+        "addGalleryImages": "गैलरी छवियाँ जोड़ें:",
+        "ageRating": "आयु रेटिंग:",
+        "language": "भाषा:",
+        "subtitle": "उपशीर्षक:",
+        "featured": "विशेष फ़िल्म"
+      },
+      "galleryCount": "{{count}} छवि चयनित",
+      "galleryEmpty": "अभी तक कोई गैलरी छवि नहीं",
+      "removeGalleryItem": "छवि हटाएँ",
+      "featuredBadge": "विशेष"
     }
   },
   "actors": {

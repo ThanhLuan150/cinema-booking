@@ -12,7 +12,14 @@
     "showtimes": "Расписание",
     "producer": "Продюсер",
     "watchTrailer": "Смотреть трейлер",
-    "voteCount": "{{count}} оценок"
+    "voteCount": "{{count}} оценок",
+    "ageRatingLabel": "Рейтинг {{rating}}",
+    "ageRatingHint": "Возрастной рейтинг: {{rating}}",
+    "featured": "Рекомендуемое",
+    "language": "Язык",
+    "subtitle": "Субтитры",
+    "gallery": "Галерея",
+    "galleryAlt": "{{name}} — кадр {{index}}"
   },
   "reviews": {
     "title": "Отзывы",

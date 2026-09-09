@@ -12,7 +12,14 @@
     "showtimes": "Spielzeiten",
     "producer": "Produzent",
     "watchTrailer": "Trailer ansehen",
-    "voteCount": "{{count}} Bewertungen"
+    "voteCount": "{{count}} Bewertungen",
+    "ageRatingLabel": "Freigegeben ab {{rating}}",
+    "ageRatingHint": "Altersfreigabe: {{rating}}",
+    "featured": "Empfohlen",
+    "language": "Sprache",
+    "subtitle": "Untertitel",
+    "gallery": "Galerie",
+    "galleryAlt": "{{name}} – Bild {{index}}"
   },
   "reviews": {
     "title": "Bewertungen",

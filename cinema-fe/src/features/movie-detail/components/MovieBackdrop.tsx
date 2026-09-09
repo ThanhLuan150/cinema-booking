@@ -12,7 +12,7 @@ const MovieBackdrop = () => {
       {movie && (
         <div
           className="absolute inset-0 scale-110 bg-cover bg-center blur-sm"
-          style={{ backgroundImage: `url(${getMoviePosterUrl(movie.avatar)})` }}
+          style={{ backgroundImage: `url(${movie.banner || getMoviePosterUrl(movie.avatar)})` }}
           aria-hidden="true"
         />
       )}

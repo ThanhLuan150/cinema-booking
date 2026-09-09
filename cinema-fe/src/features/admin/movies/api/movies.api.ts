@@ -8,14 +8,25 @@ export function buildMovieFormData(
   avatarFile?: File | null,
   trailerFile?: File | null,
   producerAvatarFile?: File | null,
+  bannerFile?: File | null,
+  galleryFiles?: File[],
 ) {
   const formData = new FormData();
   Object.entries(values).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) formData.append(key, String(value));
+    if (value === undefined || value === null) return;
+    // `gallery` is a string[] of URLs to keep — send it JSON-encoded so the backend gets an
+    // array rather than a comma-joined string.
+    if (key === 'gallery' && Array.isArray(value)) {
+      formData.append('gallery', JSON.stringify(value));
+      return;
+    }
+    formData.append(key, String(value));
   });
   if (avatarFile) formData.append('avatar', avatarFile);
   if (trailerFile) formData.append('trailer', trailerFile);
   if (producerAvatarFile) formData.append('producerAvatar', producerAvatarFile);
+  if (bannerFile) formData.append('banner', bannerFile);
+  for (const file of galleryFiles ?? []) formData.append('gallery', file);
   return formData;
 }
 

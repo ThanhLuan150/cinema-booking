@@ -12,7 +12,14 @@
     "showtimes": "上映スケジュール",
     "producer": "製作",
     "watchTrailer": "予告編を見る",
-    "voteCount": "{{count}}件の評価"
+    "voteCount": "{{count}}件の評価",
+    "ageRatingLabel": "レーティング {{rating}}",
+    "ageRatingHint": "年齢レーティング: {{rating}}",
+    "featured": "注目",
+    "language": "言語",
+    "subtitle": "字幕",
+    "gallery": "ギャラリー",
+    "galleryAlt": "{{name}} — 場面写真 {{index}}"
   },
   "reviews": {
     "title": "レビュー",

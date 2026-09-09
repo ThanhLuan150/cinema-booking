@@ -59,6 +59,16 @@ const ListItem = ({ movie }: { movie: Movie }) => {
             {t('movies.status.inactive')}
           </Badge>
         )}
+        {movie.featured && (
+          <Badge variant="accent" className="ml-2 align-middle">
+            {t('movies.content.featuredBadge')}
+          </Badge>
+        )}
+        {movie.age_rating && (
+          <Badge variant="default" className="ml-2 align-middle">
+            {movie.age_rating}
+          </Badge>
+        )}
       </td>
       <td>{movie.duration ? t('movies.list.durationValue', { count: movie.duration }) : '-'}</td>
       <td>{movie.premiere_date}</td>

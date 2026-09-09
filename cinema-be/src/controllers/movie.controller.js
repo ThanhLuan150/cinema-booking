@@ -1,4 +1,5 @@
 const movieRepository = require('../repositories/movie.repository');
+const Movie = require('../models/Movie');
 const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
 const { withCategories } = require('../utils/withCategories');
@@ -11,19 +12,51 @@ function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// multipart/form-data serialises everything as strings; a checkbox-style flag arrives as
+// "true"/"false"/"1"/"0". Anything else (including an actual boolean from a JSON client) is
+// coerced the same way so `featured` is always stored as a real boolean.
+function parseBoolean(raw) {
+  if (typeof raw === 'boolean') return raw;
+  return raw === 'true' || raw === '1' || raw === 1;
+}
+
+// Gallery URLs can reach us as a real array (JSON client), a JSON-encoded array string, or a
+// comma-joined string (FormData flattens arrays with String()). Normalise all three to a
+// deduped, trimmed array of non-empty strings.
+function parseStringArray(raw) {
+  let values = [];
+  if (Array.isArray(raw)) {
+    values = raw;
+  } else if (typeof raw === 'string' && raw.trim() !== '') {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        values = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        values = trimmed.split(',');
+      }
+    } else {
+      values = trimmed.split(',');
+    }
+  }
+  return [...new Set(values.map((v) => String(v).trim()).filter(Boolean))];
+}
+
 // Attaches categories + actors + directors in one pass (used by every read path below).
 async function withRelations(movies) {
   return withActorsAndDirectors(await withCategories(movies));
 }
 
-// GET /api/movie?search=&category=&country=&date=&cinema=&status=&page=&limit= -> public catalog
+// GET /api/movie?search=&category=&country=&date=&cinema=&status=&featured=&page=&limit= -> public catalog
 
 async function list(req, res) {
-  const { search, category, country, date, cinema, status } = req.query;
+  const { search, category, country, date, cinema, status, featured } = req.query;
   // $ne (not $eq 'ACTIVE') so movies persisted before the status field existed still show up.
   const filter = { status: { $ne: 'INACTIVE' } };
   if (search) filter.name = { $regex: escapeRegex(search), $options: 'i' };
   if (country) filter.country = { $regex: escapeRegex(country), $options: 'i' };
+  if (featured === 'true') filter.featured = true;
   if (status === 'playing' || status === 'upcoming') {
     const today = new Date().toISOString().split('T')[0];
     filter.premiere_date = status === 'playing' ? { $lte: today } : { $gt: today };
@@ -73,8 +106,24 @@ async function getById(req, res) {
 
 // POST /api/movie (movie.create permission — Super Admin only; movie.create is the sole gate,
 async function create(req, res) {
-  const { name, avatar, premiere_date, description, country, trailer, producer, producerAvatar, status, duration } =
-    req.body;
+  const {
+    name,
+    avatar,
+    premiere_date,
+    description,
+    country,
+    trailer,
+    producer,
+    producerAvatar,
+    status,
+    duration,
+    banner,
+    gallery,
+    age_rating,
+    language,
+    subtitle,
+    featured,
+  } = req.body;
   if (!name || !premiere_date) {
     return res.status(400).json({ message: 'name and premiere_date are required' });
   }
@@ -84,13 +133,21 @@ async function create(req, res) {
   if (duration !== undefined && (Number.isNaN(Number(duration)) || Number(duration) < 0)) {
     return res.status(400).json({ message: 'duration must be a non-negative number' });
   }
+  if (age_rating !== undefined && age_rating !== '' && !Movie.AGE_RATINGS.includes(age_rating)) {
+    return res.status(400).json({ message: `age_rating must be one of ${Movie.AGE_RATINGS.join(', ')}` });
+  }
 
   const avatarFile = req.files?.avatar?.[0];
   const trailerFile = req.files?.trailer?.[0];
   const producerAvatarFile = req.files?.producerAvatar?.[0];
+  const bannerFile = req.files?.banner?.[0];
+  const galleryFiles = req.files?.gallery || [];
   const avatarUrl = avatarFile ? await uploadImage(avatarFile) : avatar || '';
   const trailerUrl = trailerFile ? await uploadTrailer(trailerFile) : trailer || '';
   const producerAvatarUrl = producerAvatarFile ? await uploadImage(producerAvatarFile) : producerAvatar || '';
+  const bannerUrl = bannerFile ? await uploadImage(bannerFile) : banner || '';
+  const uploadedGallery = await Promise.all(galleryFiles.map((file) => uploadImage(file)));
+  const galleryUrls = [...new Set([...parseStringArray(gallery), ...uploadedGallery])];
 
   const id = await nextId('movie');
   const movie = await movieRepository.create({
@@ -106,6 +163,12 @@ async function create(req, res) {
     trailer: trailerUrl,
     producer: producer || '',
     producerAvatar: producerAvatarUrl,
+    banner: bannerUrl,
+    gallery: galleryUrls,
+    age_rating: age_rating || 'P',
+    language: language || '',
+    subtitle: subtitle || '',
+    featured: parseBoolean(featured),
   });
 
   await recordAudit({
@@ -131,6 +194,13 @@ async function update(req, res) {
   if (req.body.duration !== undefined && (Number.isNaN(Number(req.body.duration)) || Number(req.body.duration) < 0)) {
     return res.status(400).json({ message: 'duration must be a non-negative number' });
   }
+  if (
+    req.body.age_rating !== undefined &&
+    req.body.age_rating !== '' &&
+    !Movie.AGE_RATINGS.includes(req.body.age_rating)
+  ) {
+    return res.status(400).json({ message: `age_rating must be one of ${Movie.AGE_RATINGS.join(', ')}` });
+  }
 
   const fields = [
     'name',
@@ -143,18 +213,34 @@ async function update(req, res) {
     'producer',
     'producerAvatar',
     'status',
+    'banner',
+    'age_rating',
+    'language',
+    'subtitle',
   ];
   const updates = {};
   for (const field of fields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
   if (updates.duration !== undefined) updates.duration = Number(updates.duration);
+  if (req.body.featured !== undefined) updates.featured = parseBoolean(req.body.featured);
+
   const avatarFile = req.files?.avatar?.[0];
   const trailerFile = req.files?.trailer?.[0];
   const producerAvatarFile = req.files?.producerAvatar?.[0];
+  const bannerFile = req.files?.banner?.[0];
+  const galleryFiles = req.files?.gallery || [];
   if (avatarFile) updates.avatar = await uploadImage(avatarFile);
   if (trailerFile) updates.trailer = await uploadTrailer(trailerFile);
   if (producerAvatarFile) updates.producerAvatar = await uploadImage(producerAvatarFile);
+  if (bannerFile) updates.banner = await uploadImage(bannerFile);
+  // A `gallery` body field replaces the list (URLs the client chose to keep); uploaded files are
+  // appended to that list, or to the existing gallery when the client sent files only.
+  if (req.body.gallery !== undefined || galleryFiles.length > 0) {
+    const kept = req.body.gallery !== undefined ? parseStringArray(req.body.gallery) : existing.gallery;
+    const uploaded = await Promise.all(galleryFiles.map((file) => uploadImage(file)));
+    updates.gallery = [...new Set([...kept, ...uploaded])];
+  }
 
   const movie = await movieRepository.updateFields(req.params.id, updates);
 

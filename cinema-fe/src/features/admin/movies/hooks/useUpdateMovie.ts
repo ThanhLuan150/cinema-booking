@@ -25,8 +25,13 @@ export function useUpdateMovie() {
       avatarFile,
       trailerFile,
       producerAvatarFile,
+      bannerFile,
+      galleryFiles,
     }: UpdateMoviePayload) => {
-      await updateMovie(id, buildMovieFormData(values, avatarFile, trailerFile, producerAvatarFile));
+      await updateMovie(
+        id,
+        buildMovieFormData(values, avatarFile, trailerFile, producerAvatarFile, bannerFile, galleryFiles),
+      );
 
       await deleteMovieCategoryByMovieId(id);
       for (const categoryId of categoryIds) {

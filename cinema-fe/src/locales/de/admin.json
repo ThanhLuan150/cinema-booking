@@ -96,7 +96,26 @@
       "producerRequired": "Produzent ist erforderlich",
       "directorRequired": "Select at least one director",
       "categoryRequired": "Bitte mindestens eine Kategorie auswählen",
-      "producerAvatarInvalid": "Produzenten-Avatar-URL ist ungültig"
+      "producerAvatarInvalid": "Produzenten-Avatar-URL ist ungültig",
+      "ageRatingInvalid": "Altersfreigabe ist ungültig"
+    },
+    "content": {
+      "sectionTitle": "Inhalt & Medien",
+      "fields": {
+        "banner": "Banner:",
+        "currentBanner": "Aktueller Banner:",
+        "uploadNewBanner": "Neuen Banner hochladen:",
+        "gallery": "Galerie:",
+        "addGalleryImages": "Galeriebilder hinzufügen:",
+        "ageRating": "Altersfreigabe:",
+        "language": "Sprache:",
+        "subtitle": "Untertitel:",
+        "featured": "Empfohlener Film"
+      },
+      "galleryCount": "{{count}} Bild(er) ausgewählt",
+      "galleryEmpty": "Noch keine Galeriebilder",
+      "removeGalleryItem": "Bild entfernen",
+      "featuredBadge": "Empfohlen"
     }
   },
   "actors": {
