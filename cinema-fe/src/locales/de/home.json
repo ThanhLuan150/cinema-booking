@@ -5,7 +5,8 @@
     "nextSlide": "Nächstes Bild",
     "goToSlide": "Zu Bild wechseln",
     "bookNow": "Jetzt buchen",
-    "viewDetails": "Details ansehen"
+    "viewDetails": "Details ansehen",
+    "durationValue": "{{count}} Min."
   },
   "quickBooking": {
     "title": "Schnellbuchung",
@@ -30,5 +31,9 @@
     "addressUpdating": "Adresse wird aktualisiert",
     "newRating": "Neu",
     "ticketsBooked": "gebuchte Tickets"
+  },
+  "featured": {
+    "title": "Empfohlene Filme",
+    "viewDetails": "Details ansehen"
   }
 }

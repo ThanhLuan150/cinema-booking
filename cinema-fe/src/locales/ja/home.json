@@ -5,7 +5,8 @@
     "nextSlide": "次のスライド",
     "goToSlide": "スライドへ移動",
     "bookNow": "今すぐ予約",
-    "viewDetails": "詳細を見る"
+    "viewDetails": "詳細を見る",
+    "durationValue": "{{count}}分"
   },
   "quickBooking": {
     "title": "クイック予約",
@@ -30,5 +31,9 @@
     "addressUpdating": "住所情報を更新中",
     "newRating": "新規",
     "ticketsBooked": "件予約済み"
+  },
+  "featured": {
+    "title": "注目の映画",
+    "viewDetails": "詳細を見る"
   }
 }

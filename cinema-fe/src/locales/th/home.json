@@ -5,7 +5,8 @@
     "nextSlide": "สไลด์ถัดไป",
     "goToSlide": "ไปที่สไลด์",
     "bookNow": "จองเลย",
-    "viewDetails": "ดูรายละเอียด"
+    "viewDetails": "ดูรายละเอียด",
+    "durationValue": "{{count}} นาที"
   },
   "quickBooking": {
     "title": "จองตั๋วด่วน",
@@ -30,5 +31,9 @@
     "addressUpdating": "กำลังอัปเดตที่อยู่",
     "newRating": "ใหม่",
     "ticketsBooked": "ตั๋วที่จองแล้ว"
+  },
+  "featured": {
+    "title": "ภาพยนตร์แนะนำ",
+    "viewDetails": "ดูรายละเอียด"
   }
 }

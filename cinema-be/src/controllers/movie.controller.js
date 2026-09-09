@@ -5,6 +5,7 @@ const { emitPublic } = require('../utils/socket');
 const { withCategories } = require('../utils/withCategories');
 const { withActorsAndDirectors } = require('../utils/withActorsAndDirectors');
 const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
+const MEDIA = require('../config/mediaConstraints');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
@@ -142,11 +143,11 @@ async function create(req, res) {
   const producerAvatarFile = req.files?.producerAvatar?.[0];
   const bannerFile = req.files?.banner?.[0];
   const galleryFiles = req.files?.gallery || [];
-  const avatarUrl = avatarFile ? await uploadImage(avatarFile) : avatar || '';
-  const trailerUrl = trailerFile ? await uploadTrailer(trailerFile) : trailer || '';
+  const avatarUrl = avatarFile ? await uploadImage(avatarFile, 'movies', MEDIA.POSTER) : avatar || '';
+  const trailerUrl = trailerFile ? await uploadTrailer(trailerFile, 'movies', MEDIA.TRAILER) : trailer || '';
   const producerAvatarUrl = producerAvatarFile ? await uploadImage(producerAvatarFile) : producerAvatar || '';
-  const bannerUrl = bannerFile ? await uploadImage(bannerFile) : banner || '';
-  const uploadedGallery = await Promise.all(galleryFiles.map((file) => uploadImage(file)));
+  const bannerUrl = bannerFile ? await uploadImage(bannerFile, 'movies', MEDIA.BANNER) : banner || '';
+  const uploadedGallery = await Promise.all(galleryFiles.map((file) => uploadImage(file, 'movies', MEDIA.GALLERY)));
   const galleryUrls = [...new Set([...parseStringArray(gallery), ...uploadedGallery])];
 
   const id = await nextId('movie');
@@ -230,15 +231,15 @@ async function update(req, res) {
   const producerAvatarFile = req.files?.producerAvatar?.[0];
   const bannerFile = req.files?.banner?.[0];
   const galleryFiles = req.files?.gallery || [];
-  if (avatarFile) updates.avatar = await uploadImage(avatarFile);
-  if (trailerFile) updates.trailer = await uploadTrailer(trailerFile);
+  if (avatarFile) updates.avatar = await uploadImage(avatarFile, 'movies', MEDIA.POSTER);
+  if (trailerFile) updates.trailer = await uploadTrailer(trailerFile, 'movies', MEDIA.TRAILER);
   if (producerAvatarFile) updates.producerAvatar = await uploadImage(producerAvatarFile);
-  if (bannerFile) updates.banner = await uploadImage(bannerFile);
+  if (bannerFile) updates.banner = await uploadImage(bannerFile, 'movies', MEDIA.BANNER);
   // A `gallery` body field replaces the list (URLs the client chose to keep); uploaded files are
   // appended to that list, or to the existing gallery when the client sent files only.
   if (req.body.gallery !== undefined || galleryFiles.length > 0) {
     const kept = req.body.gallery !== undefined ? parseStringArray(req.body.gallery) : existing.gallery;
-    const uploaded = await Promise.all(galleryFiles.map((file) => uploadImage(file)));
+    const uploaded = await Promise.all(galleryFiles.map((file) => uploadImage(file, 'movies', MEDIA.GALLERY)));
     updates.gallery = [...new Set([...kept, ...uploaded])];
   }
 

@@ -5,6 +5,7 @@ import { useMovies } from '@/features/movies/hooks/useMovies';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import Banner from '../components/BannerSlider';
 import QuickBooking from '../components/QuickBooking';
+import FeaturedMovies from '../components/FeaturedMoviesSection';
 import MovieTabs from '../components/MovieTabsSection';
 import TopCinemas from '../components/TopCinemasSection';
 
@@ -12,7 +13,7 @@ const HomePage = () => {
   const { isLoading } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
 
   return (
-    <div className="flex min-h-screen flex-col bg-main">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-main">
       <Header />
       <div className="flex-1 pt-20">
         {isLoading ? (
@@ -24,6 +25,7 @@ const HomePage = () => {
             <Banner />
             <QuickBooking />
             <div className="divide-y divide-border">
+              <FeaturedMovies />
               <MovieTabs />
               <TopCinemas />
             </div>

@@ -5,7 +5,8 @@
     "nextSlide": "Diapositive suivante",
     "goToSlide": "Aller à la diapositive",
     "bookNow": "Réserver maintenant",
-    "viewDetails": "Voir les détails"
+    "viewDetails": "Voir les détails",
+    "durationValue": "{{count}} min"
   },
   "quickBooking": {
     "title": "Réservation rapide",
@@ -30,5 +31,9 @@
     "addressUpdating": "Adresse en cours de mise à jour",
     "newRating": "Nouveau",
     "ticketsBooked": "billets réservés"
+  },
+  "featured": {
+    "title": "Films à la une",
+    "viewDetails": "Voir les détails"
   }
 }

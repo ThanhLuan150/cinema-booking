@@ -5,7 +5,8 @@
     "nextSlide": "下一张",
     "goToSlide": "跳转到指定幻灯片",
     "bookNow": "立即购票",
-    "viewDetails": "查看详情"
+    "viewDetails": "查看详情",
+    "durationValue": "{{count}} 分钟"
   },
   "quickBooking": {
     "title": "快速订票",
@@ -30,5 +31,9 @@
     "addressUpdating": "地址更新中",
     "newRating": "新",
     "ticketsBooked": "张已售"
+  },
+  "featured": {
+    "title": "精选影片",
+    "viewDetails": "查看详情"
   }
 }

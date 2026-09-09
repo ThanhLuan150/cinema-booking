@@ -9,6 +9,7 @@ export interface MovieFilters {
   date?: string;
   cinema?: string | number;
   status?: 'playing' | 'upcoming';
+  featured?: boolean;
 }
 
 export interface MoviesState {

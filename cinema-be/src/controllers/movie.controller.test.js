@@ -245,6 +245,23 @@ describe('movie.controller create', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
+  it('propagates a media-metadata rejection from the upload helper', async () => {
+    const err = new Error('Uploaded media is invalid: width 100px is below the 900px minimum');
+    err.status = 400;
+    uploadImage.uploadImage.mockRejectedValueOnce(err);
+    await expect(
+      movieController.create(
+        {
+          body: { name: 'Bad Banner', premiere_date: '2026-01-01' },
+          account: { accountId: 1 },
+          files: { banner: [{ buffer: Buffer.from('b') }] },
+        },
+        mockRes(),
+      ),
+    ).rejects.toThrow(/width 100px is below the 900px minimum/);
+    expect(await Movie.countDocuments()).toBe(0);
+  });
+
   it('uploads banner and gallery files and merges them with kept gallery urls', async () => {
     const res = mockRes();
     await movieController.create(

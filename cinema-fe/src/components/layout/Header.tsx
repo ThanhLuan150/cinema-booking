@@ -6,6 +6,7 @@ import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { MovieMegaMenu } from '@/components/layout/MovieMegaMenu';
 import { CinemaMenu } from '@/components/layout/CinemaMenu';
 import { Avatar } from '@/components/ui/Avatar';
+import { buildAccountNavItems } from '@/components/layout/accountNav';
 import { cn } from '@/lib/cn';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { logout } from '@/features/auth/store/authSlice';
@@ -143,8 +144,10 @@ export function Header() {
               </div>
             )}
           </li>
+          {/* No `relative` here: the mega menu anchors to the header container (like Movies) so it
+              can be wide while staying a descendant of this item for hover purposes. */}
           <li
-            className="relative px-4 py-3 text-center md:px-3 md:py-0"
+            className="px-4 py-3 text-center md:flex md:h-full md:items-center md:px-3 md:py-0"
             onMouseEnter={() => setOpenMenu('cinemas')}
             onMouseLeave={() => setOpenMenu(null)}
           >
@@ -158,8 +161,7 @@ export function Header() {
               />
             </Link>
             {openMenu === 'cinemas' && (
-              // pt keeps the panel flush with the bottom of the bar and bridges the hover gap
-              <div className="absolute left-1/2 top-full z-30 hidden -translate-x-1/2 pt-7 md:block">
+              <div className="absolute left-6 top-full z-30 hidden md:left-10 md:block">
                 <CinemaMenu open onNavigate={() => setOpenMenu(null)} />
               </div>
             )}
@@ -199,37 +201,26 @@ export function Header() {
                 />
               </button>
               {isUserMenuOpen && (
-                <ul className="static mt-2 flex flex-col gap-1 md:absolute md:right-0 md:top-full md:mt-2 md:w-48 md:rounded-lg md:border md:border-border-strong md:bg-surface-raised md:p-1.5 md:shadow-raised">
-                  <li>
-                    <Link
-                      to={ROUTES.profile}
-                      className={cn(dropdownLinkClass, 'text-left')}
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <i className="fa-regular fa-user mr-2 w-4" />
-                      {t('header.viewProfile')}
-                    </Link>
+                <ul className="static mt-2 flex flex-col gap-1 md:absolute md:right-0 md:top-full md:mt-2 md:w-64 md:rounded-lg md:border md:border-border-strong md:bg-surface-raised md:p-1.5 md:shadow-raised">
+                  <li className="hidden items-center gap-3 border-b border-border px-3 pb-3 pt-2 md:flex">
+                    <Avatar src={user?.avatar} name={name} size="sm" />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-txt">{name || user?.email}</p>
+                      {user?.email && <p className="truncate text-xs text-txt/55">{user.email}</p>}
+                    </div>
                   </li>
-                  <li>
-                    <Link
-                      to={ROUTES.myBookings}
-                      className={cn(dropdownLinkClass, 'text-left')}
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <i className="fa-solid fa-ticket mr-2 w-4" />
-                      {t('header.myBookings')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={ROUTES.changePassword}
-                      className={cn(dropdownLinkClass, 'text-left')}
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <i className="fa-solid fa-lock mr-2 w-4" />
-                      {t('header.changePassword')}
-                    </Link>
-                  </li>
+                  {buildAccountNavItems(t).map((item) => (
+                    <li key={item.to}>
+                      <Link
+                        to={item.to}
+                        className={cn(dropdownLinkClass, 'text-left')}
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <i className={cn(item.icon, 'mr-2 w-4')} />
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
                   {canManage && (
                     <li>
                       <Link

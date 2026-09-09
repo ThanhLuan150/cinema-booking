@@ -5,7 +5,8 @@
     "nextSlide": "Next slide",
     "goToSlide": "Go to slide",
     "bookNow": "Book Now",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "durationValue": "{{count}} min"
   },
   "quickBooking": {
     "title": "Quick Booking",
@@ -30,5 +31,9 @@
     "addressUpdating": "Address updating",
     "newRating": "New",
     "ticketsBooked": "tickets booked"
+  },
+  "featured": {
+    "title": "Featured Movies",
+    "viewDetails": "View Details"
   }
 }

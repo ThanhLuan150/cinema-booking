@@ -23,6 +23,7 @@ vi.mock('@/features/movies/hooks/useMovies', () => ({ useMovies: () => useMovies
 
 vi.mock('../components/BannerSlider', () => ({ default: () => <div>Banner</div> }));
 vi.mock('../components/QuickBooking', () => ({ default: () => <div>QuickBooking</div> }));
+vi.mock('../components/FeaturedMoviesSection', () => ({ default: () => <div>FeaturedMovies</div> }));
 vi.mock('../components/MovieTabsSection', () => ({ default: () => <div>MovieTabs</div> }));
 vi.mock('../components/TopCinemasSection', () => ({ default: () => <div>TopCinemas</div> }));
 
@@ -57,6 +58,7 @@ describe('HomePage', () => {
     renderPage();
     expect(screen.getByText('Banner')).toBeInTheDocument();
     expect(screen.getByText('QuickBooking')).toBeInTheDocument();
+    expect(screen.getByText('FeaturedMovies')).toBeInTheDocument();
     expect(screen.getByText('MovieTabs')).toBeInTheDocument();
     expect(screen.getByText('TopCinemas')).toBeInTheDocument();
   });
