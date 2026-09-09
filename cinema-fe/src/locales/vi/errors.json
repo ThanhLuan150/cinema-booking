@@ -83,5 +83,11 @@
   "MAX_BOOKING_SEATS_EXCEEDED": "Bạn đã chọn nhiều ghế hơn mức cho phép trong một lần đặt.",
   "INVALID_OUTCOME": "Kết quả thanh toán không hợp lệ.",
   "PAYMENT_NOT_FOUND": "Không tìm thấy khoản thanh toán này.",
-  "BOOKING_NOT_PAID": "Đơn đặt vé này chưa được thanh toán."
+  "BOOKING_NOT_PAID": "Đơn đặt vé này chưa được thanh toán.",
+  "BEFORE_RELEASE_DATE": "Suất chiếu này trước ngày phát hành của nhà phát hành phim",
+  "AFTER_RELEASE_END": "Suất chiếu này sau khi thời gian phát hành phim đã kết thúc",
+  "DISTRIBUTOR_CODE_TAKEN": "Đã tồn tại nhà phát hành với mã này",
+  "DISTRIBUTOR_IN_USE": "Nhà phát hành này vẫn còn lịch phát hành phim nên không thể xóa. Hãy ngừng kích hoạt thay vì xóa.",
+  "DISTRIBUTOR_NOT_ACTIVE": "Nhà phát hành này không hoạt động",
+  "RELEASE_DUPLICATE": "Phim này đã có lịch phát hành với nhà phát hành này"
 }

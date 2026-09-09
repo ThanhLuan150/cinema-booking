@@ -83,7 +83,8 @@
       "auditLog": "Nhật ký kiểm toán",
       "notificationTemplates": "Mẫu thông báo",
       "systemConfig": "Cấu hình hệ thống",
-      "giftCards": "Thẻ quà tặng"
+      "giftCards": "Thẻ quà tặng",
+      "distribution": "Phát hành phim"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

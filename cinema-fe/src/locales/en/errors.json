@@ -83,5 +83,11 @@
   "MAX_BOOKING_SEATS_EXCEEDED": "You have selected more seats than allowed in one booking.",
   "INVALID_OUTCOME": "Invalid payment result.",
   "PAYMENT_NOT_FOUND": "This payment could not be found.",
-  "BOOKING_NOT_PAID": "This booking has not been paid."
+  "BOOKING_NOT_PAID": "This booking has not been paid.",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

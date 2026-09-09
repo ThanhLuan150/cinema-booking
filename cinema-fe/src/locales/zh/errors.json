@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "该订单已太接近场次时间，不符合退款条件",
   "REFUND_NOT_REQUESTED": "该退款申请已不再处于待审核状态",
   "REFUND_NOT_APPROVED": "该退款尚未被批准",
-  "REFUND_NOT_PROCESSING": "该退款当前未处于处理中状态"
+  "REFUND_NOT_PROCESSING": "该退款当前未处于处理中状态",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

@@ -9,7 +9,18 @@ const Room = require('../models/Room');
 const Movie = require('../models/Movie');
 const MovieCategory = require('../models/MovieCategory');
 const Schedule = require('../models/Schedule');
+const Distributor = require('../models/Distributor');
+const MovieRelease = require('../models/MovieRelease');
 const nextId = require('../utils/nextId');
+
+const DISTRIBUTORS = [
+  { name: 'CGV Distribution', code: 'CGV', contact_email: 'films@cgv.example', phone: '02839333333' },
+  { name: 'Galaxy Studio', code: 'GALAXY', contact_email: 'contact@galaxy.example', phone: '02838333333' },
+  { name: 'Lotte Entertainment', code: 'LOTTE', contact_email: 'hello@lotte.example', phone: '02837333333' },
+];
+
+// end_date offset (days from premiere) per movie index; null = open-ended run.
+const RELEASE_RUN_DAYS = [90, null, 60, 45, null, 120];
 
 const CATEGORIES = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance'];
 const ROOMS = ['Room 1', 'Room 2', 'Room 3'];
@@ -113,7 +124,26 @@ async function run() {
     rooms.push(room);
   }
 
+  const distributors = [];
+  for (const d of DISTRIBUTORS) {
+    let distributor = await Distributor.findOne({ code: d.code });
+    if (!distributor) {
+      const id = await nextId('distributor');
+      distributor = await Distributor.create({ id, ...d, status: 'ACTIVE' });
+      console.log(`Created distributor: ${d.name}`);
+    }
+    distributors.push(distributor);
+  }
+
+  const addDays = (isoDate, days) => {
+    const [y, mo, da] = isoDate.split('-').map(Number);
+    const dt = new Date(y, mo - 1, da + days);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  };
+
   let scheduleCount = 0;
+  let releaseCount = 0;
   for (let i = 0; i < MOVIES.length; i++) {
     const m = MOVIES[i];
     let movie = await Movie.findOne({ name: m.name });
@@ -146,6 +176,22 @@ async function run() {
       }
     }
 
+    const distributor = distributors[i % distributors.length];
+    const releaseExists = await MovieRelease.findOne({ movie_id: movie.id, distributor_id: distributor.id });
+    if (!releaseExists) {
+      const id = await nextId('movieRelease');
+      const runDays = RELEASE_RUN_DAYS[i % RELEASE_RUN_DAYS.length];
+      await MovieRelease.create({
+        id,
+        movie_id: movie.id,
+        distributor_id: distributor.id,
+        release_date: m.premiere_date,
+        end_date: runDays ? addDays(m.premiere_date, runDays) : null,
+        status: 'ACTIVE',
+      });
+      releaseCount++;
+    }
+
     const room = rooms[i % rooms.length];
     const exists = await Schedule.findOne({ movie_id: movie.id });
     if (!exists) {
@@ -164,7 +210,7 @@ async function run() {
     }
   }
 
-  console.log(`Seed complete. ${scheduleCount} schedule(s) created.`);
+  console.log(`Seed complete. ${scheduleCount} schedule(s), ${releaseCount} movie release(s) created.`);
   process.exit(0);
 }
 

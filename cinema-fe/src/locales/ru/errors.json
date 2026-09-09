@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "До сеанса осталось слишком мало времени, возврат недоступен",
   "REFUND_NOT_REQUESTED": "Этот возврат больше не ожидает решения",
   "REFUND_NOT_APPROVED": "Этот возврат ещё не одобрен",
-  "REFUND_NOT_PROCESSING": "Этот возврат сейчас не обрабатывается"
+  "REFUND_NOT_PROCESSING": "Этот возврат сейчас не обрабатывается",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

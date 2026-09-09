@@ -33,6 +33,35 @@ export interface Category {
   name: string;
 }
 
+export type DistributorStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface Distributor {
+  id: number;
+  name: string;
+  code: string;
+  contact_email: string;
+  phone: string;
+  status: DistributorStatus;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type MovieReleaseStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface MovieRelease {
+  id: number;
+  movie_id: number;
+  distributor_id: number;
+  release_date: string; // YYYY-MM-DD
+  end_date: string | null; // YYYY-MM-DD or null (open-ended run)
+  status: MovieReleaseStatus;
+  createdAt?: string;
+  updatedAt?: string;
+  // Embedded summaries the API adds so the release list is self-describing.
+  movie?: { id: number; name: string; premiere_date?: string } | null;
+  distributor?: { id: number; name: string; code: string } | null;
+}
+
 export interface MovieCategory {
   id: number;
   movie_id: number;

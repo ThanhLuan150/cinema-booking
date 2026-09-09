@@ -193,7 +193,11 @@
       "price": "टिकट की कीमत:",
       "priceRequired": "कृपया टिकट की कीमत दर्ज करें।",
       "submit": "जोड़ें",
-      "toastSuccess": "शो टाइम जोड़ा गया।"
+      "toastSuccess": "शो टाइम जोड़ा गया।",
+      "releaseWindow": {
+        "beforeStart": "This date is before the movie's distributor release date.",
+        "afterEnd": "This date is after the movie's release window has ended."
+      }
     },
     "list": {
       "breadcrumb": "शेड्यूल",
@@ -381,5 +385,90 @@
     "failModalTitle": "रिफंड को विफल चिह्नित करें",
     "failSuccess": "रिफंड को विफल चिह्नित कर दिया गया।",
     "reasonLabel": "कारण"
+  },
+  "distribution": {
+    "breadcrumb": "Distribution",
+    "tabs": {
+      "releases": "Movie Releases",
+      "distributors": "Distributors"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses"
+    },
+    "distributors": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Name or code",
+      "addButton": "Add distributor",
+      "empty": "No distributors yet.",
+      "headers": {
+        "name": "Name",
+        "code": "Code",
+        "email": "Contact email",
+        "phone": "Phone",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "email": "Contact email",
+        "phone": "Phone",
+        "status": "Status"
+      },
+      "addTitle": "Add distributor",
+      "editTitle": "Edit {{name}}",
+      "validation": {
+        "required": "Name and code are required."
+      },
+      "createSuccess": "Distributor created.",
+      "updateSuccess": "Distributor updated.",
+      "deleteSuccess": "Distributor deleted.",
+      "deleteConfirm": "Delete distributor \"{{name}}\"?"
+    },
+    "releases": {
+      "addButton": "Add release",
+      "empty": "No movie releases yet.",
+      "openEnded": "Open-ended",
+      "headers": {
+        "movie": "Movie",
+        "distributor": "Distributor",
+        "releaseDate": "Release date",
+        "endDate": "End date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "filters": {
+        "movie": "Movie",
+        "allMovies": "All movies"
+      },
+      "fields": {
+        "movie": "Movie",
+        "moviePlaceholder": "Select a movie",
+        "distributor": "Distributor",
+        "distributorPlaceholder": "Select a distributor",
+        "releaseDate": "Release date",
+        "endDate": "End date (optional)",
+        "endDateHint": "Leave empty for an open-ended run. A showtime may only be scheduled on or after the release date and, when set, on or before the end date.",
+        "status": "Status"
+      },
+      "addTitle": "Add movie release",
+      "editTitle": "Edit movie release",
+      "validation": {
+        "required": "Movie, distributor and release date are required.",
+        "endBeforeStart": "End date cannot be before the release date."
+      },
+      "createSuccess": "Movie release created.",
+      "updateSuccess": "Movie release updated.",
+      "deleteSuccess": "Movie release deleted.",
+      "deleteConfirm": "Delete this movie release?"
+    }
   }
 }

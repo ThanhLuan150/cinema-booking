@@ -66,7 +66,8 @@
       "checkIn": "Check-in",
       "mySchedule": "ตารางงานของฉัน",
       "refunds": "การคืนเงิน",
-      "supportTickets": "บริการลูกค้า"
+      "supportTickets": "บริการลูกค้า",
+      "distribution": "การจัดจำหน่าย"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

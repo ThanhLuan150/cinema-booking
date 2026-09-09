@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "上映時間に近すぎるため、この予約は返金の対象外です",
   "REFUND_NOT_REQUESTED": "この返金はすでに承認待ちの状態ではありません",
   "REFUND_NOT_APPROVED": "この返金はまだ承認されていません",
-  "REFUND_NOT_PROCESSING": "この返金は現在処理中ではありません"
+  "REFUND_NOT_PROCESSING": "この返金は現在処理中ではありません",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }
