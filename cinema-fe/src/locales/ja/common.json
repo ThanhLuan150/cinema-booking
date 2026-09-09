@@ -67,7 +67,8 @@
       "mySchedule": "マイスケジュール",
       "refunds": "返金",
       "supportTickets": "カスタマーサービス",
-      "distribution": "配給"
+      "distribution": "配給",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

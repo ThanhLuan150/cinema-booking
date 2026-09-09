@@ -84,7 +84,8 @@
       "notificationTemplates": "Notification Templates",
       "systemConfig": "System Configuration",
       "giftCards": "Gift Cards",
-      "distribution": "Distribution"
+      "distribution": "Distribution",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

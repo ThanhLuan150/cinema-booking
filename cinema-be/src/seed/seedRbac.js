@@ -80,6 +80,7 @@ const PERMISSIONS = [
   ['device.update', 'device'], ['device.delete', 'device'],
   ['kiosk.create', 'kiosk'], ['kiosk.read', 'kiosk'],
   ['kiosk.update', 'kiosk'], ['kiosk.delete', 'kiosk'],
+  ['signage.read', 'signage'], ['signage.manage', 'signage'],
   ['auditLog.read', 'auditLog'],
   ['notificationTemplate.read', 'notificationTemplate'], ['notificationTemplate.create', 'notificationTemplate'],
   ['notificationTemplate.update', 'notificationTemplate'], ['notificationTemplate.delete', 'notificationTemplate'],
@@ -129,6 +130,8 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'device.create': 'BRANCH', 'device.read': 'BRANCH', 'device.update': 'BRANCH', 'device.delete': 'BRANCH',
   // Self-service kiosks are per-branch equipment the Branch Admin registers and manages.
   'kiosk.create': 'BRANCH', 'kiosk.read': 'BRANCH', 'kiosk.update': 'BRANCH', 'kiosk.delete': 'BRANCH',
+  // Digital signage screens, content and playlists are per-branch and managed by the Branch Admin.
+  'signage.read': 'BRANCH', 'signage.manage': 'BRANCH',
   'user.read': 'ALL',
   'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',

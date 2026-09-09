@@ -67,7 +67,8 @@
       "mySchedule": "我的排班",
       "refunds": "退款",
       "supportTickets": "客户服务",
-      "distribution": "发行"
+      "distribution": "发行",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

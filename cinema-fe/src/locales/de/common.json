@@ -67,7 +67,8 @@
       "mySchedule": "Mein Dienstplan",
       "refunds": "Rückerstattungen",
       "supportTickets": "Kundenservice",
-      "distribution": "Verleih"
+      "distribution": "Verleih",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

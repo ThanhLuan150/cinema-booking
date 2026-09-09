@@ -67,7 +67,8 @@
       "mySchedule": "Мой график",
       "refunds": "Возвраты",
       "supportTickets": "Служба поддержки",
-      "distribution": "Дистрибуция"
+      "distribution": "Дистрибуция",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

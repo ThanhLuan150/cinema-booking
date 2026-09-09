@@ -84,7 +84,8 @@
       "notificationTemplates": "Mẫu thông báo",
       "systemConfig": "Cấu hình hệ thống",
       "giftCards": "Thẻ quà tặng",
-      "distribution": "Phát hành phim"
+      "distribution": "Phát hành phim",
+      "signage": "Bảng hiển thị"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

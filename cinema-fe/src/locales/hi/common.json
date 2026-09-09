@@ -67,7 +67,8 @@
       "mySchedule": "मेरा शेड्यूल",
       "refunds": "रिफंड",
       "supportTickets": "ग्राहक सेवा",
-      "distribution": "वितरण"
+      "distribution": "वितरण",
+      "signage": "Digital Signage"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",
