@@ -34,6 +34,7 @@ export interface ReviewsResponse {
 
 export interface MovieReviewPayload {
   movie_id: number;
+  booking_id: number;
   rating: number;
   comment: string;
 }
@@ -47,4 +48,10 @@ export interface MovieReplyPayload {
 export interface MovieReviewUpdatePayload {
   rating?: number;
   comment: string;
+}
+
+export interface EligibleBooking {
+  booking_id: number;
+  code: string;
+  schedule_id: number;
 }

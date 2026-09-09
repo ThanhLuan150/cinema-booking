@@ -21,6 +21,8 @@
     "starOption": "{{count}} Sterne",
     "commentPlaceholder": "Teilen Sie Ihre Meinung zu diesem Film...",
     "submit": "Bewertung abschicken",
+    "bookingLabel": "Buchung:",
+    "needEligibleBooking": "Sie können diesen Film bewerten, sobald Sie eine bezahlte Buchung mit eingecheckter Eintrittskarte haben.",
     "loginRequired": "Sie sind nicht angemeldet. Bitte melden Sie sich an oder registrieren Sie sich, um diese Funktion zu nutzen.",
     "submitSuccess": "Bewertung übermittelt.",
     "submitError": "Bewertung konnte nicht übermittelt werden.",

@@ -78,7 +78,7 @@ async function getTopRanked() {
   }
 
   const allMovieIds = [...new Set(schedules.map((s) => s.movie_id))];
-  const reviews = await Review.find({ movie_id: { $in: allMovieIds }, hidden: false });
+  const reviews = await Review.find({ movie_id: { $in: allMovieIds }, status: Review.STATUS.VISIBLE });
   const ratingsByMovieId = new Map();
   for (const review of reviews) {
     const list = ratingsByMovieId.get(review.movie_id) || [];

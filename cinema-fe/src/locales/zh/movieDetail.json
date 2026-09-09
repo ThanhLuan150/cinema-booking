@@ -21,6 +21,8 @@
     "starOption": "{{count}} 星",
     "commentPlaceholder": "分享您对这部电影的看法...",
     "submit": "提交评价",
+    "bookingLabel": "订单：",
+    "needEligibleBooking": "当您有一笔已支付且票券已检票使用的订单后，即可评价这部电影。",
     "loginRequired": "您尚未登录，请登录或注册后使用此功能。",
     "submitSuccess": "评价已提交。",
     "submitError": "无法提交评价。",

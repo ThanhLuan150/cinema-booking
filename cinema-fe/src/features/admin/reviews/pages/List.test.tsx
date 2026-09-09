@@ -23,9 +23,13 @@ const useAdminReviewsMock = vi.fn();
 vi.mock('../hooks/useAdminReviews', () => ({ useAdminReviews: (...args: unknown[]) => useAdminReviewsMock(...args) }));
 
 const hideMutate = vi.fn();
+const rejectMutate = vi.fn();
+const restoreMutate = vi.fn();
 const deleteMutate = vi.fn();
 vi.mock('../hooks/useReviewModeration', () => ({
   useHideReview: () => ({ mutateAsync: hideMutate }),
+  useRejectReview: () => ({ mutateAsync: rejectMutate }),
+  useRestoreReview: () => ({ mutateAsync: restoreMutate }),
   useDeleteReview: () => ({ mutateAsync: deleteMutate }),
 }));
 
@@ -52,22 +56,40 @@ describe('Admin Reviews List', () => {
   beforeEach(() => {
     useAdminReviewsMock.mockReset();
     hideMutate.mockReset();
+    rejectMutate.mockReset();
+    restoreMutate.mockReset();
     deleteMutate.mockReset();
     confirmDialogMock.mockReset();
   });
 
   it('renders a review row', () => {
     useAdminReviewsMock.mockReturnValue({
-      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', hidden: false, reportCount: 0 }], totalPages: 1 },
+      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'VISIBLE', reportCount: 0 }], totalPages: 1 },
     });
     renderPage();
     expect(screen.getByText('Movie A')).toBeInTheDocument();
     expect(screen.getByText('Nice')).toBeInTheDocument();
   });
 
+  it('shows hide and reject actions for a visible review, and hides them once moderated', () => {
+    useAdminReviewsMock.mockReturnValue({
+      data: {
+        data: [
+          { id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'VISIBLE', reportCount: 0 },
+          { id: 2, movie: { name: 'Movie B' }, rating: 2, comment: 'Meh', status: 'HIDDEN', reportCount: 0 },
+        ],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.getAllByText('reviews.hideButton')).toHaveLength(1);
+    expect(screen.getAllByText('reviews.rejectButton')).toHaveLength(1);
+    expect(screen.getAllByText('reviews.restoreButton')).toHaveLength(1);
+  });
+
   it('hides a review', async () => {
     useAdminReviewsMock.mockReturnValue({
-      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', hidden: false, reportCount: 0 }], totalPages: 1 },
+      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'VISIBLE', reportCount: 0 }], totalPages: 1 },
     });
     hideMutate.mockResolvedValue({});
     renderPage();
@@ -75,9 +97,29 @@ describe('Admin Reviews List', () => {
     await vi.waitFor(() => expect(hideMutate).toHaveBeenCalledWith(1));
   });
 
+  it('rejects a review', async () => {
+    useAdminReviewsMock.mockReturnValue({
+      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'VISIBLE', reportCount: 0 }], totalPages: 1 },
+    });
+    rejectMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('reviews.rejectButton'));
+    await vi.waitFor(() => expect(rejectMutate).toHaveBeenCalledWith(1));
+  });
+
+  it('restores a hidden review', async () => {
+    useAdminReviewsMock.mockReturnValue({
+      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'HIDDEN', reportCount: 0 }], totalPages: 1 },
+    });
+    restoreMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('reviews.restoreButton'));
+    await vi.waitFor(() => expect(restoreMutate).toHaveBeenCalledWith(1));
+  });
+
   it('deletes a review after confirming', async () => {
     useAdminReviewsMock.mockReturnValue({
-      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', hidden: true, reportCount: 2 }], totalPages: 1 },
+      data: { data: [{ id: 1, movie: { name: 'Movie A' }, rating: 4, comment: 'Nice', status: 'REJECTED', reportCount: 2 }], totalPages: 1 },
     });
     confirmDialogMock.mockResolvedValue(true);
     deleteMutate.mockResolvedValue({});

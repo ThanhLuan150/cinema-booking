@@ -69,8 +69,8 @@ describe('branch.repository', () => {
         { id: 4, schedule_id: 2, seat_index: 1, seat_code: 'A2', status: 1 },
       ]);
       await Review.create([
-        { id: 1, movie_id: 10, account_id: 1, rating: 4, hidden: false },
-        { id: 2, movie_id: 20, account_id: 1, rating: 2, hidden: false },
+        { id: 1, movie_id: 10, account_id: 1, rating: 4 },
+        { id: 2, movie_id: 20, account_id: 1, rating: 2 },
       ]);
 
       const result = await branchRepository.getTopRanked();

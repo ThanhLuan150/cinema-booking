@@ -3,6 +3,8 @@ const Movie = require('../models/Movie');
 const Branch = require('../models/Branch');
 const Account = require('../models/Account');
 
+const REACTION_TYPES = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
+
 async function findAccountsByIds(ids) {
   const accounts = await Account.find({ id: { $in: ids } }, 'id name avatar');
   return new Map(accounts.map((a) => [a.id, { id: a.id, name: a.name, avatar: a.avatar }]));
@@ -62,11 +64,15 @@ async function buildThread(reviews, viewerAccountId) {
   return { reviews: threaded, average, count: rated.length };
 }
 
-// All reviews including hidden ones, joined with movie/cinema name (admin moderation view)
-async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
+// All reviews including hidden/rejected ones, joined with movie/cinema name (admin moderation view)
+async function findAllForModeration({ skip = 0, limit = 20, status, movieId } = {}) {
+  const filter = {};
+  if (status) filter.status = status;
+  if (movieId) filter.movie_id = Number(movieId);
+
   const [reviews, total] = await Promise.all([
-    Review.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
-    Review.countDocuments(),
+    Review.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Review.countDocuments(filter),
   ]);
   const movieIds = [...new Set(reviews.filter((r) => r.movie_id != null).map((r) => r.movie_id))];
   const branchIds = [...new Set(reviews.filter((r) => r.cinema_id != null).map((r) => r.cinema_id))];
@@ -85,17 +91,31 @@ async function findAllForModeration({ skip = 0, limit = 20 } = {}) {
 }
 
 async function findVisibleByCinemaId(branchId, viewerAccountId) {
-  const reviews = await Review.find({ cinema_id: Number(branchId), hidden: false });
+  const reviews = await Review.find({ cinema_id: Number(branchId), status: Review.STATUS.VISIBLE });
   return buildThread(reviews, viewerAccountId);
 }
 
 async function findVisibleByMovieId(movieId, viewerAccountId) {
-  const reviews = await Review.find({ movie_id: Number(movieId), hidden: false });
+  const reviews = await Review.find({ movie_id: Number(movieId), status: Review.STATUS.VISIBLE });
   return buildThread(reviews, viewerAccountId);
+}
+
+// The caller's own reviews for a movie/cinema, across all bookings (review.view, OWN scope).
+async function findOwnByAccount(accountId, { skip = 0, limit = 20 } = {}) {
+  const filter = { account_id: accountId, parent_id: null };
+  const [reviews, total] = await Promise.all([
+    Review.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Review.countDocuments(filter),
+  ]);
+  return { data: reviews, total };
 }
 
 async function findOwn(target, accountId) {
   return Review.findOne({ ...target, account_id: accountId, parent_id: null });
+}
+
+async function findByBookingId(bookingId) {
+  return Review.findOne({ booking_id: Number(bookingId), parent_id: null });
 }
 
 async function create(data) {
@@ -109,8 +129,16 @@ async function saveExisting(review, { rating, comment }) {
   return review;
 }
 
+async function setStatus(id, status) {
+  return Review.findOneAndUpdate({ id: Number(id) }, { $set: { status } }, { new: true });
+}
+
 async function hide(id) {
-  return Review.findOneAndUpdate({ id: Number(id) }, { $set: { hidden: true } }, { new: true });
+  return setStatus(id, Review.STATUS.HIDDEN);
+}
+
+async function reject(id) {
+  return setStatus(id, Review.STATUS.REJECTED);
 }
 
 async function findById(id) {
@@ -155,13 +183,18 @@ async function report(id, accountId, reason) {
 }
 
 module.exports = {
+  REACTION_TYPES,
   findAllForModeration,
   findVisibleByCinemaId,
   findVisibleByMovieId,
+  findOwnByAccount,
   findOwn,
+  findByBookingId,
   create,
   saveExisting,
+  setStatus,
   hide,
+  reject,
   findById,
   remove,
   react,

@@ -8,7 +8,7 @@ import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useAdminReviews } from '../hooks/useAdminReviews';
-import { useDeleteReview, useHideReview } from '../hooks/useReviewModeration';
+import { useDeleteReview, useHideReview, useRejectReview, useRestoreReview } from '../hooks/useReviewModeration';
 
 function AdminReviews() {
   const { t } = useTranslation('admin');
@@ -16,6 +16,8 @@ function AdminReviews() {
   const { data, isLoading } = useAdminReviews(page, DEFAULT_PAGE_SIZE);
   const reviews = data?.data ?? [];
   const hideMutation = useHideReview();
+  const rejectMutation = useRejectReview();
+  const restoreMutation = useRestoreReview();
   const deleteMutation = useDeleteReview();
 
   const handleHide = useCallback(
@@ -28,6 +30,30 @@ function AdminReviews() {
       }
     },
     [hideMutation, t],
+  );
+
+  const handleReject = useCallback(
+    async (id: number) => {
+      try {
+        await rejectMutation.mutateAsync(id);
+        toast.success(t('reviews.rejectSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [rejectMutation, t],
+  );
+
+  const handleRestore = useCallback(
+    async (id: number) => {
+      try {
+        await restoreMutation.mutateAsync(id);
+        toast.success(t('reviews.restoreSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [restoreMutation, t],
   );
 
   const handleDelete = useCallback(
@@ -43,6 +69,12 @@ function AdminReviews() {
     [deleteMutation, t],
   );
 
+  const statusLabel = (status: string) => {
+    if (status === 'HIDDEN') return t('reviews.hiddenStatus');
+    if (status === 'REJECTED') return t('reviews.rejectedStatus');
+    return t('reviews.visibleStatus');
+  };
+
   return (
     <AdminLayout breadcrumb={t('reviews.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('reviews.headers', { returnObjects: true }) as unknown as string[]}>
@@ -55,7 +87,7 @@ function AdminReviews() {
             <td>{'★'.repeat(review.rating)}</td>
             <td className="max-w-xs truncate">{review.comment}</td>
             <td>
-              {review.hidden ? t('reviews.hiddenStatus') : t('reviews.visibleStatus')}
+              {statusLabel(review.status)}
               {!!review.reportCount && (
                 <span className="ml-2 rounded bg-red-600/20 px-1.5 py-0.5 text-xs text-red-400">
                   🚩 {review.reportCount}
@@ -63,13 +95,31 @@ function AdminReviews() {
               )}
             </td>
             <td className="flex gap-3">
-              {!review.hidden && (
+              {review.status === 'VISIBLE' && (
+                <>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                    onClick={() => handleHide(review.id)}
+                  >
+                    {t('reviews.hideButton')}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-amber-500 transition-colors hover:text-amber-400"
+                    onClick={() => handleReject(review.id)}
+                  >
+                    {t('reviews.rejectButton')}
+                  </button>
+                </>
+              )}
+              {review.status !== 'VISIBLE' && (
                 <button
                   type="button"
                   className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                  onClick={() => handleHide(review.id)}
+                  onClick={() => handleRestore(review.id)}
                 >
-                  {t('reviews.hideButton')}
+                  {t('reviews.restoreButton')}
                 </button>
               )}
               <button

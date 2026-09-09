@@ -7,4 +7,8 @@ export const getAdminReviews = (params?: PaginationParams) =>
 
 export const hideReview = (id: number | string) => apiClient.put(`/review/${id}/hide`);
 
+export const rejectReview = (id: number | string) => apiClient.put(`/review/${id}/reject`);
+
+export const restoreReview = (id: number | string) => apiClient.put(`/review/${id}/restore`);
+
 export const deleteReview = (id: number | string) => apiClient.delete(`/review/${id}`);

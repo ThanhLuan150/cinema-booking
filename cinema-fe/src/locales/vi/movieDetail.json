@@ -23,6 +23,8 @@
     "starOption": "{{count}} sao",
     "commentPlaceholder": "Cảm nhận của bạn về bộ phim...",
     "submit": "Gửi đánh giá",
+    "bookingLabel": "Đơn đặt vé:",
+    "needEligibleBooking": "Bạn có thể đánh giá phim này sau khi có một đơn đặt vé đã thanh toán và vé đã được sử dụng (check-in).",
     "loginRequired": "Bạn chưa đăng nhập vui lòng đăng nhập hoặc đăng ký để thực hiện chức năng này.",
     "submitSuccess": "Đã gửi đánh giá.",
     "submitError": "Không thể gửi đánh giá.",

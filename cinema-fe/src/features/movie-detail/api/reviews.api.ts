@@ -1,6 +1,7 @@
 import apiClient from 'services/apiClient';
 import type { ReactionType } from '@/components/reviews/reactions';
 import type {
+  EligibleBooking,
   MovieReplyPayload,
   MovieReviewPayload,
   MovieReviewUpdatePayload,
@@ -9,6 +10,9 @@ import type {
 
 export const getMovieReviews = (movieId: string | number) =>
   apiClient.get<ReviewsResponse>(`/review/${movieId}`).then((res) => res.data);
+
+export const getEligibleBookings = (movieId: string | number) =>
+  apiClient.get<EligibleBooking[]>(`/review/movie/${movieId}/eligible-bookings`).then((res) => res.data);
 
 export const postMovieReview = (payload: MovieReviewPayload) => apiClient.post('/review', payload);
 

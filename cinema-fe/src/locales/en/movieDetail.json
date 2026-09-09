@@ -23,6 +23,8 @@
     "starOption": "{{count}} stars",
     "commentPlaceholder": "Share your thoughts about this movie...",
     "submit": "Submit review",
+    "bookingLabel": "Booking:",
+    "needEligibleBooking": "You can review this movie once you have a paid booking whose ticket has been checked in.",
     "loginRequired": "You are not logged in. Please log in or sign up to use this feature.",
     "submitSuccess": "Review submitted.",
     "submitError": "Unable to submit review.",

@@ -21,6 +21,8 @@
     "starOption": "星{{count}}つ",
     "commentPlaceholder": "この映画についての感想を教えてください...",
     "submit": "レビューを投稿",
+    "bookingLabel": "予約:",
+    "needEligibleBooking": "支払い済みでチケットがチェックイン済みの予約がある場合に、この映画のレビューを投稿できます。",
     "loginRequired": "ログインしていません。この機能を利用するにはログインまたは会員登録をしてください。",
     "submitSuccess": "レビューを投稿しました。",
     "submitError": "レビューを投稿できませんでした。",

@@ -31,6 +31,16 @@ describe('admin reviews.api', () => {
     expect(putMock).toHaveBeenCalledWith('/review/1/hide');
   });
 
+  it('rejectReview puts /review/:id/reject', async () => {
+    await reviewsApi.rejectReview(1);
+    expect(putMock).toHaveBeenCalledWith('/review/1/reject');
+  });
+
+  it('restoreReview puts /review/:id/restore', async () => {
+    await reviewsApi.restoreReview(1);
+    expect(putMock).toHaveBeenCalledWith('/review/1/restore');
+  });
+
   it('deleteReview deletes /review/:id', async () => {
     await reviewsApi.deleteReview(1);
     expect(deleteMock).toHaveBeenCalledWith('/review/1');
