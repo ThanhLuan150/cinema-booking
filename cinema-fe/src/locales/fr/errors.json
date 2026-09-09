@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "Cette réservation est trop proche de la séance pour être éligible au remboursement",
   "REFUND_NOT_REQUESTED": "Ce remboursement n'est plus en attente de décision",
   "REFUND_NOT_APPROVED": "Ce remboursement n'a pas encore été approuvé",
-  "REFUND_NOT_PROCESSING": "Ce remboursement n'est pas actuellement en cours de traitement"
+  "REFUND_NOT_PROCESSING": "Ce remboursement n'est pas actuellement en cours de traitement",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

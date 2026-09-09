@@ -210,7 +210,11 @@
       "price": "Giá vé:",
       "priceRequired": "Vui lòng nhập giá vé.",
       "submit": "Thêm",
-      "toastSuccess": "Đã thêm suất chiếu."
+      "toastSuccess": "Đã thêm suất chiếu.",
+      "releaseWindow": {
+        "beforeStart": "Ngày này trước ngày phát hành của nhà phát hành phim.",
+        "afterEnd": "Ngày này sau khi thời gian phát hành phim đã kết thúc."
+      }
     },
     "list": {
       "breadcrumb": "Lịch chiếu",
@@ -447,5 +451,90 @@
     "failModalTitle": "Đánh dấu hoàn tiền thất bại",
     "failSuccess": "Đã đánh dấu hoàn tiền thất bại.",
     "reasonLabel": "Lý do"
+  },
+  "distribution": {
+    "breadcrumb": "Phát hành phim",
+    "tabs": {
+      "releases": "Lịch phát hành",
+      "distributors": "Nhà phát hành"
+    },
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "status": {
+      "ACTIVE": "Đang hoạt động",
+      "INACTIVE": "Ngừng hoạt động"
+    },
+    "filters": {
+      "status": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái"
+    },
+    "distributors": {
+      "searchLabel": "Tìm kiếm",
+      "searchPlaceholder": "Tên hoặc mã",
+      "addButton": "Thêm nhà phát hành",
+      "empty": "Chưa có nhà phát hành nào.",
+      "headers": {
+        "name": "Tên",
+        "code": "Mã",
+        "email": "Email liên hệ",
+        "phone": "Điện thoại",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "fields": {
+        "name": "Tên",
+        "code": "Mã",
+        "email": "Email liên hệ",
+        "phone": "Điện thoại",
+        "status": "Trạng thái"
+      },
+      "addTitle": "Thêm nhà phát hành",
+      "editTitle": "Sửa {{name}}",
+      "validation": {
+        "required": "Tên và mã là bắt buộc."
+      },
+      "createSuccess": "Đã tạo nhà phát hành.",
+      "updateSuccess": "Đã cập nhật nhà phát hành.",
+      "deleteSuccess": "Đã xóa nhà phát hành.",
+      "deleteConfirm": "Xóa nhà phát hành \"{{name}}\"?"
+    },
+    "releases": {
+      "addButton": "Thêm lịch phát hành",
+      "empty": "Chưa có lịch phát hành nào.",
+      "openEnded": "Không giới hạn",
+      "headers": {
+        "movie": "Phim",
+        "distributor": "Nhà phát hành",
+        "releaseDate": "Ngày phát hành",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "filters": {
+        "movie": "Phim",
+        "allMovies": "Tất cả phim"
+      },
+      "fields": {
+        "movie": "Phim",
+        "moviePlaceholder": "Chọn phim",
+        "distributor": "Nhà phát hành",
+        "distributorPlaceholder": "Chọn nhà phát hành",
+        "releaseDate": "Ngày phát hành",
+        "endDate": "Ngày kết thúc (tùy chọn)",
+        "endDateHint": "Để trống nếu chiếu không giới hạn thời gian. Suất chiếu chỉ có thể được tạo từ ngày phát hành trở đi và, nếu có, không muộn hơn ngày kết thúc.",
+        "status": "Trạng thái"
+      },
+      "addTitle": "Thêm lịch phát hành",
+      "editTitle": "Sửa lịch phát hành",
+      "validation": {
+        "required": "Phim, nhà phát hành và ngày phát hành là bắt buộc.",
+        "endBeforeStart": "Ngày kết thúc không được trước ngày phát hành."
+      },
+      "createSuccess": "Đã tạo lịch phát hành.",
+      "updateSuccess": "Đã cập nhật lịch phát hành.",
+      "deleteSuccess": "Đã xóa lịch phát hành.",
+      "deleteConfirm": "Xóa lịch phát hành này?"
+    }
   }
 }

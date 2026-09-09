@@ -3,6 +3,8 @@ const movieRepository = require('../repositories/movie.repository');
 const roomRepository = require('../repositories/room.repository');
 const seatRepository = require('../repositories/seat.repository');
 const bookingRepository = require('../repositories/booking.repository');
+const movieReleaseRepository = require('../repositories/movieRelease.repository');
+const { evaluateShowtimeAgainstReleases } = require('../utils/releaseWindow');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
@@ -63,6 +65,26 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
     res
       .status(400)
       .json({ message: 'Showtime cannot be scheduled before the movie is released', code: 'BEFORE_PREMIERE' });
+    return null;
+  }
+
+  // Ticket 35: if the movie has release windows on record, the showtime's start must fall
+  // inside at least one active window (release_date <= start AND, when set, start <= end_date).
+  // Enforced here on the backend, independent of any frontend check.
+  const releases = await movieReleaseRepository.findByMovieId(movie_id, { activeOnly: true });
+  const releaseCheck = evaluateShowtimeAgainstReleases({
+    movieDate: movie_date,
+    timeBegin: time_begin,
+    releases,
+  });
+  if (!releaseCheck.ok) {
+    res.status(400).json({
+      message:
+        releaseCheck.code === 'AFTER_RELEASE_END'
+          ? 'This showtime is after the movie\'s release window has ended'
+          : 'This showtime is before the movie\'s distributor release date',
+      code: releaseCheck.code,
+    });
     return null;
   }
 

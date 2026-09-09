@@ -83,7 +83,8 @@
       "auditLog": "Audit Log",
       "notificationTemplates": "Notification Templates",
       "systemConfig": "System Configuration",
-      "giftCards": "Gift Cards"
+      "giftCards": "Gift Cards",
+      "distribution": "Distribution"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

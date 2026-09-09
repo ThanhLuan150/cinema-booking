@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "การจองนี้ใกล้เวลาฉายเกินไปจึงไม่มีสิทธิ์คืนเงิน",
   "REFUND_NOT_REQUESTED": "คำขอคืนเงินนี้ไม่ได้อยู่ในสถานะรอการอนุมัติแล้ว",
   "REFUND_NOT_APPROVED": "การคืนเงินนี้ยังไม่ได้รับการอนุมัติ",
-  "REFUND_NOT_PROCESSING": "การคืนเงินนี้ไม่ได้อยู่ระหว่างดำเนินการในขณะนี้"
+  "REFUND_NOT_PROCESSING": "การคืนเงินนี้ไม่ได้อยู่ระหว่างดำเนินการในขณะนี้",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

@@ -41,5 +41,11 @@
   "REFUND_WINDOW_EXPIRED": "यह बुकिंग शो के समय के बहुत करीब है, इसलिए रिफंड के लिए योग्य नहीं है",
   "REFUND_NOT_REQUESTED": "यह रिफंड अब निर्णय की प्रतीक्षा में नहीं है",
   "REFUND_NOT_APPROVED": "यह रिफंड अभी तक स्वीकृत नहीं हुआ है",
-  "REFUND_NOT_PROCESSING": "यह रिफंड वर्तमान में प्रक्रियारत नहीं है"
+  "REFUND_NOT_PROCESSING": "यह रिफंड वर्तमान में प्रक्रियारत नहीं है",
+  "BEFORE_RELEASE_DATE": "This showtime is before the movie's distributor release date",
+  "AFTER_RELEASE_END": "This showtime is after the movie's release window has ended",
+  "DISTRIBUTOR_CODE_TAKEN": "A distributor with this code already exists",
+  "DISTRIBUTOR_IN_USE": "This distributor still has movie releases and cannot be deleted. Deactivate it instead.",
+  "DISTRIBUTOR_NOT_ACTIVE": "This distributor is not active",
+  "RELEASE_DUPLICATE": "This movie already has a release for this distributor"
 }

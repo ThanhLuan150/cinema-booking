@@ -68,6 +68,7 @@ export const ROUTES = {
   ownerShiftAssignments: '/OwnerShifts/Assignments',
   adminActors: '/AdminActors',
   adminDirectors: '/AdminDirectors',
+  distribution: '/Distribution',
   employeeDashboard: '/EmployeeDashboard',
   employeeCounterSale: '/EmployeeCounterSale',
   employeeBoxOffice: '/BoxOffice',

@@ -11,6 +11,8 @@ const Schedule = require('../models/Schedule');
 const Employee = require('../models/Employee');
 const Position = require('../models/Position');
 const Seat = require('../models/Seat');
+const Distributor = require('../models/Distributor');
+const MovieRelease = require('../models/MovieRelease');
 
 const app = buildTestApp('/api/schedule', scheduleRoutes);
 
@@ -146,6 +148,101 @@ describe('schedule.routes wiring', () => {
       .send(showtimePayload());
     expect(res.status).toBe(400);
     expect(res.body.code).toBe('MOVIE_NOT_ACTIVE');
+  });
+
+  describe('Ticket 35 — release-date validation (backend-enforced)', () => {
+    const superAdmin = () => authHeader({ role: 0, accountId: 1 });
+
+    async function seedRelease({ release_date, end_date = null, status = 'ACTIVE' }) {
+      await Distributor.create({ id: 1, name: 'CGV', code: 'CGV', status: 'ACTIVE' });
+      await MovieRelease.create({ id: 1, movie_id: 1, distributor_id: 1, release_date, end_date, status });
+    }
+
+    it('allows a showtime when the movie has no release rows (backward compatible)', async () => {
+      await seedBranches();
+      const res = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-10' }));
+      expect(res.status).toBe(201);
+    });
+
+    it('rejects a showtime the day before release_date', async () => {
+      await seedBranches();
+      await seedRelease({ release_date: '2026-01-10' });
+      const res = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-09' }));
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('BEFORE_RELEASE_DATE');
+    });
+
+    it('allows a showtime exactly on release_date (boundary, inclusive)', async () => {
+      await seedBranches();
+      await seedRelease({ release_date: '2026-01-10' });
+      const res = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-10', time_begin: '00:00', time_end: '02:00' }));
+      expect(res.status).toBe(201);
+    });
+
+    it('allows a showtime anywhere on end_date and rejects the next day (boundary, inclusive)', async () => {
+      await seedBranches();
+      await seedRelease({ release_date: '2026-01-01', end_date: '2026-01-10' });
+
+      const onEnd = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-10', time_begin: '22:00', time_end: '23:30' }));
+      expect(onEnd.status).toBe(201);
+
+      const dayAfter = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-11', time_begin: '10:00', time_end: '12:00' }));
+      expect(dayAfter.status).toBe(400);
+      expect(dayAfter.body.code).toBe('AFTER_RELEASE_END');
+    });
+
+    it('ignores INACTIVE release rows', async () => {
+      await seedBranches();
+      await seedRelease({ release_date: '2026-06-01', status: 'INACTIVE' });
+      const res = await request(app)
+        .post('/api/schedule')
+        .set('Authorization', superAdmin())
+        .send(showtimePayload({ movie_date: '2026-01-10' }));
+      expect(res.status).toBe(201);
+    });
+
+    for (const tz of ['UTC', 'Asia/Ho_Chi_Minh', 'Pacific/Kiritimati', 'Pacific/Pago_Pago']) {
+      it(`TZ=${tz}: the release_date boundary holds at every hour of the day`, async () => {
+        const original = process.env.TZ;
+        process.env.TZ = tz;
+        try {
+          await seedBranches();
+          await seedRelease({ release_date: '2026-01-10' });
+          for (const h of [0, 1, 7, 12, 17, 23]) {
+            const hh = String(h).padStart(2, '0');
+            const before = await request(app)
+              .post('/api/schedule')
+              .set('Authorization', superAdmin())
+              .send(showtimePayload({ movie_date: '2026-01-09', time_begin: `${hh}:00`, time_end: `${hh}:30` }));
+            expect(before.body.code).toBe('BEFORE_RELEASE_DATE');
+
+            const onDay = await request(app)
+              .post('/api/schedule')
+              .set('Authorization', superAdmin())
+              .send(showtimePayload({ movie_date: '2026-01-10', time_begin: `${hh}:00`, time_end: `${hh}:30` }));
+            expect(onDay.status).toBe(201);
+            await Schedule.deleteMany({});
+          }
+        } finally {
+          process.env.TZ = original;
+        }
+      });
+    }
   });
 
   it('PUT /api/schedule/:id forbids a branch admin from editing another branch\'s showtime', async () => {

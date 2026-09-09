@@ -66,7 +66,8 @@
       "checkIn": "Check-in",
       "mySchedule": "मेरा शेड्यूल",
       "refunds": "रिफंड",
-      "supportTickets": "ग्राहक सेवा"
+      "supportTickets": "ग्राहक सेवा",
+      "distribution": "वितरण"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

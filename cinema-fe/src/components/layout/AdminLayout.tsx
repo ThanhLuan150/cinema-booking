@@ -191,6 +191,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <i className="fa-solid fa-calendar-days w-[1.125rem] text-center" />
             {t('adminLayout.nav.schedule')}
           </NavLink>
+          {hasPermission('movieRelease.read') && (
+            <NavLink to={ROUTES.distribution} className={navLinkClass}>
+              <ion-icon name="briefcase" />
+              {t('adminLayout.nav.distribution')}
+            </NavLink>
+          )}
           <NavLink
             to={isAdmin ? ROUTES.adminCinemas : ROUTES.ownerCinemas}
             className={navLinkClass}

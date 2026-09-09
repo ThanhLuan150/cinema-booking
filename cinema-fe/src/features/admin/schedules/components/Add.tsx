@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Formik, Field, Form, type FormikProps, type FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { useMyCinemas } from '@/features/owner/hooks/useMyCinemas';
 import { useRoomsByCinema } from '@/features/owner/hooks/useRoomsByCinema';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMyMovies } from '../../movies/hooks/useMyMovies';
+import { useMovieReleases } from '../../distribution/hooks/useMovieReleases';
+import { evaluateShowtimeAgainstReleases } from '../../distribution/utils/releaseWindow';
 import { SHOWTIME_SLOTS } from '../constants';
 import { useCreateSchedule } from '../hooks/useCreateSchedule';
 import { useSchedules } from '../hooks/useSchedules';
@@ -46,17 +48,50 @@ function ScheduleFields({
   formik,
   cinemas,
   showMoviePicker,
+  presetMovieId,
   createScheduleLoading,
+  releaseIssue,
+  onReleaseIssueChange,
   t,
 }: {
   formik: FormikProps<AddScheduleFormValues>;
   cinemas: { id: number | string; name: string }[];
   showMoviePicker: boolean;
+  presetMovieId: number | string | null;
   createScheduleLoading: boolean;
+  releaseIssue: string | null;
+  onReleaseIssueChange: (msg: string | null) => void;
   t: (key: string) => string;
 }) {
   const { data: activeMoviesPage } = useMyMovies(1, FULL_LIST_FETCH_LIMIT, 'ACTIVE');
   const activeMovies = activeMoviesPage?.data ?? [];
+
+  const resolvedMovieId = presetMovieId != null ? presetMovieId : formik.values.movie_id;
+  const { data: releasesPage } = useMovieReleases(
+    { movieId: resolvedMovieId || undefined, status: 'ACTIVE' },
+    { limit: FULL_LIST_FETCH_LIMIT },
+    Boolean(resolvedMovieId),
+  );
+  const releases = useMemo(() => releasesPage?.data ?? [], [releasesPage]);
+
+  useEffect(() => {
+    if (!resolvedMovieId || !formik.values.movie_date || !formik.values.time_begin) {
+      onReleaseIssueChange(null);
+      return;
+    }
+    const result = evaluateShowtimeAgainstReleases({
+      movieDate: formik.values.movie_date,
+      timeBegin: formik.values.time_begin,
+      releases,
+    });
+    onReleaseIssueChange(
+      result.ok
+        ? null
+        : result.code === 'AFTER_RELEASE_END'
+          ? t('schedules.add.releaseWindow.afterEnd')
+          : t('schedules.add.releaseWindow.beforeStart'),
+    );
+  }, [resolvedMovieId, formik.values.movie_date, formik.values.time_begin, releases, onReleaseIssueChange, t]);
 
   const {
     data: roomsPage,
@@ -170,6 +205,7 @@ function ScheduleFields({
         className="mt-3"
         error={showErrors && formik.errors.movie_date ? t('schedules.add.dateRequired') : undefined}
       />
+      {releaseIssue && <p className="mt-1 text-sm text-red-400">{releaseIssue}</p>}
       <div className="mt-3">
         <Select
           label={t('schedules.add.slot.label')}
@@ -190,7 +226,7 @@ function ScheduleFields({
         error={showErrors && formik.errors.price ? t('schedules.add.priceRequired') : undefined}
       />
       <div className="mt-6 flex justify-end">
-        <Button type="submit" variant="danger" loading={createScheduleLoading}>
+        <Button type="submit" variant="danger" loading={createScheduleLoading} disabled={Boolean(releaseIssue)}>
           {t('schedules.add.submit')}
         </Button>
       </div>
@@ -206,6 +242,7 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
   const { data: allCinemasPage } = useMyCinemas();
   const cinemas = allCinemasPage?.data ?? [];
   const createScheduleMutation = useCreateSchedule();
+  const [releaseIssue, setReleaseIssue] = useState<string | null>(null);
 
   const validate = (values: AddScheduleFormValues) => {
     const errors: Partial<Record<keyof AddScheduleFormValues, string>> = {};
@@ -224,6 +261,10 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
   ) => {
     const movieId = id ?? values.movie_id;
     if (!movieId) return;
+    if (releaseIssue) {
+      toast.error(releaseIssue);
+      return;
+    }
     const { cinema_id: _cinema_id, movie_id: _movie_id, ...form } = values;
     try {
       await createScheduleMutation.mutateAsync({ movieId, values: form });
@@ -250,7 +291,10 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
             formik={formik}
             cinemas={cinemas}
             showMoviePicker={id == null}
+            presetMovieId={id}
             createScheduleLoading={createScheduleMutation.isPending}
+            releaseIssue={releaseIssue}
+            onReleaseIssueChange={setReleaseIssue}
             t={t}
           />
         )}
