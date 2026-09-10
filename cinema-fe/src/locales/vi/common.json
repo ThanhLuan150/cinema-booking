@@ -26,7 +26,8 @@
     "myMembership": "Hạng thành viên",
     "myActivity": "Hoạt động của tôi",
     "notifications": "Thông báo",
-    "myGiftCards": "Thẻ quà tặng của tôi"
+    "myGiftCards": "Thẻ quà tặng của tôi",
+    "myPrivateEvents": "Sự kiện riêng của tôi"
   },
   "footer": {
     "tagline": "Chúng tôi cam kết chất lượng và sự hài lòng khi bạn đặt vé xem phim tại đây.",
@@ -88,7 +89,8 @@
       "distribution": "Phát hành phim",
       "signage": "Bảng hiển thị",
       "campaigns": "Chiến dịch Marketing",
-      "parking": "Bãi đỗ xe"
+      "parking": "Bãi đỗ xe",
+      "privateEvents": "Sự kiện riêng"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

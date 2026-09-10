@@ -26,7 +26,8 @@
     "myMembership": "My Membership",
     "myActivity": "My Activity",
     "notifications": "Notifications",
-    "myGiftCards": "My Gift Cards"
+    "myGiftCards": "My Gift Cards",
+    "myPrivateEvents": "My Private Events"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",
@@ -88,7 +89,8 @@
       "distribution": "Distribution",
       "signage": "Digital Signage",
       "campaigns": "Marketing Campaigns",
-      "parking": "Parking"
+      "parking": "Parking",
+      "privateEvents": "Private Events"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

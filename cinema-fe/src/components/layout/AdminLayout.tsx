@@ -236,6 +236,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.parking')}
             </NavLink>
           )}
+          {hasPermission('privateEvent.read') && (
+            <NavLink to={ROUTES.ownerPrivateEvents} className={navLinkClass}>
+              <ion-icon name="sparkles" />
+              {t('adminLayout.nav.privateEvents')}
+            </NavLink>
+          )}
           <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
             <ion-icon name="fast-food" />
             {t('adminLayout.nav.combos')}
