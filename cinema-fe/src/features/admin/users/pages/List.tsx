@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
+import { usePermissions } from '@/hooks/usePermissions';
+import { CustomerCrmModal } from '@/features/crm/components/CustomerCrmModal';
 import { useAdminUsers } from '../hooks/useAdminUsers';
 import { useApproveUser } from '../hooks/useApproveUser';
 import { ROLES } from '@/constants/roles';
@@ -27,6 +29,9 @@ const List = () => {
   const { data, isLoading } = useAdminUsers(page, DEFAULT_PAGE_SIZE);
   const users = data?.data ?? [];
   const approveUserMutation = useApproveUser();
+  const { hasPermission } = usePermissions();
+  const [crmCustomer, setCrmCustomer] = useState<{ id: number; name: string } | null>(null);
+  const canViewCrm = hasPermission('crm.viewCustomer');
 
   const handleApprove = useCallback(
     async (userId: number) => {
@@ -66,6 +71,18 @@ const List = () => {
             </td>
             <td>
               <div className="flex items-center gap-1">
+                {canViewCrm && user.role === ROLES.customer && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-accent hover:bg-accent/10 hover:text-accent-hover"
+                    title={t('users.list.viewCrm', { defaultValue: 'View activity' })}
+                    onClick={() => setCrmCustomer({ id: user.id, name: user.name || user.email })}
+                  >
+                    <ion-icon name="stats-chart-outline" style={{ fontSize: '1.1rem' }} />
+                  </Button>
+                )}
                 {user.role === ROLES.owner && !user.approved && (
                   <Button
                     type="button"
@@ -117,6 +134,11 @@ const List = () => {
         ))}
       </DataTable>
       <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
+      <CustomerCrmModal
+        accountId={crmCustomer?.id ?? null}
+        customerName={crmCustomer?.name}
+        onClose={() => setCrmCustomer(null)}
+      />
     </AdminLayout>
   );
 };

@@ -414,7 +414,8 @@
       "statusInactive": "Inactive",
       "pendingApproval": "Pending approval",
       "approveButton": "Approve",
-      "approveSuccess": "Theater owner account approved."
+      "approveSuccess": "Theater owner account approved.",
+      "viewCrm": "View activity"
     }
   },
   "refunds": {

@@ -414,7 +414,8 @@
       "statusInactive": "Đã khóa",
       "pendingApproval": "Chờ duyệt",
       "approveButton": "Duyệt",
-      "approveSuccess": "Đã duyệt tài khoản chủ rạp."
+      "approveSuccess": "Đã duyệt tài khoản chủ rạp.",
+      "viewCrm": "Xem hoạt động"
     }
   },
   "refunds": {

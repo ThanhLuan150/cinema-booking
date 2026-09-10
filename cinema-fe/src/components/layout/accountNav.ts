@@ -13,6 +13,7 @@ export function buildAccountNavItems(t: TFunction): AccountNavItem[] {
   return [
     { to: ROUTES.profile, icon: 'fa-regular fa-user', label: t('header.viewProfile') },
     { to: ROUTES.myMembership, icon: 'fa-solid fa-crown', label: t('header.myMembership') },
+    { to: ROUTES.myActivity, icon: 'fa-solid fa-chart-line', label: t('header.myActivity') },
     { to: ROUTES.myGiftCards, icon: 'fa-solid fa-gift', label: t('header.myGiftCards') },
     { to: ROUTES.myBookings, icon: 'fa-solid fa-ticket', label: t('header.myBookings') },
     { to: ROUTES.myTickets, icon: 'fa-solid fa-qrcode', label: t('header.myTickets') },

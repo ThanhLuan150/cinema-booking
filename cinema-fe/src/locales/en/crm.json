@@ -1,0 +1,32 @@
+{
+  "pageTitle": "My Activity",
+  "modalTitle": "Customer activity",
+  "selfIntro": "A summary of your bookings, spending and rewards, calculated from your account history.",
+  "branchScopedNote": "These figures cover this customer's activity at your branch only.",
+  "unnamedCustomer": "Unnamed customer",
+  "memberSince": "Member since {{date}}",
+  "never": "Never",
+  "error": {
+    "generic": "Couldn't load the activity summary."
+  },
+  "stats": {
+    "totalBookings": "Total bookings",
+    "totalTickets": "Total tickets",
+    "totalSpending": "Total spending",
+    "comboSpending": "Combo spending",
+    "loyaltyPoints": "Loyalty points",
+    "lifetimePoints": "Lifetime points",
+    "membershipLevel": "Membership level",
+    "lastVisit": "Last visit"
+  },
+  "favoriteBranch": {
+    "title": "Favorite branch",
+    "count": "{{count}} booking",
+    "count_other": "{{count}} bookings",
+    "none": "No bookings yet"
+  },
+  "favoriteGenres": {
+    "title": "Favorite genres",
+    "none": "No genres yet"
+  }
+}

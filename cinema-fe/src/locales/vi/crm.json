@@ -1,0 +1,32 @@
+{
+  "pageTitle": "Hoạt động của tôi",
+  "modalTitle": "Hoạt động khách hàng",
+  "selfIntro": "Tổng hợp lượt đặt vé, chi tiêu và điểm thưởng của bạn, được tính từ lịch sử tài khoản.",
+  "branchScopedNote": "Các số liệu này chỉ tính hoạt động của khách hàng tại chi nhánh của bạn.",
+  "unnamedCustomer": "Khách hàng chưa đặt tên",
+  "memberSince": "Thành viên từ {{date}}",
+  "never": "Chưa có",
+  "error": {
+    "generic": "Không tải được bản tổng hợp hoạt động."
+  },
+  "stats": {
+    "totalBookings": "Tổng lượt đặt",
+    "totalTickets": "Tổng số vé",
+    "totalSpending": "Tổng chi tiêu",
+    "comboSpending": "Chi tiêu combo",
+    "loyaltyPoints": "Điểm thưởng",
+    "lifetimePoints": "Điểm tích lũy",
+    "membershipLevel": "Hạng thành viên",
+    "lastVisit": "Lần ghé gần nhất"
+  },
+  "favoriteBranch": {
+    "title": "Chi nhánh yêu thích",
+    "count": "{{count}} lượt đặt",
+    "count_other": "{{count}} lượt đặt",
+    "none": "Chưa có lượt đặt nào"
+  },
+  "favoriteGenres": {
+    "title": "Thể loại yêu thích",
+    "none": "Chưa có thể loại nào"
+  }
+}

@@ -20,6 +20,7 @@ import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import MyRefunds from '@/features/refund/pages/MyRefundsPage';
 import MyMembership from '@/features/membership/pages/MyMembershipPage';
+import MyActivity from '@/features/crm/pages/MyActivityPage';
 import MyGiftCards from '@/features/giftCards/pages/MyGiftCardsPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
@@ -106,6 +107,7 @@ export function AppRouter() {
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
       <Route path={ROUTES.myMembership} element={<MyMembership />} />
+      <Route path={ROUTES.myActivity} element={<MyActivity />} />
       <Route path={ROUTES.myGiftCards} element={<MyGiftCards />} />
       <Route path={ROUTES.notifications} element={<NotificationsPage />} />
       <Route
