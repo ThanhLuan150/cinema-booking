@@ -22,6 +22,8 @@ import MyRefunds from '@/features/refund/pages/MyRefundsPage';
 import MyMembership from '@/features/membership/pages/MyMembershipPage';
 import MyActivity from '@/features/crm/pages/MyActivityPage';
 import MyGiftCards from '@/features/giftCards/pages/MyGiftCardsPage';
+import RequestPrivateEvent from '@/features/privateEvents/pages/RequestEventPage';
+import MyPrivateEvents from '@/features/privateEvents/pages/MyEventsPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -36,6 +38,7 @@ import OwnerDevices from '@/features/owner/devices/pages/List';
 import OwnerKiosks from '@/features/owner/kiosks/pages/List';
 import OwnerSignage from '@/features/owner/signage/pages/List';
 import OwnerParking from '@/features/owner/parking/pages/List';
+import OwnerPrivateEvents from '@/features/owner/privateEvents/pages/List';
 import KioskApp from '@/features/kiosk/pages/KioskApp';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
 import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
@@ -110,6 +113,8 @@ export function AppRouter() {
       <Route path={ROUTES.myMembership} element={<MyMembership />} />
       <Route path={ROUTES.myActivity} element={<MyActivity />} />
       <Route path={ROUTES.myGiftCards} element={<MyGiftCards />} />
+      <Route path={ROUTES.requestPrivateEvent} element={<RequestPrivateEvent />} />
+      <Route path={ROUTES.myPrivateEvents} element={<MyPrivateEvents />} />
       <Route path={ROUTES.notifications} element={<NotificationsPage />} />
       <Route
         path={ROUTES.adminUsers}
@@ -228,6 +233,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerParking />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerPrivateEvents}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerPrivateEvents />
           </RequireRole>
         }
       />

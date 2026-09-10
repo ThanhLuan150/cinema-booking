@@ -51,6 +51,7 @@ const signageRoutes = require('./signage.routes');
 const parkingRoutes = require('./parking.routes');
 const campaignRoutes = require('./campaign.routes');
 const customerCrmRoutes = require('./customerCrm.routes');
+const privateEventRoutes = require('./privateEvent.routes');
 
 const router = express.Router();
 
@@ -111,6 +112,9 @@ router.use('/system-config', systemConfigRoutes);
 router.use('/reports', reportingRoutes);
 // Customer CRM (Ticket 38): /crm/me (own profile) and /crm/customers/:id (branch-scoped staff view).
 router.use('/crm', customerCrmRoutes);
+// Private Event & Cinema Rental (Ticket 40): /private-events (customer request -> admin
+// review/quote/approve -> payment -> confirm) and /private-events/packages (rental catalogue).
+router.use('/private-events', privateEventRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

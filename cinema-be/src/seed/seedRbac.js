@@ -84,6 +84,8 @@ const PERMISSIONS = [
   ['kiosk.update', 'kiosk'], ['kiosk.delete', 'kiosk'],
   ['signage.read', 'signage'], ['signage.manage', 'signage'],
   ['parking.read', 'parking'], ['parking.manage', 'parking'], ['parking.operate', 'parking'],
+  ['privateEvent.request', 'privateEvent'], ['privateEvent.read', 'privateEvent'], ['privateEvent.review', 'privateEvent'],
+  ['eventPackage.read', 'eventPackage'], ['eventPackage.manage', 'eventPackage'],
   ['auditLog.read', 'auditLog'],
   ['notificationTemplate.read', 'notificationTemplate'], ['notificationTemplate.create', 'notificationTemplate'],
   ['notificationTemplate.update', 'notificationTemplate'], ['notificationTemplate.delete', 'notificationTemplate'],
@@ -143,6 +145,11 @@ const BRANCH_ADMIN_PERMISSIONS = {
   // Parking areas & slots are per-branch infrastructure the Branch Admin configures; the
   // vehicle entry/exit/payment flow (parking.operate) is a day-to-day counter operation.
   'parking.read': 'BRANCH', 'parking.manage': 'BRANCH', 'parking.operate': 'BRANCH',
+  // Private Event & Cinema Rental: a Branch Admin reviews, quotes and confirms rentals for
+  // their own branches only (branch isolation); the package catalogue is company-wide and
+  // maintained by the SUPER_ADMIN, so a Branch Admin only reads it.
+  'privateEvent.read': 'BRANCH', 'privateEvent.review': 'BRANCH',
+  'eventPackage.read': 'ALL',
   'user.read': 'ALL',
   'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
@@ -168,6 +175,10 @@ const EMPLOYEE_PERMISSIONS = {
   // Gate / counter staff run the parking flow and read the parking state for their branch,
   // but do not reconfigure areas and slots (no parking.manage).
   'parking.read': 'BRANCH', 'parking.operate': 'BRANCH',
+  // Counter staff may look up their branch's private-event rentals (read-only); reviewing
+  // and quoting stays with the Branch Admin.
+  'privateEvent.read': 'BRANCH',
+  'eventPackage.read': 'ALL',
 };
 
 const CUSTOMER_PERMISSIONS = {
@@ -187,6 +198,11 @@ const CUSTOMER_PERMISSIONS = {
   'giftCard.read': 'OWN',
   // A customer may see their own aggregated CRM/activity profile, never anyone else's.
   'crm.viewOwn': 'OWN',
+  // Private Event & Cinema Rental: a customer requests a rental, tracks and pays for their
+  // own requests, and browses the (company-wide) package catalogue.
+  'privateEvent.request': 'OWN',
+  'privateEvent.read': 'OWN',
+  'eventPackage.read': 'ALL',
 };
 
 function normalizePermissionScopes(permissions) {

@@ -856,3 +856,67 @@ export interface ParkingTicket {
   paid_at: string | null;
   createdAt: string;
 }
+
+export type EventPackageStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface EventPackage {
+  id: number;
+  name: string;
+  code: string;
+  description: string;
+  base_price: number;
+  max_guests: number;
+  duration_hours: number;
+  perks: string[];
+  status: EventPackageStatus;
+  createdAt: string;
+}
+
+export type PrivateEventStatus =
+  | 'REQUESTED'
+  | 'QUOTED'
+  | 'APPROVED'
+  | 'PAID'
+  | 'CONFIRMED'
+  | 'CANCELLED'
+  | 'COMPLETED';
+
+export interface PrivateEventConflict {
+  type: 'SHOWTIME' | 'EVENT';
+  schedule_id?: number;
+  movie_date?: string;
+  time_begin?: string;
+  time_end?: string;
+  event_id?: number;
+  start_at?: string;
+  end_at?: string;
+  status?: PrivateEventStatus;
+}
+
+export interface PrivateEvent {
+  id: number;
+  customer_id: number;
+  branch_id: number;
+  room_id: number;
+  package_id: number;
+  start_at: string;
+  end_at: string;
+  guest_count: number;
+  status: PrivateEventStatus;
+  title: string;
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+  notes: string;
+  quoted_amount: number | null;
+  quote_notes: string;
+  reviewed_by: number | null;
+  reviewed_at: string | null;
+  approved_at: string | null;
+  paid_at: string | null;
+  confirmed_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+  cancel_reason: string;
+  createdAt: string;
+}

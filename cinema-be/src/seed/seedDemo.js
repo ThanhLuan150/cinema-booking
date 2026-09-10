@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const bcrypt = require('bcryptjs');
 const connectDB = require('../config/db');
 const Account = require('../models/Account');
 const Company = require('../models/Company');
@@ -39,6 +40,8 @@ const AuditLog = require('../models/AuditLog');
 const ParkingArea = require('../models/ParkingArea');
 const ParkingSlot = require('../models/ParkingSlot');
 const ParkingTicket = require('../models/ParkingTicket');
+const EventPackage = require('../models/EventPackage');
+const PrivateEvent = require('../models/PrivateEvent');
 const { calculateParkingFee } = require('../services/parkingFee');
 const { generateParkingTicketCode } = require('../utils/parkingTicketCode');
 
@@ -51,6 +54,7 @@ const COUNTED = [
   MovieDirector, Schedule, Ticket, Booking, Payment, Invoice, Combo, ComboOrder, Inventory,
   Voucher, Promotion, PricingRule, Holiday, Shift, ShiftAssignment, Review, SupportTicket,
   MaintenanceRequest, Entrance, Device, AuditLog, ParkingArea, ParkingSlot, ParkingTicket,
+  EventPackage, PrivateEvent,
 ];
 
 const SEAT_PRICE = 90000;
@@ -60,6 +64,11 @@ const DAYS_OF_HISTORY = 12;
 function isoDay(daysAgo) {
   const d = new Date();
   d.setUTCDate(d.getUTCDate() - daysAgo);
+  return d.toISOString().split('T')[0];
+}
+function isoDayAhead(daysAhead) {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + daysAhead);
   return d.toISOString().split('T')[0];
 }
 function atDay(daysAgo, hour = 12) {
@@ -966,6 +975,202 @@ async function run() {
       }
 
       return `${areaCount} areas, ${slotCount} slots, ${ticketCount} tickets`;
+    },
+  );
+
+  // --- Private Event & Cinema Rental (Ticket 40) -------------------------
+  // Gives a manual tester: a real customer login + a real branch-admin login (both password
+  // `demo1234`), a company-wide package catalogue, a dedicated "Events Hub" branch with a
+  // future showtime to collide with, and PrivateEvents in every status. Branch isolation is
+  // visible by comparing the Events Hub admin (their branch only) with the SUPER_ADMIN.
+  await section(
+    'Private events',
+    async () => Boolean(await PrivateEvent.findOne({ id: { $gte: ID_BASE } })),
+    async () => {
+      // 1. Package catalogue (company-wide; SUPER_ADMIN maintains it).
+      const packageDefs = [
+        {
+          code: 'PE-BASIC', name: 'Basic Hall Hire', base_price: 3_000_000, max_guests: 60,
+          duration_hours: 3, status: 'ACTIVE',
+          description: 'Private screening room hire only — bring your own decorations.',
+          perks: ['Private auditorium', 'Standard projection & sound'],
+        },
+        {
+          code: 'PE-PREMIUM', name: 'Premium Celebration', base_price: 7_500_000, max_guests: 100,
+          duration_hours: 4, status: 'ACTIVE',
+          description: 'Room hire with a dedicated host, welcome drinks and a custom pre-roll slide.',
+          perks: ['Dedicated host', 'Welcome drinks', 'Custom pre-roll slide', 'Priority parking'],
+        },
+        {
+          code: 'PE-DELUXE', name: 'Deluxe Corporate', base_price: 15_000_000, max_guests: 180,
+          duration_hours: 6, status: 'ACTIVE',
+          description: 'Full-day corporate package with catering, breakout area and a technical crew.',
+          perks: ['Catering', 'Technical crew', 'Breakout area', 'Session recording'],
+        },
+        {
+          code: 'PE-LEGACY', name: 'Legacy Package (retired)', base_price: 5_000_000, max_guests: 80,
+          duration_hours: 4, status: 'INACTIVE',
+          description: 'No longer offered — kept so historical events keep their package.',
+          perks: [],
+        },
+      ];
+      const packages = {};
+      for (const def of packageDefs) {
+        packages[def.code] =
+          (await EventPackage.findOne({ code: def.code })) || (await EventPackage.create({ id: nid(), ...def }));
+      }
+
+      // 2. A dedicated Events Hub branch with its own branch admin (password: demo1234) so
+      //    "Branch Admin chỉ quản lý Event của Branch mình" can be checked against SUPER_ADMIN.
+      const hashed = await bcrypt.hash('demo1234', 10);
+      let eventAdmin = await Account.findOne({ email: 'demo.eventadmin@cinema.local' });
+      if (!eventAdmin) {
+        eventAdmin = await Account.create({
+          id: nid(), email: 'demo.eventadmin@cinema.local', password: hashed, name: 'Demo Events Admin',
+          phone: '0900000040', role: 2, status: 1, approved: true, verified: true,
+        });
+      }
+      let eventCustomer = await Account.findOne({ email: 'demo.eventcustomer@cinema.local' });
+      if (!eventCustomer) {
+        eventCustomer = await Account.create({
+          id: nid(), email: 'demo.eventcustomer@cinema.local', password: hashed, name: 'Demo Events Customer',
+          phone: '0900000041', role: 1, status: 1, approved: true, verified: true,
+        });
+      }
+
+      let hubBranch = await Branch.findOne({ code: 'DEMO-BR-EVENTS' });
+      if (!hubBranch) {
+        hubBranch = await Branch.create({
+          id: nid(), company_id: company.id, owner_id: eventAdmin.id,
+          name: 'CineNova Events Hub', code: 'DEMO-BR-EVENTS', status: 'ACTIVE',
+        });
+      }
+      let grandHall = await Room.findOne({ code: `DEMO-EVENTS-HALL-${hubBranch.id}` });
+      if (!grandHall) {
+        grandHall = await Room.create({
+          id: nid(), cinema_id: hubBranch.id, name: 'Grand Hall', code: `DEMO-EVENTS-HALL-${hubBranch.id}`,
+          type: 'VIP', capacity: 200, status: 'ACTIVE',
+        });
+      }
+      // A room that is NOT available — requesting it should return ROOM_NOT_AVAILABLE.
+      if (!(await Room.findOne({ code: `DEMO-EVENTS-HALLB-${hubBranch.id}` }))) {
+        await Room.create({
+          id: nid(), cinema_id: hubBranch.id, name: 'Hall B (under maintenance)',
+          code: `DEMO-EVENTS-HALLB-${hubBranch.id}`, type: '2D', capacity: 120, status: 'MAINTENANCE',
+        });
+      }
+
+      // 3. A future showtime in Grand Hall to test conflict detection against. Kept on its own
+      //    day, well away from every seeded event window below.
+      const clashDay = isoDayAhead(7);
+      await Schedule.create({
+        id: nid(), movie_id: movies[0].id, room_id: grandHall.id, cinema_id: hubBranch.id,
+        movie_date: clashDay, time_begin: '18:00', time_end: '20:30', price: SEAT_PRICE, status: 'ACTIVE',
+      });
+
+      // 4. One PrivateEvent per status. Hub-branch events (visible to the Events Hub admin AND
+      //    the SUPER_ADMIN) plus two on CineNova Central (visible to the SUPER_ADMIN only).
+      const central = branches[1];
+      const centralRoom = roomByBranch.get(central.id);
+      const contact = {
+        contact_name: 'Trần Thị Sự Kiện', contact_phone: '0912345678', contact_email: 'events@example.com',
+      };
+      const win = (daysAhead, startHour, hours) => {
+        const start = atFutureDay(daysAhead, startHour);
+        return { start_at: start, end_at: new Date(start.getTime() + hours * 3600 * 1000) };
+      };
+      const pastWin = (daysAgo, startHour, hours) => {
+        const start = atDay(daysAgo, startHour);
+        return { start_at: start, end_at: new Date(start.getTime() + hours * 3600 * 1000) };
+      };
+
+      const rows = [
+        {
+          label: 'REQUESTED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-PREMIUM', guests: 60, title: 'Ra mắt sản phẩm Q4', status: 'REQUESTED', ...win(10, 9, 4),
+        },
+        {
+          label: 'QUOTED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-DELUXE', guests: 120, title: 'Hội nghị khách hàng thường niên', status: 'QUOTED',
+          quoted_amount: 16_500_000, quote_notes: 'Đã bao gồm dọn dẹp và kỹ thuật viên.',
+          reviewed_by: eventAdmin.id, reviewed_at: new Date(), ...win(12, 14, 4),
+        },
+        {
+          label: 'APPROVED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-BASIC', guests: 40, title: 'Chiếu phim nội bộ đội ngũ', status: 'APPROVED',
+          quoted_amount: 3_200_000, reviewed_by: eventAdmin.id, reviewed_at: new Date(),
+          approved_at: new Date(), ...win(14, 10, 4),
+        },
+        {
+          label: 'PAID', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-PREMIUM', guests: 90, title: 'Tiệc kỷ niệm công ty', status: 'PAID',
+          quoted_amount: 8_000_000, reviewed_by: eventAdmin.id, reviewed_at: new Date(),
+          approved_at: new Date(), paid_at: new Date(), ...win(16, 17, 4),
+        },
+        {
+          label: 'CONFIRMED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-DELUXE', guests: 150, title: 'Đại hội cổ đông', status: 'CONFIRMED',
+          quoted_amount: 15_000_000, reviewed_by: eventAdmin.id, reviewed_at: new Date(),
+          approved_at: new Date(), paid_at: new Date(), confirmed_at: new Date(), ...win(18, 12, 4),
+        },
+        {
+          label: 'COMPLETED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-PREMIUM', guests: 80, title: 'Sinh nhật thành viên VIP', status: 'COMPLETED',
+          quoted_amount: 7_500_000, reviewed_by: eventAdmin.id, reviewed_at: atDay(9),
+          approved_at: atDay(9), paid_at: atDay(8), confirmed_at: atDay(8), completed_at: atDay(5),
+          ...pastWin(6, 12, 4),
+        },
+        {
+          label: 'CANCELLED', branch: hubBranch, room: grandHall, cust: eventCustomer,
+          pkg: 'PE-BASIC', guests: 30, title: 'Buổi chiếu cộng đồng (đã huỷ)', status: 'CANCELLED',
+          cancelled_at: new Date(), cancel_reason: 'Khách đổi kế hoạch.', ...win(11, 9, 3),
+        },
+        {
+          label: 'REQUESTED @ Central', branch: central, room: centralRoom, cust: eventCustomer,
+          pkg: 'PE-PREMIUM', guests: 50, title: 'Workshop đối tác', status: 'REQUESTED', ...win(9, 15, 4),
+        },
+        {
+          label: 'QUOTED @ Central', branch: central, room: centralRoom, cust: eventCustomer,
+          pkg: 'PE-DELUXE', guests: 100, title: 'Gala tri ân', status: 'QUOTED',
+          quoted_amount: 14_000_000, reviewed_by: admin.id, reviewed_at: new Date(), ...win(13, 13, 5),
+        },
+      ];
+
+      let n = 0;
+      for (const r of rows) {
+        await PrivateEvent.create({
+          id: nid(),
+          customer_id: r.cust.id,
+          branch_id: r.branch.id,
+          room_id: r.room.id,
+          package_id: packages[r.pkg].id,
+          start_at: r.start_at,
+          end_at: r.end_at,
+          guest_count: r.guests,
+          status: r.status,
+          title: r.title,
+          notes: 'Yêu cầu demo được tạo bởi seedDemo.',
+          ...contact,
+          quoted_amount: r.quoted_amount ?? null,
+          quote_notes: r.quote_notes ?? '',
+          reviewed_by: r.reviewed_by ?? null,
+          reviewed_at: r.reviewed_at ?? null,
+          approved_at: r.approved_at ?? null,
+          paid_at: r.paid_at ?? null,
+          confirmed_at: r.confirmed_at ?? null,
+          completed_at: r.completed_at ?? null,
+          cancelled_at: r.cancelled_at ?? null,
+          cancel_reason: r.cancel_reason ?? '',
+        });
+        n += 1;
+      }
+
+      console.log(
+        `   ↳ logins: demo.eventcustomer@cinema.local / demo.eventadmin@cinema.local (password: demo1234)\n` +
+        `   ↳ conflict check: request "Grand Hall" on ${clashDay} 18:30–20:00 → expect SHOWTIME_CONFLICT\n` +
+        `   ↳ availability check: request "Hall B (under maintenance)" → expect ROOM_NOT_AVAILABLE`,
+      );
+      return `${Object.keys(packages).length} packages, ${n} events (Events Hub + Central)`;
     },
   );
 
