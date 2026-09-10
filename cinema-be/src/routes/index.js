@@ -49,6 +49,7 @@ const cashierShiftRoutes = require('./cashierShift.routes');
 const kioskRoutes = require('./kiosk.routes');
 const signageRoutes = require('./signage.routes');
 const campaignRoutes = require('./campaign.routes');
+const customerCrmRoutes = require('./customerCrm.routes');
 
 const router = express.Router();
 
@@ -104,6 +105,8 @@ router.use('/notifications', notificationRoutes);
 router.use('/notification-templates', notificationTemplateRoutes);
 router.use('/system-config', systemConfigRoutes);
 router.use('/reports', reportingRoutes);
+// Customer CRM (Ticket 38): /crm/me (own profile) and /crm/customers/:id (branch-scoped staff view).
+router.use('/crm', customerCrmRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);

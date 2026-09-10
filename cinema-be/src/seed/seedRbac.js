@@ -54,6 +54,7 @@ const PERMISSIONS = [
   ['director.create', 'director'], ['director.read', 'director'],
   ['director.update', 'director'], ['director.delete', 'director'],
   ['report.viewFinancial', 'report'], ['report.viewOperational', 'report'],
+  ['crm.viewOwn', 'crm'], ['crm.viewCustomer', 'crm'],
   ['position.read', 'position'],
   ['payment.create', 'payment'],
   ['payment.read', 'payment'],
@@ -115,6 +116,10 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'employee.create': 'BRANCH', 'employee.read': 'BRANCH', 'employee.update': 'BRANCH', 'employee.delete': 'BRANCH',
   'actor.read': 'ALL', 'director.read': 'ALL',
   'report.viewFinancial': 'BRANCH', 'report.viewOperational': 'BRANCH',
+  // CRM: a Branch Admin looks up a customer's profile, but every metric is computed only
+  // from that customer's activity at branches this admin owns (see customerCrm.service).
+  'crm.viewCustomer': 'BRANCH',
+  'crm.viewOwn': 'OWN',
   'position.read': 'ALL',
   'payment.create': 'BRANCH',
   'payment.read': 'BRANCH',
@@ -153,6 +158,7 @@ const EMPLOYEE_PERMISSIONS = {
   'room.read': 'ALL', 'seat.read': 'ALL',
   'actor.read': 'ALL', 'director.read': 'ALL',
   'report.viewOperational': 'BRANCH',
+  'crm.viewOwn': 'OWN',
   'shiftAssignment.read': 'OWN',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH',
 };
@@ -172,6 +178,8 @@ const CUSTOMER_PERMISSIONS = {
   'refund.request': 'OWN', 'refund.read': 'OWN',
   'loyalty.read': 'OWN', 'loyalty.redeem': 'OWN', 'membershipLevel.read': 'ALL',
   'giftCard.read': 'OWN',
+  // A customer may see their own aggregated CRM/activity profile, never anyone else's.
+  'crm.viewOwn': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

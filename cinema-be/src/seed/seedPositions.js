@@ -72,6 +72,10 @@ const POSITION_PERMISSIONS = {
     'supportTicket.create': 'BRANCH',
     'supportTicket.read': 'BRANCH',
     'supportTicket.update': 'BRANCH',
+    // Look up a customer's activity profile while handling a request. The service returns a
+    // reduced field set for EMPLOYEE callers (no marketing analytics) and scopes every
+    // metric to this branch.
+    'crm.viewCustomer': 'BRANCH',
   },
 
   SECURITY: {},

@@ -19,6 +19,10 @@ const Account = require('../models/Account');
 const Branch = require('../models/Branch');
 const Room = require('../models/Room');
 const Movie = require('../models/Movie');
+const Category = require('../models/Category');
+const MovieCategory = require('../models/MovieCategory');
+const Combo = require('../models/Combo');
+const ComboOrder = require('../models/ComboOrder');
 const Schedule = require('../models/Schedule');
 const Ticket = require('../models/Ticket');
 const Booking = require('../models/Booking');
@@ -60,6 +64,50 @@ async function pickStage() {
   return { movie, room, branch, branchId: room.cinema_id };
 }
 
+// Extra (movie, branch/room) combinations for the CRM / Activity Summary showcase, so
+// favorite_branch and favorite_genres have real variety to show. Always includes the
+// primary stage first; adds up to two more distinct branches and distinct movies when the
+// DB has them (falls back to reusing the primary otherwise).
+async function pickCrmStages(primary) {
+  const rooms = await Room.find().sort({ id: 1 });
+  const movies = await Movie.find({ status: { $ne: 'INACTIVE' } }).sort({ id: 1 });
+
+  const stages = [primary];
+  let mi = 0;
+  for (const room of rooms) {
+    if (stages.length >= 3) break;
+    if (room.cinema_id === primary.branchId) continue; // primary branch already covered
+    const branch = await Branch.findOne({ id: room.cinema_id });
+    const movie = movies[(mi += 1) % Math.max(movies.length, 1)] || primary.movie;
+    stages.push({ movie, room, branch, branchId: room.cinema_id });
+  }
+  // If there was only one branch, still vary the movie on the extra bookings.
+  while (stages.length < 3) {
+    const movie = movies[(mi += 1) % Math.max(movies.length, 1)] || primary.movie;
+    stages.push({ ...primary, movie });
+  }
+  return stages;
+}
+
+// Make sure each showcased movie belongs to at least one Category, so favorite_genres is
+// never empty in the demo.
+async function ensureGenres(movieIds) {
+  const fallbackNames = ['Hành động', 'Hài', 'Tình cảm', 'Kinh dị', 'Hoạt hình'];
+  const existing = await Category.find().sort({ id: 1 });
+  let pool = existing;
+  if (pool.length === 0) {
+    pool = [];
+    for (const name of fallbackNames) {
+      pool.push(await Category.create({ id: nid(), name }));
+    }
+  }
+  for (const [i, movieId] of movieIds.entries()) {
+    if (await MovieCategory.findOne({ movie_id: movieId })) continue;
+    const cat = pool[i % pool.length];
+    await MovieCategory.create({ id: nid(), movie_id: movieId, cat_id: cat.id });
+  }
+}
+
 async function clearShowcase(accountId) {
   const codeRe = new RegExp(`^SHOW-${accountId}-`);
   const bookings = await Booking.find({ code: codeRe });
@@ -78,10 +126,20 @@ async function clearShowcase(accountId) {
     GiftCardTransaction.deleteMany({ gift_card_id: { $in: cardIds } }),
     GiftCard.deleteMany({ code: codeRe }),
     Notification.deleteMany({ dedupe_key: codeRe }),
+    ComboOrder.deleteMany({ code: new RegExp(`^SHOW-CO-${accountId}-`) }),
   ]);
 }
 
-async function makeBooking({ account, stage, seatStart, seatCount, status, offsetDays, ticketStatus }) {
+async function makeBooking({
+  account,
+  stage,
+  seatStart,
+  seatCount,
+  status,
+  offsetDays,
+  ticketStatus,
+  comboTotal = 0,
+}) {
   const schedule = await Schedule.create({
     id: nid(),
     movie_id: stage.movie.id,
@@ -108,7 +166,8 @@ async function makeBooking({ account, stage, seatStart, seatCount, status, offse
     seats.push({ ticketId, seatCode: `H${seatIndex + 1}` });
   }
 
-  const total = seatCount * SEAT_PRICE;
+  const seatTotal = seatCount * SEAT_PRICE;
+  const total = seatTotal + comboTotal;
   const code = `SHOW-${account.id}-${schedule.id}`;
   const paidAt = day(offsetDays - 1);
   const cancelled = status === 'CANCELLED';
@@ -120,7 +179,8 @@ async function makeBooking({ account, stage, seatStart, seatCount, status, offse
     schedule_id: schedule.id,
     branch_id: stage.branchId,
     ticket_ids: seats.map((s) => s.ticketId),
-    seat_total: total,
+    seat_total: seatTotal,
+    combo_total: comboTotal,
     total_price: total,
     status,
     paid_at: paidAt,
@@ -152,7 +212,7 @@ async function makeBooking({ account, stage, seatStart, seatCount, status, offse
       ticket_id: seat.ticketId,
       account_id: account.id,
       code,
-      total_price: Math.round(total / seatCount),
+      total_price: Math.round(seatTotal / seatCount),
       status: cancelled ? 2 : 1,
       ticket_status: ticketStatus,
       checked_in: used,
@@ -217,6 +277,61 @@ async function run() {
     completed_at: day(4),
   });
 
+  // --- CRM / Activity Summary enrichment -------------------------------------
+  // A few more paid+checked-in visits spread across other branches / movies (so
+  // favorite_branch, favorite_genres and last_visit on /MyActivity are meaningful), plus a
+  // couple of standalone combo-counter orders for total_combo_spending.
+  const crmStages = await pickCrmStages(stage);
+  await ensureGenres([...new Set(crmStages.map((s) => s.movie.id))]);
+
+  const extraVisits = [
+    { stage: crmStages[1], seatStart: 50, seatCount: 2, offsetDays: -25, comboTotal: 120000 },
+    { stage: crmStages[2], seatStart: 52, seatCount: 3, offsetDays: -18, comboTotal: 0 },
+    { stage: crmStages[1], seatStart: 55, seatCount: 2, offsetDays: -6, comboTotal: 85000 },
+  ];
+  const extraBookings = [];
+  for (const v of extraVisits) {
+    extraBookings.push(
+      await makeBooking({
+        account,
+        stage: v.stage,
+        seatStart: v.seatStart,
+        seatCount: v.seatCount,
+        status: 'COMPLETED',
+        offsetDays: v.offsetDays,
+        ticketStatus: 'USED',
+        comboTotal: v.comboTotal,
+      }),
+    );
+  }
+
+  // Standalone combo-counter orders (no booking) at the primary branch.
+  const someCombo = await Combo.findOne({ cinema_id: stage.branchId }) || (await Combo.findOne());
+  const comboLine = (qty) => ({
+    combo_id: someCombo ? someCombo.id : 1,
+    name: someCombo ? someCombo.name : 'Bắp nước Combo 1',
+    unit_price: someCombo ? someCombo.price : 79000,
+    quantity: qty,
+    line_total: (someCombo ? someCombo.price : 79000) * qty,
+  });
+  for (const [i, qty] of [1, 2].entries()) {
+    const items = [comboLine(qty)];
+    const totalPrice = items.reduce((acc, it) => acc + it.line_total, 0);
+    await ComboOrder.create({
+      id: nid(),
+      code: `SHOW-CO-${account.id}-${i + 1}`,
+      branch_id: stage.branchId,
+      account_id: account.id,
+      booking_id: null,
+      items,
+      total_price: totalPrice,
+      status: 'DELIVERED',
+      payment_method: 'MOMO',
+      paid_at: day(-10 + i),
+      delivered_at: day(-10 + i),
+    });
+  }
+
   // --- Loyalty: points ledger + tier -----------------------------------------
   let balance = 0;
   const addPoints = async (type, points, description, bookingId = null) => {
@@ -235,10 +350,13 @@ async function run() {
   };
   await addPoints('EARN', 1200, 'Đặt vé xem phim', completed.booking.id);
   await addPoints('EARN', 1200, 'Đặt vé xem phim', upcoming.booking.id);
+  for (const eb of extraBookings) {
+    await addPoints('EARN', 900, 'Đặt vé xem phim', eb.booking.id);
+  }
   await addPoints('ADJUST', 500, 'Điểm thưởng sinh nhật');
   await addPoints('REDEEM', -400, 'Đổi điểm lấy ưu đãi bắp nước');
 
-  const lifetime = 1200 + 1200 + 500;
+  const lifetime = 1200 + 1200 + 900 * extraBookings.length + 500;
   account.points_balance = balance;
   account.lifetime_points = Math.max(account.lifetime_points || 0, lifetime);
   account.membership_level = 'SILVER';
@@ -355,8 +473,11 @@ async function run() {
   }
 
   console.log(
-    `Showcase data ready for #${account.id} (${email}): 3 bookings, 5 tickets, 1 refund, ` +
-      `4 points entries, 2 gift cards, ${notes.length} notifications. Membership: SILVER.`,
+    `Showcase data ready for #${account.id} (${email}): ${3 + extraBookings.length} bookings ` +
+      `across ${new Set(crmStages.map((s) => s.branchId)).size} branch(es), 1 refund, ` +
+      `2 combo-counter orders, ${4 + extraBookings.length} points entries, 2 gift cards, ` +
+      `${notes.length} notifications. Membership: SILVER. ` +
+      `The My Activity / CRM page now has favorite genres, favorite branch and last-visit data.`,
   );
   process.exit(0);
 }
