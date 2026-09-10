@@ -68,7 +68,8 @@
       "refunds": "रिफंड",
       "supportTickets": "ग्राहक सेवा",
       "distribution": "वितरण",
-      "signage": "Digital Signage"
+      "signage": "Digital Signage",
+      "campaigns": "मार्केटिंग अभियान"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

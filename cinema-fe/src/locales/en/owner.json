@@ -1071,5 +1071,108 @@
       "SHOWTIME_BRANCH_MISMATCH": "showtime belongs to another branch",
       "SHOWTIME_CANCELLED": "showtime was cancelled"
     }
+  },
+  "campaigns": {
+    "breadcrumb": "Marketing Campaigns",
+    "scopePlaceholder": "Select scope",
+    "allBranches": "All branches",
+    "globalScope": "Global (company-wide)",
+    "statusFilterPlaceholder": "All statuses",
+    "stateFilterPlaceholder": "All states",
+    "add": "New campaign",
+    "addTitle": "New marketing campaign",
+    "editTitle": "Edit campaign",
+    "globalHint": "Global campaign — runs at every branch. Super Admin only.",
+    "branchHint": "Branch campaign — runs at this branch only.",
+    "previewState": "Preview",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "startLabel": "Starts at",
+    "endLabel": "Ends at",
+    "statusLabel": "Status",
+    "targetLabel": "Target audience",
+    "moviesLabel": "Linked movies",
+    "noMovies": "No movies available.",
+    "promotionsLabel": "Linked promotions",
+    "noPromotions": "No promotions available for this scope.",
+    "notificationEnableLabel": "Announce this campaign to the target audience",
+    "notificationTitleLabel": "Notification title",
+    "notificationBodyLabel": "Notification message",
+    "notificationHint": "The announcement is sent once per customer. Sending again only reaches customers not notified yet — no duplicates.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "banners": "Banners",
+    "sendNotification": "Send notification",
+    "notifyOnlyRunning": "Only a running campaign can send its notification.",
+    "createSuccess": "Campaign created.",
+    "updateSuccess": "Campaign updated.",
+    "deleteConfirm": "Delete this campaign? Its banners are removed too.",
+    "deleteSuccess": "Campaign deleted.",
+    "notifyConfirm": "Send this campaign’s announcement to its target audience now?",
+    "notifyResult": "Notification sent to {{sent}} of {{audience}} customers ({{skipped}} already had it).",
+    "notifSent": "Sent to {{count}}",
+    "notifReady": "Ready to send",
+    "headers": {
+      "name": "Campaign",
+      "scope": "Scope",
+      "window": "Window",
+      "target": "Audience",
+      "state": "State",
+      "notification": "Notification",
+      "actions": "Actions"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "PAUSED": "Paused",
+      "ARCHIVED": "Archived"
+    },
+    "state": {
+      "DRAFT": "Draft",
+      "SCHEDULED": "Scheduled",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "EXPIRED": "Expired",
+      "ARCHIVED": "Archived"
+    },
+    "target": {
+      "ALL_CUSTOMERS": "All customers",
+      "MEMBERS": "Members only",
+      "BRANCH_CUSTOMERS": "Branch customers"
+    },
+    "bannersTitle": "Banners — {{name}}",
+    "noBanners": "No banners on this campaign yet.",
+    "addBanner": "Add banner",
+    "editBanner": "Edit banner",
+    "bannerTitleLabel": "Title",
+    "bannerSubtitleLabel": "Subtitle",
+    "bannerImageLabel": "Image URL",
+    "bannerLinkLabel": "Link URL",
+    "bannerPlacementLabel": "Placement",
+    "bannerOrderLabel": "Sort order",
+    "bannerStatusFieldLabel": "Status",
+    "bannerCreateSuccess": "Banner added.",
+    "bannerUpdateSuccess": "Banner updated.",
+    "bannerDeleteConfirm": "Delete this banner?",
+    "bannerDeleteSuccess": "Banner deleted.",
+    "bannerHeaders": {
+      "title": "Title",
+      "placement": "Placement",
+      "order": "Order",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "placement": {
+      "HOME_HERO": "Home hero",
+      "HOME_STRIP": "Home strip",
+      "MOVIE_DETAIL": "Movie detail",
+      "BOOKING": "Booking"
+    },
+    "bannerStatus": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    }
   }
 }

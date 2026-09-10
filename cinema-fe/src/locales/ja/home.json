@@ -35,5 +35,8 @@
   "featured": {
     "title": "注目の映画",
     "viewDetails": "詳細を見る"
+  },
+  "campaignStrip": {
+    "title": "キャンペーン＆特典"
   }
 }

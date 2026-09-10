@@ -68,7 +68,8 @@
       "refunds": "Возвраты",
       "supportTickets": "Служба поддержки",
       "distribution": "Дистрибуция",
-      "signage": "Digital Signage"
+      "signage": "Digital Signage",
+      "campaigns": "Маркетинговые кампании"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

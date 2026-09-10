@@ -35,5 +35,8 @@
   "featured": {
     "title": "Рекомендуемые фильмы",
     "viewDetails": "Подробнее"
+  },
+  "campaignStrip": {
+    "title": "Кампании и предложения"
   }
 }

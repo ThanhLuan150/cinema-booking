@@ -35,5 +35,8 @@
   "featured": {
     "title": "추천 영화",
     "viewDetails": "상세 보기"
+  },
+  "campaignStrip": {
+    "title": "캠페인 및 혜택"
   }
 }

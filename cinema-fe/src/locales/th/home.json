@@ -35,5 +35,8 @@
   "featured": {
     "title": "ภาพยนตร์แนะนำ",
     "viewDetails": "ดูรายละเอียด"
+  },
+  "campaignStrip": {
+    "title": "แคมเปญและข้อเสนอ"
   }
 }

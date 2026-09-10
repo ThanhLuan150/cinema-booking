@@ -48,6 +48,7 @@ const boxOfficeRoutes = require('./boxOffice.routes');
 const cashierShiftRoutes = require('./cashierShift.routes');
 const kioskRoutes = require('./kiosk.routes');
 const signageRoutes = require('./signage.routes');
+const campaignRoutes = require('./campaign.routes');
 
 const router = express.Router();
 
@@ -96,6 +97,9 @@ router.use('/audit-logs', auditLogRoutes);
 // Digital Signage: /signage/screens (branch displays), /signage/contents (what can be shown),
 // /signage/schedules (playlist entries), /signage/screens/:id/playback (resolved live playlist).
 router.use('/signage', signageRoutes);
+// Marketing Campaign (Ticket 37) — kept separate from /promotion. /campaigns/public is the
+// unauthenticated customer feed; everything else is campaign.read / campaign.manage / campaign.notify.
+router.use('/campaigns', campaignRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/notification-templates', notificationTemplateRoutes);
 router.use('/system-config', systemConfigRoutes);

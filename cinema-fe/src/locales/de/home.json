@@ -35,5 +35,8 @@
   "featured": {
     "title": "Empfohlene Filme",
     "viewDetails": "Details ansehen"
+  },
+  "campaignStrip": {
+    "title": "Kampagnen & Angebote"
   }
 }

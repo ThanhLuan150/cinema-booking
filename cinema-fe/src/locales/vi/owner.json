@@ -1071,5 +1071,108 @@
       "SHOWTIME_BRANCH_MISMATCH": "suất chiếu thuộc chi nhánh khác",
       "SHOWTIME_CANCELLED": "suất chiếu đã bị hủy"
     }
+  },
+  "campaigns": {
+    "breadcrumb": "Chiến dịch Marketing",
+    "scopePlaceholder": "Chọn phạm vi",
+    "allBranches": "Tất cả chi nhánh",
+    "globalScope": "Toàn hệ thống",
+    "statusFilterPlaceholder": "Tất cả trạng thái",
+    "stateFilterPlaceholder": "Tất cả tình trạng",
+    "add": "Thêm chiến dịch",
+    "addTitle": "Chiến dịch marketing mới",
+    "editTitle": "Sửa chiến dịch",
+    "globalHint": "Chiến dịch toàn hệ thống — áp dụng mọi chi nhánh. Chỉ Super Admin.",
+    "branchHint": "Chiến dịch chi nhánh — chỉ áp dụng chi nhánh này.",
+    "previewState": "Xem trước",
+    "nameLabel": "Tên",
+    "descriptionLabel": "Mô tả",
+    "startLabel": "Bắt đầu",
+    "endLabel": "Kết thúc",
+    "statusLabel": "Trạng thái",
+    "targetLabel": "Đối tượng",
+    "moviesLabel": "Phim liên kết",
+    "noMovies": "Không có phim.",
+    "promotionsLabel": "Khuyến mãi liên kết",
+    "noPromotions": "Không có khuyến mãi cho phạm vi này.",
+    "notificationEnableLabel": "Gửi thông báo chiến dịch đến đối tượng",
+    "notificationTitleLabel": "Tiêu đề thông báo",
+    "notificationBodyLabel": "Nội dung thông báo",
+    "notificationHint": "Thông báo chỉ gửi một lần cho mỗi khách. Gửi lại chỉ đến khách chưa nhận — không trùng lặp.",
+    "save": "Lưu",
+    "cancel": "Huỷ",
+    "edit": "Sửa",
+    "delete": "Xoá",
+    "banners": "Banner",
+    "sendNotification": "Gửi thông báo",
+    "notifyOnlyRunning": "Chỉ chiến dịch đang chạy mới gửi được thông báo.",
+    "createSuccess": "Đã tạo chiến dịch.",
+    "updateSuccess": "Đã cập nhật chiến dịch.",
+    "deleteConfirm": "Xoá chiến dịch này? Banner cũng bị xoá theo.",
+    "deleteSuccess": "Đã xoá chiến dịch.",
+    "notifyConfirm": "Gửi thông báo chiến dịch đến đối tượng ngay bây giờ?",
+    "notifyResult": "Đã gửi cho {{sent}}/{{audience}} khách ({{skipped}} đã nhận trước đó).",
+    "notifSent": "Đã gửi {{count}}",
+    "notifReady": "Sẵn sàng gửi",
+    "headers": {
+      "name": "Chiến dịch",
+      "scope": "Phạm vi",
+      "window": "Thời gian",
+      "target": "Đối tượng",
+      "state": "Tình trạng",
+      "notification": "Thông báo",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "DRAFT": "Nháp",
+      "ACTIVE": "Kích hoạt",
+      "PAUSED": "Tạm dừng",
+      "ARCHIVED": "Lưu trữ"
+    },
+    "state": {
+      "DRAFT": "Nháp",
+      "SCHEDULED": "Đã lên lịch",
+      "RUNNING": "Đang chạy",
+      "PAUSED": "Tạm dừng",
+      "EXPIRED": "Hết hạn",
+      "ARCHIVED": "Lưu trữ"
+    },
+    "target": {
+      "ALL_CUSTOMERS": "Tất cả khách hàng",
+      "MEMBERS": "Chỉ thành viên",
+      "BRANCH_CUSTOMERS": "Khách của chi nhánh"
+    },
+    "bannersTitle": "Banner — {{name}}",
+    "noBanners": "Chưa có banner nào.",
+    "addBanner": "Thêm banner",
+    "editBanner": "Sửa banner",
+    "bannerTitleLabel": "Tiêu đề",
+    "bannerSubtitleLabel": "Phụ đề",
+    "bannerImageLabel": "URL hình ảnh",
+    "bannerLinkLabel": "URL liên kết",
+    "bannerPlacementLabel": "Vị trí",
+    "bannerOrderLabel": "Thứ tự",
+    "bannerStatusFieldLabel": "Trạng thái",
+    "bannerCreateSuccess": "Đã thêm banner.",
+    "bannerUpdateSuccess": "Đã cập nhật banner.",
+    "bannerDeleteConfirm": "Xoá banner này?",
+    "bannerDeleteSuccess": "Đã xoá banner.",
+    "bannerHeaders": {
+      "title": "Tiêu đề",
+      "placement": "Vị trí",
+      "order": "Thứ tự",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "placement": {
+      "HOME_HERO": "Trang chủ - nổi bật",
+      "HOME_STRIP": "Trang chủ - dải",
+      "MOVIE_DETAIL": "Chi tiết phim",
+      "BOOKING": "Đặt vé"
+    },
+    "bannerStatus": {
+      "ACTIVE": "Kích hoạt",
+      "INACTIVE": "Tắt"
+    }
   }
 }

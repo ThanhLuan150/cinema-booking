@@ -8,6 +8,7 @@ import QuickBooking from '../components/QuickBooking';
 import FeaturedMovies from '../components/FeaturedMoviesSection';
 import MovieTabs from '../components/MovieTabsSection';
 import TopCinemas from '../components/TopCinemasSection';
+import CampaignStrip from '../components/CampaignStrip';
 
 const HomePage = () => {
   const { isLoading } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
@@ -25,6 +26,7 @@ const HomePage = () => {
             <Banner />
             <QuickBooking />
             <div className="divide-y divide-border">
+              <CampaignStrip />
               <FeaturedMovies />
               <MovieTabs />
               <TopCinemas />

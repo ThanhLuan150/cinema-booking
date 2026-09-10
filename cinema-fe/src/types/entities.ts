@@ -532,6 +532,83 @@ export interface SignagePlayback {
   dropped: { entry_id: number; content_id: number; code: string }[];
 }
 
+export type CampaignStatus = 'DRAFT' | 'ACTIVE' | 'PAUSED' | 'ARCHIVED';
+export type CampaignTargetType = 'ALL_CUSTOMERS' | 'MEMBERS' | 'BRANCH_CUSTOMERS';
+export type CampaignDisplayState = 'DRAFT' | 'SCHEDULED' | 'RUNNING' | 'PAUSED' | 'EXPIRED' | 'ARCHIVED';
+export type CampaignBannerPlacement = 'HOME_HERO' | 'HOME_STRIP' | 'MOVIE_DETAIL' | 'BOOKING';
+export type CampaignBannerStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface CampaignBanner {
+  id: number;
+  campaign_id: number;
+  title: string;
+  subtitle: string;
+  image_url: string;
+  link_url: string;
+  placement: CampaignBannerPlacement;
+  sort_order: number;
+  status: CampaignBannerStatus;
+  createdAt?: string;
+}
+
+export interface Campaign {
+  id: number;
+  name: string;
+  description: string;
+  start_at: string;
+  end_at: string;
+  status: CampaignStatus;
+  target_type: CampaignTargetType;
+  branch_id: number | null; // null = Global Campaign (SUPER_ADMIN only)
+  movie_ids: number[];
+  promotion_ids: number[];
+  notification_enabled: boolean;
+  notification_title: string;
+  notification_body: string;
+  notification_last_sent_at: string | null;
+  notification_sent_count: number;
+  created_by: number | null;
+  createdAt?: string;
+  // Attached by the API on read.
+  display_state?: CampaignDisplayState;
+  is_visible?: boolean;
+}
+
+export interface CampaignDetail extends Campaign {
+  banners: CampaignBanner[];
+  links: {
+    movies: { id: number; name: string; avatar: string; banner: string; premiere_date: string }[];
+    promotions: { id: number; code: string; name: string; description: string; end_at: string }[];
+  };
+}
+
+export interface CampaignNotifyResult {
+  audience: number;
+  sent: number;
+  skipped: number;
+}
+
+export interface CampaignMeta {
+  statuses: CampaignStatus[];
+  targetTypes: CampaignTargetType[];
+  placements: CampaignBannerPlacement[];
+  states: CampaignDisplayState[];
+}
+
+// One entry of the unauthenticated customer feed (GET /api/campaigns/public).
+export interface PublicCampaign {
+  id: number;
+  name: string;
+  description: string;
+  start_at: string;
+  end_at: string;
+  target_type: CampaignTargetType;
+  branch_id: number | null;
+  banners: Omit<CampaignBanner, 'campaign_id' | 'status' | 'createdAt'>[];
+  movies: { id: number; name: string; avatar: string; banner: string; premiere_date: string }[];
+  promotions: { id: number; code: string; name: string; description: string; end_at: string }[];
+}
+
 // Ticket 24 — Audit Log
 export type AuditLogEntityType =
   | 'BRANCH'
