@@ -48,6 +48,7 @@ const boxOfficeRoutes = require('./boxOffice.routes');
 const cashierShiftRoutes = require('./cashierShift.routes');
 const kioskRoutes = require('./kiosk.routes');
 const signageRoutes = require('./signage.routes');
+const parkingRoutes = require('./parking.routes');
 const campaignRoutes = require('./campaign.routes');
 const customerCrmRoutes = require('./customerCrm.routes');
 
@@ -98,6 +99,9 @@ router.use('/audit-logs', auditLogRoutes);
 // Digital Signage: /signage/screens (branch displays), /signage/contents (what can be shown),
 // /signage/schedules (playlist entries), /signage/screens/:id/playback (resolved live playlist).
 router.use('/signage', signageRoutes);
+// Parking (Ticket 39): /parking/areas + /parking/slots (per-branch infrastructure) and
+// /parking/tickets (the vehicle entry -> assign slot -> exit -> fee -> payment -> release flow).
+router.use('/parking', parkingRoutes);
 // Marketing Campaign (Ticket 37) — kept separate from /promotion. /campaigns/public is the
 // unauthenticated customer feed; everything else is campaign.read / campaign.manage / campaign.notify.
 router.use('/campaigns', campaignRoutes);

@@ -1072,6 +1072,100 @@
       "SHOWTIME_CANCELLED": "showtime was cancelled"
     }
   },
+  "parking": {
+    "breadcrumb": "Parking",
+    "branchPlaceholder": "Select branch",
+    "allBranches": "All branches",
+    "statusFilterPlaceholder": "All statuses",
+    "manageAreas": "Areas & slots",
+    "vehicleEntry": "Vehicle entry +",
+    "areasTitle": "Parking areas",
+    "noAreas": "No parking areas yet for this branch.",
+    "addAreaButton": "Add area +",
+    "addAreaTitle": "Add a parking area",
+    "editAreaTitle": "Edit parking area",
+    "nameLabel": "Name",
+    "capacityLabel": "Capacity",
+    "statusLabel": "Status",
+    "submit": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "slots": "Slots",
+    "areaCreateSuccess": "Parking area added.",
+    "areaUpdateSuccess": "Parking area updated.",
+    "areaDeleteSuccess": "Parking area deleted.",
+    "areaDeleteConfirm": "Delete this parking area? Its slots must be removed first.",
+    "slotsTitle": "Slots — {{name}}",
+    "noSlots": "No slots in this area yet.",
+    "addSlotTitle": "Add slot",
+    "editSlotTitle": "Edit slot",
+    "slotCodeLabel": "Slot code",
+    "vehicleTypeLabel": "Vehicle type",
+    "slotCreateSuccess": "Slot added.",
+    "slotUpdateSuccess": "Slot updated.",
+    "slotDeleteSuccess": "Slot deleted.",
+    "slotDeleteConfirm": "Delete this slot?",
+    "entryTitle": "Admit a vehicle",
+    "plateLabel": "Licence plate",
+    "slotLabel": "Slot",
+    "autoAssign": "Auto-assign a free slot",
+    "admit": "Admit",
+    "entrySuccess": "Vehicle admitted — slot assigned.",
+    "exit": "Register exit",
+    "takePayment": "Take payment",
+    "exitSuccess": "Exit registered — fee calculated.",
+    "paySuccess": "Payment taken — slot released.",
+    "cancelSuccess": "Parking ticket cancelled.",
+    "cancelConfirm": "Cancel this parking ticket? The slot will be released and no fee charged.",
+    "areaHeaders": {
+      "name": "Name",
+      "capacity": "Capacity",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "slotHeaders": {
+      "code": "Code",
+      "vehicleType": "Vehicle type",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "ticketHeaders": {
+      "code": "Ticket",
+      "branch": "Branch",
+      "plate": "Plate",
+      "vehicleType": "Vehicle",
+      "slot": "Slot",
+      "entry": "Entry",
+      "exit": "Exit",
+      "fee": "Fee",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "areaStatus": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "MAINTENANCE": "Maintenance"
+    },
+    "slotStatus": {
+      "AVAILABLE": "Available",
+      "OCCUPIED": "Occupied",
+      "RESERVED": "Reserved",
+      "MAINTENANCE": "Maintenance"
+    },
+    "ticketStatus": {
+      "ACTIVE": "Parked",
+      "PENDING_PAYMENT": "Awaiting payment",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "vehicleType": {
+      "CAR": "Car",
+      "MOTORBIKE": "Motorbike",
+      "BICYCLE": "Bicycle",
+      "OTHER": "Other"
+    }
+  },
   "campaigns": {
     "breadcrumb": "Marketing Campaigns",
     "scopePlaceholder": "Select scope",

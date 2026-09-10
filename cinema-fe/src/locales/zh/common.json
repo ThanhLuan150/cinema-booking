@@ -69,7 +69,8 @@
       "supportTickets": "客户服务",
       "distribution": "发行",
       "signage": "Digital Signage",
-      "campaigns": "营销活动"
+      "campaigns": "营销活动",
+      "parking": "停车场"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

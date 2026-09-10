@@ -1072,6 +1072,100 @@
       "SHOWTIME_CANCELLED": "suất chiếu đã bị hủy"
     }
   },
+  "parking": {
+    "breadcrumb": "Bãi đỗ xe",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranches": "Tất cả chi nhánh",
+    "statusFilterPlaceholder": "Tất cả trạng thái",
+    "manageAreas": "Khu vực & chỗ đỗ",
+    "vehicleEntry": "Xe vào +",
+    "areasTitle": "Khu vực đỗ xe",
+    "noAreas": "Chi nhánh này chưa có khu vực đỗ xe.",
+    "addAreaButton": "Thêm khu vực +",
+    "addAreaTitle": "Thêm khu vực đỗ xe",
+    "editAreaTitle": "Sửa khu vực đỗ xe",
+    "nameLabel": "Tên",
+    "capacityLabel": "Sức chứa",
+    "statusLabel": "Trạng thái",
+    "submit": "Lưu",
+    "cancel": "Huỷ",
+    "edit": "Sửa",
+    "delete": "Xoá",
+    "slots": "Chỗ đỗ",
+    "areaCreateSuccess": "Đã thêm khu vực đỗ xe.",
+    "areaUpdateSuccess": "Đã cập nhật khu vực đỗ xe.",
+    "areaDeleteSuccess": "Đã xoá khu vực đỗ xe.",
+    "areaDeleteConfirm": "Xoá khu vực này? Cần xoá hết các chỗ đỗ trước.",
+    "slotsTitle": "Chỗ đỗ — {{name}}",
+    "noSlots": "Khu vực này chưa có chỗ đỗ.",
+    "addSlotTitle": "Thêm chỗ đỗ",
+    "editSlotTitle": "Sửa chỗ đỗ",
+    "slotCodeLabel": "Mã chỗ đỗ",
+    "vehicleTypeLabel": "Loại xe",
+    "slotCreateSuccess": "Đã thêm chỗ đỗ.",
+    "slotUpdateSuccess": "Đã cập nhật chỗ đỗ.",
+    "slotDeleteSuccess": "Đã xoá chỗ đỗ.",
+    "slotDeleteConfirm": "Xoá chỗ đỗ này?",
+    "entryTitle": "Cho xe vào",
+    "plateLabel": "Biển số",
+    "slotLabel": "Chỗ đỗ",
+    "autoAssign": "Tự động chọn chỗ trống",
+    "admit": "Cho vào",
+    "entrySuccess": "Đã cho xe vào — đã gán chỗ đỗ.",
+    "exit": "Ghi nhận xe ra",
+    "takePayment": "Thu phí",
+    "exitSuccess": "Đã ghi nhận xe ra — đã tính phí.",
+    "paySuccess": "Đã thu phí — đã trả lại chỗ đỗ.",
+    "cancelSuccess": "Đã huỷ vé đỗ xe.",
+    "cancelConfirm": "Huỷ vé đỗ xe này? Chỗ đỗ sẽ được trả lại và không thu phí.",
+    "areaHeaders": {
+      "name": "Tên",
+      "capacity": "Sức chứa",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "slotHeaders": {
+      "code": "Mã",
+      "vehicleType": "Loại xe",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "ticketHeaders": {
+      "code": "Vé",
+      "branch": "Chi nhánh",
+      "plate": "Biển số",
+      "vehicleType": "Xe",
+      "slot": "Chỗ đỗ",
+      "entry": "Vào",
+      "exit": "Ra",
+      "fee": "Phí",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "areaStatus": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Ngừng",
+      "MAINTENANCE": "Bảo trì"
+    },
+    "slotStatus": {
+      "AVAILABLE": "Trống",
+      "OCCUPIED": "Đang đỗ",
+      "RESERVED": "Đã giữ",
+      "MAINTENANCE": "Bảo trì"
+    },
+    "ticketStatus": {
+      "ACTIVE": "Đang đỗ",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã huỷ"
+    },
+    "vehicleType": {
+      "CAR": "Ô tô",
+      "MOTORBIKE": "Xe máy",
+      "BICYCLE": "Xe đạp",
+      "OTHER": "Khác"
+    }
+  },
   "campaigns": {
     "breadcrumb": "Chiến dịch Marketing",
     "scopePlaceholder": "Chọn phạm vi",

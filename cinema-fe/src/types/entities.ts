@@ -817,3 +817,42 @@ export interface SystemConfigListResponse {
   branchId: number | null;
   settings: SystemSettingEffective[];
 }
+
+// Ticket 39 — Parking (per-branch)
+export type ParkingAreaStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
+export type ParkingSlotStatus = 'AVAILABLE' | 'OCCUPIED' | 'RESERVED' | 'MAINTENANCE';
+export type ParkingVehicleType = 'CAR' | 'MOTORBIKE' | 'BICYCLE' | 'OTHER';
+export type ParkingTicketStatus = 'ACTIVE' | 'PENDING_PAYMENT' | 'COMPLETED' | 'CANCELLED';
+
+export interface ParkingArea {
+  id: number;
+  branch_id: number;
+  name: string;
+  capacity: number;
+  status: ParkingAreaStatus;
+  createdAt: string;
+}
+
+export interface ParkingSlot {
+  id: number;
+  parking_area_id: number;
+  slot_code: string;
+  vehicle_type: ParkingVehicleType;
+  status: ParkingSlotStatus;
+  createdAt: string;
+}
+
+export interface ParkingTicket {
+  id: number;
+  ticket_code: string;
+  branch_id: number;
+  slot_id: number;
+  vehicle_type: ParkingVehicleType;
+  vehicle_plate: string;
+  entry_at: string;
+  exit_at: string | null;
+  status: ParkingTicketStatus;
+  fee: number;
+  paid_at: string | null;
+  createdAt: string;
+}

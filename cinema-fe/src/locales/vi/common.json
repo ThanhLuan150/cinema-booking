@@ -87,7 +87,8 @@
       "giftCards": "Thẻ quà tặng",
       "distribution": "Phát hành phim",
       "signage": "Bảng hiển thị",
-      "campaigns": "Chiến dịch Marketing"
+      "campaigns": "Chiến dịch Marketing",
+      "parking": "Bãi đỗ xe"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

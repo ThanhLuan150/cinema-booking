@@ -69,7 +69,8 @@
       "supportTickets": "Service client",
       "distribution": "Distribution",
       "signage": "Digital Signage",
-      "campaigns": "Campagnes marketing"
+      "campaigns": "Campagnes marketing",
+      "parking": "Stationnement"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

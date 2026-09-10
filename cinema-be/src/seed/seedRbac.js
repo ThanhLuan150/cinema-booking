@@ -83,6 +83,7 @@ const PERMISSIONS = [
   ['kiosk.create', 'kiosk'], ['kiosk.read', 'kiosk'],
   ['kiosk.update', 'kiosk'], ['kiosk.delete', 'kiosk'],
   ['signage.read', 'signage'], ['signage.manage', 'signage'],
+  ['parking.read', 'parking'], ['parking.manage', 'parking'], ['parking.operate', 'parking'],
   ['auditLog.read', 'auditLog'],
   ['notificationTemplate.read', 'notificationTemplate'], ['notificationTemplate.create', 'notificationTemplate'],
   ['notificationTemplate.update', 'notificationTemplate'], ['notificationTemplate.delete', 'notificationTemplate'],
@@ -139,6 +140,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'kiosk.create': 'BRANCH', 'kiosk.read': 'BRANCH', 'kiosk.update': 'BRANCH', 'kiosk.delete': 'BRANCH',
   // Digital signage screens, content and playlists are per-branch and managed by the Branch Admin.
   'signage.read': 'BRANCH', 'signage.manage': 'BRANCH',
+  // Parking areas & slots are per-branch infrastructure the Branch Admin configures; the
+  // vehicle entry/exit/payment flow (parking.operate) is a day-to-day counter operation.
+  'parking.read': 'BRANCH', 'parking.manage': 'BRANCH', 'parking.operate': 'BRANCH',
   'user.read': 'ALL',
   'supportTicket.create': 'BRANCH', 'supportTicket.read': 'BRANCH', 'supportTicket.update': 'BRANCH',
   'supportTicket.assign': 'BRANCH', 'supportTicket.close': 'BRANCH', 'supportTicket.delete': 'BRANCH',
@@ -161,6 +165,9 @@ const EMPLOYEE_PERMISSIONS = {
   'crm.viewOwn': 'OWN',
   'shiftAssignment.read': 'OWN',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH',
+  // Gate / counter staff run the parking flow and read the parking state for their branch,
+  // but do not reconfigure areas and slots (no parking.manage).
+  'parking.read': 'BRANCH', 'parking.operate': 'BRANCH',
 };
 
 const CUSTOMER_PERMISSIONS = {

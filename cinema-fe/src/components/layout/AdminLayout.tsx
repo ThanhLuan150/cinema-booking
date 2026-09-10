@@ -230,6 +230,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.signage')}
             </NavLink>
           )}
+          {hasPermission('parking.read') && (
+            <NavLink to={ROUTES.ownerParking} className={navLinkClass}>
+              <ion-icon name="car" />
+              {t('adminLayout.nav.parking')}
+            </NavLink>
+          )}
           <NavLink to={ROUTES.ownerCombos} className={navLinkClass}>
             <ion-icon name="fast-food" />
             {t('adminLayout.nav.combos')}
