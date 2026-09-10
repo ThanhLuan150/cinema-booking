@@ -68,7 +68,8 @@
       "refunds": "Rückerstattungen",
       "supportTickets": "Kundenservice",
       "distribution": "Verleih",
-      "signage": "Digital Signage"
+      "signage": "Digital Signage",
+      "campaigns": "Marketingkampagnen"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

@@ -85,7 +85,8 @@
       "systemConfig": "System Configuration",
       "giftCards": "Gift Cards",
       "distribution": "Distribution",
-      "signage": "Digital Signage"
+      "signage": "Digital Signage",
+      "campaigns": "Marketing Campaigns"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

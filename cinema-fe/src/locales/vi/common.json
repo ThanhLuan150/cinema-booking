@@ -85,7 +85,8 @@
       "systemConfig": "Cấu hình hệ thống",
       "giftCards": "Thẻ quà tặng",
       "distribution": "Phát hành phim",
-      "signage": "Bảng hiển thị"
+      "signage": "Bảng hiển thị",
+      "campaigns": "Chiến dịch Marketing"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

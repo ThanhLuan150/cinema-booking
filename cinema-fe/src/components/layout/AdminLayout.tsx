@@ -254,6 +254,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <ion-icon name="megaphone" />
             {t('adminLayout.nav.promotions')}
           </NavLink>
+          {hasPermission('campaign.read') && (
+            <NavLink to={ROUTES.ownerCampaigns} className={navLinkClass}>
+              <ion-icon name="rocket" />
+              {t('adminLayout.nav.campaigns')}
+            </NavLink>
+          )}
           <NavLink to={ROUTES.ownerPricingRules} className={navLinkClass}>
             <ion-icon name="cash" />
             {t('adminLayout.nav.pricingRules')}

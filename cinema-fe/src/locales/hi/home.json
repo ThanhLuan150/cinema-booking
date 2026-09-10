@@ -35,5 +35,8 @@
   "featured": {
     "title": "विशेष फ़िल्में",
     "viewDetails": "विवरण देखें"
+  },
+  "campaignStrip": {
+    "title": "अभियान और ऑफ़र"
   }
 }

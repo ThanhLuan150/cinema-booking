@@ -35,5 +35,8 @@
   "featured": {
     "title": "Films à la une",
     "viewDetails": "Voir les détails"
+  },
+  "campaignStrip": {
+    "title": "Campagnes et offres"
   }
 }

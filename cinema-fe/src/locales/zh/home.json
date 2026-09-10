@@ -35,5 +35,8 @@
   "featured": {
     "title": "精选影片",
     "viewDetails": "查看详情"
+  },
+  "campaignStrip": {
+    "title": "活动与优惠"
   }
 }

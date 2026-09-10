@@ -68,7 +68,8 @@
       "refunds": "Remboursements",
       "supportTickets": "Service client",
       "distribution": "Distribution",
-      "signage": "Digital Signage"
+      "signage": "Digital Signage",
+      "campaigns": "Campagnes marketing"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

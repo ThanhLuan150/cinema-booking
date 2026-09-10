@@ -49,6 +49,8 @@ function buildContent(event, ctx = {}) {
       return { title: 'Showtime cancelled', body: `The showtime for ${movie}${when}${at} has been cancelled${code}.` };
     case EVENT.SHOWTIME_CHANGED:
       return { title: 'Showtime changed', body: `The showtime for ${movie}${at} has been changed${code}. Please review your booking.` };
+    case EVENT.CAMPAIGN_ANNOUNCEMENT:
+      return { title: ctx.campaignTitle || ctx.campaignName || 'Announcement', body: ctx.campaignBody || '' };
     default:
       return { title: 'Notification', body: '' };
   }

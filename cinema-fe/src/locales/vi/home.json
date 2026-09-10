@@ -35,5 +35,8 @@
   "featured": {
     "title": "Phim nổi bật",
     "viewDetails": "Xem chi tiết"
+  },
+  "campaignStrip": {
+    "title": "Chương trình khuyến mãi"
   }
 }

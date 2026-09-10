@@ -35,5 +35,8 @@
   "featured": {
     "title": "Featured Movies",
     "viewDetails": "View Details"
+  },
+  "campaignStrip": {
+    "title": "Campaigns & Offers"
   }
 }
