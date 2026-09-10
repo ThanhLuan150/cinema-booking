@@ -87,7 +87,8 @@
       "giftCards": "Gift Cards",
       "distribution": "Distribution",
       "signage": "Digital Signage",
-      "campaigns": "Marketing Campaigns"
+      "campaigns": "Marketing Campaigns",
+      "parking": "Parking"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

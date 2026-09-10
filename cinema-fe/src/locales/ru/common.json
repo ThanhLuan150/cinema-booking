@@ -69,7 +69,8 @@
       "supportTickets": "Служба поддержки",
       "distribution": "Дистрибуция",
       "signage": "Digital Signage",
-      "campaigns": "Маркетинговые кампании"
+      "campaigns": "Маркетинговые кампании",
+      "parking": "Парковка"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

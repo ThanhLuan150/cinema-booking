@@ -69,7 +69,8 @@
       "supportTickets": "บริการลูกค้า",
       "distribution": "การจัดจำหน่าย",
       "signage": "Digital Signage",
-      "campaigns": "แคมเปญการตลาด"
+      "campaigns": "แคมเปญการตลาด",
+      "parking": "ที่จอดรถ"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

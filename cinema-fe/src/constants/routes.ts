@@ -48,6 +48,7 @@ export const ROUTES = {
   ownerDevices: '/OwnerDevices',
   ownerKiosks: '/OwnerKiosks',
   ownerSignage: '/OwnerSignage',
+  ownerParking: '/OwnerParking',
   kiosk: '/kiosk',
   ownerCombos: '/OwnerCombos',
   ownerInventory: '/OwnerInventory',

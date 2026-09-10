@@ -69,7 +69,8 @@
       "supportTickets": "ग्राहक सेवा",
       "distribution": "वितरण",
       "signage": "Digital Signage",
-      "campaigns": "मार्केटिंग अभियान"
+      "campaigns": "मार्केटिंग अभियान",
+      "parking": "पार्किंग"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

@@ -69,7 +69,8 @@
       "supportTickets": "Kundenservice",
       "distribution": "Verleih",
       "signage": "Digital Signage",
-      "campaigns": "Marketingkampagnen"
+      "campaigns": "Marketingkampagnen",
+      "parking": "Parkplatz"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

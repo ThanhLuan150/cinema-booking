@@ -36,6 +36,11 @@ const MaintenanceRequest = require('../models/MaintenanceRequest');
 const Entrance = require('../models/Entrance');
 const Device = require('../models/Device');
 const AuditLog = require('../models/AuditLog');
+const ParkingArea = require('../models/ParkingArea');
+const ParkingSlot = require('../models/ParkingSlot');
+const ParkingTicket = require('../models/ParkingTicket');
+const { calculateParkingFee } = require('../services/parkingFee');
+const { generateParkingTicketCode } = require('../utils/parkingTicketCode');
 
 const ID_BASE = 900000;
 let seq = 0;
@@ -45,7 +50,7 @@ const COUNTED = [
   Account, Branch, Room, Seat, Employee, Movie, MovieCategory, Actor, Director, MovieActor,
   MovieDirector, Schedule, Ticket, Booking, Payment, Invoice, Combo, ComboOrder, Inventory,
   Voucher, Promotion, PricingRule, Holiday, Shift, ShiftAssignment, Review, SupportTicket,
-  MaintenanceRequest, Entrance, Device, AuditLog,
+  MaintenanceRequest, Entrance, Device, AuditLog, ParkingArea, ParkingSlot, ParkingTicket,
 ];
 
 const SEAT_PRICE = 90000;
@@ -857,6 +862,110 @@ async function run() {
         n += 1;
       }
       return `${n} entries`;
+    },
+  );
+
+  // --- Parking areas, slots & tickets (Ticket 39) -------------------------
+  await section(
+    'Parking',
+    async () => Boolean(await ParkingArea.findOne({ id: { $gte: ID_BASE } })),
+    async () => {
+      let areaCount = 0;
+      let slotCount = 0;
+      let ticketCount = 0;
+
+      // One car lot + one motorbike lot per branch.
+      for (const b of branches) {
+        const carLot = await ParkingArea.create({
+          id: nid(), branch_id: b.id, name: 'Bãi ô tô B1', capacity: 12, status: 'ACTIVE',
+        });
+        const bikeLot = await ParkingArea.create({
+          id: nid(), branch_id: b.id, name: 'Bãi xe máy', capacity: 30, status: 'ACTIVE',
+        });
+        areaCount += 2;
+
+        const carSlots = [];
+        for (let i = 1; i <= 8; i += 1) {
+          carSlots.push(
+            await ParkingSlot.create({
+              id: nid(),
+              parking_area_id: carLot.id,
+              slot_code: `B1-${String(i).padStart(2, '0')}`,
+              vehicle_type: 'CAR',
+              status: i === 8 ? 'MAINTENANCE' : 'AVAILABLE',
+            }),
+          );
+          slotCount += 1;
+        }
+        const bikeSlots = [];
+        for (let i = 1; i <= 10; i += 1) {
+          bikeSlots.push(
+            await ParkingSlot.create({
+              id: nid(),
+              parking_area_id: bikeLot.id,
+              slot_code: `M-${String(i).padStart(2, '0')}`,
+              vehicle_type: 'MOTORBIKE',
+              status: 'AVAILABLE',
+            }),
+          );
+          slotCount += 1;
+        }
+
+        // A currently-parked car (ACTIVE, slot OCCUPIED).
+        const parkedSlot = carSlots[0];
+        await ParkingSlot.updateOne({ id: parkedSlot.id }, { status: 'OCCUPIED' });
+        await ParkingTicket.create({
+          id: nid(),
+          ticket_code: generateParkingTicketCode(),
+          branch_id: b.id,
+          slot_id: parkedSlot.id,
+          vehicle_type: 'CAR',
+          vehicle_plate: `51F-${b.id % 1000}.01`,
+          entry_at: new Date(Date.now() - 45 * 60 * 1000),
+          status: 'ACTIVE',
+          fee: 0,
+        });
+        ticketCount += 1;
+
+        // A motorbike that has exited and is awaiting payment (PENDING_PAYMENT, slot still OCCUPIED).
+        const pendingSlot = bikeSlots[0];
+        await ParkingSlot.updateOne({ id: pendingSlot.id }, { status: 'OCCUPIED' });
+        const pendingEntry = new Date(Date.now() - 3 * 60 * 60 * 1000);
+        const pendingExit = new Date(Date.now() - 5 * 60 * 1000);
+        await ParkingTicket.create({
+          id: nid(),
+          ticket_code: generateParkingTicketCode(),
+          branch_id: b.id,
+          slot_id: pendingSlot.id,
+          vehicle_type: 'MOTORBIKE',
+          vehicle_plate: `59X1-${b.id % 1000}.22`,
+          entry_at: pendingEntry,
+          exit_at: pendingExit,
+          status: 'PENDING_PAYMENT',
+          fee: calculateParkingFee({ entryAt: pendingEntry, exitAt: pendingExit, vehicleType: 'MOTORBIKE' }).fee,
+        });
+        ticketCount += 1;
+
+        // A completed session from earlier today (slot already released).
+        const doneEntry = new Date(Date.now() - 8 * 60 * 60 * 1000);
+        const doneExit = new Date(Date.now() - 6 * 60 * 60 * 1000);
+        await ParkingTicket.create({
+          id: nid(),
+          ticket_code: generateParkingTicketCode(),
+          branch_id: b.id,
+          slot_id: carSlots[1].id,
+          vehicle_type: 'CAR',
+          vehicle_plate: `30G-${b.id % 1000}.77`,
+          entry_at: doneEntry,
+          exit_at: doneExit,
+          status: 'COMPLETED',
+          fee: calculateParkingFee({ entryAt: doneEntry, exitAt: doneExit, vehicleType: 'CAR' }).fee,
+          paid_at: doneExit,
+        });
+        ticketCount += 1;
+      }
+
+      return `${areaCount} areas, ${slotCount} slots, ${ticketCount} tickets`;
     },
   );
 

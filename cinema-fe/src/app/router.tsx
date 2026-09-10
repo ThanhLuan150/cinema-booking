@@ -35,6 +35,7 @@ import OwnerMaintenance from '@/features/owner/maintenance/pages/List';
 import OwnerDevices from '@/features/owner/devices/pages/List';
 import OwnerKiosks from '@/features/owner/kiosks/pages/List';
 import OwnerSignage from '@/features/owner/signage/pages/List';
+import OwnerParking from '@/features/owner/parking/pages/List';
 import KioskApp from '@/features/kiosk/pages/KioskApp';
 import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
 import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
@@ -219,6 +220,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <OwnerSignage />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerParking}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <OwnerParking />
           </RequireRole>
         }
       />

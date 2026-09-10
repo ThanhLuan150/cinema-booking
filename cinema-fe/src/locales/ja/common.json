@@ -69,7 +69,8 @@
       "supportTickets": "カスタマーサービス",
       "distribution": "配給",
       "signage": "Digital Signage",
-      "campaigns": "マーケティングキャンペーン"
+      "campaigns": "マーケティングキャンペーン",
+      "parking": "駐車場"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",
