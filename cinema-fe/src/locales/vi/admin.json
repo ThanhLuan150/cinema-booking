@@ -537,5 +537,89 @@
       "deleteSuccess": "Đã xóa lịch phát hành.",
       "deleteConfirm": "Xóa lịch phát hành này?"
     }
+  },
+  "integrations": {
+    "breadcrumb": "Tích hợp hệ thống",
+    "tabs": {
+      "integrations": "Tích hợp",
+      "webhooks": "Webhooks"
+    },
+    "edit": "Sửa",
+    "delete": "Xoá",
+    "save": "Lưu",
+    "status": {
+      "ACTIVE": "Đang hoạt động",
+      "INACTIVE": "Ngừng hoạt động"
+    },
+    "filters": {
+      "type": "Loại",
+      "allTypes": "Tất cả loại",
+      "status": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái"
+    },
+    "types": {
+      "PAYMENT_GATEWAY": "Cổng thanh toán",
+      "EMAIL_PROVIDER": "Nhà cung cấp Email",
+      "SMS_PROVIDER": "Nhà cung cấp SMS",
+      "CLOUD_STORAGE": "Lưu trữ đám mây",
+      "ACCOUNTING_SYSTEM": "Hệ thống kế toán",
+      "THIRD_PARTY_TICKETING": "Hệ thống vé bên thứ ba"
+    },
+    "addButton": "Thêm tích hợp",
+    "empty": "Chưa có tích hợp nào.",
+    "headers": {
+      "name": "Tên",
+      "provider": "Nhà cung cấp",
+      "type": "Loại",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "fields": {
+      "name": "Tên",
+      "provider": "Mã nhà cung cấp",
+      "providerPlaceholder": "VD: MOMO, SENDGRID, TWILIO",
+      "type": "Loại",
+      "secretEnvVar": "Tên biến môi trường chứa khoá bí mật",
+      "secretEnvVarPlaceholder": "VD: MOMO_SECRET_KEY",
+      "secretEnvVarHint": "Tên biến môi trường trên máy chủ chứa khoá bí mật — giá trị bí mật không bao giờ được lưu tại đây.",
+      "description": "Mô tả",
+      "status": "Trạng thái"
+    },
+    "addTitle": "Thêm tích hợp",
+    "editTitle": "Sửa {{name}}",
+    "validation": {
+      "required": "Tên và nhà cung cấp là bắt buộc."
+    },
+    "createSuccess": "Đã tạo tích hợp.",
+    "updateSuccess": "Đã cập nhật tích hợp.",
+    "deleteSuccess": "Đã xoá tích hợp.",
+    "deleteConfirm": "Xoá tích hợp \"{{name}}\"?",
+    "webhooks": {
+      "status": {
+        "PENDING": "Chờ xử lý",
+        "PROCESSING": "Đang xử lý",
+        "SUCCESS": "Thành công",
+        "FAILED": "Thất bại"
+      },
+      "filters": {
+        "provider": "Nhà cung cấp",
+        "providerPlaceholder": "VD: MOMO"
+      },
+      "headers": {
+        "provider": "Nhà cung cấp",
+        "event": "Sự kiện",
+        "status": "Trạng thái",
+        "attempts": "Số lần thử",
+        "receivedAt": "Thời gian nhận",
+        "actions": "Hành động"
+      },
+      "empty": "Chưa nhận webhook nào.",
+      "viewDetail": "Xem",
+      "retry": "Thử lại",
+      "retrySuccess": "Đã thử lại webhook.",
+      "detailTitle": "Webhook #{{id}}",
+      "lastError": "Lỗi gần nhất",
+      "payload": "Dữ liệu"
+    }
   }
 }

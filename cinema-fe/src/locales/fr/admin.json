@@ -470,5 +470,89 @@
       "deleteSuccess": "Movie release deleted.",
       "deleteConfirm": "Delete this movie release?"
     }
+  },
+  "integrations": {
+    "breadcrumb": "Integrations",
+    "tabs": {
+      "integrations": "Integrations",
+      "webhooks": "Webhooks"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "filters": {
+      "type": "Type",
+      "allTypes": "All types",
+      "status": "Status",
+      "allStatuses": "All statuses"
+    },
+    "types": {
+      "PAYMENT_GATEWAY": "Payment Gateway",
+      "EMAIL_PROVIDER": "Email Provider",
+      "SMS_PROVIDER": "SMS Provider",
+      "CLOUD_STORAGE": "Cloud Storage",
+      "ACCOUNTING_SYSTEM": "Accounting System",
+      "THIRD_PARTY_TICKETING": "Third-party Ticketing"
+    },
+    "addButton": "Add integration",
+    "empty": "No integrations yet.",
+    "headers": {
+      "name": "Name",
+      "provider": "Provider",
+      "type": "Type",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "fields": {
+      "name": "Name",
+      "provider": "Provider key",
+      "providerPlaceholder": "e.g. MOMO, SENDGRID, TWILIO",
+      "type": "Type",
+      "secretEnvVar": "Secret env var name",
+      "secretEnvVarPlaceholder": "e.g. MOMO_SECRET_KEY",
+      "secretEnvVarHint": "The name of the server environment variable holding the secret — the secret value itself is never stored here.",
+      "description": "Description",
+      "status": "Status"
+    },
+    "addTitle": "Add integration",
+    "editTitle": "Edit {{name}}",
+    "validation": {
+      "required": "Name and provider are required."
+    },
+    "createSuccess": "Integration created.",
+    "updateSuccess": "Integration updated.",
+    "deleteSuccess": "Integration deleted.",
+    "deleteConfirm": "Delete integration \"{{name}}\"?",
+    "webhooks": {
+      "status": {
+        "PENDING": "Pending",
+        "PROCESSING": "Processing",
+        "SUCCESS": "Success",
+        "FAILED": "Failed"
+      },
+      "filters": {
+        "provider": "Provider",
+        "providerPlaceholder": "e.g. MOMO"
+      },
+      "headers": {
+        "provider": "Provider",
+        "event": "Event",
+        "status": "Status",
+        "attempts": "Attempts",
+        "receivedAt": "Received at",
+        "actions": "Actions"
+      },
+      "empty": "No webhooks received yet.",
+      "viewDetail": "View",
+      "retry": "Retry",
+      "retrySuccess": "Webhook retried.",
+      "detailTitle": "Webhook #{{id}}",
+      "lastError": "Last error",
+      "payload": "Payload"
+    }
   }
 }

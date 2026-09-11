@@ -76,6 +76,7 @@ export const ROUTES = {
   adminActors: '/AdminActors',
   adminDirectors: '/AdminDirectors',
   distribution: '/Distribution',
+  integrations: '/Integrations',
   employeeDashboard: '/EmployeeDashboard',
   employeeCounterSale: '/EmployeeCounterSale',
   employeeBoxOffice: '/BoxOffice',

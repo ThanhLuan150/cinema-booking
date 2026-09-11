@@ -90,7 +90,8 @@
       "signage": "Bảng hiển thị",
       "campaigns": "Chiến dịch Marketing",
       "parking": "Bãi đỗ xe",
-      "privateEvents": "Sự kiện riêng"
+      "privateEvents": "Sự kiện riêng",
+      "integrations": "Tích hợp hệ thống"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

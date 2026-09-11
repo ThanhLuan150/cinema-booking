@@ -15,6 +15,7 @@ const Promotion = require('../models/Promotion');
 const paymentRepository = require('../repositories/payment.repository');
 const systemConfigService = require('../services/systemConfig.service');
 const CashierShift = require('../models/CashierShift');
+const Webhook = require('../models/Webhook');
 
 function mockRes() {
   const res = {};
@@ -570,6 +571,75 @@ describe('POST /api/MomoPayment/ipn', () => {
     await bookingController.momoIpn({ body: { resultCode: '1', orderId: 'ORDER-FAIL', extraData } }, res);
     const booking = await Booking.findOne({ id: 1 });
     expect(booking.status).toBe('CANCELLED');
+  });
+});
+
+describe('POST /api/MomoPayment/ipn -> Webhook ledger (Ticket 41)', () => {
+  it('logs a successful IPN call to the webhook ledger as SUCCESS', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10, totalPrice: 1000 })).toString(
+      'base64',
+    );
+    const res = mockRes();
+    await bookingController.momoIpn(
+      { body: { resultCode: '0', orderId: 'ORDER-LEDGER', extraData, transId: 'tx-ledger' } },
+      res,
+    );
+
+    const webhook = await Webhook.findOne({ provider: 'MOMO', external_id: 'ORDER-LEDGER:tx-ledger' });
+    expect(webhook).not.toBeNull();
+    expect(webhook.event).toBe('payment.success');
+    expect(webhook.status).toBe('SUCCESS');
+    expect(webhook.signature_verified).toBe(true);
+    expect(webhook.processed_at).toBeInstanceOf(Date);
+  });
+
+  it('logs a declined payment as a successfully-processed webhook, not a failure', async () => {
+    const res = mockRes();
+    await bookingController.momoIpn({ body: { resultCode: '1', orderId: 'ORDER-DECLINED' } }, res);
+    const webhook = await Webhook.findOne({ provider: 'MOMO', external_id: 'ORDER-DECLINED' });
+    expect(webhook.event).toBe('payment.failed');
+    expect(webhook.status).toBe('SUCCESS'); // we successfully handled the decline
+  });
+
+  it('reuses the same ledger row for a retried (duplicate) IPN call instead of creating a second one', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10, totalPrice: 1000 })).toString(
+      'base64',
+    );
+    const body = { resultCode: '0', orderId: 'ORDER-LEDGER-DUP', extraData, transId: 'tx-dup' };
+
+    await bookingController.momoIpn({ body }, mockRes());
+    await bookingController.momoIpn({ body }, mockRes());
+
+    expect(await Webhook.countDocuments({ provider: 'MOMO', external_id: 'ORDER-LEDGER-DUP:tx-dup' })).toBe(1);
+  });
+
+  it('records the ledger as FAILED and still rejects the call when processing crashes', async () => {
+    await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+    await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+    await Payment.create({
+      id: 1, code: 'ORDER-LEDGER-CRASH', booking_id: 1, account_id: 10, type: 'ONLINE', method: 'MOMO', amount: 1000,
+    });
+    const extraData = Buffer.from(JSON.stringify({ ticketIds: [1], accountId: 10, totalPrice: 1000 })).toString(
+      'base64',
+    );
+
+    const markPaidSpy = jest
+      .spyOn(paymentRepository, 'markPaidIfPending')
+      .mockRejectedValueOnce(new Error('simulated crash'));
+
+    await expect(
+      bookingController.momoIpn({ body: { resultCode: '0', orderId: 'ORDER-LEDGER-CRASH', extraData } }, mockRes()),
+    ).rejects.toThrow('simulated crash');
+
+    const webhook = await Webhook.findOne({ provider: 'MOMO', external_id: 'ORDER-LEDGER-CRASH' });
+    expect(webhook.status).toBe('FAILED');
+    expect(webhook.last_error).toBe('simulated crash');
+    expect(webhook.next_attempt_at).toBeInstanceOf(Date);
+    markPaidSpy.mockRestore();
   });
 });
 

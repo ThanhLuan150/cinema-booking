@@ -70,7 +70,8 @@
       "distribution": "वितरण",
       "signage": "Digital Signage",
       "campaigns": "मार्केटिंग अभियान",
-      "parking": "पार्किंग"
+      "parking": "पार्किंग",
+      "integrations": "Integrations"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

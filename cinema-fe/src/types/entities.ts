@@ -920,3 +920,51 @@ export interface PrivateEvent {
   cancel_reason: string;
   createdAt: string;
 }
+
+// ---- External Integration & Webhook platform (Ticket 41) ------------------------------
+
+export type IntegrationType =
+  | 'PAYMENT_GATEWAY'
+  | 'EMAIL_PROVIDER'
+  | 'SMS_PROVIDER'
+  | 'CLOUD_STORAGE'
+  | 'ACCOUNTING_SYSTEM'
+  | 'THIRD_PARTY_TICKETING';
+
+export type IntegrationStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface Integration {
+  id: number;
+  name: string;
+  provider: string;
+  type: IntegrationType;
+  status: IntegrationStatus;
+  config: Record<string, unknown>;
+  // Only ever the NAME of an environment variable — the platform never stores or returns
+  // the secret value itself.
+  secret_env_var: string | null;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type WebhookStatus = 'PENDING' | 'PROCESSING' | 'SUCCESS' | 'FAILED';
+
+export interface Webhook {
+  id: number;
+  integration_id: number | null;
+  provider: string;
+  event: string;
+  external_id?: string;
+  payload: unknown;
+  signature_verified: boolean;
+  status: WebhookStatus;
+  attempts: number;
+  max_attempts: number;
+  last_attempt_at: string | null;
+  next_attempt_at: string | null;
+  processed_at: string | null;
+  last_error: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}

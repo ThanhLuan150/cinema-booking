@@ -70,7 +70,8 @@
       "distribution": "Distribution",
       "signage": "Digital Signage",
       "campaigns": "Campagnes marketing",
-      "parking": "Stationnement"
+      "parking": "Stationnement",
+      "integrations": "Integrations"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

@@ -13,6 +13,7 @@ const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const systemConfigService = require('../services/systemConfig.service');
 const cashierShiftService = require('../services/cashierShift.service');
+const webhookService = require('../services/webhook.service');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
@@ -361,35 +362,72 @@ async function auditMomoOutcome(req, orderId, { success }) {
   }
 }
 
+// Shared by the live MoMo IPN handler and the webhook retry job (replaying a stored MoMo
+// payment webhook payload after a transient processing failure). Every step here is already
+// idempotent (markProcessing/markPaidIfPending/markFailedIfPending all guard on the payment's
+// current status), so calling this twice for the same orderId is always safe — that's what
+// makes both MoMo's own retried IPN calls and our own webhook-retry replays safe to run.
+async function applyMomoPaymentOutcome(req, body) {
+  await paymentRepository.markProcessing(body.orderId);
+  const orderPayload = decodeExtraData(body.extraData);
+
+  if (String(body.resultCode) !== '0') {
+    await paymentRepository.markFailedIfPending(body.orderId, `MoMo resultCode ${body.resultCode}`);
+    if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
+      await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
+    }
+    await bookingRepository.cancelPendingBookingByCode(body.orderId);
+    await auditMomoOutcome(req, body.orderId, { success: false });
+    return { success: false };
+  }
+
+  const { skip } = await paymentRepository.markPaidIfPending(body.orderId, {
+    gatewayTransactionId: body.transId ? String(body.transId) : null,
+    rawResponse: body,
+  });
+  if (!skip) {
+    await bookingRepository.finalizeMomoOrder(body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
+    await auditMomoOutcome(req, body.orderId, { success: true });
+  }
+  return { success: true, skip };
+}
+
+// Registered with the generic webhook platform (Ticket 41) so the retry sweep can replay a
+// MoMo webhook that failed for a transient (non-business) reason — a stored payload, not a
+// live request, so there's no real `req` to pass through to auditMomoOutcome.
+webhookService.registerProcessor('MOMO', (payload) => applyMomoPaymentOutcome({ body: payload }, payload));
+
 // POST /api/MomoPayment/ipn -> MoMo's server-to-server payment confirmation (public;
 // authenticated via MoMo's HMAC signature instead of our own JWT since MoMo can't hold one).
+// Every call is also logged to the Webhook ledger (Ticket 41) purely for observability/retry
+// bookkeeping — logReceived/logOutcome never throw, so a ledger hiccup can never affect this
+// endpoint's response or the underlying payment/booking transaction below.
 async function momoIpn(req, res) {
   if (!verifyMomoSignature(req.body)) {
     return res.status(400).json({ resultCode: 1, message: 'Invalid signature' });
   }
 
-  await paymentRepository.markProcessing(req.body.orderId);
-
-  const orderPayload = decodeExtraData(req.body.extraData);
-  if (String(req.body.resultCode) !== '0') {
-    await paymentRepository.markFailedIfPending(req.body.orderId, `MoMo resultCode ${req.body.resultCode}`);
-    if (Array.isArray(orderPayload.ticketIds) && orderPayload.ticketIds.length > 0) {
-      await bookingRepository.timeoutTicketsByIds(orderPayload.ticketIds);
-    }
-    await bookingRepository.cancelPendingBookingByCode(req.body.orderId);
-    await auditMomoOutcome(req, req.body.orderId, { success: false });
-    return res.json({ resultCode: 0, message: 'Acknowledged (payment not successful)' });
-  }
-
-  const { skip } = await paymentRepository.markPaidIfPending(req.body.orderId, {
-    gatewayTransactionId: req.body.transId ? String(req.body.transId) : null,
-    rawResponse: req.body,
+  const externalId = req.body.transId ? `${req.body.orderId}:${req.body.transId}` : req.body.orderId;
+  const event = String(req.body.resultCode) === '0' ? 'payment.success' : 'payment.failed';
+  const webhookLog = await webhookService.logReceived({
+    provider: 'MOMO',
+    event,
+    externalId,
+    payload: req.body,
+    signatureVerified: true,
   });
-  if (!skip) {
-    await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
-    await auditMomoOutcome(req, req.body.orderId, { success: true });
+
+  try {
+    const result = await applyMomoPaymentOutcome(req, req.body);
+    await webhookService.logOutcome(webhookLog, { success: true });
+    res.json({
+      resultCode: 0,
+      message: result.success ? 'Confirm Success' : 'Acknowledged (payment not successful)',
+    });
+  } catch (err) {
+    await webhookService.logOutcome(webhookLog, { success: false, error: err.message });
+    throw err;
   }
-  res.json({ resultCode: 0, message: 'Confirm Success' });
 }
 
 // POST /api/MomoPayment/confirm -> browser-redirect fallback for local dev, where MoMo's
