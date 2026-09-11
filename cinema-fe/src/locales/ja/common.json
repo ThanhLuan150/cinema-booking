@@ -70,7 +70,8 @@
       "distribution": "配給",
       "signage": "Digital Signage",
       "campaigns": "マーケティングキャンペーン",
-      "parking": "駐車場"
+      "parking": "駐車場",
+      "integrations": "Integrations"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

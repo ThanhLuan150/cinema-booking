@@ -340,6 +340,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.systemConfig')}
             </NavLink>
           )}
+          {hasPermission('integration.read') && (
+            <NavLink to={ROUTES.integrations} className={navLinkClass}>
+              <ion-icon name="git-network" />
+              {t('adminLayout.nav.integrations')}
+            </NavLink>
+          )}
           {isAdmin && (
             <>
               <div className="my-2 border-t border-border" />

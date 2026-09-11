@@ -42,6 +42,8 @@ const ParkingSlot = require('../models/ParkingSlot');
 const ParkingTicket = require('../models/ParkingTicket');
 const EventPackage = require('../models/EventPackage');
 const PrivateEvent = require('../models/PrivateEvent');
+const Integration = require('../models/Integration');
+const Webhook = require('../models/Webhook');
 const { calculateParkingFee } = require('../services/parkingFee');
 const { generateParkingTicketCode } = require('../utils/parkingTicketCode');
 
@@ -54,7 +56,7 @@ const COUNTED = [
   MovieDirector, Schedule, Ticket, Booking, Payment, Invoice, Combo, ComboOrder, Inventory,
   Voucher, Promotion, PricingRule, Holiday, Shift, ShiftAssignment, Review, SupportTicket,
   MaintenanceRequest, Entrance, Device, AuditLog, ParkingArea, ParkingSlot, ParkingTicket,
-  EventPackage, PrivateEvent,
+  EventPackage, PrivateEvent, Integration, Webhook,
 ];
 
 const SEAT_PRICE = 90000;
@@ -1171,6 +1173,94 @@ async function run() {
         `   ↳ availability check: request "Hall B (under maintenance)" → expect ROOM_NOT_AVAILABLE`,
       );
       return `${Object.keys(packages).length} packages, ${n} events (Events Hub + Central)`;
+    },
+  );
+
+  // --- External Integration & Webhook platform (Ticket 41) ----------------
+  // Registers the payment gateway already wired end-to-end (MoMo) plus two unwired
+  // categories to show the registry is provider-agnostic, then seeds a Webhook ledger row
+  // in every status so the admin monitoring page (and a manual "Retry" click) has something
+  // real to look at without needing to fire actual HTTP webhooks first.
+  await section(
+    'Integrations & Webhooks',
+    async () => Boolean(await Integration.findOne({ id: { $gte: ID_BASE } })),
+    async () => {
+      const momo = await Integration.create({
+        id: nid(),
+        name: 'MoMo Wallet',
+        provider: 'MOMO',
+        type: 'PAYMENT_GATEWAY',
+        status: 'ACTIVE',
+        secret_env_var: 'MOMO_SECRET_KEY',
+        description: 'Sandbox MoMo captureWallet gateway — the checkout/IPN flow already live in the booking module.',
+      });
+      await Integration.create({
+        id: nid(),
+        name: 'SendGrid',
+        provider: 'SENDGRID',
+        type: 'EMAIL_PROVIDER',
+        status: 'ACTIVE',
+        secret_env_var: 'SENDGRID_WEBHOOK_SECRET',
+        description: 'Delivery-status callbacks (delivered/bounced/opened) — logged and acknowledged, no business logic wired yet.',
+      });
+      await Integration.create({
+        id: nid(),
+        name: 'Twilio SMS',
+        provider: 'TWILIO',
+        type: 'SMS_PROVIDER',
+        status: 'INACTIVE',
+        secret_env_var: null,
+        description: 'Not yet enabled for this environment.',
+      });
+
+      const rows = [
+        {
+          provider: 'MOMO', event: 'payment.success', external_id: 'BK-DEMO-1:tx-demo-1', status: 'SUCCESS',
+          signature_verified: true, attempts: 1, processed_at: new Date(Date.now() - 30 * 60 * 1000),
+          payload: { orderId: 'BK-DEMO-1', resultCode: '0', transId: 'tx-demo-1', amount: '270000' },
+        },
+        {
+          provider: 'SENDGRID', event: 'email.delivered', external_id: 'evt-demo-delivered', status: 'SUCCESS',
+          signature_verified: true, attempts: 1, processed_at: new Date(Date.now() - 2 * 60 * 60 * 1000),
+          payload: { event: 'email.delivered', id: 'evt-demo-delivered', to: 'buyer@example.com' },
+        },
+        {
+          provider: 'SENDGRID', event: 'email.bounced', external_id: 'evt-demo-bounced', status: 'FAILED',
+          signature_verified: true, attempts: 3, max_attempts: 5, last_error: 'Simulated downstream timeout',
+          next_attempt_at: new Date(Date.now() + 15 * 60 * 1000),
+          payload: { event: 'email.bounced', id: 'evt-demo-bounced', to: 'invalid@example.com' },
+        },
+        {
+          provider: 'TWILIO', event: 'sms.status', external_id: 'evt-demo-pending', status: 'PENDING',
+          signature_verified: false, attempts: 0,
+          payload: { event: 'sms.status', id: 'evt-demo-pending', to: '+84900000000' },
+        },
+      ];
+      for (const r of rows) {
+        await Webhook.create({
+          id: nid(),
+          integration_id: momo.provider === r.provider ? momo.id : undefined,
+          provider: r.provider,
+          event: r.event,
+          external_id: r.external_id,
+          payload: r.payload,
+          signature_verified: r.signature_verified,
+          status: r.status,
+          attempts: r.attempts,
+          max_attempts: r.max_attempts ?? 5,
+          last_attempt_at: r.status === 'PENDING' ? null : new Date(),
+          next_attempt_at: r.next_attempt_at ?? null,
+          processed_at: r.processed_at ?? null,
+          last_error: r.last_error ?? null,
+        });
+      }
+
+      console.log(
+        `   ↳ try it: POST /api/webhooks/sendgrid with a JSON body — no secret is configured yet so ` +
+        `an unsigned call is accepted (Integration.secret_env_var points at an unset env var).\n` +
+        `   ↳ the FAILED "email.bounced" row is retryable from /Integrations → Webhooks → Retry.`,
+      );
+      return `3 integrations, ${rows.length} webhooks (one per status)`;
     },
   );
 

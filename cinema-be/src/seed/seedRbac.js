@@ -92,6 +92,7 @@ const PERMISSIONS = [
   ['systemConfig.read', 'systemConfig'], ['systemConfig.manage', 'systemConfig'],
   ['cashierShift.open', 'cashierShift'], ['cashierShift.close', 'cashierShift'],
   ['cashierShift.read', 'cashierShift'],
+  ['integration.read', 'integration'], ['integration.manage', 'integration'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);

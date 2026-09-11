@@ -70,7 +70,8 @@
       "distribution": "การจัดจำหน่าย",
       "signage": "Digital Signage",
       "campaigns": "แคมเปญการตลาด",
-      "parking": "ที่จอดรถ"
+      "parking": "ที่จอดรถ",
+      "integrations": "Integrations"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

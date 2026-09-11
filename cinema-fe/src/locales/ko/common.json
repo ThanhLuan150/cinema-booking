@@ -70,7 +70,8 @@
       "distribution": "배급",
       "signage": "Digital Signage",
       "campaigns": "마케팅 캠페인",
-      "parking": "주차"
+      "parking": "주차",
+      "integrations": "Integrations"
     },
     "toggleMenu": "관리자 메뉴 열기/닫기",
     "adminFallback": "관리자",

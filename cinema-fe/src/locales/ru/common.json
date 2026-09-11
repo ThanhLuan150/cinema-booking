@@ -70,7 +70,8 @@
       "distribution": "Дистрибуция",
       "signage": "Digital Signage",
       "campaigns": "Маркетинговые кампании",
-      "parking": "Парковка"
+      "parking": "Парковка",
+      "integrations": "Integrations"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

@@ -90,7 +90,8 @@
       "signage": "Digital Signage",
       "campaigns": "Marketing Campaigns",
       "parking": "Parking",
-      "privateEvents": "Private Events"
+      "privateEvents": "Private Events",
+      "integrations": "Integrations"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

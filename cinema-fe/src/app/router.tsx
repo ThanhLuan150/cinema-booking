@@ -44,6 +44,7 @@ import AuditLogPage from '@/features/admin/auditLog/pages/AuditLogPage';
 import NotificationTemplatesPage from '@/features/admin/notificationTemplates/pages/NotificationTemplatesPage';
 import SystemConfigPage from '@/features/admin/systemConfig/pages/SystemConfigPage';
 import DistributionPage from '@/features/admin/distribution/pages/DistributionPage';
+import IntegrationsPage from '@/features/admin/integrations/pages/IntegrationsPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
@@ -275,6 +276,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={MANAGEMENT_ROLES}>
             <DistributionPage />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.integrations}
+        element={
+          <RequireRole roles={ADMIN_ONLY_ROLES}>
+            <IntegrationsPage />
           </RequireRole>
         }
       />

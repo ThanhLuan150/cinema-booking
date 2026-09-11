@@ -70,7 +70,8 @@
       "distribution": "Verleih",
       "signage": "Digital Signage",
       "campaigns": "Marketingkampagnen",
-      "parking": "Parkplatz"
+      "parking": "Parkplatz",
+      "integrations": "Integrations"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",
