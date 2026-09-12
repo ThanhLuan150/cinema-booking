@@ -19,8 +19,7 @@ import { useReactToCinemaReview } from '../hooks/useReactToCinemaReview';
 import { useUpdateReview } from '../hooks/useUpdateReview';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useReportReview } from '../hooks/useReportReview';
-
-const PAGE_SIZE = 5;
+import { REVIEWS_PAGE_SIZE } from '../constants';
 
 interface ReviewFormValues {
   reviewRating: number;
@@ -40,8 +39,8 @@ const CinemaReviews = () => {
   const deleteMutation = useDeleteReview(id);
   const reportMutation = useReportReview(id);
 
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => setVisibleCount(PAGE_SIZE), [id]);
+  const [visibleCount, setVisibleCount] = useState(REVIEWS_PAGE_SIZE);
+  useEffect(() => setVisibleCount(REVIEWS_PAGE_SIZE), [id]);
 
   const reviews = data?.reviews ?? [];
   const average = data?.average ?? 0;
@@ -195,7 +194,7 @@ const CinemaReviews = () => {
         {!isLoading && reviews.length > visibleCount && (
           <button
             type="button"
-            onClick={() => setVisibleCount((v) => v + PAGE_SIZE)}
+            onClick={() => setVisibleCount((v) => v + REVIEWS_PAGE_SIZE)}
             className="self-center rounded-lg border border-border-strong px-4 py-2 text-sm font-medium text-txt/70 transition-colors hover:border-accent hover:text-accent"
           >
             {t('reviews.loadMore')}

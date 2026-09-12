@@ -1,0 +1,67 @@
+import { Formik, Field, Form, type FormikHelpers } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { Modal } from '@/components/ui/Modal';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Button } from '@/components/ui/Button';
+import type { RoomFormValues } from '../../types/owner.types';
+import { emptyRoomForm } from '../constants';
+
+interface AddRoomModalProps {
+  onClose: () => void;
+  onSubmit: (values: RoomFormValues, helpers: FormikHelpers<RoomFormValues>) => Promise<void>;
+  validate: (values: RoomFormValues) => Partial<Record<keyof RoomFormValues, string>>;
+  roomTypeOptions: { label: string; value: string }[];
+  isPending: boolean;
+}
+
+export function AddRoomModal({ onClose, onSubmit, validate, roomTypeOptions, isPending }: AddRoomModalProps) {
+  const { t } = useTranslation('owner');
+
+  return (
+    <Modal open onClose={onClose} title={t('rooms.addTitle')}>
+      <Formik<RoomFormValues> initialValues={emptyRoomForm()} validate={validate} onSubmit={onSubmit}>
+        {(formik) => {
+          const showErrors = formik.submitCount > 0;
+          return (
+            <Form>
+              <Field
+                as={Input}
+                label={t('rooms.nameLabel')}
+                name="name"
+                error={showErrors ? formik.errors.name : undefined}
+              />
+              <Field
+                as={Input}
+                label={t('rooms.codeLabel')}
+                name="code"
+                className="mt-3"
+                error={showErrors ? formik.errors.code : undefined}
+              />
+              <Field
+                as={Select}
+                label={t('rooms.typeLabel')}
+                name="type"
+                className="mt-3"
+                options={roomTypeOptions}
+              />
+              <Field
+                as={Input}
+                label={t('rooms.capacityLabel')}
+                name="capacity"
+                type="number"
+                className="mt-3"
+                error={showErrors ? formik.errors.capacity : undefined}
+              />
+              <div className="mt-6 flex justify-end">
+                <Button type="submit" variant="danger" loading={isPending}>
+                  {t('rooms.submit')}
+                </Button>
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Modal>
+  );
+}

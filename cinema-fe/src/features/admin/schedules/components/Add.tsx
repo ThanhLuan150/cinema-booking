@@ -15,11 +15,11 @@ import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMyMovies } from '../../movies/hooks/useMyMovies';
 import { useMovieReleases } from '../../distribution/hooks/useMovieReleases';
 import { evaluateShowtimeAgainstReleases } from '../../distribution/utils/releaseWindow';
-import { SHOWTIME_SLOTS } from '../constants';
+import { SHOWTIME_SLOTS, emptyValues } from '../constants';
 import { useCreateSchedule } from '../hooks/useCreateSchedule';
 import { useSchedules } from '../hooks/useSchedules';
 import { isSlotBlocked } from '../utils/slotConflict';
-import type { ScheduleFormValues } from '../types/adminSchedule.types';
+import type { AddScheduleFormValues } from '../types/adminSchedule.types';
 import { ROUTES } from '@/constants/routes';
 
 export interface AddScheduleProps {
@@ -28,21 +28,6 @@ export interface AddScheduleProps {
   id: number | string | null;
   handleCloseAddSchedule: () => void;
 }
-
-interface AddScheduleFormValues extends ScheduleFormValues {
-  movie_id: string;
-  cinema_id: string;
-}
-
-const emptyValues = (presetMovieId: number | string | null): AddScheduleFormValues => ({
-  movie_id: presetMovieId != null ? String(presetMovieId) : '',
-  cinema_id: '',
-  room_id: '',
-  movie_date: '',
-  time_begin: '',
-  time_end: '',
-  price: '',
-});
 
 function ScheduleFields({
   formik,

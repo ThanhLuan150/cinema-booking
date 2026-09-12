@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AccountLayout } from '@/components/layout/AccountLayout';
 import { Spinner } from '@/components/ui/Spinner';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { Pagination } from '@/components/ui/Pagination';
@@ -12,18 +11,8 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
-import type { PrivateEventStatus } from '@/types/entities';
 import { useCancelMyPrivateEvent, useMyPrivateEvents, usePayPrivateEvent } from '../hooks/usePrivateEvents';
-
-const STATUS_VARIANT: Record<PrivateEventStatus, 'default' | 'warning' | 'success'> = {
-  REQUESTED: 'warning',
-  QUOTED: 'warning',
-  APPROVED: 'warning',
-  PAID: 'success',
-  CONFIRMED: 'success',
-  COMPLETED: 'default',
-  CANCELLED: 'default',
-};
+import { MyEventCard } from '../components/MyEventCard';
 
 function MyEventsPage() {
   const { t } = useTranslation('privateEvents');
@@ -33,8 +22,6 @@ function MyEventsPage() {
 
   const pay = usePayPrivateEvent();
   const cancel = useCancelMyPrivateEvent();
-
-  const fmt = (v: string | null) => (v ? new Date(v).toLocaleString() : '—');
 
   const handlePay = async (id: number) => {
     try {
@@ -77,47 +64,7 @@ function MyEventsPage() {
 
       <div className="flex flex-col gap-3">
         {events.map((ev) => (
-          <div
-            key={ev.id}
-            className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="min-w-0">
-              <p className="font-semibold text-white">
-                {ev.title || t('mine.untitled', { id: ev.id })}
-              </p>
-              <p className="text-sm text-txt/70">
-                {t('mine.window', { start: fmt(ev.start_at), end: fmt(ev.end_at) })}
-              </p>
-              <p className="text-xs text-txt/55">
-                {t('mine.meta', { branch: ev.branch_id, room: ev.room_id, guests: ev.guest_count })}
-              </p>
-              {ev.quoted_amount != null && (
-                <p className="mt-1 text-sm text-white">
-                  {t('mine.quote', { amount: ev.quoted_amount.toLocaleString() })}
-                </p>
-              )}
-              {ev.status === 'CANCELLED' && ev.cancel_reason && (
-                <p className="mt-1 text-sm text-red-400">{t('mine.cancelReason', { reason: ev.cancel_reason })}</p>
-              )}
-            </div>
-            <div className="flex shrink-0 items-center gap-3">
-              <Badge variant={STATUS_VARIANT[ev.status]}>{t(`status.${ev.status}`)}</Badge>
-              {ev.status === 'APPROVED' && (
-                <Button type="button" size="sm" variant="danger" loading={pay.isPending} onClick={() => handlePay(ev.id)}>
-                  {t('mine.payNow')}
-                </Button>
-              )}
-              {['REQUESTED', 'QUOTED', 'APPROVED', 'PAID'].includes(ev.status) && (
-                <button
-                  type="button"
-                  className="text-sm font-medium text-red-500 hover:text-red-400"
-                  onClick={() => handleCancel(ev.id)}
-                >
-                  {t('mine.cancel')}
-                </button>
-              )}
-            </div>
-          </div>
+          <MyEventCard key={ev.id} event={ev} payPending={pay.isPending} onPay={handlePay} onCancel={handleCancel} />
         ))}
       </div>
 

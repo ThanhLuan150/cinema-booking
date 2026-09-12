@@ -8,10 +8,8 @@ import { MovieCard } from '@/components/common/MovieCard';
 import { cn } from '@/lib/cn';
 import { ROUTES } from '@/constants/routes';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
-
-const HOME_GRID_SIZE = 8;
-
-type MovieTab = 'playing' | 'new' | 'upcoming';
+import { HOME_GRID_SIZE } from '../constants';
+import type { MovieTab } from '../types/home.types';
 
 const MovieTabsSection = () => {
   const { t } = useTranslation('home');

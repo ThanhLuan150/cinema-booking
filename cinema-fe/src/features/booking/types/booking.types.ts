@@ -182,6 +182,16 @@ export interface TicketBranch {
   city: string;
 }
 
+export type SeatCellStatus = 'AVAILABLE' | 'HELD' | 'BOOKED' | 'DISABLED';
+
+export interface SeatCell {
+  seatCode: string;
+  seatType: number;
+  status: SeatCellStatus;
+  // null only for a DISABLED seat, which has no ticket to select
+  ticket: BookedSeatTicket | null;
+}
+
 export interface Ticket {
   ticket_id: number;
   booking_id: number | null;

@@ -4,8 +4,7 @@ import { useTopCinemas } from '@/features/movies/hooks/useTopCinemas';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { getImageUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
-
-const TOP_CINEMAS_SIZE = 4;
+import { TOP_CINEMAS_SIZE } from '../constants';
 
 const TopCinemas = () => {
   const { t } = useTranslation('home');

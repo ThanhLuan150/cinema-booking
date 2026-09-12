@@ -1,6 +1,7 @@
 import apiClient from 'services/apiClient';
 import type { PaginatedResponse, PaginationParams } from '@/types/pagination';
 import type { SupportTicket, SupportTicketCategory, SupportTicketStatus } from '@/types/entities';
+import type { CreateSupportTicketPayload } from '../types/customerService.types';
 
 export const getSupportTickets = (
   branchId: number | string | undefined,
@@ -9,14 +10,6 @@ export const getSupportTickets = (
   apiClient
     .get<PaginatedResponse<SupportTicket>>('/support-tickets', { params: { branchId, ...params } })
     .then((res) => res.data);
-
-export interface CreateSupportTicketPayload {
-  branch_id: number;
-  customer_id: number;
-  category?: SupportTicketCategory;
-  subject: string;
-  description?: string;
-}
 
 export const createSupportTicket = (payload: CreateSupportTicketPayload) => apiClient.post('/support-tickets', payload);
 

@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Formik, Field, Form, type FormikHelpers } from 'formik';
+import type { FormikHelpers } from 'formik';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -29,20 +24,9 @@ import {
   setSelectedbranchId,
 } from '../../store/ownerShiftsSlice';
 import type { ShiftFormValues } from '../../types/owner.types';
-
-const emptyForm = (branchId: string): ShiftFormValues => ({
-  branch_id: branchId,
-  name: '',
-  start_time: '',
-  end_time: '',
-});
-
-const editFormValues = (shift: Shift): ShiftFormValues => ({
-  branch_id: String(shift.branch_id),
-  name: shift.name,
-  start_time: shift.start_time,
-  end_time: shift.end_time,
-});
+import { AddShiftModal } from '../components/AddShiftModal';
+import { EditShiftModal } from '../components/EditShiftModal';
+import { ShiftTable } from '../components/ShiftTable';
 
 function ShiftList() {
   const { t } = useTranslation('owner');
@@ -126,18 +110,6 @@ function ShiftList() {
     [editingShift, updateShiftMutation, dispatch, t],
   );
 
-  const validateShift = useCallback(
-    (values: ShiftFormValues) => {
-      const errors: Partial<Record<keyof ShiftFormValues, string>> = {};
-      if (!values.branch_id) errors.branch_id = t('shifts.validation.branchRequired');
-      if (!values.name.trim()) errors.name = t('shifts.validation.nameRequired');
-      if (!values.start_time) errors.start_time = t('shifts.validation.startTimeRequired');
-      if (!values.end_time) errors.end_time = t('shifts.validation.endTimeRequired');
-      return errors;
-    },
-    [t],
-  );
-
   return (
     <AdminLayout breadcrumb={t('shifts.breadcrumb')} loading={isLoading}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -160,159 +132,35 @@ function ShiftList() {
       </div>
 
       {showAddModal && (
-        <Modal open onClose={() => dispatch(closeAddModal())} title={t('shifts.addTitle')}>
-          <Formik<ShiftFormValues>
-            initialValues={emptyForm(selectedbranchId)}
-            enableReinitialize
-            validate={validateShift}
-            onSubmit={handleCreate}
-          >
-            {(formik) => {
-              const showErrors = formik.submitCount > 0;
-              return (
-                <Form>
-                  <Field
-                    as={Select}
-                    label={t('shifts.branchLabel')}
-                    name="branch_id"
-                    options={cinemas.map((c) => ({ label: c.name, value: c.id }))}
-                    placeholder={t('shifts.branchPlaceholder')}
-                    error={showErrors ? formik.errors.branch_id : undefined}
-                  />
-                  <Field
-                    as={Input}
-                    label={t('shifts.nameLabel')}
-                    name="name"
-                    className="mt-3"
-                    error={showErrors ? formik.errors.name : undefined}
-                  />
-                  <Field
-                    as={Input}
-                    label={t('shifts.startTimeLabel')}
-                    name="start_time"
-                    type="time"
-                    className="mt-3"
-                    error={showErrors ? formik.errors.start_time : undefined}
-                  />
-                  <Field
-                    as={Input}
-                    label={t('shifts.endTimeLabel')}
-                    name="end_time"
-                    type="time"
-                    className="mt-3"
-                    error={showErrors ? formik.errors.end_time : undefined}
-                  />
-                  <div className="mt-6 flex justify-end">
-                    <Button type="submit" variant="danger" loading={createShiftMutation.isPending}>
-                      {t('shifts.submit')}
-                    </Button>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </Modal>
+        <AddShiftModal
+          cinemas={cinemas}
+          branchId={selectedbranchId}
+          isSubmitting={createShiftMutation.isPending}
+          onClose={() => dispatch(closeAddModal())}
+          onSubmit={handleCreate}
+        />
       )}
 
       {editingShift && (
-        <Modal open onClose={() => dispatch(closeEditModal())} title={t('shifts.editTitle')}>
-          <Formik<ShiftFormValues> initialValues={editFormValues(editingShift)} validate={validateShift} onSubmit={handleUpdate}>
-            {(formik) => {
-              const showErrors = formik.submitCount > 0;
-              return (
-                <Form>
-                  <Field
-                    as={Input}
-                    label={t('shifts.nameLabel')}
-                    name="name"
-                    error={showErrors ? formik.errors.name : undefined}
-                  />
-                  <Field
-                    as={Input}
-                    label={t('shifts.startTimeLabel')}
-                    name="start_time"
-                    type="time"
-                    className="mt-3"
-                    error={showErrors ? formik.errors.start_time : undefined}
-                  />
-                  <Field
-                    as={Input}
-                    label={t('shifts.endTimeLabel')}
-                    name="end_time"
-                    type="time"
-                    className="mt-3"
-                    error={showErrors ? formik.errors.end_time : undefined}
-                  />
-                  <div className="mt-6 flex justify-end">
-                    <Button type="submit" variant="danger" loading={updateShiftMutation.isPending}>
-                      {t('shifts.saveButton')}
-                    </Button>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </Modal>
+        <EditShiftModal
+          shift={editingShift}
+          isSubmitting={updateShiftMutation.isPending}
+          onClose={() => dispatch(closeEditModal())}
+          onSubmit={handleUpdate}
+        />
       )}
 
-      <div className="mt-6">
-        <DataTable
-          headers={[
-            t('shifts.headers.id'),
-            t('shifts.headers.name'),
-            t('shifts.headers.time'),
-            t('shifts.headers.status'),
-            t('shifts.headers.actions'),
-          ]}
-        >
-          {shifts.map((shift) => (
-            <tr key={shift.id}>
-              <td>{shift.id}</td>
-              <td>{shift.name}</td>
-              <td>
-                {shift.start_time} - {shift.end_time}
-              </td>
-              <td>
-                <Badge variant={shift.status === 'ACTIVE' ? 'success' : 'default'}>
-                  {shift.status === 'ACTIVE' ? t('shifts.statusActive') : t('shifts.statusInactive')}
-                </Badge>
-              </td>
-              <td>
-                <div className="flex flex-wrap gap-3">
-                  {hasPermission('shift.update') && (
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                      onClick={() => dispatch(openEditModal(shift.id))}
-                    >
-                      {t('shifts.edit')}
-                    </button>
-                  )}
-                  {hasPermission('shift.update') && (
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
-                      onClick={() => handleToggleStatus(shift)}
-                    >
-                      {shift.status === 'ACTIVE' ? t('shifts.deactivate') : t('shifts.activate')}
-                    </button>
-                  )}
-                  {hasPermission('shift.delete') && (
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                      onClick={() => handleDelete(shift.id)}
-                    >
-                      {t('shifts.delete')}
-                    </button>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </DataTable>
-        <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
-      </div>
+      <ShiftTable
+        shifts={shifts}
+        page={page}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+        canUpdate={hasPermission('shift.update')}
+        canDelete={hasPermission('shift.delete')}
+        onEdit={(id) => dispatch(openEditModal(id))}
+        onToggleStatus={handleToggleStatus}
+        onDelete={handleDelete}
+      />
     </AdminLayout>
   );
 }

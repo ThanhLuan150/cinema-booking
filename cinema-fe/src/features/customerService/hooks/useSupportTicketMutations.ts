@@ -7,8 +7,8 @@ import {
   deleteSupportTicket,
   resolveSupportTicket,
   updateSupportTicket,
-  type CreateSupportTicketPayload,
 } from '../api/customerService.api';
+import type { CreateSupportTicketPayload } from '../types/customerService.types';
 import { supportTicketsQueryKey } from './useSupportTickets';
 
 function invalidateSupportTickets(queryClient: ReturnType<typeof useQueryClient>) {

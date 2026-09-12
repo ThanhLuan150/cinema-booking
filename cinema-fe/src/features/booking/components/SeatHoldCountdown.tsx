@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
+import { URGENT_THRESHOLD_MS } from '../constants';
 
 interface SeatHoldCountdownProps {
   expiresAt: string | null;
   onExpire: () => void;
 }
-
-const URGENT_THRESHOLD_MS = 30 * 1000;
 
 function formatRemaining(ms: number) {
   const totalSeconds = Math.max(0, Math.ceil(ms / 1000));

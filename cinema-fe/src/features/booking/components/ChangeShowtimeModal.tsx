@@ -7,11 +7,10 @@ import { cn } from '@/lib/cn';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useSchedules } from '@/features/admin/schedules/hooks/useSchedules';
+import { SEAT_AVAILABLE } from '../constants';
 import type { Booking } from '../types/booking.types';
 import { useBookedSeats } from '../hooks/useBookedSeats';
 import { useChangeBookingShowtime } from '../hooks/useChangeBookingShowtime';
-
-const SEAT_AVAILABLE = 1;
 
 export interface ChangeShowtimeModalProps {
   booking: Booking;

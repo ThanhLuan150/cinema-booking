@@ -11,17 +11,11 @@ import { SHOWTIME_SLOTS } from '../constants';
 import { useSchedules } from '../hooks/useSchedules';
 import { useRescheduleSchedule } from '../hooks/useRescheduleSchedule';
 import { isSlotBlocked } from '../utils/slotConflict';
-import type { Schedule } from '../types/adminSchedule.types';
+import type { RescheduleFormValues, Schedule } from '../types/adminSchedule.types';
 
 export interface RescheduleProps {
   schedule: Schedule;
   onClose: () => void;
-}
-
-interface RescheduleFormValues {
-  movie_date: string;
-  time_begin: string;
-  time_end: string;
 }
 
 function RescheduleFields({
