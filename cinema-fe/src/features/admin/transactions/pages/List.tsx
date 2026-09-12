@@ -8,8 +8,8 @@ import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useAdminInvoices } from '../hooks/useAdminInvoices';
 import { useRefundInvoice } from '../hooks/useRefundInvoice';
-import { INVOICE_STATUS, INVOICE_STATUS_META } from '@/constants/invoiceStatus';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
+import { ListItem } from '../components/ListItem';
 
 function AdminTransactions() {
   const { t } = useTranslation('admin');
@@ -34,35 +34,9 @@ function AdminTransactions() {
   return (
     <AdminLayout breadcrumb={t('transactions.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('transactions.headers', { returnObjects: true }) as unknown as string[]}>
-        {invoices.map((inv) => {
-          const status = INVOICE_STATUS_META[inv.status] || INVOICE_STATUS_META[INVOICE_STATUS.booked];
-          return (
-            <tr key={inv.id}>
-              <td>{inv.id}</td>
-              <td>{inv.code}</td>
-              <td>{inv.account?.email}</td>
-              <td>{inv.movie?.name}</td>
-              <td>{inv.ticket?.seat_code}</td>
-              <td>{inv.total_price.toLocaleString()}đ</td>
-              <td>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide ${status.className}`}>
-                  {t(`transactions.status.${status.key}`)}
-                </span>
-              </td>
-              <td>
-                {inv.status === INVOICE_STATUS.booked && (
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                    onClick={() => handleRefund(inv.id)}
-                  >
-                    {t('transactions.refundButton')}
-                  </button>
-                )}
-              </td>
-            </tr>
-          );
-        })}
+        {invoices.map((inv) => (
+          <ListItem key={inv.id} invoice={inv} onRefund={handleRefund} />
+        ))}
       </DataTable>
       <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
     </AdminLayout>

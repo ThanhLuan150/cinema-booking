@@ -9,8 +9,7 @@ import { useBookTicketSchedules } from '@/features/booking/hooks/useBookTicketSc
 import { ROUTES } from '@/constants/routes';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { Button } from '@/components/ui/Button';
-
-const QUICK_BOOKING_DAYS = 7;
+import { QUICK_BOOKING_DAYS } from '../constants';
 
 // Galaxy's four-step quick booking bar: cinema -> movie -> date -> showtime.
 // Showtimes come from the booking API, which needs a session, so a signed-out

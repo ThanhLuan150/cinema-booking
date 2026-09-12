@@ -5,8 +5,7 @@ import { getMoviePosterUrl } from '@/utils';
 import { ROUTES } from '@/constants/routes';
 import { MAX_VISIBLE_CATEGORIES } from '@/constants/movieCard';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
-
-const SIDEBAR_SIZE = 6;
+import { SIDEBAR_MOVIE_COUNT } from '../constants';
 
 /** The "PHIM ĐANG CHIẾU" rail Galaxy keeps beside the movie details. */
 const NowShowingSidebar = () => {
@@ -16,7 +15,7 @@ const NowShowingSidebar = () => {
 
   const movies = (data?.data ?? [])
     .filter((movie) => String(movie.id) !== String(id))
-    .slice(0, SIDEBAR_SIZE);
+    .slice(0, SIDEBAR_MOVIE_COUNT);
   if (movies.length === 0) return null;
 
   return (

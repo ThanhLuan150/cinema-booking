@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
-import { cn } from '@/lib/cn';
-import { SEAT_TYPE_CLASS, SEAT_TYPES } from '@/constants/seatType';
 import { TICKET_STATUS } from '@/constants/ticketStatus';
 import {
   checkoutKioskOrder,
@@ -21,19 +17,23 @@ import {
   holdKioskSeats,
   quoteKioskOrder,
   releaseKioskSeats,
-  type KioskQuote,
-  type KioskSeat,
-  type KioskTicketView,
 } from '../api/kiosk.api';
 import { getStoredKioskKey, setStoredKioskKey } from '../api/kioskClient';
-
-type Step = 'KEY' | 'MOVIE' | 'SHOWTIME' | 'SEAT' | 'COMBO' | 'PROMO' | 'PAYMENT' | 'TICKET';
+import type { KioskMovie, KioskQuote, KioskSeat, KioskShowtime, KioskStep, KioskTicketView } from '../types/kiosk.types';
+import { KeyStep } from '../components/KeyStep';
+import { MovieStep } from '../components/MovieStep';
+import { ShowtimeStep } from '../components/ShowtimeStep';
+import { SeatStep } from '../components/SeatStep';
+import { ComboStep } from '../components/ComboStep';
+import { PromoStep } from '../components/PromoStep';
+import { PaymentStep } from '../components/PaymentStep';
+import { TicketStep } from '../components/TicketStep';
 
 function KioskApp() {
   const { t } = useTranslation('kiosk');
   const [hasKey, setHasKey] = useState(() => Boolean(getStoredKioskKey()));
   const [keyInput, setKeyInput] = useState('');
-  const [step, setStep] = useState<Step>(hasKey ? 'MOVIE' : 'KEY');
+  const [step, setStep] = useState<KioskStep>(hasKey ? 'MOVIE' : 'KEY');
 
   const [movieId, setMovieId] = useState<number | null>(null);
   const [scheduleId, setScheduleId] = useState<number | null>(null);
@@ -253,6 +253,22 @@ function KioskApp() {
 
   const branchName = sessionQuery.data?.branch?.name ?? '';
 
+  const selectMovie = useCallback((movie: KioskMovie) => {
+    setMovieId(movie.id);
+    setStep('SHOWTIME');
+  }, []);
+
+  const selectShowtime = useCallback((showtime: KioskShowtime) => {
+    setScheduleId(showtime.id);
+    setSelectedSeatCodes([]);
+    setLocked(false);
+    setStep('SEAT');
+  }, []);
+
+  const toggleCombo = useCallback((comboId: number) => {
+    setComboIds((cur) => (cur.includes(comboId) ? cur.filter((id) => id !== comboId) : [...cur, comboId]));
+  }, []);
+
   return (
     <div className="min-h-screen bg-bg text-txt">
       <header className="flex items-center justify-between border-b border-border px-8 py-5">
@@ -269,262 +285,74 @@ function KioskApp() {
 
       <main className="mx-auto max-w-4xl px-8 py-10">
         {step === 'KEY' && (
-          <section className="mx-auto max-w-md">
-            <h2 className="mb-2 text-lg font-semibold text-white">{t('key.title')}</h2>
-            <p className="mb-4 text-sm text-txt/60">{t('key.hint')}</p>
-            <Input
-              id="kiosk-key"
-              value={keyInput}
-              onChange={(e) => setKeyInput(e.target.value)}
-              placeholder="KIOSK-..."
-            />
-            <Button type="button" variant="danger" className="mt-4" loading={busy} disabled={!keyInput.trim()} onClick={saveKey}>
-              {t('key.activate')}
-            </Button>
-          </section>
+          <KeyStep keyInput={keyInput} onKeyInputChange={setKeyInput} busy={busy} onActivate={saveKey} />
         )}
 
         {step === 'MOVIE' && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.movie')}</h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {(moviesQuery.data ?? []).map((movie) => (
-                <button
-                  key={movie.id}
-                  type="button"
-                  onClick={() => {
-                    setMovieId(movie.id);
-                    setStep('SHOWTIME');
-                  }}
-                  className="rounded-xl border border-border bg-surface p-4 text-left hover:border-accent/60"
-                >
-                  <p className="font-semibold text-white">{movie.name}</p>
-                </button>
-              ))}
-              {moviesQuery.isSuccess && (moviesQuery.data ?? []).length === 0 && (
-                <p className="text-sm text-txt/60">{t('empty.movies')}</p>
-              )}
-            </div>
-          </section>
+          <MovieStep movies={moviesQuery.data ?? []} isSuccess={moviesQuery.isSuccess} onSelect={selectMovie} />
         )}
 
         {step === 'SHOWTIME' && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.showtime')}</h2>
-            <div className="flex flex-wrap gap-3">
-              {(showtimesQuery.data ?? []).map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => {
-                    setScheduleId(s.id);
-                    setSelectedSeatCodes([]);
-                    setLocked(false);
-                    setStep('SEAT');
-                  }}
-                  className="rounded-lg border border-border bg-surface px-4 py-3 text-sm text-white hover:border-accent/60"
-                >
-                  {s.movie_date} · {s.time_begin}
-                </button>
-              ))}
-              {showtimesQuery.isSuccess && (showtimesQuery.data ?? []).length === 0 && (
-                <p className="text-sm text-txt/60">{t('empty.showtimes')}</p>
-              )}
-            </div>
-            <Button type="button" variant="outline" className="mt-6" onClick={() => setStep('MOVIE')}>
-              {t('back')}
-            </Button>
-          </section>
+          <ShowtimeStep
+            showtimes={showtimesQuery.data ?? []}
+            isSuccess={showtimesQuery.isSuccess}
+            onSelect={selectShowtime}
+            onBack={() => setStep('MOVIE')}
+          />
         )}
 
         {step === 'SEAT' && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.seat')}</h2>
-            <div className="flex flex-wrap gap-2">
-              {seats.map((seat) => {
-                const isSelected = selectedSeatCodes.includes(seat.seat_code);
-                const isBooked = seat.status === TICKET_STATUS.sold;
-                const takenByOther = seat.status !== TICKET_STATUS.available && !seat.held_by_me;
-                return (
-                  <button
-                    key={seat.id}
-                    type="button"
-                    disabled={takenByOther || locked}
-                    onClick={() => toggleSeat(seat)}
-                    className={cn(
-                      'h-10 min-w-[2.75rem] rounded px-2 text-xs font-medium text-white transition-opacity',
-                      SEAT_TYPE_CLASS[seat.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard],
-                      (takenByOther || isBooked) && 'cursor-not-allowed opacity-30',
-                      isSelected && 'ring-2 ring-accent',
-                    )}
-                  >
-                    {seat.seat_code}
-                  </button>
-                );
-              })}
-            </div>
-            <p className="mt-4 text-sm text-txt/70">{t('seat.selected', { count: selectedSeatCodes.length, total: seatTotal.toLocaleString() })}</p>
-            <div className="mt-4 flex gap-3">
-              <Button type="button" variant="outline" onClick={() => setStep('SHOWTIME')}>
-                {t('back')}
-              </Button>
-              <Button type="button" variant="danger" loading={busy} disabled={selectedSeatCodes.length === 0} onClick={confirmSeats}>
-                {t('seat.confirm')}
-              </Button>
-            </div>
-          </section>
+          <SeatStep
+            seats={seats}
+            selectedSeatCodes={selectedSeatCodes}
+            locked={locked}
+            seatTotal={seatTotal}
+            busy={busy}
+            onToggleSeat={toggleSeat}
+            onBack={() => setStep('SHOWTIME')}
+            onConfirm={confirmSeats}
+          />
         )}
 
         {step === 'COMBO' && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.combo')}</h2>
-            <div className="flex flex-col gap-2">
-              {combos.map((combo) => (
-                <label
-                  key={combo.id}
-                  className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-border-strong px-4 py-3 text-sm text-txt/80"
-                >
-                  <span className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={comboIds.includes(combo.id)}
-                      onChange={() =>
-                        setComboIds((cur) =>
-                          cur.includes(combo.id) ? cur.filter((id) => id !== combo.id) : [...cur, combo.id],
-                        )
-                      }
-                    />
-                    {combo.name}
-                  </span>
-                  <span className="font-medium text-white">{combo.price.toLocaleString()}đ</span>
-                </label>
-              ))}
-              {combos.length === 0 && <p className="text-sm text-txt/60">{t('empty.combos')}</p>}
-            </div>
-            <div className="mt-6 flex gap-3">
-              <Button type="button" variant="outline" onClick={() => setStep('PROMO')}>
-                {t('skip')}
-              </Button>
-              <Button type="button" variant="danger" onClick={() => setStep('PROMO')}>
-                {t('next')}
-              </Button>
-            </div>
-          </section>
+          <ComboStep
+            combos={combos}
+            comboIds={comboIds}
+            onToggleCombo={toggleCombo}
+            onSkip={() => setStep('PROMO')}
+            onNext={() => setStep('PROMO')}
+          />
         )}
 
         {step === 'PROMO' && (
-          <section className="max-w-md">
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.promo')}</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                label={t('promo.voucher')}
-                value={voucherCode}
-                disabled={Boolean(promotionCode)}
-                onChange={(e) => setVoucherCode(e.target.value)}
-              />
-              <Input
-                label={t('promo.promotion')}
-                value={promotionCode}
-                disabled={Boolean(voucherCode)}
-                onChange={(e) => setPromotionCode(e.target.value)}
-              />
-            </div>
-            <p className="mt-3 text-xs text-txt/50">{t('promo.hint')}</p>
-            <div className="mt-6 flex gap-3">
-              <Button type="button" variant="outline" onClick={() => setStep('COMBO')}>
-                {t('back')}
-              </Button>
-              <Button type="button" variant="danger" loading={busy} onClick={goToPayment}>
-                {t('promo.review')}
-              </Button>
-            </div>
-          </section>
+          <PromoStep
+            voucherCode={voucherCode}
+            promotionCode={promotionCode}
+            busy={busy}
+            onVoucherCodeChange={setVoucherCode}
+            onPromotionCodeChange={setPromotionCode}
+            onBack={() => setStep('COMBO')}
+            onReview={goToPayment}
+          />
         )}
 
         {step === 'PAYMENT' && (
-          <section className="max-w-md">
-            <h2 className="mb-4 text-lg font-semibold text-white">{t('steps.payment')}</h2>
-            <div className="rounded-xl border border-border bg-surface p-5 text-sm">
-              <Row label={t('payment.seats')} value={`${(quote?.seatTotal ?? seatTotal).toLocaleString()}đ`} />
-              <Row label={t('payment.combos')} value={`${(quote?.comboTotal ?? comboTotal).toLocaleString()}đ`} />
-              {(quote?.discountAmount ?? 0) > 0 && (
-                <Row label={t('payment.discount')} value={`-${(quote?.discountAmount ?? 0).toLocaleString()}đ`} />
-              )}
-              <div className="mt-3 border-t border-border pt-3">
-                <Row
-                  label={t('payment.total')}
-                  value={`${(quote?.totalPrice ?? seatTotal + comboTotal).toLocaleString()}đ`}
-                  strong
-                />
-              </div>
-            </div>
-
-            {!paying ? (
-              <div className="mt-6 flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setStep('PROMO')}>
-                  {t('back')}
-                </Button>
-                <Button type="button" variant="danger" loading={busy} onClick={startPayment}>
-                  {t('payment.pay')}
-                </Button>
-              </div>
-            ) : (
-              <div className="mt-6 rounded-xl border border-dashed border-border p-5">
-                <p className="mb-3 text-sm text-txt/70">{t('payment.terminalPrompt')}</p>
-                <div className="flex flex-wrap gap-3">
-                  <Button type="button" variant="danger" loading={busy} onClick={() => finishPayment('SUCCESS', 'CARD')}>
-                    {t('payment.simCardOk')}
-                  </Button>
-                  <Button type="button" variant="secondary" loading={busy} onClick={() => finishPayment('SUCCESS', 'QR_PAYMENT')}>
-                    {t('payment.simQrOk')}
-                  </Button>
-                  <Button type="button" variant="outline" loading={busy} onClick={() => finishPayment('FAILURE', 'CARD')}>
-                    {t('payment.simFail')}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </section>
+          <PaymentStep
+            quote={quote}
+            seatTotal={seatTotal}
+            comboTotal={comboTotal}
+            paying={paying}
+            busy={busy}
+            onBack={() => setStep('PROMO')}
+            onPay={startPayment}
+            onFinish={finishPayment}
+          />
         )}
 
         {step === 'TICKET' && (
-          <section>
-            <h2 className="mb-2 text-lg font-semibold text-white">{t('ticket.title')}</h2>
-            <p className="mb-6 text-sm text-txt/60">{t('ticket.hint')}</p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {tickets.map((ticket) => (
-                <div key={ticket.ticket_id} className="flex items-center gap-4 rounded-xl border border-border-strong p-4">
-                  {ticket.qr_token && <QRCodeSVG value={ticket.qr_token} size={96} />}
-                  <div className="min-w-0 text-sm">
-                    <p className="truncate font-semibold text-white">{ticket.movie?.name}</p>
-                    <p className="text-txt/70">
-                      {ticket.schedule?.movie_date} {ticket.schedule?.time_begin}
-                    </p>
-                    <p className="text-txt/70">{t('ticket.seat', { code: ticket.seat_code })}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex gap-3 print:hidden">
-              <Button type="button" variant="secondary" onClick={() => window.print()}>
-                {t('ticket.print')}
-              </Button>
-              <Button type="button" variant="danger" onClick={() => resetOrder(false)}>
-                {t('ticket.done')}
-              </Button>
-            </div>
-          </section>
+          <TicketStep tickets={tickets} onPrint={() => window.print()} onDone={() => resetOrder(false)} />
         )}
       </main>
-    </div>
-  );
-}
-
-function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
-  return (
-    <div className="flex items-center justify-between py-1">
-      <span className={cn('text-txt/70', strong && 'font-semibold text-white')}>{label}</span>
-      <span className={cn('text-white', strong && 'text-lg font-bold text-accent')}>{value}</span>
     </div>
   );
 }

@@ -1,38 +1,13 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Spinner } from '@/components/ui/Spinner';
-import { useMovies } from '@/features/movies/hooks/useMovies';
-import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
-import Banner from '../components/BannerSlider';
-import QuickBooking from '../components/QuickBooking';
-import FeaturedMovies from '../components/FeaturedMoviesSection';
-import MovieTabs from '../components/MovieTabsSection';
-import TopCinemas from '../components/TopCinemasSection';
-import CampaignStrip from '../components/CampaignStrip';
+import HomeContent from '../components/HomeContent';
 
 const HomePage = () => {
-  const { isLoading } = useMovies(undefined, { limit: FULL_LIST_FETCH_LIMIT });
-
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-main">
       <Header />
       <div className="flex-1 pt-20">
-        {isLoading ? (
-          <div className="flex min-h-[70vh] w-full items-center justify-center">
-            <Spinner size="lg" />
-          </div>
-        ) : (
-          <>
-            <Banner />
-            <QuickBooking />
-            <div className="divide-y divide-border">
-              <CampaignStrip />
-              <FeaturedMovies />
-              <MovieTabs />
-              <TopCinemas />
-            </div>
-          </>
-        )}
+        <HomeContent />
       </div>
       <Footer />
     </div>

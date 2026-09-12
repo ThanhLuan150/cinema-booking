@@ -3,20 +3,18 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { EmptyState } from '@/components/feedback/EmptyState';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { useMovies } from '@/features/movies/hooks/useMovies';
-import { cn } from '@/lib/cn';
-import { SEAT_TYPE_CLASS, SEAT_TYPES } from '@/constants/seatType';
 import { FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMySchedules } from '../hooks/useMySchedules';
 import { useScheduleSeats } from '../hooks/useScheduleSeats';
 import { useCreateCounterSale } from '../hooks/useCounterSale';
 import { findAccountByEmail } from '../api/employee.api';
+import { CounterSaleSeatGrid } from '../components/CounterSaleSeatGrid';
+import { CounterSaleCustomerLookup } from '../components/CounterSaleCustomerLookup';
 
 function CounterSale() {
   const { t } = useTranslation('employee');
@@ -114,55 +112,19 @@ function CounterSale() {
       </div>
 
       {scheduleId && (
-        <div className="mt-6">
-          <h6 className="mb-3 font-semibold text-white">{t('counterSale.seatsTitle')}</h6>
-          {!tickets || tickets.length === 0 ? (
-            <EmptyState title={t('counterSale.noSeats')} />
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {tickets.map((ticket) => {
-                const isAvailable = ticket.status === 1;
-                const isSelected = selectedTicketIds.includes(ticket.id);
-                return (
-                  <button
-                    key={ticket.id}
-                    type="button"
-                    disabled={!isAvailable}
-                    onClick={() => toggleTicket(ticket.id)}
-                    className={cn(
-                      'h-9 min-w-[2.5rem] rounded px-2 text-xs font-medium text-white transition-opacity',
-                      SEAT_TYPE_CLASS[ticket.seat_type] ?? SEAT_TYPE_CLASS[SEAT_TYPES.standard],
-                      !isAvailable && 'cursor-not-allowed opacity-30',
-                      isSelected && 'ring-2 ring-accent',
-                    )}
-                  >
-                    {ticket.seat_code}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        <CounterSaleSeatGrid tickets={tickets} selectedTicketIds={selectedTicketIds} onToggleTicket={toggleTicket} />
       )}
 
-      <div className="mt-6 max-w-md">
-        <h6 className="mb-3 font-semibold text-white">{t('counterSale.customerTitle')}</h6>
-        <div className="flex gap-2">
-          <Input
-            type="email"
-            placeholder={t('counterSale.customerEmailPlaceholder')}
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setCustomerAccountId(null);
-            }}
-          />
-          <Button type="button" variant="secondary" loading={lookingUp} onClick={handleFindCustomer}>
-            {t('counterSale.findCustomer')}
-          </Button>
-        </div>
-        {customerAccountId && <p className="mt-2 text-sm text-emerald-400">{t('counterSale.customerFound')}</p>}
-      </div>
+      <CounterSaleCustomerLookup
+        email={email}
+        customerAccountId={customerAccountId}
+        lookingUp={lookingUp}
+        onEmailChange={(value) => {
+          setEmail(value);
+          setCustomerAccountId(null);
+        }}
+        onFindCustomer={handleFindCustomer}
+      />
 
       <div className="mt-6 flex items-center gap-4">
         <p className="text-lg font-bold text-accent">

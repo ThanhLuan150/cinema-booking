@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import { AGE_RATINGS, DEFAULT_AGE_RATING } from '@/constants/ageRating';
 import { toast } from '@/features/notifications/toast';
 import { toFormikValidate } from '@/lib/formikZod';
 import { useAppDispatch } from '@/hooks/redux';
@@ -17,36 +16,8 @@ import { useActorsCatalog } from '@/features/admin/actors/hooks/useActors';
 import { useCreateMovie } from '../hooks/useCreateMovie';
 import { closeAddModal } from '../store/adminMoviesSlice';
 import { buildMovieSchema } from '../schemas/movie.schema';
-import type { MovieActorDraft, MovieFormValues } from '../types/adminMovie.types';
-
-interface AddMovieFormValues extends MovieFormValues {
-  categoryIds: number[];
-  directorIds: number[];
-  actors: MovieActorDraft[];
-}
-
-const emptyValues = (): AddMovieFormValues => ({
-  name: '',
-  avatar: '',
-  duration: '',
-  premiere_date: '',
-  description: '',
-  country: '',
-  trailer: '',
-  producer: '',
-  producerAvatar: '',
-  banner: '',
-  gallery: [],
-  age_rating: DEFAULT_AGE_RATING,
-  language: '',
-  subtitle: '',
-  featured: false,
-  categoryIds: [],
-  directorIds: [],
-  actors: [],
-});
-
-const AGE_RATING_OPTIONS = AGE_RATINGS.map((value) => ({ label: value, value }));
+import type { AddMovieFormValues } from '../types/adminMovie.types';
+import { AGE_RATING_OPTIONS, emptyAddMovieValues } from '../constants';
 
 const Add = () => {
   const { t } = useTranslation('admin');
@@ -106,7 +77,7 @@ const Add = () => {
   return (
     <Modal open onClose={handleCloseAdd} title={t('movies.add.title')}>
       <Formik<AddMovieFormValues>
-        initialValues={emptyValues()}
+        initialValues={emptyAddMovieValues()}
         validate={toFormikValidate<AddMovieFormValues>(movieSchema)}
         onSubmit={handleSubmit}
       >

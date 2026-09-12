@@ -1,14 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Formik, Field, Form, type FormikHelpers } from 'formik';
+import type { FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
-import { DateInput } from '@/components/ui/DateInput';
-import { Select } from '@/components/ui/Select';
-import { Pagination } from '@/components/ui/Pagination';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
 import { getApiErrorMessage } from '@/lib/apiError';
@@ -21,12 +15,9 @@ import { useOwnerHolidays } from '../../hooks/useOwnerHolidays';
 import { useCreateHoliday, useDeleteHoliday } from '../../hooks/useHolidayMutations';
 import { closeAddModal, openAddModal } from '../../store/ownerHolidaysSlice';
 import type { HolidayFormValues } from '../../types/owner.types';
-
-const ALL_BRANCHES = 'ALL';
-
-function emptyHolidayForm(branchId: string): HolidayFormValues {
-  return { date: '', name: '', branch_id: branchId };
-}
+import { ALL_BRANCHES } from '../constants';
+import { HolidayFormModal } from '../components/HolidayFormModal';
+import { HolidayTable } from '../components/HolidayTable';
 
 function HolidayList() {
   const { t } = useTranslation('owner');
@@ -90,81 +81,23 @@ function HolidayList() {
       </Button>
 
       {showAddModal && (
-        <Modal open onClose={() => dispatch(closeAddModal())} title={t('holidays.addTitle')}>
-          <Formik<HolidayFormValues>
-            initialValues={emptyHolidayForm(defaultBranchId)}
-            validate={(values) => {
-              const errors: Partial<Record<keyof HolidayFormValues, string>> = {};
-              if (!values.date) errors.date = t('holidays.validation.dateRequired');
-              return errors;
-            }}
-            onSubmit={handleCreate}
-          >
-            {(formik) => {
-              const showErrors = formik.submitCount > 0;
-              return (
-                <Form>
-                  <Field
-                    as={DateInput}
-                    label={t('holidays.dateLabel')}
-                    id="holiday-date"
-                    name="date"
-                    error={showErrors ? formik.errors.date : undefined}
-                  />
-                  <Field as={Input} label={t('holidays.nameLabel')} name="name" className="mt-3" />
-                  <Field
-                    as={Select}
-                    label={t('holidays.branchLabel')}
-                    name="branch_id"
-                    className="mt-3"
-                    options={branchOptions}
-                  />
-                  <div className="mt-6 flex justify-end">
-                    <Button type="submit" variant="danger" loading={createHolidayMutation.isPending}>
-                      {t('holidays.submit')}
-                    </Button>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </Modal>
+        <HolidayFormModal
+          defaultBranchId={defaultBranchId}
+          branchOptions={branchOptions}
+          isSubmitting={createHolidayMutation.isPending}
+          onClose={() => dispatch(closeAddModal())}
+          onSubmit={handleCreate}
+        />
       )}
 
-      <div className="mt-6">
-        <DataTable
-          headers={[
-            t('holidays.headers.id'),
-            t('holidays.headers.date'),
-            t('holidays.headers.name'),
-            t('holidays.headers.branch'),
-            t('holidays.headers.actions'),
-          ]}
-        >
-          {holidays.map((holiday) => (
-            <tr key={holiday.id}>
-              <td>{holiday.id}</td>
-              <td>{holiday.date}</td>
-              <td>{holiday.name}</td>
-              <td>
-                {holiday.branch_id === null
-                  ? t('holidays.allBranchesOption')
-                  : branchNameById.get(holiday.branch_id) || holiday.branch_id}
-              </td>
-              <td>
-                <button
-                  type="button"
-                  className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                  onClick={() => handleDelete(holiday.id)}
-                >
-                  {t('holidays.delete')}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </DataTable>
-        <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />
-      </div>
+      <HolidayTable
+        holidays={holidays}
+        branchNameById={branchNameById}
+        page={page}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+        onDelete={handleDelete}
+      />
     </AdminLayout>
   );
 }

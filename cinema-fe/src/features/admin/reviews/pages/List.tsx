@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '@/lib/apiError';
 import { DEFAULT_PAGE_SIZE } from '@/constants/pagination';
 import { useAdminReviews } from '../hooks/useAdminReviews';
 import { useDeleteReview, useHideReview, useRejectReview, useRestoreReview } from '../hooks/useReviewModeration';
+import { ListItem } from '../components/ListItem';
 
 function AdminReviews() {
   const { t } = useTranslation('admin');
@@ -69,68 +70,18 @@ function AdminReviews() {
     [deleteMutation, t],
   );
 
-  const statusLabel = (status: string) => {
-    if (status === 'HIDDEN') return t('reviews.hiddenStatus');
-    if (status === 'REJECTED') return t('reviews.rejectedStatus');
-    return t('reviews.visibleStatus');
-  };
-
   return (
     <AdminLayout breadcrumb={t('reviews.breadcrumb')} loading={isLoading}>
       <DataTable headers={t('reviews.headers', { returnObjects: true }) as unknown as string[]}>
         {reviews.map((review) => (
-          <tr key={review.id}>
-            <td>{review.id}</td>
-            <td>
-              {review.movie?.name ?? (review.cinema?.name ? t('reviews.cinemaSuffix', { name: review.cinema.name }) : '—')}
-            </td>
-            <td>{'★'.repeat(review.rating)}</td>
-            <td className="max-w-xs truncate">{review.comment}</td>
-            <td>
-              {statusLabel(review.status)}
-              {!!review.reportCount && (
-                <span className="ml-2 rounded bg-red-600/20 px-1.5 py-0.5 text-xs text-red-400">
-                  🚩 {review.reportCount}
-                </span>
-              )}
-            </td>
-            <td className="flex gap-3">
-              {review.status === 'VISIBLE' && (
-                <>
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                    onClick={() => handleHide(review.id)}
-                  >
-                    {t('reviews.hideButton')}
-                  </button>
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-amber-500 transition-colors hover:text-amber-400"
-                    onClick={() => handleReject(review.id)}
-                  >
-                    {t('reviews.rejectButton')}
-                  </button>
-                </>
-              )}
-              {review.status !== 'VISIBLE' && (
-                <button
-                  type="button"
-                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                  onClick={() => handleRestore(review.id)}
-                >
-                  {t('reviews.restoreButton')}
-                </button>
-              )}
-              <button
-                type="button"
-                className="text-sm font-medium text-red-500 transition-colors hover:text-red-400"
-                onClick={() => handleDelete(review.id)}
-              >
-                {t('reviews.deleteButton')}
-              </button>
-            </td>
-          </tr>
+          <ListItem
+            key={review.id}
+            review={review}
+            onHide={handleHide}
+            onReject={handleReject}
+            onRestore={handleRestore}
+            onDelete={handleDelete}
+          />
         ))}
       </DataTable>
       <Pagination page={page} totalPages={data?.totalPages ?? 1} onPageChange={setPage} />

@@ -2,9 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useMovies } from '@/features/movies/hooks/useMovies';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MovieCard } from '@/components/common/MovieCard';
-
-const HOME_FEATURED_LIMIT = 10;
-const FEATURED_GRID_SIZE = 4;
+import { HOME_FEATURED_LIMIT, FEATURED_GRID_SIZE } from '../constants';
 
 // Curated grid driven by the Movie Content Management "featured" flag (Ticket 34). Hits
 // GET /api/movie?featured=true and hides itself entirely when nothing is flagged.

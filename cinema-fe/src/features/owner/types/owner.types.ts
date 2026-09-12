@@ -1,6 +1,7 @@
 import type { DISCOUNT_TYPE } from '@/constants/discountType';
 import type { PROMOTION_DISCOUNT_TYPE } from '@/constants/promotionDiscountType';
 import type { MAINTENANCE_RESOURCE_TYPE } from '@/constants/maintenanceResourceType';
+import type { KioskStatus } from '@/types/entities';
 
 export interface GenerateSeatMapPayload {
   rows: string[];
@@ -242,4 +243,10 @@ export interface OwnerMaintenanceState {
   showAddModal: boolean;
   assignRequestId: number | null;
   resolveRequestId: number | null;
+}
+
+export interface KioskForm {
+  kiosk_code: string;
+  name: string;
+  status: KioskStatus;
 }

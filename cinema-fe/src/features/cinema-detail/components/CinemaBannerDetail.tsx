@@ -6,12 +6,7 @@ import { getImageUrl } from '@/utils';
 import { useCinemaDetail } from '../hooks/useCinemaDetail';
 import { useCinemaFavoriteCount } from '../hooks/useCinemaFavoriteCount';
 import { CINEMA_STATUS_META } from '@/constants/cinemaStatus';
-
-const STATUS_LABEL_KEY: Record<string, string> = {
-  active: 'bannerDetail.statusActive',
-  inactive: 'bannerDetail.statusPaused',
-  maintenance: 'bannerDetail.statusMaintenance',
-};
+import { STATUS_LABEL_KEY } from '../constants';
 
 const CinemaBannerDetail = () => {
   const { t } = useTranslation('cinemaDetail');

@@ -11,6 +11,17 @@ export interface ScheduleFormValues {
   price: string;
 }
 
+export interface AddScheduleFormValues extends ScheduleFormValues {
+  movie_id: string;
+  cinema_id: string;
+}
+
+export interface RescheduleFormValues {
+  movie_date: string;
+  time_begin: string;
+  time_end: string;
+}
+
 export interface Schedule {
   id: number;
   movie_id: number | string;

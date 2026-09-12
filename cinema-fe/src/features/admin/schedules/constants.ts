@@ -1,4 +1,4 @@
-import type { ShowtimeSlot } from './types/adminSchedule.types';
+import type { AddScheduleFormValues, ShowtimeSlot } from './types/adminSchedule.types';
 
 // Fixed showtime slots (like MoMo/CGV) instead of a free time picker — admin schedules a movie
 // into one of these standard slots for a given cinema/room/date.
@@ -15,3 +15,13 @@ export const SHOWTIME_SLOTS: ShowtimeSlot[] = [
 // minimum cleaning/turnover gap the backend requires between two showtimes in the same room.
 // Used here to grey out slots up front instead of letting the admin hit a 409 on submit.
 export const SHOWTIME_BUFFER_MINUTES = 15;
+
+export const emptyValues = (presetMovieId: number | string | null): AddScheduleFormValues => ({
+  movie_id: presetMovieId != null ? String(presetMovieId) : '',
+  cinema_id: '',
+  room_id: '',
+  movie_date: '',
+  time_begin: '',
+  time_end: '',
+  price: '',
+});

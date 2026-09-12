@@ -50,6 +50,18 @@ export interface UpdateMoviePayload {
   galleryFiles?: File[];
 }
 
+export interface AddMovieFormValues extends MovieFormValues {
+  categoryIds: number[];
+  directorIds: number[];
+  actors: MovieActorDraft[];
+}
+
+export interface EditMovieFormValues extends MovieFormValues {
+  categoryIds: number[];
+  directorIds: number[];
+  actors: MovieActorDraft[];
+}
+
 export interface AdminMoviesState {
   showAddModal: boolean;
   showEditModal: boolean;

@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import { AGE_RATINGS, DEFAULT_AGE_RATING } from '@/constants/ageRating';
+import { DEFAULT_AGE_RATING } from '@/constants/ageRating';
 import { toast } from '@/features/notifications/toast';
 import { getApiErrorMessage } from '@/lib/apiError';
 import { toFormikValidate } from '@/lib/formikZod';
@@ -22,38 +22,9 @@ import { useMovieActorsByMovieId } from '../hooks/useMovieActorsByMovieId';
 import { useUpdateMovie } from '../hooks/useUpdateMovie';
 import { closeEditModal } from '../store/adminMoviesSlice';
 import { buildMovieSchema } from '../schemas/movie.schema';
-import type { MovieActorDraft, MovieFormValues } from '../types/adminMovie.types';
+import type { EditMovieFormValues } from '../types/adminMovie.types';
 import { ROUTES } from '@/constants/routes';
-
-interface EditMovieFormValues extends MovieFormValues {
-  categoryIds: number[];
-  directorIds: number[];
-  actors: MovieActorDraft[];
-}
-
-const emptyValues = (): EditMovieFormValues => ({
-  name: '',
-  avatar: '',
-  duration: '',
-  premiere_date: '',
-  description: '',
-  country: '',
-  trailer: '',
-  producer: '',
-  producerAvatar: '',
-  status: 'ACTIVE',
-  banner: '',
-  gallery: [],
-  age_rating: DEFAULT_AGE_RATING,
-  language: '',
-  subtitle: '',
-  featured: false,
-  categoryIds: [],
-  directorIds: [],
-  actors: [],
-});
-
-const AGE_RATING_OPTIONS = AGE_RATINGS.map((value) => ({ label: value, value }));
+import { AGE_RATING_OPTIONS, emptyEditMovieValues } from '../constants';
 
 function Edit() {
   const { t } = useTranslation('admin');
@@ -105,7 +76,7 @@ function Edit() {
             is_lead: link.is_lead,
           })) ?? [],
       }
-    : emptyValues();
+    : emptyEditMovieValues();
 
   const handleSubmit = async (values: EditMovieFormValues) => {
     if (!id) return;
