@@ -109,6 +109,17 @@ The frontend mirrors this: `GET /api/user/permissions` returns the caller's reso
 - `EMPLOYEE_ONLY_ROLES` = `[Employee]`
 - `STAFF_ROLES` = `[Super Admin, Branch Admin, Employee]`
 
+### 5.4 Feature map by role
+
+A fast scan of "what can each role actually do" — see §6 below for the full walkthrough of every item.
+
+| Role | What they can do |
+|---|---|
+| **Customer** | Browse/search movies & cinemas; book & pay for tickets (MoMo or gift card); rate & review movies/cinemas they've actually attended; manage profile, membership tier & loyalty points; redeem gift cards; request a private cinema rental; track payment history and refund requests; get notified of booking/payment/showtime events |
+| **Super Admin** | Everything, system-wide: movie catalog (incl. distributors & release windows), schedules, companies & branches, actors/directors, users, system-wide transactions/payments, review moderation, promotions & notification templates, external integrations & webhooks, global system configuration, platform-wide reporting |
+| **Branch Admin ("Owner")** | Everything scoped to the branch(es) they own: rooms/seat maps, combos & inventory, vouchers/promotions/campaigns, dynamic pricing rules & holidays, employees & shift scheduling, kiosks, digital signage, parking, QR check-in devices, maintenance, support tickets, private-event requests, audit log, branch-level system config, branch reporting |
+| **Employee** (capability set by Position — §6.5) | Whichever of: selling tickets (Box Office / Counter Sale), fulfilling combo orders, door check-in, opening/closing a cashier shift, handling customer-support tickets, requesting refunds, or working a maintenance ticket — their Position grants |
+
 ---
 
 ## 6. End-to-end flows
@@ -130,6 +141,7 @@ The frontend mirrors this: `GET /api/user/permissions` returns the caller's reso
 4. → `/BookSeat` — interactive seat grid (Standard/VIP/Couple), select seat(s), optionally add **Combos** (popcorn/drinks) and apply a **Voucher** code (validated live, discount previewed). Every seat's price comes from the backend's Pricing Rule engine (branch/room type/seat type/movie category/day type/holiday/showtime/membership) — the frontend never computes it.
 5. **Checkout** via MoMo — creates a pending invoice, redirects to MoMo, and on return (`/PaymentResult`) confirms/finalizes the booking (also confirmed asynchronously via MoMo's IPN webhook). A QR code (ticket code) is generated for check-in.
 6. **My Bookings** (`/MyBookings`) — booking history, ticket QR/print, **cancel** a booking (only allowed if the showtime is more than 2 hours away).
+7. Rest of the customer account area: **My Tickets** (`/MyTickets`) & ticket detail (`/Ticket/:id`), **Payment History** (`/PaymentHistory`), **My Refunds** (`/MyRefunds`, §6.22), **My Membership** (`/MyMembership`, §6.17), **My Gift Cards** (`/MyGiftCards`, §6.16), **My Activity** (`/MyActivity`, §6.29), and requesting a **Private Event** rental (`/PrivateEvents/Request`, tracked at `/PrivateEvents`, §6.27).
 
 ### 6.3 Super Admin — platform management (`/AdminDashboard` + sidebar)
 
@@ -142,8 +154,11 @@ Everything below is Super-Admin-only (`user.*`, `branch.*`, `company.*`, `movie.
 - **Cinemas/Branches** (`/AdminCinemas`) — approve a pending branch, block/delete a branch, and create a **Branch Admin** account for a company (spins up the branch's owner login in one step).
 - **Companies** — create/update/delete the parent legal entities that own branches (`company.*` permissions; no dedicated nav item is wired up in the current sidebar, but the API/back office concept is fully implemented).
 - **Actors** (`/AdminActors`) / **Directors** (`/AdminDirectors`) — shared catalog CRUD.
+- **Distribution** (`/Distribution`) — manage Distributors and their Movie Release windows per branch (§6.30).
 - **Transactions** (`/AdminTransactions`) — every invoice system-wide, with **refund** (reopens the seat).
+- **Payments** (`/AdminPayments`) — every payment platform-wide by status/method (§6.23).
 - **Reviews** (`/AdminReviews`) — moderate (hide) any review/reply across the platform.
+- **Integrations** (`/Integrations`) — external integration registry + inbound webhook delivery log (§6.31), Super-Admin-only.
 
 ### 6.4 Branch Admin — "Owner" back office (`/OwnerDashboard` + sidebar)
 
@@ -153,15 +168,27 @@ A Branch Admin manages the branch(es) they own (branch-scoped everywhere via `re
 - **Movies / Schedules** — same screens as admin, but scoped to movies they added / showtimes at their branches.
 - **Cinemas** (`/OwnerCinemas`) — their branch(es) and status (pending/active/disabled/maintenance); edit branch contact/operating info.
 - **Rooms** (`/OwnerCinemas/:branchId/Rooms`) — create/delete rooms, **generate a seat map** (rows × seats-per-row, with VIP/Couple row overrides), edit individual seat type/lock state.
+- **Kiosks** (`/OwnerKiosks`) — register self-service kiosk terminals and rotate their API keys (§6.24).
+- **Digital Signage** (`/OwnerSignage`) — manage screens, content library and playlists for in-branch displays (§6.25).
+- **Parking** (`/OwnerParking`) — configure parking areas/slots and run the entry/exit desk (§6.26).
+- **Private Events** (`/OwnerPrivateEvents`) — configure event packages and review/quote incoming rental requests (§6.27).
 - **Combos** (`/OwnerCombos`) — CRUD concession items per branch, activate/deactivate.
-- **Vouchers** (`/OwnerVouchers`) — CRUD discount codes (fixed or percentage, min order value) per branch.
+- **Inventory** (`/OwnerInventory`) — track stock levels for combo ingredients/supplies, with low/out-of-stock alerts (§6.19).
+- **Vouchers** (`/OwnerVouchers`) / **Promotions** (`/OwnerPromotions`) / **Campaigns** (`/OwnerCampaigns`) — three complementary discount/marketing tools per branch (§6.16, §6.28).
+- **Gift Cards** (`/OwnerGiftCards`) — issue and track prepaid gift card balances (§6.16).
+- **Pricing Rules** (`/OwnerPricingRules`) / **Holidays** (`/OwnerHolidays`) — the dynamic ticket-pricing engine's inputs, scoped to their own branches (§6.18).
 - **Bookings lookup** (`/OwnerBookings`) — look up any invoice by ticket code for their branch.
+- **Booking Management** (`/BookingManagement`) — look up any booking and cancel/reschedule/change its showtime directly (§6.23).
+- **Refund Management** (`/RefundManagement`) — work the refund request queue for their branch (§6.22).
+- **Cashier Shifts** (`/CashierShifts`) — read every cashier's shift at their branch and settle one a cashier walked away from (`cashierShift.read`/`.close`) — a Branch Admin does not open a drawer themselves (§6.21).
 - **Employees** (`/OwnerEmployees`) — hire staff (email/password/name/phone + assign a **Position**), deactivate/reactivate, reset an employee's password.
+- **Shifts** (`/OwnerShifts`) — define named work shifts and assign employees to them (`/OwnerShifts/Assignments`) (§6.21).
 - **Maintenance** (`/OwnerMaintenance`) — assign/close/delete maintenance requests raised at their branch (§6.6).
 - **Support Tickets** (`/SupportTickets`) — assign a customer-support ticket to a specific employee, or close/delete one (§6.7).
 - **QR Scanner devices** (`/OwnerDevices`) — register entrances and scanner devices, rotate a device's API key (§6.8).
 - **Audit Log** (`/AuditLog`) — read-only trail of every important action at their branch (§6.10).
 - **System Configuration** (`/SystemConfig`) — override booking/cancellation/check-in/refund settings for their own branch(es) only, never the global defaults (§6.13).
+- Read-only visibility into **Distribution** (`/Distribution`, movie release windows only — distributor management stays Super-Admin-only, §6.30) and **Customer CRM** lookups (§6.29) for their branch's customers.
 
 ### 6.5 Employee — on-site staff (`/EmployeeDashboard`)
 
@@ -171,17 +198,22 @@ What an employee sees is driven entirely by their resolved permissions (via Posi
 - **Box Office / POS** (`/BoxOffice`, needs `booking.create` + `ticket.create` + `payment.create`) — the full counter-sale flow: pick a movie/showtime, **lock the seat(s)**, add combos, apply a voucher/promotion, choose a payment method, pay, and print/reprint the ticket receipt (§6.14).
 - **Counter Sale** (`/EmployeeCounterSale`, needs `booking.create` + `payment.create`) — the earlier, simpler counter-sale screen: pick a showtime, select seats from the live seat grid, optionally look up a registered customer by email, take a cash payment, and issue the ticket(s). Still available alongside Box Office.
 - **Check-in** (`/EmployeeCheckIn`, needs `ticket.checkin`) — scan/enter a ticket code, view the booking (movie/branch/showtime/seat/paid status), and mark it **checked in** at the door (§6.8).
+- **Cashier Shifts** (`/CashierShifts`, needs `cashierShift.open`) — open a drawer session before taking any cash payment, close it out at end of shift (§6.21).
+- **Combo Orders** (`/ComboOrders`, needs `combo.order.view` — only the Combo Staff position, not Ticket Staff/Cashier) — sell/fulfill concession-only orders not tied to a ticket (§6.20).
+- **Booking Management** (Customer Service position, needs `booking.read`) — look up and act on any booking at the branch: cancel, reschedule, change showtime (§6.23). Also sees the **Refund Management** queue and can raise a refund request (`refund.request`), though only a Branch Admin can approve/process it (§6.22).
 - **Support Tickets** (`/SupportTickets`, Customer Service position) — claim or work an assigned customer-support ticket (§6.7).
 - **Maintenance** (`/OwnerMaintenance`, Maintenance Staff position) — start and resolve a maintenance request (§6.6).
+- **Parking desk** (every Employee holds `parking.operate` by default, like `maintenance.create/read`) — run vehicle entry/exit and slot assignment at a branch with parking configured (§6.26).
+- **My Schedule** (`/EmployeeMySchedule`) — the employee's own upcoming shift assignments (§6.21).
 - **Notifications** — every logged-in account (customer or staff) gets a bell icon with unread count and history at `/Notifications` (§6.11).
 
 Position-based capability matrix (from [`seedPositions.js`](cinema-be/src/seed/seedPositions.js)):
 
 | Position | Can do |
 |---|---|
-| **Ticket Staff** | Box Office / counter sales, issue tickets, cancel bookings, sell combos, take payment |
-| **Cashier** | Box Office / counter sales, sell combos, take payment |
-| **Combo Staff** | Sell/manage combo orders, take payment |
+| **Ticket Staff** | Box Office / counter sales, issue tickets, cancel bookings, sell combos, take payment, open/close a cashier shift |
+| **Cashier** | Box Office / counter sales, sell combos, take payment, open/close a cashier shift |
+| **Combo Staff** | Sell/manage combo orders, take payment (no cashier shift of their own) |
 | **Ticket Checker** | Door check-in only |
 | **Customer Service** | Claim/work support tickets, read/cancel/reschedule bookings, request refunds, look up any customer |
 | **Maintenance Staff** | Start and resolve a maintenance request (assigning/closing stays Branch-Admin-only) |
@@ -227,6 +259,78 @@ On-site staff with `booking.create` + `ticket.create` + `payment.create` (Cashie
 
 Socket.IO pushes live updates without polling: Super Admin sockets join an `admin` room, Branch Admin sockets join `owner:<accountId>` — e.g. approving a branch or changing its status invalidates the owner's cached cinema list instantly (see `realtimeSlice` / `RealtimeBridge`).
 
+### 6.16 Gift Cards, Promotions & Vouchers
+
+Three complementary discount mechanisms coexist, each suited to a different use case. A **Voucher** is a simple branch-scoped code (fixed amount or %, minimum order value) redeemed at checkout (§6.2). A **Promotion** is a richer, more targeted rule — limited to specific branches/movies/showtimes/combos, capped by a maximum discount, with total and per-customer usage limits, and its own active window (`start_at`/`end_at`). A **Gift Card** is a prepaid balance issued by an admin or Branch Admin, claimed into a customer's account, then spent down across one or more bookings until fully used, expired, or blocked. FE: `/OwnerVouchers`, `/OwnerPromotions`, `/OwnerGiftCards` (management), `/MyGiftCards` (customer).
+
+### 6.17 Membership & Loyalty Points
+
+Every customer account tracks lifetime points and a **Membership Level** (Standard → Silver → Gold, configurable), which also feeds the Pricing Rule engine — a showtime can price differently for a Gold member. Points accrue automatically from paid bookings and can be redeemed (`loyalty.redeem`) for a discount on a future purchase; a Super Admin manages the level thresholds and points-earning configuration (`membershipLevel.manage`, `loyaltyConfig.manage`). FE: `/MyMembership`.
+
+### 6.18 Dynamic Pricing — Pricing Rules & Holidays
+
+Ticket prices are never hardcoded: a **Pricing Rule** (branch, room type, seat type, movie category, day-of-week/weekend/holiday, showtime window, membership level, priority) is evaluated by the pricing engine for every seat at booking time (§6.2). **Pricing Holidays** mark specific dates — system-wide or per-branch — as holiday pricing days so a rule targeting "holiday" showtimes actually fires. A Branch Admin manages rules/holidays for their own branches; only a Super Admin can create global (branch-less) ones. FE: `/OwnerPricingRules`, `/OwnerHolidays`.
+
+### 6.19 Inventory
+
+Branches track stock levels for combo ingredients/supplies (`inventory.view`/`inventory.manage`) — current quantity, low-stock/out-of-stock alerts, and a history of stock-in/stock-out adjustments, optionally linked to a Combo so selling it can be reconciled against consumption. FE: `/OwnerInventory`.
+
+### 6.20 Combo Orders
+
+A **Combo Order** is a concession-only sale (popcorn/drinks) that doesn't require a ticket — it can stand alone or be linked to a Booking. It moves through **PENDING → PAID → PREPARING → READY → DELIVERED** (or **CANCELLED**), created with `combo.sell` and managed end-to-end (list/fulfill) with `combo.order.view`/`.update` — only the **Combo Staff** Position holds both; Ticket Staff/Cashier can sell a combo alongside a ticket booking but don't see the standalone fulfillment queue. FE: `/ComboOrders`.
+
+### 6.21 Cashier Shifts & Staff Scheduling
+
+Any staff member taking cash (Box Office / Counter Sale / Combo Orders) must have an **open Cashier Shift** — one open shift per employee, enforced by a unique index — and every payment/combo-order/refund they process while it's open is tied to that shift; closing it reconciles expected vs. counted cash. Separately, **Shifts** (a branch's named work shifts, e.g. "Morning") and **Shift Assignments** (which employee works which shift on which date) let a Branch Admin build a staffing roster; each employee sees only their own assignments. FE: `/CashierShifts` (staff), `/OwnerShifts` + `/OwnerShifts/Assignments` (Branch Admin), `/EmployeeMySchedule` (an employee's own schedule).
+
+### 6.22 Refunds
+
+A refund is either requested by the customer or raised by staff on a customer's behalf (Customer Service position, `refund.request`), and moves through **REQUESTED → APPROVED → PROCESSING → COMPLETED** (or **REJECTED** / **FAILED**) — the refunded amount is always computed server-side from the cancellation-policy tier in effect at request time, never trusted from the client. This is the full workflow behind the simpler one-click "Refund" button on `/AdminTransactions`; **approving/processing a request is Branch-Admin/Super-Admin only** (`refund.approve`/`.process`), while Customer Service can view and raise requests but not decide them. FE: `/RefundManagement` (queue), `/MyRefunds` (a customer's own requests).
+
+### 6.23 Booking Management & Payment tools
+
+`/BookingManagement` is the shared staff tool (Customer Service, Branch Admin) for looking up any booking by code or customer and acting on it directly — cancel, reschedule, change showtime — without leaving the page. `/AdminPayments` (Super Admin) lists every payment platform-wide by status/method, separate from the invoice-centric `/AdminTransactions` view; a customer sees their own payment history at `/PaymentHistory`.
+
+### 6.24 Kiosk — self-service ticketing
+
+A branch can register a **Kiosk** (self-service terminal) that runs its own guest booking flow at `/kiosk` — authenticated by an `X-Kiosk-Key` header instead of a customer login, it spins up a lightweight per-kiosk guest account and reuses the exact same seat-lock/pricing/booking/payment/ticket pipeline as the main site, ending in a simulated payment-terminal step. FE: `/OwnerKiosks` (management), `/kiosk` (the kiosk app itself).
+
+### 6.25 Digital Signage
+
+Each branch's physical screens (lobby displays, etc.) are registered as **Screens**, which play a live playlist built from **Signage Content** (images/videos/promos) scheduled via **Signage Schedules**. Live playback filters out anything scheduled against a now-cancelled showtime and respects branch isolation — a screen only ever plays its own branch's content. FE: `/OwnerSignage` (playlist builder + live preview).
+
+### 6.26 Parking
+
+Branches with on-site parking track **Parking Areas** and numbered **Slots**; a **Parking Ticket** moves through entry → slot assignment → exit → fee calculation → payment → slot release, with atomic slot-claiming (and a compensating rollback on failure) so two vehicles can never be assigned the same slot concurrently. `parking.operate` (granted to every Employee by default) runs the entry/exit desk; `parking.manage` configures areas/slots/fee rules. FE: `/OwnerParking`.
+
+### 6.27 Private Events & Cinema Rental
+
+A customer can request renting an entire room or branch for a private screening or event (birthday, corporate event) by picking an **Event Package** and a target date/room. The request moves **REQUESTED → QUOTED → APPROVED → PAID → CONFIRMED → COMPLETED** (or **CANCELLED** at any point) — its `[start_at, end_at)` window is re-checked at every step against real showtimes and other non-cancelled private events in the same room, so a room can never be double-booked. Branch Admins configure the packages and review/quote incoming requests; customers track their own requests. FE: `/PrivateEvents/Request` + `/PrivateEvents` (customer), `/OwnerPrivateEvents` (review queue).
+
+### 6.28 Marketing Campaigns
+
+Distinct from Promotions/Vouchers, a **Campaign** is a marketing push — a banner strip shown to customers on the home page whenever "now" falls inside its `[start_at, end_at]` window **and** its status is `ACTIVE` (a Branch Admin can `PAUSE` one without losing the window, or leave it `DRAFT` while still configuring it), optionally paired with a one-time notification blast to eligible customers (deduplicated per recipient so nobody is notified twice for the same campaign). `campaign.manage`/`campaign.notify` are branch-scoped for a Branch Admin, all-branch for Super Admin. FE: `/OwnerCampaigns`.
+
+### 6.29 Customer CRM
+
+Staff with `crm.viewCustomer` (Customer Service, Branch Admin) can look up a customer's profile and an activity summary (booking history, spend, loyalty tier) directly from the admin user list, scoped to bookings at their own branch(es) with sensitive fields redacted for lower-privileged roles; looking up a nonexistent or unrelated customer returns a generic not-found rather than leaking which accounts exist. A customer views their own activity summary (`crm.viewOwn`) at `/MyActivity`.
+
+### 6.30 Film Distributor & Movie Release windows
+
+Each movie can be linked to a **Distributor** and one or more **Movie Release** windows (which branches, from which date, until which date it may be scheduled). Creating or editing a showtime is checked against the release window for that movie/branch — scheduling outside the window is rejected (a movie with no release rows configured schedules freely, so this only restricts titles that opt in). Only a Super Admin manages distributors and release windows; a Branch Admin can view them read-only. FE: `/Distribution` (two tabs: Distributors, Releases).
+
+### 6.31 External Integrations & Webhooks
+
+A Super-Admin-only registry of outbound integrations (payment gateways, messaging providers, etc.) and an append-only **Webhook** ledger recording every inbound event (e.g. MoMo's payment IPN) with idempotent processing, automatic retry/backoff/timeout, and a per-provider signature-verification step. FE: `/Integrations` (two tabs: Integrations, Webhook delivery log with manual retry).
+
+### 6.32 Movie catalog extras
+
+Beyond the base title/poster/description, a movie can carry a banner image, an image gallery, an age rating, spoken language/subtitle info, and a `featured` flag that surfaces it in the home page's featured carousel (`GET /movie?featured=true`) — all edited from the same movie Add/Edit form Super Admins already use, no separate screen (§6.3).
+
+### 6.33 Reviews — who can review what
+
+A review (movie or cinema) can only be written by a customer who actually booked and either completed or paid for that specific movie/cinema (a `Booking` in status PAID/COMPLETED with a USED ticket) — this eligibility check runs before `review.create` is ever considered, so nobody can review something they never attended (§6.2). Each review has a moderation `status` (VISIBLE / HIDDEN / REJECTED) a Super Admin controls via `review.moderate` (§6.3); the author can always edit/delete their own review (`review.update_own`/`review.delete_own`), even after eligibility has since lapsed.
+
 ---
 
 ## 7. Key API surfaces (see route files for full detail)
@@ -234,16 +338,28 @@ Socket.IO pushes live updates without polling: Super Admin sockets join an `admi
 | Area | Base path | Notes |
 |---|---|---|
 | Auth | `/api/Login`, `/register`, `/verify`, `/account`, `/forgot-password`, `/reset-password`, `/change-password` | OTP-gated registration, JWT + refresh cookie |
-| Catalog | `/api/movie`, `/api/cat`, `/api/actor`, `/api/director`, `/api/movieActor`, `/api/movieDirector`, `/api/movieCat` | Public reads, Super-Admin-only writes |
+| Catalog | `/api/movie`, `/api/cat`, `/api/actor`, `/api/director`, `/api/movieActor`, `/api/movieDirector`, `/api/movieCat` | Public reads, Super-Admin-only writes; `?featured=true` filter, banner/gallery/age-rating fields (§6.32) |
+| Distribution | `/api/distributors`, `/api/movie-releases` | Distributor CRUD (Super-Admin-only) + per-movie/branch release windows enforced on showtime create (§6.30) |
 | Org | `/api/company`, `/api/cinema` (alias `/api/branch`), `/api/room`, `/api/seat`, `/api/employee`, `/api/position` | Company → Branch → Room → Seat, staffing |
 | Scheduling & booking | `/api/schedule`, `/api/ticket`, `/api/scheduleId`, `/api/bookseat/:id`, `/api/bookticket/:id`, `/api/MomoPayment`, `/api/invoice/*` | Showtime → ticket generation → booking → payment → check-in |
-| Commerce | `/api/combo`, `/api/voucher` | Concessions and discounts, branch-scoped |
-| Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price |
-| Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions, movie likes, branch favorites |
+| Payments & Refunds | `/api/payments/*`, `/api/refunds/*` | Payment lifecycle/history (§6.23) and the full refund request → approve → process → complete workflow (§6.22) |
+| Commerce | `/api/combo`, `/api/combo-orders`, `/api/voucher`, `/api/gift-cards`, `/api/promotion` | Concessions, concession-only orders (§6.20), and three discount mechanisms (§6.16) — all branch-scoped |
+| Loyalty | `/api/loyalty/*`, `/api/membership-levels` | Points balance/history/redeem + membership tier configuration (§6.17) |
+| Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price (§6.18) |
+| Inventory | `/api/inventory` | Combo-ingredient stock levels, alerts, adjustment history (§6.19) |
+| Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
+| Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions (booking-eligibility gated, §6.33), movie likes, branch favorites |
 | Ops | `/api/users`, `/api/block/:id`, `/api/admin/invoices` | Admin/owner back-office data |
 | Maintenance | `/api/maintenance` | Log/assign/work/close a Room/Equipment issue; a ROOM request auto-flips `Room.status` to `MAINTENANCE` |
 | Customer Service | `/api/support-tickets` | Customer support tickets: claim/assign/resolve/close |
 | QR Scanner | `/api/entrance`, `/api/devices` | Branch entrances + scanner devices; `POST /api/devices/checkin` is authenticated via `X-Device-Key`, not a JWT |
+| Kiosk | `/api/kiosks` | Kiosk registration/key management + guest self-service booking, authenticated via `X-Kiosk-Key` (§6.24) |
+| Digital Signage | `/api/signage/screens`, `/signage/contents`, `/signage/schedules`, `/signage/screens/:id/playback` | Screens, content library, playlist entries, and the resolved live playlist for a screen (§6.25) |
+| Parking | `/api/parking/areas`, `/parking/slots`, `/parking/tickets` | Per-branch infrastructure plus the entry → slot → exit → fee → payment → release flow (§6.26) |
+| Private Events | `/api/private-events` | Event package catalogue + rental request lifecycle (REQUESTED → … → CONFIRMED) (§6.27) |
+| Marketing | `/api/campaigns`, `/campaigns/public` (unauthenticated feed) | Banner campaigns + notification blasts, separate from Promotions (§6.28) |
+| Customer CRM | `/api/crm/me`, `/crm/customers/:id` | Own profile / branch-scoped staff view of a customer's activity summary (§6.29) |
+| Integrations | `/api/integrations`, `/api/webhooks` | Super-Admin-only integration registry + inbound webhook ledger with retry/backoff (§6.31) |
 | Audit Log | `/api/audit-logs` | Read-only, branch-scoped trail of important actions (append-only — no write routes exist) |
 | Notifications | `/api/notifications` | A caller's own in-app notification feed (read + mark-read only) |
 | Notification Templates | `/api/notification-templates` | Super-Admin-only CRUD for per-event/channel/language notification content, with a preview endpoint |
