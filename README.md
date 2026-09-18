@@ -9,6 +9,20 @@ A full-stack movie ticket booking platform for a **multi-branch cinema chain**: 
 
 ---
 
+## Screenshots
+
+Captured from the running app against seeded data — every number, table row and seat below is real.
+
+| | |
+|---|---|
+| <img src="docs/screenshots/01-home.jpg" width="100%"><br>**Home** — featured rail, now-playing and campaign banners, 10-language switcher. | <img src="docs/screenshots/02-movie-detail.jpg" width="100%"><br>**Movie detail** — banner, gallery, age rating, language/subtitle, reviews gated by real attendance (§6.33). |
+| <img src="docs/screenshots/03-seat-selection.png" width="100%"><br>**Seat selection** — Standard/VIP/Couple grid, combos, voucher/promotion/gift-card fields, and the hold countdown driven by the `BOOKING_HOLD_TIME` setting (§6.13). Prices come from the pricing engine, never the client (§6.18). | <img src="docs/screenshots/04-super-admin-dashboard.png" width="100%"><br>**Super Admin dashboard** — platform-wide net revenue computed as ticket + combo − discounts − refunds from actual Payment/Refund rows (§6.9). |
+| <img src="docs/screenshots/05-branch-admin-dashboard.png" width="100%"><br>**Branch Admin dashboard** — same reporting components, scoped to the branches this account owns, plus the full back-office sidebar (§6.4). | <img src="docs/screenshots/06-employee-dashboard-cs.png" width="100%"><br>**Employee dashboard (Customer Service)** — the menu is derived from the permissions this Position actually holds, not a fixed role menu (§5.3, §6.5). |
+| <img src="docs/screenshots/07-box-office-pos.png" width="100%"><br>**Box Office / POS** — counter sale: movie → showtime → seat hold → payment, with server-side repricing and an idempotent sell endpoint (§6.14). | <img src="docs/screenshots/08-ticket-check-in.png" width="100%"><br>**Door check-in** — look a ticket up by code or QR; every attempt is logged with a reason code, and a ticket from another branch is rejected (§6.8). |
+| <img src="docs/screenshots/09-self-service-kiosk.png" width="100%"><br>**Self-service kiosk** — authenticated by an `X-Kiosk-Key` header instead of a login, reusing the same seat-lock/pricing/booking pipeline (§6.24). | <img src="docs/screenshots/10-audit-log.png" width="100%"><br>**Audit log** — append-only trail of every consequential write; the schema itself refuses updates and deletes (§6.10). |
+
+---
+
 ## 1. Prerequisites
 
 - Node.js >= 18 (20.x recommended)
