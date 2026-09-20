@@ -9,7 +9,11 @@
     "branchActivated": "支店「{{name}}」が有効化されました。",
     "branchDisabled": "支店「{{name}}」が無効化されました。",
     "branchMaintenance": "支店「{{name}}」がメンテナンスモードになりました。",
-    "newBooking": "新しい予約がありました: +{{amount}}đ"
+    "newBooking": "新しい予約がありました: +{{amount}}đ",
+    "showtimeCancelled": "ご予約の上映回が中止になりました。",
+    "showtimeRescheduled": "ご予約の上映回が変更されました。",
+    "notification": "新しいお知らせがあります。",
+    "checkinFailed": "入口でチケットのスキャンが拒否されました。"
   },
   "toastContainer": {
     "dismiss": "閉じる"

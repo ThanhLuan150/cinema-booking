@@ -2,6 +2,23 @@ const NotificationTemplate = require('../models/NotificationTemplate');
 const templateRepository = require('../repositories/notificationTemplate.repository');
 const templateService = require('../services/notificationTemplate.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitToAdmin } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Templates are Super-Admin-only and change the copy every future notification renders with, so
+// the admin room is both the audience and the whole security boundary. The template body itself
+// stays out of the payload — the console refetches the row.
+function broadcastTemplate(template, action) {
+  if (!template) return;
+  emitToAdmin(REALTIME_EVENT.NOTIFICATION_TEMPLATE_UPDATED, {
+    action,
+    id: template.id,
+    event: template.event,
+    channel: template.channel,
+    language: template.language,
+    status: template.status,
+  });
+}
 
 // Ticket 26 — admin CRUD for notification templates, plus a no-save preview endpoint for the
 // editor. Every write goes through templateService.validate; a validation failure is answered
@@ -67,6 +84,7 @@ async function create(req, res) {
       description: req.body.description ? String(req.body.description) : '',
       updated_by: req.account.accountId,
     });
+    broadcastTemplate(created, REALTIME_ACTION.CREATED);
     res.status(201).json(created);
   } catch (err) {
     if (isDuplicateKeyError(err)) {
@@ -108,6 +126,7 @@ async function update(req, res) {
       description: req.body.description ?? existing.description,
       updated_by: req.account.accountId,
     });
+    broadcastTemplate(updated, REALTIME_ACTION.UPDATED);
     res.json(updated);
   } catch (err) {
     if (isDuplicateKeyError(err)) {
@@ -124,6 +143,7 @@ async function update(req, res) {
 async function remove(req, res) {
   const deleted = await templateRepository.deleteById(req.params.id);
   if (!deleted) return res.status(404).json({ message: 'Notification template not found' });
+  broadcastTemplate(deleted, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

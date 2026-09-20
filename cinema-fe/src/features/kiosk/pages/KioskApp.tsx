@@ -24,6 +24,7 @@ import { KeyStep } from '../components/KeyStep';
 import { MovieStep } from '../components/MovieStep';
 import { ShowtimeStep } from '../components/ShowtimeStep';
 import { SeatStep } from '../components/SeatStep';
+import { useScheduleSeatSync } from '@/features/booking/hooks/useScheduleSeatSync';
 import { ComboStep } from '../components/ComboStep';
 import { PromoStep } from '../components/PromoStep';
 import { PaymentStep } from '../components/PaymentStep';
@@ -70,6 +71,11 @@ function KioskApp() {
     queryFn: () => getKioskShowtimes(movieId as number),
     enabled: movieId != null,
   });
+  // The kiosk shares its showtime's seat map with the website and the box office, so it joins the
+  // same schedule room and refetches the instant any of them takes or frees a seat. The 5s poll
+  // stays as the fallback for a kiosk that has lost its socket — an unattended terminal has
+  // nobody to notice a stale grid and hit refresh.
+  useScheduleSeatSync(step === 'SEAT' ? scheduleId : null, ['kioskSeats', scheduleId]);
   const seatsQuery = useQuery({
     queryKey: ['kioskSeats', scheduleId],
     queryFn: () => getKioskSeats(scheduleId as number),

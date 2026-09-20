@@ -1,5 +1,12 @@
 const movieActorRepository = require('../repositories/movieActor.repository');
 const nextId = require('../utils/nextId');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+function broadcastMovieLink(movieId, action) {
+  if (movieId === undefined || movieId === null) return;
+  emitPublic(REALTIME_EVENT.CATALOGUE_UPDATED, { scope: 'MOVIE_ACTOR', action, movieId: Number(movieId) });
+}
 
 async function list(req, res) {
   const mappings = await movieActorRepository.findAll();
@@ -21,11 +28,13 @@ async function create(req, res) {
 
   const id = await nextId('movieActor');
   const mapping = await movieActorRepository.create({ id, movie_id, actor_id, character_name, is_lead });
+  broadcastMovieLink(movie_id, REALTIME_ACTION.CREATED);
   res.status(201).json(mapping);
 }
 
 async function removeForMovie(req, res) {
   await movieActorRepository.deleteByMovieId(req.params.movieId);
+  broadcastMovieLink(req.params.movieId, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

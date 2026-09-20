@@ -1,4 +1,4 @@
-jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn(), emitPublic: jest.fn() }));
+jest.mock('../utils/socket'); // src/utils/__mocks__/socket.js — every emit helper, auto-stubbed
 jest.mock('../utils/mailer', () => ({
   sendShowtimeCancelledEmail: jest.fn().mockResolvedValue({}),
   sendShowtimeRescheduledEmail: jest.fn().mockResolvedValue({}),

@@ -2,6 +2,22 @@ const comboRepository = require('../repositories/combo.repository');
 const Combo = require('../models/Combo');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The concession menu is rendered to customers mid-booking (and to the kiosk), so a combo going
+// inactive or changing price has to reach the public channel, not just the branch that owns it.
+function broadcastCombo(combo, action) {
+  if (!combo) return;
+  emitPublic(REALTIME_EVENT.COMBO_UPDATED, {
+    action,
+    id: combo.id,
+    branchId: combo.cinema_id,
+    name: combo.name,
+    price: combo.price,
+    active: combo.active,
+  });
+}
 
 const VALID_TYPES = Object.values(Combo.TYPE);
 
@@ -74,6 +90,7 @@ async function create(req, res) {
     type: comboType,
     items: normalizedItems,
   });
+  broadcastCombo(combo, REALTIME_ACTION.CREATED);
   res.status(201).json(combo);
 }
 
@@ -86,12 +103,15 @@ async function update(req, res) {
   }
   const combo = await comboRepository.updateFields(req.params.id, updates);
   if (!combo) return res.status(404).json({ message: 'Combo not found' });
+  broadcastCombo(combo, REALTIME_ACTION.UPDATED);
   res.json(combo);
 }
 
 // DELETE /api/combo/:id (owner/admin)
 async function remove(req, res) {
+  const existing = await comboRepository.findById(req.params.id);
   await comboRepository.remove(req.params.id);
+  broadcastCombo(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

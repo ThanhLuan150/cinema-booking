@@ -9,7 +9,11 @@
     "branchActivated": "शाखा \"{{name}}\" सक्रिय कर दी गई है।",
     "branchDisabled": "शाखा \"{{name}}\" निष्क्रिय कर दी गई है।",
     "branchMaintenance": "शाखा \"{{name}}\" को रखरखाव मोड में डाल दिया गया है।",
-    "newBooking": "नई बुकिंग प्राप्त हुई: +{{amount}}đ"
+    "newBooking": "नई बुकिंग प्राप्त हुई: +{{amount}}đ",
+    "showtimeCancelled": "आपकी किसी बुकिंग का एक शो रद्द कर दिया गया है।",
+    "showtimeRescheduled": "आपकी किसी बुकिंग के शो का समय बदल दिया गया है।",
+    "notification": "आपके लिए एक नई सूचना है।",
+    "checkinFailed": "प्रवेश द्वार पर एक टिकट स्कैन अस्वीकार कर दिया गया।"
   },
   "toastContainer": {
     "dismiss": "हटाएं"

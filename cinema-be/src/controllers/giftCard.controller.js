@@ -3,6 +3,24 @@ const giftCardService = require('../services/giftCard.service');
 const bookingRepository = require('../repositories/booking.repository');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+const { emitBranchEvent, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A gift card's balance changes from two sides — the holder spends it, staff can block it — so
+// both the holder's wallet and the issuing branch's console have to follow along. A card with no
+// owner yet (unredeemed) simply has no account to notify; a system-wide card has no branch.
+function broadcastGiftCard(giftCard, action) {
+  if (!giftCard) return;
+  const payload = {
+    action,
+    id: giftCard.id,
+    code: giftCard.code,
+    status: giftCard.status,
+    remainingBalance: giftCard.remaining_balance,
+  };
+  emitBranchEvent(giftCard.cinema_id ?? null, REALTIME_EVENT.GIFT_CARD_UPDATED, payload);
+  emitToAccount(giftCard.owner_account_id, REALTIME_EVENT.GIFT_CARD_UPDATED, payload);
+}
 
 const REDEEM_ERROR_MESSAGES = {
   GIFT_CARD_NOT_FOUND: 'Gift card code does not exist',
@@ -118,6 +136,7 @@ async function issue(req, res) {
     metadata: { code: giftCard.code, initial_balance: giftCard.initial_balance },
   });
 
+  broadcastGiftCard(giftCard, REALTIME_ACTION.CREATED);
   res.status(201).json(giftCard);
 }
 
@@ -140,6 +159,7 @@ async function redeem(req, res) {
     metadata: { code: result.giftCard.code },
   });
 
+  broadcastGiftCard(result.giftCard, REALTIME_ACTION.UPDATED);
   res.json(result.giftCard);
 }
 
@@ -219,6 +239,8 @@ async function pay(req, res) {
       entityId: result.giftCardId,
       metadata: { bookingId: result.bookingId, amount: result.totalPrice },
     });
+    // Re-read so the pushed balance is the post-spend one, not the snapshot taken before payment.
+    broadcastGiftCard(await giftCardRepository.findById(result.giftCardId), REALTIME_ACTION.UPDATED);
   }
 
   res.status(201).json({
@@ -252,6 +274,7 @@ async function update(req, res) {
     metadata: { code: giftCard.code, updates: Object.keys(updates) },
   });
 
+  broadcastGiftCard(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -274,6 +297,7 @@ async function block(req, res) {
     metadata: { code: giftCard.code },
   });
 
+  broadcastGiftCard(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 

@@ -1,4 +1,21 @@
 const Webhook = require('../models/Webhook');
+const { emitToAdmin } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
+
+// The webhook ledger is SUPER_ADMIN-only and is watched precisely for failures, so both terminal
+// transitions push to the admin room. The payload never carries the provider's payload or the
+// error text — only enough for the console to refresh the row it is allowed to read.
+function broadcastWebhook(webhook) {
+  if (!webhook) return webhook;
+  emitToAdmin(REALTIME_EVENT.WEBHOOK_UPDATED, {
+    id: webhook.id,
+    provider: webhook.provider,
+    event: webhook.event,
+    status: webhook.status,
+    attempts: webhook.attempts ?? 0,
+  });
+  return webhook;
+}
 
 // Inserts a new webhook row. If a row for this (provider, external_id) already exists, this
 // is a duplicate delivery — return the existing row instead of creating a second one (this is
@@ -6,7 +23,7 @@ const Webhook = require('../models/Webhook');
 // webhook.service.receiveWebhook not re-running the processor for a row already SUCCESS).
 async function create(data) {
   try {
-    return await Webhook.create(data);
+    return broadcastWebhook(await Webhook.create(data));
   } catch (err) {
     if (err.code === 11000 && data.provider && data.external_id !== undefined) {
       const existing = await findByProviderAndExternalId(data.provider, data.external_id);
@@ -38,24 +55,28 @@ async function claimForProcessing(id) {
 }
 
 async function markSuccess(id) {
-  return Webhook.findOneAndUpdate(
-    { id: Number(id) },
-    { $set: { status: Webhook.STATUS.SUCCESS, processed_at: new Date(), last_error: null, next_attempt_at: null } },
-    { new: true },
+  return broadcastWebhook(
+    await Webhook.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: { status: Webhook.STATUS.SUCCESS, processed_at: new Date(), last_error: null, next_attempt_at: null } },
+      { new: true },
+    ),
   );
 }
 
 async function markFailed(id, error, { nextAttemptAt = null } = {}) {
-  return Webhook.findOneAndUpdate(
-    { id: Number(id) },
-    {
-      $set: {
-        status: Webhook.STATUS.FAILED,
-        last_error: String(error || 'Unknown error').slice(0, 2000),
-        next_attempt_at: nextAttemptAt,
+  return broadcastWebhook(
+    await Webhook.findOneAndUpdate(
+      { id: Number(id) },
+      {
+        $set: {
+          status: Webhook.STATUS.FAILED,
+          last_error: String(error || 'Unknown error').slice(0, 2000),
+          next_attempt_at: nextAttemptAt,
+        },
       },
-    },
-    { new: true },
+      { new: true },
+    ),
   );
 }
 

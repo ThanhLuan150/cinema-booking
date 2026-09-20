@@ -9,7 +9,11 @@
     "branchActivated": "分店“{{name}}”已启用。",
     "branchDisabled": "分店“{{name}}”已停用。",
     "branchMaintenance": "分店“{{name}}”已设为维护状态。",
-    "newBooking": "收到新订单：+{{amount}}元"
+    "newBooking": "收到新订单：+{{amount}}元",
+    "showtimeCancelled": "您订单中的一个场次已取消。",
+    "showtimeRescheduled": "您订单中的一个场次已改期。",
+    "notification": "您有一条新通知。",
+    "checkinFailed": "入口处有一次验票被拒绝。"
   },
   "toastContainer": {
     "dismiss": "关闭"

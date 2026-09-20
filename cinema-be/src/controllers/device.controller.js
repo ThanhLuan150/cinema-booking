@@ -9,6 +9,22 @@ const { generateDeviceKey, hashDeviceKey } = require('../utils/deviceKey');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const systemConfigService = require('../services/systemConfig.service');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The scanner fleet screen has to show a device coming online, moving entrance or being retired
+// without a refresh. The api_key is never part of the payload — only the operator who called the
+// endpoint ever sees it, in the HTTP response.
+function broadcastDevice(device, action) {
+  if (!device) return;
+  emitBranchEvent(device.branch_id, REALTIME_EVENT.DEVICE_UPDATED, {
+    action,
+    id: device.id,
+    name: device.name,
+    status: device.status,
+    entranceId: device.entrance_id ?? null,
+  });
+}
 
 const STATUSES = Device.STATUSES;
 
@@ -74,6 +90,7 @@ async function create(req, res) {
     api_key_hash: hashDeviceKey(apiKey),
   });
 
+  broadcastDevice(device, REALTIME_ACTION.CREATED);
   res.status(201).json({ ...device.toJSON(), api_key: apiKey });
 }
 
@@ -103,6 +120,7 @@ async function update(req, res) {
   }
 
   const updated = await deviceRepository.updateFields(device.id, updates);
+  broadcastDevice(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -114,6 +132,7 @@ async function rotateKey(req, res) {
 
   const apiKey = generateDeviceKey();
   await deviceRepository.updateFields(device.id, { api_key_hash: hashDeviceKey(apiKey) });
+  broadcastDevice(device, REALTIME_ACTION.UPDATED);
   res.json({ api_key: apiKey });
 }
 
@@ -123,6 +142,7 @@ async function remove(req, res) {
   const device = await deviceRepository.findById(req.params.id);
   if (!device) return res.status(404).json({ message: 'Device not found' });
   await deviceRepository.remove(device.id);
+  broadcastDevice(device, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

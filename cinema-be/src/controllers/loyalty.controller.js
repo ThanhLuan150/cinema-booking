@@ -1,4 +1,6 @@
 const loyaltyService = require('../services/loyaltyService');
+const { emitToAccount, emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // GET /api/loyalty/me -> the caller's membership tier + points summary
@@ -22,6 +24,7 @@ async function redeem(req, res) {
   if (result.error) {
     return res.status(400).json({ message: result.message, code: result.error });
   }
+  emitToAccount(req.account.accountId, REALTIME_EVENT.LOYALTY_UPDATED, { action: 'REDEEMED' });
   res.status(201).json(result);
 }
 
@@ -55,6 +58,9 @@ async function updateConfigHandler(req, res) {
   }
 
   const updated = await loyaltyService.updateConfig(updates, req.account.accountId);
+  // The earn/redeem rates are quoted to customers at checkout, so a change has to reach them
+  // mid-purchase — the config itself is public, only the ability to change it is not.
+  emitPublic(REALTIME_EVENT.LOYALTY_UPDATED, { action: 'CONFIG_CHANGED' });
   res.json(updated);
 }
 
@@ -71,6 +77,7 @@ async function adjust(req, res) {
     const status = result.error === 'ACCOUNT_NOT_FOUND' ? 404 : 400;
     return res.status(status).json({ message: result.message, code: result.error });
   }
+  emitToAccount(Number(req.params.accountId), REALTIME_EVENT.LOYALTY_UPDATED, { action: 'ADJUSTED' });
   res.status(201).json(result);
 }
 

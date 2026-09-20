@@ -1,6 +1,15 @@
 const companyRepository = require('../repositories/company.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitToAdmin } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Companies are Super-Admin-only, so the admin room is both the audience and the whole
+// security boundary.
+function broadcastCompany(company, action) {
+  if (!company) return;
+  emitToAdmin(REALTIME_EVENT.COMPANY_UPDATED, { action, id: company.id, name: company.name, status: company.status });
+}
 
 // GET /api/company?page=&limit= (company.read permission — super admin only)
 async function list(req, res) {
@@ -35,6 +44,7 @@ async function create(req, res) {
     email: email || '',
     status: 'ACTIVE',
   });
+  broadcastCompany(company, REALTIME_ACTION.CREATED);
   res.status(201).json(company);
 }
 
@@ -47,6 +57,7 @@ async function update(req, res) {
   }
   const company = await companyRepository.updateFields(req.params.id, updates);
   if (!company) return res.status(404).json({ message: 'Company not found' });
+  broadcastCompany(company, REALTIME_ACTION.UPDATED);
   res.json(company);
 }
 
@@ -65,6 +76,7 @@ async function remove(req, res) {
   }
 
   await companyRepository.remove(req.params.id);
+  broadcastCompany(company, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

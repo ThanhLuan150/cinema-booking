@@ -1,5 +1,26 @@
 const Payment = require('../models/Payment');
 const nextId = require('../utils/nextId');
+const { emitBranchEvent, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
+
+// Every payment channel — MoMo IPN, counter sale, kiosk, gift card — writes through this
+// repository, so hooking the transitions here is what makes "payment landed" realtime everywhere
+// at once instead of per-controller. The customer sees their own payment move; the branch sees
+// its takings. The gateway's raw response and the failure reason never leave the database.
+function broadcastPayment(payment) {
+  if (!payment) return payment;
+  const payload = {
+    id: payment.id,
+    code: payment.code,
+    bookingId: payment.booking_id ?? null,
+    status: payment.status,
+    amount: payment.amount,
+    method: payment.method,
+  };
+  emitToAccount(payment.account_id, REALTIME_EVENT.PAYMENT_UPDATED, payload);
+  emitBranchEvent(payment.branch_id ?? null, REALTIME_EVENT.PAYMENT_UPDATED, payload);
+  return payment;
+}
 
 async function createPayment({
   code,
@@ -40,7 +61,7 @@ async function createPayment({
   if (idempotencyKey) doc.idempotency_key = idempotencyKey;
 
   try {
-    return await Payment.create(doc);
+    return broadcastPayment(await Payment.create(doc));
   } catch (err) {
     if (err.code === 11000) {
       const existing = idempotencyKey
@@ -79,16 +100,18 @@ async function markPaidIfPending(code, { gatewayTransactionId = null, rawRespons
     { $set: update },
     { new: true },
   );
-  if (updated) return { skip: false, payment: updated };
+  if (updated) return { skip: false, payment: broadcastPayment(updated) };
   const existing = await Payment.findOne({ code });
   return { skip: Boolean(existing), payment: existing };
 }
 
 async function markFailedIfPending(code, reason) {
-  return Payment.findOneAndUpdate(
-    { code, status: { $in: [Payment.STATUS.PENDING, Payment.STATUS.PROCESSING] } },
-    { $set: { status: Payment.STATUS.FAILED, failed_at: new Date(), failure_reason: reason } },
-    { new: true },
+  return broadcastPayment(
+    await Payment.findOneAndUpdate(
+      { code, status: { $in: [Payment.STATUS.PENDING, Payment.STATUS.PROCESSING] } },
+      { $set: { status: Payment.STATUS.FAILED, failed_at: new Date(), failure_reason: reason } },
+      { new: true },
+    ),
   );
 }
 
@@ -101,18 +124,22 @@ async function markProcessing(code) {
 }
 
 async function requestRefund(id, reason = null) {
-  return Payment.findOneAndUpdate(
-    { id: Number(id), status: Payment.STATUS.PAID },
-    { $set: { status: Payment.STATUS.REFUND_PENDING, refund_reason: reason, refund_requested_at: new Date() } },
-    { new: true },
+  return broadcastPayment(
+    await Payment.findOneAndUpdate(
+      { id: Number(id), status: Payment.STATUS.PAID },
+      { $set: { status: Payment.STATUS.REFUND_PENDING, refund_reason: reason, refund_requested_at: new Date() } },
+      { new: true },
+    ),
   );
 }
 
 async function completeRefund(id, refundedBy) {
-  return Payment.findOneAndUpdate(
-    { id: Number(id), status: Payment.STATUS.REFUND_PENDING },
-    { $set: { status: Payment.STATUS.REFUNDED, refunded_at: new Date(), refunded_by: refundedBy } },
-    { new: true },
+  return broadcastPayment(
+    await Payment.findOneAndUpdate(
+      { id: Number(id), status: Payment.STATUS.REFUND_PENDING },
+      { $set: { status: Payment.STATUS.REFUNDED, refunded_at: new Date(), refunded_by: refundedBy } },
+      { new: true },
+    ),
   );
 }
 
@@ -120,10 +147,12 @@ async function completeRefund(id, refundedBy) {
 // COMPLETED — transitions straight from PAID (the Refund entity itself now tracks the
 // pending/approved states, so this payment never passes through REFUND_PENDING).
 async function markRefunded(id, refundedBy) {
-  return Payment.findOneAndUpdate(
-    { id: Number(id), status: { $in: [Payment.STATUS.PAID, Payment.STATUS.REFUND_PENDING] } },
-    { $set: { status: Payment.STATUS.REFUNDED, refunded_at: new Date(), refunded_by: refundedBy } },
-    { new: true },
+  return broadcastPayment(
+    await Payment.findOneAndUpdate(
+      { id: Number(id), status: { $in: [Payment.STATUS.PAID, Payment.STATUS.REFUND_PENDING] } },
+      { $set: { status: Payment.STATUS.REFUNDED, refunded_at: new Date(), refunded_by: refundedBy } },
+      { new: true },
+    ),
   );
 }
 

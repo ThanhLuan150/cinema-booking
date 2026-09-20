@@ -9,7 +9,11 @@
     "branchActivated": "Филиал «{{name}}» активирован.",
     "branchDisabled": "Филиал «{{name}}» деактивирован.",
     "branchMaintenance": "Филиал «{{name}}» переведён на обслуживание.",
-    "newBooking": "Новое бронирование: +{{amount}}đ"
+    "newBooking": "Новое бронирование: +{{amount}}đ",
+    "showtimeCancelled": "Один из сеансов в вашем бронировании отменён.",
+    "showtimeRescheduled": "Один из сеансов в вашем бронировании перенесён.",
+    "notification": "У вас новое уведомление.",
+    "checkinFailed": "Сканирование билета на входе отклонено."
   },
   "toastContainer": {
     "dismiss": "Закрыть"

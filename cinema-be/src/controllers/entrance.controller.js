@@ -2,8 +2,23 @@ const entranceRepository = require('../repositories/entrance.repository');
 const Entrance = require('../models/Entrance');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 const STATUSES = Entrance.STATUSES;
+
+// Entrances are what the scanners are pinned to, so the door layout has to stay in sync with the
+// device fleet screen that renders both.
+function broadcastEntrance(entrance, action) {
+  if (!entrance) return;
+  emitBranchEvent(entrance.branch_id, REALTIME_EVENT.ENTRANCE_UPDATED, {
+    action,
+    id: entrance.id,
+    name: entrance.name,
+    code: entrance.code,
+    status: entrance.status,
+  });
+}
 
 // GET /api/entrance?branchId=&status=&page=&limit= (entrance.read, branch-scoped by the route's
 // resolveListAccess -> req.branchId; null means an ALL-scope caller asked for every branch).
@@ -45,6 +60,7 @@ async function create(req, res) {
 
   const id = await nextId('entrance');
   const entrance = await entranceRepository.create({ id, branch_id, name, code, status });
+  broadcastEntrance(entrance, REALTIME_ACTION.CREATED);
   res.status(201).json(entrance);
 }
 
@@ -74,6 +90,7 @@ async function update(req, res) {
   }
 
   const updated = await entranceRepository.updateFields(entrance.id, updates);
+  broadcastEntrance(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -89,6 +106,7 @@ async function remove(req, res) {
   }
 
   await entranceRepository.remove(entrance.id);
+  broadcastEntrance(entrance, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

@@ -1,4 +1,4 @@
-jest.mock('../utils/socket', () => ({ emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn(), emitPublic: jest.fn() }));
+jest.mock('../utils/socket'); // src/utils/__mocks__/socket.js — every emit helper, auto-stubbed
 
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const branchController = require('./branch.controller');
@@ -348,6 +348,32 @@ describe('branch.controller activate/disable/maintenance', () => {
     const res = mockRes();
     await branchController.maintenance({ params: { id: 1 } }, res);
     expect((await Branch.findOne({ id: 1 })).status).toBe('MAINTENANCE');
+  });
+
+  // The owner is a member of their own branch room and is also in the audience of emitPublic, so
+  // sending branch:activated down more than one of those channels would toast them two or three
+  // times for one click. The toast event goes to the owner alone; everyone else (the branch's
+  // employees, and every customer whose cinema list must change) gets branch:updated instead.
+  it('tells the owner exactly once, and the rest of the world through branch:updated', async () => {
+    await seedCompany();
+    await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A', status: 'INACTIVE' });
+
+    await branchController.activate({ params: { id: 1 } }, mockRes());
+
+    const statusEmits = [
+      ...socket.emitToOwner.mock.calls,
+      ...socket.emitToBranch.mock.calls,
+      ...socket.emitBranchEvent.mock.calls,
+      ...socket.emitPublic.mock.calls,
+    ].filter((call) => call.includes('branch:activated'));
+    expect(statusEmits).toHaveLength(1);
+
+    expect(socket.emitPublic).toHaveBeenCalledWith(
+      'branch:updated',
+      expect.objectContaining({ id: 1, status: 'ACTIVE' }),
+    );
+    expect(socket.emitToBranch).not.toHaveBeenCalled();
+    expect(socket.emitBranchEvent).not.toHaveBeenCalled();
   });
 });
 

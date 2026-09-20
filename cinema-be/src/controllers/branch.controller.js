@@ -2,7 +2,8 @@ const bcrypt = require('bcryptjs');
 const branchRepository = require('../repositories/branch.repository');
 const companyRepository = require('../repositories/company.repository');
 const nextId = require('../utils/nextId');
-const { emitToOwner } = require('../utils/socket');
+const { emitToOwner, emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
@@ -219,6 +220,7 @@ async function create(req, res) {
     metadata: { name: branch.name, code: branch.code, company_id: branch.company_id },
   });
 
+  emitPublic(REALTIME_EVENT.BRANCH_UPDATED, { action: REALTIME_ACTION.CREATED, id: branch.id, name: branch.name });
   res.status(201).json(branch);
 }
 
@@ -249,16 +251,38 @@ async function update(req, res) {
       branchId: branch.id,
       metadata: { fields: Object.keys(updates) },
     });
+    emitPublic(REALTIME_EVENT.BRANCH_UPDATED, {
+      action: REALTIME_ACTION.UPDATED,
+      id: branch.id,
+      name: branch.name,
+    });
   }
 
   res.json(branch);
+}
+
+// A branch going live / dark / under maintenance is news for two audiences with two different
+// needs, so it goes out as two events rather than one event on two channels (which would reach
+// the owner twice — see the room-overlap note in utils/socket.js):
+//   branch:activated|disabled|maintenance -> the owner alone, the toast-bearing event
+//   branch:updated                        -> everyone, including the branch's own staff and
+//                                            every customer whose cinema list must stop
+//                                            offering it; invalidation only, no toast.
+function broadcastBranchStatus(branch, event) {
+  emitToOwner(branch.owner_id, event, branch);
+  emitPublic(REALTIME_EVENT.BRANCH_UPDATED, {
+    action: REALTIME_ACTION.STATUS_CHANGED,
+    id: branch.id,
+    name: branch.name,
+    status: branch.status,
+  });
 }
 
 // PUT /api/cinema/:id/activate (branch.activate permission — super admin only)
 async function activate(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'ACTIVE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
-  emitToOwner(branch.owner_id, 'branch:activated', branch);
+  broadcastBranchStatus(branch, REALTIME_EVENT.BRANCH_ACTIVATED);
   res.json(branch);
 }
 
@@ -266,7 +290,7 @@ async function activate(req, res) {
 async function disable(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'INACTIVE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
-  emitToOwner(branch.owner_id, 'branch:disabled', branch);
+  broadcastBranchStatus(branch, REALTIME_EVENT.BRANCH_DISABLED);
   res.json(branch);
 }
 
@@ -274,7 +298,7 @@ async function disable(req, res) {
 async function maintenance(req, res) {
   const branch = await branchRepository.setStatus(req.params.id, 'MAINTENANCE');
   if (!branch) return res.status(404).json({ message: 'Branch not found' });
-  emitToOwner(branch.owner_id, 'branch:maintenance', branch);
+  broadcastBranchStatus(branch, REALTIME_EVENT.BRANCH_MAINTENANCE);
   res.json(branch);
 }
 
@@ -305,6 +329,7 @@ async function remove(req, res) {
   }
 
   await branchRepository.remove(req.params.id);
+  emitPublic(REALTIME_EVENT.BRANCH_UPDATED, { action: REALTIME_ACTION.DELETED, id: branch.id, name: branch.name });
   res.json({ message: 'Deleted' });
 }
 

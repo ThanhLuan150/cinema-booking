@@ -100,6 +100,7 @@ Lưới thẻ có phân trang, `Upcoming` không cho bấm đặt vé (chưa m�
   - Tổng tiền hiển thị = tổng giá ghế (từ backend) + combo − giảm giá voucher. Khi thanh toán, backend tính lại toàn bộ (giá ghế + combo + voucher) từ dữ liệu server-side và bỏ qua mọi `totalPrice`/`discountAmount` mà client gửi lên.
   - Nút "Thanh toán" → mở **Modal MoMo**: hiện QR/nút chuyển sang MoMo; sau khi quay lại app tự gọi xác nhận (`/MomoPayment/confirm`).
 - Chưa chọn ghế nào → nút Thanh toán disable, toast nhắc "Chọn ghế trước".
+- **Realtime sơ đồ ghế**: khi mở trang, client join room `schedule:<id>` qua Socket.IO. Mọi thay đổi ghế của người khác (giữ chỗ, bỏ giữ, bán, hoàn vé, hết hạn giữ) đẩy về sự kiện `seat:updated` và sơ đồ tự refetch ngay — không cần F5, không phải chờ poll. Payload chỉ gồm mã ghế + trạng thái mới, không kèm danh tính ai đang giữ ghế; cờ "ghế của tôi" vẫn do backend tính trong `GET /bookseat/:scheduleId`.
 
 **Bước 3/4 — `/PaymentResult`**
 - Trang kết quả: icon ✅/❌, thông tin vé, nút "Xem vé của tôi" → `/MyBookings`, hoặc "Về trang chủ".
@@ -159,7 +160,7 @@ Modal **Thêm phim** (`Add.tsx`) — form nhiều trường nhất trong hệ th
 ### 3.5 `/AdminCinemas` — Quản lý rạp toàn hệ thống
 - Nút đỏ nổi bật **"Thêm quản trị viên rạp"** mở Modal **tạo Branch Admin + Rạp cùng lúc** — 7 trường: Email, Mật khẩu, Tên, SĐT, **Tên rạp** (bắt buộc), Địa chỉ, Thành phố. Validate: email/mật khẩu (≥6 ký tự)/tên rạp bắt buộc.
 - Bảng: ID, Avatar chủ rạp, Tên rạp, ID chủ sở hữu, Địa chỉ + Thành phố, **Badge trạng thái** (Pending/Active/Blocked — màu theo `CINEMA_STATUS_META`), 3 nút hành động text-link: **Duyệt** (ẩn nếu đã approved), **Khóa** (ẩn nếu đã blocked, có `confirmDialog`), **Xóa** (luôn hiện, có `confirmDialog`).
-- **Realtime**: khi có sự kiện "rạp mới chờ duyệt" từ socket (`cinemaPendingVersion`), danh sách tự invalidate & refetch — admin thấy rạp mới ngay không cần F5.
+- **Realtime**: khi rạp được duyệt/khóa/chuyển bảo trì, socket bắn `branch:activated`/`branch:disabled`/`branch:maintenance`; `RealtimeBridge` bump `cinemaStatusVersion` nên danh sách tự invalidate & refetch — admin thấy trạng thái mới ngay không cần F5.
 
 ### 3.6 `/AdminActors`, `/AdminDirectors`
 Giống nhau về cấu trúc: bảng (ID, Tên đầy đủ, Quốc tịch, Hành động **Xóa**) + Modal Thêm gồm: Tên đầy đủ*, Avatar URL, Quốc tịch, Ngày sinh (date), Tiểu sử (textarea). Không có chức năng Sửa trên UI hiện tại (chỉ Thêm/Xóa).

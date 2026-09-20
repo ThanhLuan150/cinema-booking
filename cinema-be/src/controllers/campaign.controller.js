@@ -10,6 +10,24 @@ const { recordAudit } = require('../services/auditLog.service');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { evaluateCampaign, STATE } = require('../utils/campaignWindow');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A campaign has two lives: the admin console that edits it (branch-scoped, or global when
+// branch_id is null) and the home-page strip that renders it to anyone, signed in or not. The
+// public copy is the ids only — whether a campaign is actually visible is a derived rule
+// (campaignWindow), so clients refetch the feed rather than trusting a pushed flag.
+function broadcastCampaign(campaign, action) {
+  if (!campaign) return;
+  // Ids only: a DRAFT campaign's name has no business on the public channel, and neither the
+  // admin console nor the home-page strip needs it — both refetch the feed they may read.
+  emitPublic(REALTIME_EVENT.CAMPAIGN_UPDATED, {
+    action,
+    id: campaign.id,
+    branchId: campaign.branch_id ?? null,
+    status: campaign.status,
+  });
+}
 
 const STATUSES = Object.values(Campaign.STATUS);
 const TARGET_TYPES = Object.values(Campaign.TARGET_TYPE);
@@ -216,6 +234,7 @@ async function create(req, res) {
     metadata: { name: campaign.name, status: campaign.status, target_type: campaign.target_type },
   });
 
+  broadcastCampaign(campaign, REALTIME_ACTION.CREATED);
   res.status(201).json(campaignService.withDerivedState(campaign));
 }
 
@@ -295,6 +314,7 @@ async function update(req, res) {
       : { name: updated.name, fields: Object.keys(updates) },
   });
 
+  broadcastCampaign(updated, REALTIME_ACTION.UPDATED);
   res.json(campaignService.withDerivedState(updated));
 }
 
@@ -320,6 +340,7 @@ async function remove(req, res) {
     metadata: { name: campaign.name, banners_removed: deletedCount ?? 0 },
   });
 
+  broadcastCampaign(campaign, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 
@@ -404,6 +425,7 @@ async function createBanner(req, res) {
     metadata: { banner_id: banner.id, title: banner.title, placement: banner.placement },
   });
 
+  broadcastCampaign(campaign, REALTIME_ACTION.UPDATED);
   res.status(201).json(banner);
 }
 
@@ -450,6 +472,7 @@ async function updateBanner(req, res) {
     metadata: { banner_id: banner.id, fields: Object.keys(updates) },
   });
 
+  broadcastCampaign(campaign, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -475,6 +498,7 @@ async function removeBanner(req, res) {
     metadata: { banner_id: banner.id, title: banner.title },
   });
 
+  broadcastCampaign(campaign, REALTIME_ACTION.UPDATED);
   res.json({ message: 'Deleted' });
 }
 

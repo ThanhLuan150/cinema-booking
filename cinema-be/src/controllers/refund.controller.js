@@ -11,6 +11,24 @@ const systemConfigService = require('../services/systemConfig.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const notificationService = require('../services/notification.service');
 const cashierShiftService = require('../services/cashierShift.service');
+const { emitBranchEvent, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A refund is watched from both ends at once: the branch's finance queue and the customer
+// refreshing "where is my money". Both get the same status-only payload — the failure reason and
+// the payout details stay behind the detail endpoint and its scope check.
+function broadcastRefund(refund, action) {
+  if (!refund) return;
+  const payload = {
+    action,
+    id: refund.id,
+    bookingId: refund.booking_id,
+    status: refund.status,
+    amount: refund.amount,
+  };
+  emitBranchEvent(refund.branch_id, REALTIME_EVENT.REFUND_UPDATED, payload);
+  emitToAccount(refund.account_id, REALTIME_EVENT.REFUND_UPDATED, payload);
+}
 
 // OWN: caller must own the refund's booking. BRANCH: caller must have access to the refund's
 // branch. ALL: no restriction. Same shape as canAccessBooking/canAccessPayment. Used for
@@ -136,6 +154,7 @@ async function requestRefund(req, res) {
     metadata: { bookingId: booking.id, amount, policyPercent: percent },
   });
 
+  broadcastRefund(refund, REALTIME_ACTION.CREATED);
   res.status(201).json(refund);
 }
 
@@ -198,6 +217,7 @@ async function approveRefund(req, res) {
     action: AuditLog.ACTION.REFUND_APPROVED,
     performedBy: req.account.accountId,
   });
+  broadcastRefund(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -226,6 +246,7 @@ async function rejectRefund(req, res) {
     performedBy: req.account.accountId,
     reason,
   });
+  broadcastRefund(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -250,6 +271,7 @@ async function processRefund(req, res) {
     action: AuditLog.ACTION.REFUND_PROCESSING,
     performedBy: req.account.accountId,
   });
+  broadcastRefund(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -306,6 +328,7 @@ async function completeRefund(req, res) {
       channels: [notificationService.CHANNEL.IN_APP, notificationService.CHANNEL.EMAIL],
     });
   }
+  broadcastRefund(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -334,6 +357,7 @@ async function failRefund(req, res) {
     performedBy: req.account.accountId,
     reason,
   });
+  broadcastRefund(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 

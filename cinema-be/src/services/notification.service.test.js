@@ -1,6 +1,6 @@
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 
-jest.mock('../utils/socket', () => ({ emitToAccount: jest.fn() }));
+jest.mock('../utils/socket'); // src/utils/__mocks__/socket.js — every emit helper, auto-stubbed
 jest.mock('../utils/mailer', () => ({ sendNotificationEmail: jest.fn().mockResolvedValue({ messageId: 'x' }) }));
 
 const notificationService = require('./notification.service');

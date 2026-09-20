@@ -9,6 +9,19 @@ const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { resolvePlayback } = require('../services/signagePlayback');
 const { generateScreenKey, hashScreenKey } = require('../utils/screenKey');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Screens, content and playlist entries are one board to whoever is managing them, so they share
+// an event discriminated by `scope`, and the live Preview modal can re-resolve playback off any
+// of the three. Players themselves authenticate with X-Screen-Key over HTTP, not a socket, so
+// this is for the operators' console. The api_key never travels here.
+//
+// A playlist entry has no branch of its own (it points at a screen), so callers pass the branch
+// they already resolved from that screen.
+function broadcastSignage(branchId, scope, action, payload) {
+  emitBranchEvent(branchId, REALTIME_EVENT.SIGNAGE_UPDATED, { scope, action, ...payload });
+}
 
 const SCREEN_STATUSES = Screen.STATUSES;
 const CONTENT_TYPES = SignageContent.TYPES;
@@ -66,6 +79,7 @@ async function createScreen(req, res) {
     api_key_hash: hashScreenKey(apiKey),
   });
   // The plaintext key is returned exactly once — it is never retrievable later.
+  broadcastSignage(screen.branch_id, 'SCREEN', REALTIME_ACTION.CREATED, { id: screen.id, name: screen.name, status: screen.status });
   res.status(201).json({ ...screen.toJSON(), api_key: apiKey });
 }
 
@@ -77,6 +91,7 @@ async function rotateScreenKey(req, res) {
 
   const apiKey = generateScreenKey();
   await signageRepository.updateScreen(screen.id, { api_key_hash: hashScreenKey(apiKey) });
+  broadcastSignage(screen.branch_id, 'SCREEN', REALTIME_ACTION.UPDATED, { id: screen.id, name: screen.name, status: screen.status });
   res.json({ api_key: apiKey });
 }
 
@@ -111,6 +126,7 @@ async function updateScreen(req, res) {
   }
 
   const updated = await signageRepository.updateScreen(screen.id, updates);
+  broadcastSignage(updated.branch_id, 'SCREEN', REALTIME_ACTION.UPDATED, { id: updated.id, name: updated.name, status: updated.status });
   res.json(updated);
 }
 
@@ -125,6 +141,7 @@ async function removeScreen(req, res) {
   }
 
   await signageRepository.removeScreen(screen.id);
+  broadcastSignage(screen.branch_id, 'SCREEN', REALTIME_ACTION.DELETED, { id: screen.id, name: screen.name });
   res.json({ message: 'Deleted' });
 }
 
@@ -224,6 +241,7 @@ async function createContent(req, res) {
 
   const id = await nextId('signageContent');
   const content = await signageRepository.createContent({ id, ...doc });
+  broadcastSignage(content.branch_id, 'CONTENT', REALTIME_ACTION.CREATED, { id: content.id, title: content.title, status: content.status });
   res.status(201).json(content);
 }
 
@@ -272,6 +290,7 @@ async function updateContent(req, res) {
   }
 
   const updated = await signageRepository.updateContent(content.id, updates);
+  broadcastSignage(updated.branch_id, 'CONTENT', REALTIME_ACTION.UPDATED, { id: updated.id, title: updated.title, status: updated.status });
   res.json(updated);
 }
 
@@ -286,6 +305,7 @@ async function removeContent(req, res) {
   }
 
   await signageRepository.removeContent(content.id);
+  broadcastSignage(content.branch_id, 'CONTENT', REALTIME_ACTION.DELETED, { id: content.id, title: content.title });
   res.json({ message: 'Deleted' });
 }
 
@@ -399,6 +419,7 @@ async function createSchedule(req, res) {
     priority: Number.isFinite(Number(req.body.priority)) ? Number(req.body.priority) : 0,
     status,
   });
+  broadcastSignage(screen.branch_id, 'PLAYLIST', REALTIME_ACTION.CREATED, { id: entry.id, screenId: entry.screen_id, status: entry.status });
   res.status(201).json(entry);
 }
 
@@ -432,6 +453,12 @@ async function updateSchedule(req, res) {
   }
 
   const updated = await signageRepository.updateSchedule(entry.id, updates);
+  const entryScreen = await signageRepository.findScreenById(updated.screen_id);
+  broadcastSignage(entryScreen ? entryScreen.branch_id : null, 'PLAYLIST', REALTIME_ACTION.UPDATED, {
+    id: updated.id,
+    screenId: updated.screen_id,
+    status: updated.status,
+  });
   res.json(updated);
 }
 
@@ -440,6 +467,11 @@ async function removeSchedule(req, res) {
   const entry = await signageRepository.findScheduleById(req.params.id);
   if (!entry) return res.status(404).json({ message: 'Playlist entry not found' });
   await signageRepository.removeSchedule(entry.id);
+  const removedScreen = await signageRepository.findScreenById(entry.screen_id);
+  broadcastSignage(removedScreen ? removedScreen.branch_id : null, 'PLAYLIST', REALTIME_ACTION.DELETED, {
+    id: entry.id,
+    screenId: entry.screen_id,
+  });
   res.json({ message: 'Deleted' });
 }
 

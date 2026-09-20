@@ -11,11 +11,11 @@ const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.servi
 const notificationService = require('../services/notification.service');
 const Booking = require('../models/Booking');
 const Account = require('../models/Account');
-const Branch = require('../models/Branch');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { sendShowtimeCancelledEmail, sendShowtimeRescheduledEmail } = require('../utils/mailer');
-const { emitToAccount, emitToOwner, emitToAdmin } = require('../utils/socket');
+const { emitToAccount, emitToAdmin, emitToBranch, emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 // GET /api/schedule?branchId=&roomId=&movieId=&page=&limit= -> management list (schedule.read
 async function list(req, res) {
@@ -142,6 +142,23 @@ async function validateShowtime(req, res, { movie_id, room_id, movie_date, time_
   return { movie, room };
 }
 
+// A showtime change is two audiences at once — the branch's staff (their programming grid) and
+// every customer browsing that movie's showtimes, who is anonymous and so only reachable
+// publicly. Everything in the payload is already on the public booking page, so one public emit
+// serves both; also sending it to the branch room would just deliver it to staff twice.
+function broadcastScheduleChange(schedule, action) {
+  if (!schedule) return;
+  emitPublic(REALTIME_EVENT.SCHEDULE_UPDATED, {
+    action,
+    scheduleId: schedule.id,
+    movieId: schedule.movie_id,
+    branchId: schedule.cinema_id ?? null,
+    roomId: schedule.room_id,
+    movieDate: schedule.movie_date,
+    timeBegin: schedule.time_begin,
+  });
+}
+
 // POST /api/schedule { movie_id, room_id, movie_date, time_begin, time_end, price }
 // (schedule.create permission — super admin anywhere, branch admin within their own branch).
 async function create(req, res) {
@@ -177,6 +194,7 @@ async function create(req, res) {
     metadata: { movie_id: schedule.movie_id, room_id: schedule.room_id, movie_date: schedule.movie_date },
   });
 
+  broadcastScheduleChange(schedule, REALTIME_ACTION.CREATED);
   res.status(201).json(schedule);
 }
 
@@ -225,6 +243,7 @@ async function update(req, res) {
     metadata: { movie_date: schedule.movie_date, time_begin: schedule.time_begin, time_end: schedule.time_end },
   });
 
+  broadcastScheduleChange(schedule, REALTIME_ACTION.UPDATED);
   res.json(schedule);
 }
 
@@ -253,7 +272,7 @@ async function cancelAffectedBooking(booking, { reason, auditAction, performedBy
       time_begin: schedule.time_begin,
     });
   }
-  emitToAccount(booking.account_id, 'showtime:cancelled', {
+  emitToAccount(booking.account_id, REALTIME_EVENT.SHOWTIME_CANCELLED, {
     bookingId: booking.id,
     scheduleId: schedule.id,
     refundRequested: wasPaid,
@@ -307,10 +326,11 @@ async function cancel(req, res) {
 
   const room = await roomRepository.findById(schedule.room_id);
   if (room) {
-    const branch = await Branch.findOne({ id: room.cinema_id });
-    if (branch) emitToOwner(branch.owner_id, 'showtime:cancelled', { scheduleId: schedule.id, branchId: branch.id });
+    // The branch room covers the owner and the branch's employees alike — the owner is a member
+    // of it, so the old owner-addressed emit would now arrive as a second copy.
+    emitToBranch(room.cinema_id, REALTIME_EVENT.SHOWTIME_CANCELLED, { scheduleId: schedule.id, branchId: room.cinema_id });
   }
-  emitToAdmin('showtime:cancelled', { scheduleId: schedule.id });
+  emitToAdmin(REALTIME_EVENT.SHOWTIME_CANCELLED, { scheduleId: schedule.id });
 
   res.json({ ...schedule.toJSON(), affectedBookings: affectedBookings.length });
 }
@@ -371,7 +391,7 @@ async function reschedule(req, res) {
         newTime: time_begin,
       });
     }
-    emitToAccount(booking.account_id, 'showtime:rescheduled', {
+    emitToAccount(booking.account_id, REALTIME_EVENT.SHOWTIME_RESCHEDULED, {
       bookingId: booking.id,
       scheduleId: schedule.id,
       from: oldSnapshot,
@@ -399,10 +419,12 @@ async function reschedule(req, res) {
   });
 
   if (validated.room) {
-    const branch = await Branch.findOne({ id: validated.room.cinema_id });
-    if (branch) emitToOwner(branch.owner_id, 'showtime:rescheduled', { scheduleId: schedule.id, branchId: branch.id });
+    emitToBranch(validated.room.cinema_id, REALTIME_EVENT.SHOWTIME_RESCHEDULED, {
+      scheduleId: schedule.id,
+      branchId: validated.room.cinema_id,
+    });
   }
-  emitToAdmin('showtime:rescheduled', { scheduleId: schedule.id });
+  emitToAdmin(REALTIME_EVENT.SHOWTIME_RESCHEDULED, { scheduleId: schedule.id });
 
   res.json({ ...schedule.toJSON(), affectedBookings: affectedBookings.length });
 }
@@ -413,6 +435,7 @@ async function remove(req, res) {
   if (!existing) return res.status(404).json({ message: 'Schedule not found' });
 
   await scheduleRepository.remove(existing.id);
+  broadcastScheduleChange(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

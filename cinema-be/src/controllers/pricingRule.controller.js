@@ -1,6 +1,17 @@
 const pricingRuleRepository = require('../repositories/pricingRule.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A pricing rule changes what a seat costs on the very next quote, and a customer may already be
+// staring at a seat map with the old price on it — so this goes out publicly as well as to the
+// branch that owns the rule (branch_id is null for a system-wide rule). Only the ids travel;
+// prices are always re-read through the seat/quote endpoints that apply the rules properly.
+function broadcastPricingRule(rule, action) {
+  if (!rule) return;
+  emitPublic(REALTIME_EVENT.PRICING_UPDATED, { action, id: rule.id, branchId: rule.branch_id ?? null });
+}
 const PricingRule = require('../models/PricingRule');
 const Room = require('../models/Room');
 
@@ -142,6 +153,7 @@ async function create(req, res) {
     time_end: req.body.time_end || null,
     membership_level: req.body.membership_level || null,
   });
+  broadcastPricingRule(rule, REALTIME_ACTION.CREATED);
   res.status(201).json(rule);
 }
 
@@ -176,6 +188,7 @@ async function update(req, res) {
     }
   }
   const updated = await pricingRuleRepository.updateFields(rule.id, updates);
+  broadcastPricingRule(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -188,6 +201,7 @@ async function remove(req, res) {
   }
 
   await pricingRuleRepository.remove(rule.id);
+  broadcastPricingRule(rule, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

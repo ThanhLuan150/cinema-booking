@@ -10,6 +10,23 @@ const branchRepository = require('../repositories/branch.repository');
 const comboRepository = require('../repositories/combo.repository');
 const nextId = require('../utils/nextId');
 const { generateKioskKey, hashKioskKey } = require('../utils/kioskKey');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The self-service terminals a branch has deployed, as the operators' fleet screen shows them.
+// The api_key never travels here — only the operator who called the endpoint sees it, once, in
+// the HTTP response. The customer-facing kiosk session itself talks HTTP with X-Kiosk-Key and
+// has no socket of its own; seat changes reach it through the shared seat broadcast instead.
+function broadcastKiosk(kiosk, action) {
+  if (!kiosk) return;
+  emitBranchEvent(kiosk.branch_id, REALTIME_EVENT.KIOSK_UPDATED, {
+    action,
+    id: kiosk.id,
+    kioskCode: kiosk.kiosk_code,
+    name: kiosk.name,
+    status: kiosk.status,
+  });
+}
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const systemConfigService = require('../services/systemConfig.service');
@@ -92,6 +109,7 @@ async function create(req, res) {
     api_key_hash: hashKioskKey(apiKey),
   });
 
+  broadcastKiosk(kiosk, REALTIME_ACTION.CREATED);
   res.status(201).json({ ...kiosk.toJSON(), api_key: apiKey });
 }
 
@@ -115,6 +133,7 @@ async function update(req, res) {
   }
 
   const updated = await kioskRepository.updateFields(kiosk.id, updates);
+  broadcastKiosk(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -126,6 +145,7 @@ async function rotateKey(req, res) {
 
   const apiKey = generateKioskKey();
   await kioskRepository.updateFields(kiosk.id, { api_key_hash: hashKioskKey(apiKey) });
+  broadcastKiosk(kiosk, REALTIME_ACTION.UPDATED);
   res.json({ api_key: apiKey });
 }
 
@@ -135,6 +155,7 @@ async function remove(req, res) {
   const kiosk = await kioskRepository.findById(req.params.id);
   if (!kiosk) return res.status(404).json({ message: 'Kiosk not found' });
   await kioskRepository.remove(kiosk.id);
+  broadcastKiosk(kiosk, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

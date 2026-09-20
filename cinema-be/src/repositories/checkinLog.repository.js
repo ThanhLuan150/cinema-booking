@@ -1,5 +1,7 @@
 const CheckinLog = require('../models/CheckinLog');
 const nextId = require('../utils/nextId');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 
 async function findFiltered(filter, { skip = 0, limit = 20 } = {}) {
   const [data, total] = await Promise.all([
@@ -13,7 +15,19 @@ async function findFiltered(filter, { skip = 0, limit = 20 } = {}) {
 // so callers `await record(...).catch(() => {})`.
 async function record(entry) {
   const id = await nextId('checkinLog');
-  return CheckinLog.create({ id, ...entry });
+  const log = await CheckinLog.create({ id, ...entry });
+
+  // Both check-in channels (staff desk and the QR scanners) land here, so this is the one place
+  // that has to push the door feed to the branch.
+  emitBranchEvent(log.branch_id, REALTIME_EVENT.CHECKIN_NEW, {
+    checkinLogId: log.id,
+    invoiceId: log.invoice_id ?? null,
+    deviceId: log.device_id ?? null,
+    entranceId: log.entrance_id ?? null,
+    result: log.result,
+  });
+
+  return log;
 }
 
 module.exports = { findFiltered, record };

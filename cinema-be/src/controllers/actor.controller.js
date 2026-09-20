@@ -2,6 +2,15 @@ const actorRepository = require('../repositories/actor.repository');
 const nextId = require('../utils/nextId');
 const { uploadImage } = require('../utils/uploadImage');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Part of the public movie catalogue (credits / genre chips), so this goes out to everyone,
+// including the anonymous visitors reading a movie page right now.
+function broadcastActor(row, action) {
+  if (!row) return;
+  emitPublic(REALTIME_EVENT.CATALOGUE_UPDATED, { scope: 'ACTOR', action, id: row.id });
+}
 
 // GET /api/actor?page=&limit=
 async function list(req, res) {
@@ -34,6 +43,7 @@ async function create(req, res) {
     dob: dob || null,
     nationality: nationality || '',
   });
+  broadcastActor(actor, REALTIME_ACTION.CREATED);
   res.status(201).json(actor);
 }
 
@@ -46,12 +56,15 @@ async function update(req, res) {
   }
   const actor = await actorRepository.updateFields(req.params.id, updates);
   if (!actor) return res.status(404).json({ message: 'Actor not found' });
+  broadcastActor(actor, REALTIME_ACTION.UPDATED);
   res.json(actor);
 }
 
 // DELETE /api/actor/:id (super admin)
 async function remove(req, res) {
+  const existing = await actorRepository.findById(req.params.id);
   await actorRepository.remove(req.params.id);
+  broadcastActor(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

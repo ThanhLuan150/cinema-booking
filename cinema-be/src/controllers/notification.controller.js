@@ -1,4 +1,6 @@
 const notificationRepository = require('../repositories/notification.repository');
+const { emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 
 // Ticket 25 — the customer-facing notification history. Every endpoint is scoped to the
@@ -27,12 +29,16 @@ async function unreadCount(req, res) {
 async function markRead(req, res) {
   const updated = await notificationRepository.markRead(req.params.id, req.account.accountId);
   if (!updated) return res.status(404).json({ message: 'Notification not found' });
+  // Keeps a second tab (or a phone) from still showing the unread badge for something the
+  // customer just read here. Goes only to their own account room.
+  emitToAccount(req.account.accountId, REALTIME_EVENT.NOTIFICATION_READ, { id: updated.id });
   res.json(updated);
 }
 
 // PATCH /api/notifications/read-all -> { updated }
 async function markAllRead(req, res) {
   const updated = await notificationRepository.markAllRead(req.account.accountId);
+  emitToAccount(req.account.accountId, REALTIME_EVENT.NOTIFICATION_READ, { id: null });
   res.json({ updated });
 }
 

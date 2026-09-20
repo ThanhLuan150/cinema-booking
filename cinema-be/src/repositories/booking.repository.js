@@ -19,7 +19,8 @@ const comboOrderRepository = require('./comboOrder.repository');
 const nextId = require('../utils/nextId');
 const { generateQrToken } = require('../utils/qrToken');
 const { sendInvoiceEmail } = require('../utils/mailer');
-const { emitToOwner } = require('../utils/socket');
+const { emitToOwner, emitToAdmin, emitToAccount, emitToBranch, emitToSchedule, emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 const pricingEngine = require('../services/pricingEngine');
 const loyaltyService = require('../services/loyaltyService');
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
@@ -236,12 +237,29 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
     });
   }
 
+  // The seats are BOOKED now — push the live seat map before anything else so a second customer
+  // staring at the same grid stops trying to take them.
+  broadcastSeatUpdate(await Ticket.find({ id: { $in: ticketIds.map(Number) } }, { schedule_id: 1, seat_code: 1 }), 'BOOKED');
+
   if (firstTicket) {
     const schedule = await Schedule.findOne({ id: firstTicket.schedule_id });
     const room = schedule ? await Room.findOne({ id: schedule.room_id }) : null;
     const branch = room ? await Branch.findOne({ id: room.cinema_id }) : null;
     if (branch) {
-      emitToOwner(branch.owner_id, 'booking:new', { branchId: branch.id, amount: totalPrice });
+      // Two events rather than one on two channels, because the branch's owner is in both the
+      // `owner:` and the `branch:` room and would otherwise be told twice (see utils/socket.js).
+      // The split also keeps the takings figure where it belongs: `booking:new` carries `amount`
+      // and goes to the owner and SUPER_ADMIN only, mirroring the report.viewFinancial gate,
+      // while the branch's staff get the amount-free `booking:updated` for their queues.
+      emitToOwner(branch.owner_id, REALTIME_EVENT.BOOKING_NEW, { branchId: branch.id, amount: totalPrice });
+      emitToAdmin(REALTIME_EVENT.BOOKING_NEW, { branchId: branch.id, amount: totalPrice });
+      emitToBranch(branch.id, REALTIME_EVENT.BOOKING_UPDATED, {
+        action: REALTIME_ACTION.CREATED,
+        bookingId: booking.id,
+        code: booking.code,
+        branchId: branch.id,
+        scheduleId: firstTicket.schedule_id,
+      });
     }
   }
 
@@ -277,22 +295,55 @@ async function findScheduleById(id) {
 }
 
 async function updateTicketStatus(id, status) {
-  return Ticket.updateOne({ id }, { $set: { status } });
+  const result = await Ticket.updateOne({ id }, { $set: { status } });
+  const ticket = await Ticket.findOne({ id }, { schedule_id: 1, seat_code: 1 });
+  if (ticket) {
+    broadcastSeatUpdate([ticket], status === Ticket.STATUS.AVAILABLE ? 'AVAILABLE' : 'BOOKED');
+  }
+  return result;
 }
 
 async function findTicketsBySeatCodes(scheduleId, seatCodes) {
   return Ticket.find({ schedule_id: Number(scheduleId), seat_code: { $in: seatCodes } });
 }
 
+// Every seat-status change in the app funnels through one of the mutators below, so this is the
+// single place that pushes the live seat map to everyone currently looking at that showtime
+// (customer web, kiosk and box office alike). The payload deliberately carries no identity — only
+// seat codes and their new status — so the `schedule:<id>` room is safe for anonymous sockets;
+// a client that needs to know whether a hold is its own refetches the grid, where the server
+// still computes `held_by_me`.
+function broadcastSeatUpdate(tickets, status) {
+  const seatCodesBySchedule = new Map();
+  for (const ticket of tickets || []) {
+    if (!ticket || !ticket.schedule_id) continue;
+    if (!seatCodesBySchedule.has(ticket.schedule_id)) seatCodesBySchedule.set(ticket.schedule_id, []);
+    seatCodesBySchedule.get(ticket.schedule_id).push(ticket.seat_code);
+  }
+  for (const [scheduleId, seatCodes] of seatCodesBySchedule) {
+    emitToSchedule(scheduleId, REALTIME_EVENT.SEAT_UPDATED, { scheduleId, seatCodes, status });
+  }
+}
+
 async function timeoutExpiredHolds(filter) {
+  // Read the rows before they flip so the broadcast below knows which seats freed up; the sweep
+  // runs over every schedule at once, so an id-less `updateMany` result would tell us nothing.
+  const expiring = await Ticket.find(
+    { ...filter, status: Ticket.STATUS.HELD, held_until: { $lt: new Date() } },
+    { schedule_id: 1, seat_code: 1 },
+  );
+
   await Ticket.updateMany(
     { ...filter, status: Ticket.STATUS.HELD, held_until: { $lt: new Date() } },
     { $set: { status: Ticket.STATUS.TIMEOUT } },
   );
-  return Ticket.updateMany(
+  const result = await Ticket.updateMany(
     { ...filter, status: Ticket.STATUS.TIMEOUT },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
+
+  broadcastSeatUpdate(expiring, 'AVAILABLE');
+  return result;
 }
 
 async function expireHeldTickets(scheduleId) {
@@ -304,14 +355,22 @@ async function expireAllHeldTickets() {
 }
 
 async function timeoutTicketsByIds(ticketIds) {
+  const expiring = await Ticket.find(
+    { id: { $in: ticketIds.map(Number) }, status: Ticket.STATUS.HELD },
+    { schedule_id: 1, seat_code: 1 },
+  );
+
   await Ticket.updateMany(
     { id: { $in: ticketIds.map(Number) }, status: Ticket.STATUS.HELD },
     { $set: { status: Ticket.STATUS.TIMEOUT } },
   );
-  return Ticket.updateMany(
+  const result = await Ticket.updateMany(
     { id: { $in: ticketIds.map(Number) }, status: Ticket.STATUS.TIMEOUT },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
+
+  broadcastSeatUpdate(expiring, 'AVAILABLE');
+  return result;
 }
 
 async function holdTickets({ scheduleId, seatCodes, accountId, until }) {
@@ -323,14 +382,26 @@ async function holdTickets({ scheduleId, seatCodes, accountId, until }) {
     },
     { $set: { status: Ticket.STATUS.HELD, held_by: accountId, held_until: until } },
   );
-  return findTicketsBySeatCodes(scheduleId, seatCodes);
+  const tickets = await findTicketsBySeatCodes(scheduleId, seatCodes);
+  // Only the seats this call actually won — the losers of a race are already someone else's hold
+  // and were broadcast when that hold was taken.
+  broadcastSeatUpdate(
+    tickets.filter((t) => t.status === Ticket.STATUS.HELD && t.held_by === accountId),
+    'HELD',
+  );
+  return tickets;
 }
 
 async function releaseTickets({ scheduleId, seatCodes, accountId }) {
+  const releasing = await Ticket.find(
+    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId },
+    { schedule_id: 1, seat_code: 1 },
+  );
   await Ticket.updateMany(
     { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
+  broadcastSeatUpdate(releasing, 'AVAILABLE');
   return findTicketsBySeatCodes(scheduleId, seatCodes);
 }
 
@@ -670,10 +741,15 @@ async function cancelPendingBookingByCode(code) {
 // cancels its sibling Invoice rows. Caller is responsible for authorization + cancellation
 // window policy checks.
 async function cancelBooking(booking, { reason = null } = {}) {
+  const freed = await Ticket.find(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { schedule_id: 1, seat_code: 1 },
+  );
   await Ticket.updateMany(
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
+  broadcastSeatUpdate(freed, 'AVAILABLE');
   await Invoice.updateMany(
     { booking_id: booking.id },
     { $set: { status: 0, ticket_status: Invoice.TICKET_STATUS.CANCELLED } },
@@ -682,10 +758,22 @@ async function cancelBooking(booking, { reason = null } = {}) {
   booking.cancelled_at = new Date();
   if (reason) booking.cancel_reason = reason;
   await booking.save();
+
+  emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, {
+    action: REALTIME_ACTION.STATUS_CHANGED,
+    bookingId: booking.id,
+    code: booking.code,
+    status: booking.status,
+  });
+
   return booking;
 }
 
 async function changeBookingShowtime(booking, { newScheduleId, newTicketIds }) {
+  const freed = await Ticket.find(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { schedule_id: 1, seat_code: 1 },
+  );
   await Ticket.updateMany(
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
@@ -694,6 +782,8 @@ async function changeBookingShowtime(booking, { newScheduleId, newTicketIds }) {
     { id: { $in: newTicketIds } },
     { $set: { status: Ticket.STATUS.BOOKED, held_by: null, held_until: null } },
   );
+  broadcastSeatUpdate(freed, 'AVAILABLE');
+  broadcastSeatUpdate(await Ticket.find({ id: { $in: newTicketIds } }, { schedule_id: 1, seat_code: 1 }), 'BOOKED');
 
   if (booking.status === Booking.STATUS.PAID) {
     const invoices = await Invoice.find({ booking_id: booking.id }).sort({ id: 1 });
@@ -734,14 +824,33 @@ async function markNeedsRescheduleResponse(bookingId, value) {
 async function acceptReschedule(booking) {
   booking.needs_reschedule_response = false;
   await booking.save();
+  // Clears the "awaiting your decision" banner on the customer's other open tabs, and tells the
+  // branch their reschedule has been accepted so the pending list settles on its own.
+  emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, {
+    action: REALTIME_ACTION.UPDATED,
+    bookingId: booking.id,
+    code: booking.code,
+    status: booking.status,
+  });
+  emitToAccount(booking.account_id, REALTIME_EVENT.BOOKING_UPDATED, {
+    action: REALTIME_ACTION.UPDATED,
+    bookingId: booking.id,
+    code: booking.code,
+    status: booking.status,
+  });
   return booking;
 }
 
 async function applyRefund(booking) {
+  const freed = await Ticket.find(
+    { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
+    { schedule_id: 1, seat_code: 1 },
+  );
   await Ticket.updateMany(
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
+  broadcastSeatUpdate(freed, 'AVAILABLE');
   await Invoice.updateMany(
     { booking_id: booking.id },
     { $set: { status: 2, ticket_status: Invoice.TICKET_STATUS.REFUNDED } },
@@ -750,6 +859,13 @@ async function applyRefund(booking) {
   booking.cancelled_at = new Date();
   booking.cancel_reason = 'Refunded';
   await booking.save();
+
+  emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, {
+    action: REALTIME_ACTION.STATUS_CHANGED,
+    bookingId: booking.id,
+    code: booking.code,
+    status: booking.status,
+  });
 
   // Business policy: a refunded booking's earned points are clawed back (see
   // loyaltyService.reversePointsForBooking for exactly how much and why). Never let this

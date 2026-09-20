@@ -5,6 +5,21 @@ const bookingRepository = require('../repositories/booking.repository');
 const cashierShiftService = require('../services/cashierShift.service');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A cash drawer opening or closing changes what the rest of the branch may still edit (a closed
+// shift locks its transactions), so the branch sees it immediately. Cash figures stay out of the
+// payload — the reconciliation endpoint is the only place they are served, behind its own scope.
+function broadcastCashierShift(shift, action) {
+  if (!shift) return;
+  emitBranchEvent(shift.branch_id, REALTIME_EVENT.CASHIER_SHIFT_UPDATED, {
+    action,
+    id: shift.id,
+    employeeId: shift.employee_id,
+    status: shift.status,
+  });
+}
 
 // Every cash figure the client is allowed to send goes through this. `expected_cash` and
 // `difference` are pointedly absent from the request bodies below: they are derived
@@ -85,6 +100,7 @@ async function openShift(req, res) {
     metadata: { employeeId: shift.employee_id, openingCash: shift.opening_cash },
   });
 
+  broadcastCashierShift(shift, REALTIME_ACTION.CREATED);
   res.status(201).json(shift);
 }
 
@@ -150,6 +166,7 @@ async function closeShift(req, res) {
     },
   });
 
+  broadcastCashierShift(closed, REALTIME_ACTION.STATUS_CHANGED);
   res.json(closed);
 }
 

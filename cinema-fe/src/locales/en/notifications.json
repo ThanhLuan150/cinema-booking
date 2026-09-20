@@ -12,7 +12,8 @@
     "newBooking": "New booking received: +{{amount}}đ",
     "showtimeCancelled": "A showtime for one of your bookings has been cancelled.",
     "showtimeRescheduled": "A showtime for one of your bookings has been rescheduled.",
-    "notification": "You have a new notification."
+    "notification": "You have a new notification.",
+    "checkinFailed": "A ticket scan was rejected at the door."
   },
   "toastContainer": {
     "dismiss": "Dismiss"

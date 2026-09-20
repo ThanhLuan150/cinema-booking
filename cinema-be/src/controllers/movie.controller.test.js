@@ -1,4 +1,4 @@
-jest.mock('../utils/socket', () => ({ emitPublic: jest.fn(), emitToAdmin: jest.fn(), emitToOwner: jest.fn(), emitToAccount: jest.fn() }));
+jest.mock('../utils/socket'); // src/utils/__mocks__/socket.js — every emit helper, auto-stubbed
 jest.mock('../utils/uploadImage', () => ({
   uploadImage: jest.fn().mockResolvedValue('https://cdn.example.com/avatar.jpg'),
   uploadTrailer: jest.fn().mockResolvedValue('https://cdn.example.com/trailer.mp4'),

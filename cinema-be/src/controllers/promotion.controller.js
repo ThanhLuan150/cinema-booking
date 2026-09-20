@@ -3,6 +3,22 @@ const Promotion = require('../models/Promotion');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { isPromotionEligible, computePromotionDiscount } = require('../utils/promotionPricing');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Promotions are what a customer sees offered at checkout, and anyone can be mid-checkout —
+// including an anonymous browser — so a promotion being retired has to go out publicly. Only the
+// code and headline status travel; the discount rules are re-read through the validate endpoint.
+function broadcastPromotion(promotion, action) {
+  if (!promotion) return;
+  emitPublic(REALTIME_EVENT.PROMOTION_UPDATED, {
+    action,
+    id: promotion.id,
+    code: promotion.code,
+    status: promotion.status,
+    branchIds: promotion.branch_ids || [],
+  });
+}
 
 const DISCOUNT_TYPES = Object.values(Promotion.DISCOUNT_TYPE);
 const STATUSES = Object.values(Promotion.STATUS);
@@ -234,6 +250,7 @@ async function create(req, res) {
     status: STATUSES.includes(status) ? status : Promotion.STATUS.ACTIVE,
     ...normalizedScopes,
   });
+  broadcastPromotion(promotion, REALTIME_ACTION.CREATED);
   res.status(201).json(promotion);
 }
 
@@ -296,6 +313,7 @@ async function update(req, res) {
   }
 
   const updated = await promotionRepository.updateFields(promotion.id, updates);
+  broadcastPromotion(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -308,6 +326,7 @@ async function remove(req, res) {
   }
 
   await promotionRepository.remove(promotion.id);
+  broadcastPromotion(promotion, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

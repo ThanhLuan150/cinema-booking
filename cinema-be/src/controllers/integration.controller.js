@@ -2,6 +2,21 @@ const integrationRepository = require('../repositories/integration.repository');
 const Integration = require('../models/Integration');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitToAdmin } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Integrations are SUPER_ADMIN-only, so the admin room is the whole audience. `config` and
+// `secret_env_var` never travel on the socket — the console re-reads the row it is allowed to.
+function broadcastIntegration(integration, action) {
+  if (!integration) return;
+  emitToAdmin(REALTIME_EVENT.INTEGRATION_UPDATED, {
+    action,
+    id: integration.id,
+    name: integration.name,
+    provider: integration.provider,
+    status: integration.status,
+  });
+}
 
 const PROVIDER_RE = /^[A-Z0-9][A-Z0-9_-]{1,31}$/;
 
@@ -71,6 +86,7 @@ async function create(req, res) {
       secret_env_var: req.body.secret_env_var ? String(req.body.secret_env_var).trim() : null,
       description: req.body.description ? String(req.body.description).trim() : '',
     });
+    broadcastIntegration(integration, REALTIME_ACTION.CREATED);
     res.status(201).json(integration);
   } catch (err) {
     if (err.code === 11000) {
@@ -110,6 +126,7 @@ async function update(req, res) {
 
   try {
     const updated = await integrationRepository.updateFields(integration.id, updates);
+    broadcastIntegration(updated, REALTIME_ACTION.UPDATED);
     res.json(updated);
   } catch (err) {
     if (err.code === 11000) {
@@ -124,6 +141,7 @@ async function remove(req, res) {
   const integration = await integrationRepository.findById(req.params.id);
   if (!integration) return res.status(404).json({ message: 'Integration not found' });
   await integrationRepository.remove(integration.id);
+  broadcastIntegration(integration, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

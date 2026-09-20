@@ -2,6 +2,15 @@ const directorRepository = require('../repositories/director.repository');
 const nextId = require('../utils/nextId');
 const { uploadImage } = require('../utils/uploadImage');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Part of the public movie catalogue (credits), so this goes out to everyone, including the
+// anonymous visitors reading a movie page right now.
+function broadcastDirector(row, action) {
+  if (!row) return;
+  emitPublic(REALTIME_EVENT.CATALOGUE_UPDATED, { scope: 'DIRECTOR', action, id: row.id });
+}
 
 // GET /api/director?page=&limit=
 async function list(req, res) {
@@ -34,6 +43,7 @@ async function create(req, res) {
     dob: dob || null,
     nationality: nationality || '',
   });
+  broadcastDirector(director, REALTIME_ACTION.CREATED);
   res.status(201).json(director);
 }
 
@@ -46,12 +56,15 @@ async function update(req, res) {
   }
   const director = await directorRepository.updateFields(req.params.id, updates);
   if (!director) return res.status(404).json({ message: 'Director not found' });
+  broadcastDirector(director, REALTIME_ACTION.UPDATED);
   res.json(director);
 }
 
 // DELETE /api/director/:id (super admin)
 async function remove(req, res) {
+  const existing = await directorRepository.findById(req.params.id);
   await directorRepository.remove(req.params.id);
+  broadcastDirector(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

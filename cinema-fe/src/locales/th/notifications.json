@@ -9,7 +9,11 @@
     "branchActivated": "สาขา \"{{name}}\" ได้รับการเปิดใช้งานแล้ว",
     "branchDisabled": "สาขา \"{{name}}\" ถูกปิดใช้งานแล้ว",
     "branchMaintenance": "สาขา \"{{name}}\" อยู่ในสถานะปรับปรุงแล้ว",
-    "newBooking": "มีการจองใหม่: +{{amount}}đ"
+    "newBooking": "มีการจองใหม่: +{{amount}}đ",
+    "showtimeCancelled": "รอบฉายในการจองของคุณถูกยกเลิกแล้ว",
+    "showtimeRescheduled": "รอบฉายในการจองของคุณถูกเลื่อนเวลาแล้ว",
+    "notification": "คุณมีการแจ้งเตือนใหม่",
+    "checkinFailed": "การสแกนตั๋วที่ทางเข้าถูกปฏิเสธ"
   },
   "toastContainer": {
     "dismiss": "ปิด"

@@ -4,9 +4,27 @@ const userRepository = require('../repositories/user.repository');
 const SupportTicket = require('../models/SupportTicket');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 const CATEGORIES = SupportTicket.CATEGORIES;
 const STATUSES = SupportTicket.STATUSES;
+
+// Two audiences for one row: the branch's service desk (so a ticket another agent just claimed
+// stops looking free) and the customer it belongs to, who only ever gets their own row.
+function broadcastSupportTicket(ticket, action) {
+  if (!ticket) return;
+  const payload = {
+    action,
+    id: ticket.id,
+    status: ticket.status,
+    category: ticket.category,
+    subject: ticket.subject,
+    assignedEmployeeId: ticket.assigned_employee_id ?? null,
+  };
+  emitBranchEvent(ticket.branch_id, REALTIME_EVENT.SUPPORT_UPDATED, payload);
+  emitToAccount(ticket.customer_id, REALTIME_EVENT.SUPPORT_UPDATED, payload);
+}
 
 // GET /api/support-tickets?status=&category=&customerId=&assignedEmployeeId=&page=&limit=
 // (supportTicket.read permission, branch-scoped by the route's resolveListAccess -> req.branchId)
@@ -59,6 +77,7 @@ async function create(req, res) {
     created_by: req.account.accountId,
   });
 
+  broadcastSupportTicket(ticket, REALTIME_ACTION.CREATED);
   res.status(201).json(ticket);
 }
 
@@ -85,6 +104,7 @@ async function update(req, res) {
   }
 
   const updated = await supportTicketRepository.updateFields(ticket.id, updates);
+  broadcastSupportTicket(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -105,6 +125,7 @@ async function claim(req, res) {
       code: 'SUPPORT_TICKET_NOT_CLAIMABLE',
     });
   }
+  broadcastSupportTicket(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -130,6 +151,7 @@ async function assign(req, res) {
       code: 'SUPPORT_TICKET_NOT_ASSIGNABLE',
     });
   }
+  broadcastSupportTicket(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -146,6 +168,7 @@ async function resolve(req, res) {
       code: 'SUPPORT_TICKET_NOT_IN_PROGRESS',
     });
   }
+  broadcastSupportTicket(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -161,6 +184,7 @@ async function close(req, res) {
       code: 'SUPPORT_TICKET_NOT_RESOLVED',
     });
   }
+  broadcastSupportTicket(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -177,6 +201,7 @@ async function remove(req, res) {
   }
 
   await supportTicketRepository.remove(ticket.id);
+  broadcastSupportTicket(ticket, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

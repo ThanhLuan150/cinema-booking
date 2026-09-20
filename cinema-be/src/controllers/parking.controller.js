@@ -6,11 +6,21 @@ const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { calculateParkingFee } = require('../services/parkingFee');
 const { generateParkingTicketCode } = require('../utils/parkingTicketCode');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 const AREA_STATUSES = ParkingArea.STATUSES;
 const SLOT_STATUSES = ParkingSlot.STATUSES;
 const VEHICLE_TYPES = ParkingSlot.VEHICLE_TYPES;
 const TICKET_STATUSES = ParkingTicket.STATUSES;
+
+// One event for the whole parking domain, discriminated by `scope`, because the operator screen
+// renders areas, slots and tickets as a single live board: a slot freeing up and the ticket that
+// freed it are the same piece of news. Slots carry no branch of their own, so the caller resolves
+// it from the owning area.
+function broadcastParking(branchId, scope, action, payload) {
+  emitBranchEvent(branchId, REALTIME_EVENT.PARKING_UPDATED, { scope, action, ...payload });
+}
 
 // ---- Parking areas --------------------------------------------------------
 
@@ -53,6 +63,7 @@ async function createArea(req, res) {
     capacity: req.body.capacity === undefined ? 0 : Number(req.body.capacity),
     status: req.body.status || 'ACTIVE',
   });
+  broadcastParking(area.branch_id, 'AREA', REALTIME_ACTION.CREATED, { id: area.id, name: area.name, status: area.status });
   res.status(201).json(area);
 }
 
@@ -80,6 +91,7 @@ async function updateArea(req, res) {
   }
 
   const updated = await parkingRepository.updateArea(area.id, updates);
+  broadcastParking(updated.branch_id, 'AREA', REALTIME_ACTION.UPDATED, { id: updated.id, name: updated.name, status: updated.status });
   res.json(updated);
 }
 
@@ -94,6 +106,7 @@ async function removeArea(req, res) {
   }
 
   await parkingRepository.removeArea(area.id);
+  broadcastParking(area.branch_id, 'AREA', REALTIME_ACTION.DELETED, { id: area.id, name: area.name });
   res.json({ message: 'Deleted' });
 }
 
@@ -154,6 +167,12 @@ async function createSlot(req, res) {
     vehicle_type: req.body.vehicle_type || 'CAR',
     status: req.body.status || 'AVAILABLE',
   });
+  broadcastParking(area.branch_id, 'SLOT', REALTIME_ACTION.CREATED, {
+    id: slot.id,
+    areaId: area.id,
+    slotCode: slot.slot_code,
+    status: slot.status,
+  });
   res.status(201).json(slot);
 }
 
@@ -194,6 +213,13 @@ async function updateSlot(req, res) {
   }
 
   const updated = await parkingRepository.updateSlot(slot.id, updates);
+  const slotArea = await parkingRepository.findAreaById(updated.parking_area_id);
+  broadcastParking(slotArea ? slotArea.branch_id : null, 'SLOT', REALTIME_ACTION.UPDATED, {
+    id: updated.id,
+    areaId: updated.parking_area_id,
+    slotCode: updated.slot_code,
+    status: updated.status,
+  });
   res.json(updated);
 }
 
@@ -208,6 +234,12 @@ async function removeSlot(req, res) {
   }
 
   await parkingRepository.removeSlot(slot.id);
+  const removedArea = await parkingRepository.findAreaById(slot.parking_area_id);
+  broadcastParking(removedArea ? removedArea.branch_id : null, 'SLOT', REALTIME_ACTION.DELETED, {
+    id: slot.id,
+    areaId: slot.parking_area_id,
+    slotCode: slot.slot_code,
+  });
   res.json({ message: 'Deleted' });
 }
 
@@ -278,6 +310,12 @@ async function enterVehicle(req, res) {
       status: 'ACTIVE',
       fee: 0,
     });
+    broadcastParking(ticket.branch_id, 'TICKET', REALTIME_ACTION.CREATED, {
+      id: ticket.id,
+      ticketCode: ticket.ticket_code,
+      status: ticket.status,
+      slotId: ticket.slot_id,
+    });
     res.status(201).json(ticket);
   } catch (err) {
     // Compensating release so the claim above is not left dangling.
@@ -312,6 +350,13 @@ async function exitVehicle(req, res) {
   if (!updated) {
     return res.status(409).json({ message: 'Ticket is no longer ACTIVE', code: 'TICKET_NOT_ACTIVE' });
   }
+  broadcastParking(updated.branch_id, 'TICKET', REALTIME_ACTION.STATUS_CHANGED, {
+    id: updated.id,
+    ticketCode: updated.ticket_code,
+    status: updated.status,
+    slotId: updated.slot_id,
+    fee: updated.fee,
+  });
   res.json(updated);
 }
 
@@ -334,6 +379,13 @@ async function payTicket(req, res) {
   }
 
   await parkingRepository.releaseSlot(updated.slot_id);
+  broadcastParking(updated.branch_id, 'TICKET', REALTIME_ACTION.STATUS_CHANGED, {
+    id: updated.id,
+    ticketCode: updated.ticket_code,
+    status: updated.status,
+    slotId: updated.slot_id,
+    fee: updated.fee,
+  });
   res.json(updated);
 }
 
@@ -356,6 +408,13 @@ async function cancelTicket(req, res) {
   }
 
   await parkingRepository.releaseSlot(updated.slot_id);
+  broadcastParking(updated.branch_id, 'TICKET', REALTIME_ACTION.STATUS_CHANGED, {
+    id: updated.id,
+    ticketCode: updated.ticket_code,
+    status: updated.status,
+    slotId: updated.slot_id,
+    fee: updated.fee,
+  });
   res.json(updated);
 }
 

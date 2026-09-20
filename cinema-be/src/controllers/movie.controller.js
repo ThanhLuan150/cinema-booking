@@ -2,6 +2,7 @@ const movieRepository = require('../repositories/movie.repository');
 const Movie = require('../models/Movie');
 const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 const { withCategories } = require('../utils/withCategories');
 const { withActorsAndDirectors } = require('../utils/withActorsAndDirectors');
 const { uploadImage, uploadTrailer } = require('../utils/uploadImage');
@@ -180,7 +181,7 @@ async function create(req, res) {
     metadata: { name: movie.name },
   });
 
-  emitPublic('movie:new', movie);
+  emitPublic(REALTIME_EVENT.MOVIE_NEW, movie);
   res.status(201).json(movie);
 }
 
@@ -253,6 +254,9 @@ async function update(req, res) {
     metadata: { fields: Object.keys(updates) },
   });
 
+  // The movie catalogue is public, so this goes out to every connected client — including the
+  // anonymous ones browsing the home page, who have no room of their own.
+  emitPublic(REALTIME_EVENT.MOVIE_UPDATED, { action: REALTIME_ACTION.UPDATED, id: movie.id, name: movie.name });
   res.json(movie);
 }
 
@@ -271,6 +275,7 @@ async function remove(req, res) {
     metadata: { name: existing.name },
   });
 
+  emitPublic(REALTIME_EVENT.MOVIE_REMOVED, { action: REALTIME_ACTION.DELETED, id: existing.id, name: existing.name });
   res.json({ message: 'Deleted' });
 }
 

@@ -1,6 +1,22 @@
 const MembershipLevel = require('../models/MembershipLevel');
 const Account = require('../models/Account');
 const nextId = require('../utils/nextId');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Membership tiers decide the discount a signed-in customer is quoted, and the tier ladder is
+// shown on the public membership page, so the whole change goes out publicly.
+function broadcastMembershipLevel(level, action) {
+  if (!level) return;
+  emitPublic(REALTIME_EVENT.MEMBERSHIP_UPDATED, {
+    action,
+    id: level.id,
+    code: level.code,
+    name: level.name,
+    minPoints: level.min_points,
+    active: level.active,
+  });
+}
 
 // GET /api/membership-levels -> every tier (including inactive), ascending by threshold.
 // Readable by any authenticated user (customer-facing tier/benefits comparison).
@@ -36,6 +52,7 @@ async function create(req, res) {
     min_points: Number(min_points),
     active: active === undefined ? true : Boolean(active),
   });
+  broadcastMembershipLevel(level, REALTIME_ACTION.CREATED);
   res.status(201).json(level);
 }
 
@@ -54,6 +71,7 @@ async function update(req, res) {
   if (req.body.active !== undefined) updates.active = Boolean(req.body.active);
 
   const updated = await MembershipLevel.findOneAndUpdate({ id: level.id }, { $set: updates }, { new: true });
+  broadcastMembershipLevel(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -63,6 +81,7 @@ async function remove(req, res) {
   if (!level) return res.status(404).json({ message: 'Level not found' });
 
   await MembershipLevel.deleteOne({ id: level.id });
+  broadcastMembershipLevel(level, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

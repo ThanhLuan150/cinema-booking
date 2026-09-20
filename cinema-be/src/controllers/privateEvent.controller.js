@@ -8,6 +8,8 @@ const employeeRepository = require('../repositories/employee.repository');
 const { recordAudit } = require('../services/auditLog.service');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent, emitToAccount, emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 const {
   parseEventWindow,
   coveredDateStrs,
@@ -103,7 +105,21 @@ async function checkRoomAvailability({ roomId, start, end, excludeEventId }) {
   return { ok: true };
 }
 
-function auditBranch(req, action, event, metadata) {
+// Every REQUESTED -> QUOTED -> APPROVED -> PAID -> CONFIRMED hop already funnels through here to
+// write its audit row, which makes it the one place that can keep the branch's review queue and
+// the requesting customer's own view in step without repeating the call in seven handlers.
+function auditAndBroadcast(req, action, event, metadata) {
+  const payload = {
+    action: REALTIME_ACTION.STATUS_CHANGED,
+    id: event.id,
+    status: event.status,
+    roomId: event.room_id,
+    startAt: event.start_at,
+    endAt: event.end_at,
+  };
+  emitBranchEvent(event.branch_id, REALTIME_EVENT.PRIVATE_EVENT_UPDATED, payload);
+  emitToAccount(event.customer_id, REALTIME_EVENT.PRIVATE_EVENT_UPDATED, payload);
+
   return recordAudit({
     req,
     action,
@@ -111,6 +127,20 @@ function auditBranch(req, action, event, metadata) {
     entityId: event.id,
     branchId: event.branch_id,
     metadata,
+  });
+}
+
+// EventPackage is a company-wide catalogue, not a branch resource, and the customer request
+// wizard reads it live — so an admin retiring a package has to reach anonymous browsers too,
+// which only the public channel does. `scope` keeps it apart from the per-event payload above.
+function broadcastPackage(pkg, action) {
+  if (!pkg) return;
+  emitPublic(REALTIME_EVENT.PRIVATE_EVENT_UPDATED, {
+    scope: 'PACKAGE',
+    action,
+    id: pkg.id,
+    name: pkg.name,
+    status: pkg.status,
   });
 }
 
@@ -183,7 +213,7 @@ async function requestEvent(req, res) {
     notes: strOr(req.body.notes),
   });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_REQUESTED, event, {
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_REQUESTED, event, {
     room_id,
     package_id,
     guest_count,
@@ -234,7 +264,7 @@ async function payEvent(req, res) {
     return res.status(409).json({ message: 'Event is no longer APPROVED', code: 'EVENT_NOT_APPROVED' });
   }
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_PAID, updated, { amount: updated.quoted_amount });
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_PAID, updated, { amount: updated.quoted_amount });
   res.json(updated);
 }
 
@@ -260,7 +290,7 @@ async function cancelOwnEvent(req, res) {
   });
   if (!updated) return res.status(409).json({ message: 'Event can no longer be cancelled', code: 'EVENT_NOT_CANCELLABLE' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_CANCELLED, updated, { by: 'CUSTOMER', reason: updated.cancel_reason });
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_CANCELLED, updated, { by: 'CUSTOMER', reason: updated.cancel_reason });
   res.json(updated);
 }
 
@@ -308,7 +338,7 @@ async function quoteEvent(req, res) {
   });
   if (!updated) return res.status(409).json({ message: 'Event is no longer REQUESTED', code: 'EVENT_NOT_REQUESTED' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_QUOTED, updated, { quoted_amount: amount });
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_QUOTED, updated, { quoted_amount: amount });
   res.json(updated);
 }
 
@@ -338,7 +368,7 @@ async function approveEvent(req, res) {
   });
   if (!updated) return res.status(409).json({ message: 'Event is no longer QUOTED', code: 'EVENT_NOT_QUOTED' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_APPROVED, updated, {});
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_APPROVED, updated, {});
   res.json(updated);
 }
 
@@ -355,7 +385,7 @@ async function confirmEvent(req, res) {
   });
   if (!updated) return res.status(409).json({ message: 'Event is no longer PAID', code: 'EVENT_NOT_PAID' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_CONFIRMED, updated, {});
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_CONFIRMED, updated, {});
   res.json(updated);
 }
 
@@ -372,7 +402,7 @@ async function completeEvent(req, res) {
   });
   if (!updated) return res.status(409).json({ message: 'Event is no longer CONFIRMED', code: 'EVENT_NOT_CONFIRMED' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_COMPLETED, updated, {});
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_COMPLETED, updated, {});
   res.json(updated);
 }
 
@@ -397,7 +427,7 @@ async function rejectEvent(req, res) {
   );
   if (!updated) return res.status(409).json({ message: 'Event can no longer be cancelled', code: 'EVENT_NOT_CANCELLABLE' });
 
-  await auditBranch(req, AuditLog.ACTION.PRIVATE_EVENT_CANCELLED, updated, { by: 'ADMIN', reason: updated.cancel_reason });
+  await auditAndBroadcast(req, AuditLog.ACTION.PRIVATE_EVENT_CANCELLED, updated, { by: 'ADMIN', reason: updated.cancel_reason });
   res.json(updated);
 }
 
@@ -449,6 +479,7 @@ async function createPackage(req, res) {
     perks: Array.isArray(req.body.perks) ? req.body.perks.map((p) => String(p).trim()).filter(Boolean) : [],
     status: req.body.status || 'ACTIVE',
   });
+  broadcastPackage(pkg, REALTIME_ACTION.CREATED);
   res.status(201).json(pkg);
 }
 
@@ -491,6 +522,7 @@ async function updatePackage(req, res) {
   }
 
   const updated = await privateEventRepository.updatePackage(pkg.id, updates);
+  broadcastPackage(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -508,6 +540,7 @@ async function removePackage(req, res) {
   }
 
   await privateEventRepository.removePackage(pkg.id);
+  broadcastPackage(pkg, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

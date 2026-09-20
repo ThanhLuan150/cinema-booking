@@ -2,6 +2,22 @@ const seatRepository = require('../repositories/seat.repository');
 const roomRepository = require('../repositories/room.repository');
 const Seat = require('../models/Seat');
 const nextId = require('../utils/nextId');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A room's seat map decides whether a showtime can be scheduled there at all and what the seat
+// grid looks like, so the branch's programming screen has to follow it. Rides room:updated with
+// a SEAT_MAP scope because that is the screen showing both.
+async function broadcastSeatMap(roomId, action) {
+  const room = await roomRepository.findById(roomId);
+  if (!room) return;
+  emitBranchEvent(room.cinema_id, REALTIME_EVENT.ROOM_UPDATED, {
+    scope: 'SEAT_MAP',
+    action,
+    id: room.id,
+    name: room.name,
+  });
+}
 
 // GET /api/seat/room/:roomId -> seat map for a room (public — needed to render the seat picker
 // and to let customers see seat availability/status before booking)
@@ -44,6 +60,7 @@ async function generate(req, res) {
   }
   const created = await seatRepository.insertMany(seats);
   await roomRepository.updateFields(roomId, { capacity: created.length });
+  await broadcastSeatMap(roomId, REALTIME_ACTION.UPDATED);
   res.status(201).json(created);
 }
 
@@ -62,6 +79,7 @@ async function update(req, res) {
   }
   const seat = await seatRepository.updateFields(req.params.id, updates);
   if (!seat) return res.status(404).json({ message: 'Seat not found' });
+  await broadcastSeatMap(seat.room_id, REALTIME_ACTION.UPDATED);
   res.json(seat);
 }
 

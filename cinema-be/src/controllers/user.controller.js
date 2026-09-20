@@ -2,6 +2,18 @@ const userRepository = require('../repositories/user.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const permissionService = require('../services/permission.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitToAdmin, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Two audiences that do not overlap: the admin user list, and the account itself — being blocked
+// or having your role changed is something your own open session needs to act on immediately,
+// not at the next navigation. Only ids and the flags a client acts on travel; never the email.
+function broadcastUser(account, action) {
+  if (!account) return;
+  const payload = { action, id: account.id, role: account.role, status: account.status, approved: account.approved };
+  emitToAdmin(REALTIME_EVENT.USER_UPDATED, payload);
+  emitToAccount(account.id, REALTIME_EVENT.USER_UPDATED, payload);
+}
 
 // Employees additionally need to know which cinema they're staffed at, since every
 // employee-scoped endpoint (schedules, counter-sale, check-in) is filtered by it.
@@ -66,7 +78,9 @@ async function getById(req, res) {
 
 // DELETE /api/users/:id (admin only)
 async function remove(req, res) {
+  const existing = await userRepository.findById(req.params.id);
   await userRepository.remove(req.params.id);
+  broadcastUser(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 
@@ -74,6 +88,7 @@ async function remove(req, res) {
 async function block(req, res) {
   const account = await userRepository.updateFields(req.params.id, { status: 0 });
   if (!account) return res.status(404).json({ message: 'User not found' });
+  broadcastUser(account, REALTIME_ACTION.STATUS_CHANGED);
   res.json(account);
 }
 
@@ -82,6 +97,7 @@ async function unblock(req, res) {
   const status = req.body.status !== undefined ? Number(req.body.status) : 1;
   const account = await userRepository.updateFields(req.params.id, { status });
   if (!account) return res.status(404).json({ message: 'User not found' });
+  broadcastUser(account, REALTIME_ACTION.STATUS_CHANGED);
   res.json(account);
 }
 
@@ -95,6 +111,7 @@ async function approve(req, res) {
     await userRepository.approveOwnedPendingCinemas(account.id);
   }
 
+  broadcastUser(account, REALTIME_ACTION.STATUS_CHANGED);
   res.json(account);
 }
 
@@ -108,6 +125,7 @@ async function updateRole(req, res) {
   // there's no pending cinema whose approval would otherwise flip this back to true.
   const account = await userRepository.updateFields(req.params.id, { role, approved: true });
   if (!account) return res.status(404).json({ message: 'User not found' });
+  broadcastUser(account, REALTIME_ACTION.STATUS_CHANGED);
   res.json(account);
 }
 

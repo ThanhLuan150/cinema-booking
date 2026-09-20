@@ -1,8 +1,25 @@
 const inventoryRepository = require('../repositories/inventory.repository');
 const Inventory = require('../models/Inventory');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 const VALID_STATUSES = Object.values(Inventory.STATUS);
+
+// Stock moves are the one thing a concession counter cannot afford to learn late: two cashiers
+// selling from the same shelf both need the new count. LOW_STOCK/OUT_OF_STOCK is carried in the
+// same event rather than a separate alert, so the client decides whether to warn.
+function broadcastInventory(inventory, action) {
+  if (!inventory) return;
+  emitBranchEvent(inventory.branch_id, REALTIME_EVENT.INVENTORY_UPDATED, {
+    action,
+    id: inventory.id,
+    item: inventory.item,
+    quantity: inventory.quantity,
+    minimumQuantity: inventory.minimum_quantity,
+    status: inventory.status,
+  });
+}
 
 // BRANCH: caller must own the item's branch (Branch Admin). ALL: no restriction (Super Admin).
 // There is no OWN/staff scope — inventory is warehouse management, Branch-Admin-only.
@@ -95,6 +112,7 @@ async function create(req, res) {
     minimumQuantity: minQty,
     unit,
   });
+  broadcastInventory(inventory, REALTIME_ACTION.CREATED);
   res.status(201).json(inventory);
 }
 
@@ -110,12 +128,15 @@ async function update(req, res) {
   }
   const inventory = await inventoryRepository.updateFields(req.params.id, updates);
   if (!inventory) return res.status(404).json({ message: 'Inventory item not found' });
+  broadcastInventory(inventory, REALTIME_ACTION.UPDATED);
   res.json(inventory);
 }
 
 // DELETE /api/inventory/:id
 async function remove(req, res) {
+  const existing = await inventoryRepository.findById(req.params.id);
   await inventoryRepository.remove(req.params.id);
+  broadcastInventory(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 
@@ -130,6 +151,7 @@ async function receive(req, res) {
     performedBy: req.account.accountId,
   });
   if (!updated) return res.status(404).json({ message: 'Inventory item not found' });
+  broadcastInventory(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -147,6 +169,7 @@ async function adjust(req, res) {
     performedBy: req.account.accountId,
   });
   if (!updated) return res.status(404).json({ message: 'Inventory item not found' });
+  broadcastInventory(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -164,6 +187,7 @@ async function deduct(req, res) {
   if (updated.insufficientStock) {
     return res.status(400).json({ message: 'Insufficient stock', code: 'INSUFFICIENT_STOCK' });
   }
+  broadcastInventory(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 

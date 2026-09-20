@@ -1,5 +1,5 @@
 jest.mock('../utils/mailer', () => ({ sendInvoiceEmail: jest.fn().mockResolvedValue({}) }));
-jest.mock('../utils/socket', () => ({ emitToOwner: jest.fn() }));
+jest.mock('../utils/socket'); // src/utils/__mocks__/socket.js — every emit helper, auto-stubbed
 
 const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
 const bookingRepository = require('./booking.repository');
@@ -151,6 +151,23 @@ describe('booking.repository', () => {
         seats: ['A1', 'A2'],
       }));
       expect(socket.emitToOwner).toHaveBeenCalledWith(77, 'booking:new', expect.objectContaining({ branchId: 1 }));
+    });
+
+    // The takings figure follows the same line report.viewFinancial draws: booking:new carries
+    // `amount` and goes to the owner and super admin, while the branch's employees get the
+    // amount-free booking:updated. It is also why the owner — who is in the branch room too —
+    // is not told twice about the same sale.
+    it('keeps the sale amount off the branch channel', async () => {
+      await seedOrder();
+
+      await bookingRepository.finalizeMomoOrder('ORDER-AMT', { ticketIds: [1], totalPrice: 100000, accountId: 10 });
+
+      expect(socket.emitToAdmin).toHaveBeenCalledWith('booking:new', expect.objectContaining({ amount: 100000 }));
+
+      const branchCalls = socket.emitToBranch.mock.calls.filter((call) => call[1] === 'booking:updated');
+      expect(branchCalls).toHaveLength(1);
+      expect(branchCalls[0][2]).not.toHaveProperty('amount');
+      expect(socket.emitToBranch).not.toHaveBeenCalledWith(expect.anything(), 'booking:new', expect.anything());
     });
 
     it('increments used_count when a voucher code is present', async () => {
@@ -563,6 +580,88 @@ describe('booking.repository', () => {
 
   it('findCinemaIdByInvoiceId returns null for an unknown invoice', async () => {
     expect(await bookingRepository.findCinemaIdByInvoiceId(999)).toBeNull();
+  });
+
+  // The live seat map: every seat transition has to reach the `schedule:<id>` room so a second
+  // customer staring at the same grid sees the seat go before they try to take it.
+  describe('seat broadcasts', () => {
+    const seatEvents = () =>
+      socket.emitToSchedule.mock.calls.filter((call) => call[1] === 'seat:updated');
+
+    it('holdTickets broadcasts only the seats this caller actually won', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) },
+      ]);
+
+      await bookingRepository.holdTickets({
+        scheduleId: 1,
+        seatCodes: ['A1', 'A2'],
+        accountId: 42,
+        until: new Date(Date.now() + 60000),
+      });
+
+      expect(seatEvents()).toEqual([[1, 'seat:updated', { scheduleId: 1, seatCodes: ['A1'], status: 'HELD' }]]);
+    });
+
+    // The payload must never say who holds a seat: the room is open to anonymous sockets, and
+    // whether a hold is "mine" is something the server recomputes on the grid endpoint.
+    it('carries no account identity', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+
+      await bookingRepository.holdTickets({
+        scheduleId: 1,
+        seatCodes: ['A1'],
+        accountId: 42,
+        until: new Date(Date.now() + 60000),
+      });
+
+      expect(JSON.stringify(seatEvents())).not.toContain('42');
+    });
+
+    it('releaseTickets broadcasts the freed seats', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) },
+        { id: 2, schedule_id: 1, seat_index: 1, seat_code: 'A2', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) },
+      ]);
+
+      await bookingRepository.releaseTickets({ scheduleId: 1, seatCodes: ['A1', 'A2'], accountId: 42 });
+
+      expect(seatEvents()).toEqual([[1, 'seat:updated', { scheduleId: 1, seatCodes: ['A1'], status: 'AVAILABLE' }]]);
+    });
+
+    it('releaseTickets stays quiet when nothing was actually released', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) });
+
+      await bookingRepository.releaseTickets({ scheduleId: 1, seatCodes: ['A1'], accountId: 42 });
+
+      expect(seatEvents()).toEqual([]);
+    });
+
+    // The sweep runs across every schedule at once, so each showtime's room must get its own
+    // event rather than one lump carrying other showtimes' seats.
+    it('the expiry sweep broadcasts per schedule', async () => {
+      await Ticket.create([
+        { id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() - 1000) },
+        { id: 2, schedule_id: 2, seat_index: 0, seat_code: 'B2', status: 2, held_by: 7, held_until: new Date(Date.now() - 1000) },
+        { id: 3, schedule_id: 3, seat_index: 0, seat_code: 'C3', status: 2, held_by: 7, held_until: new Date(Date.now() + 60000) },
+      ]);
+
+      await bookingRepository.expireAllHeldTickets();
+
+      expect(seatEvents()).toEqual([
+        [1, 'seat:updated', { scheduleId: 1, seatCodes: ['A1'], status: 'AVAILABLE' }],
+        [2, 'seat:updated', { scheduleId: 2, seatCodes: ['B2'], status: 'AVAILABLE' }],
+      ]);
+    });
+
+    it('the expiry sweep stays quiet when no hold has lapsed', async () => {
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2, held_by: 42, held_until: new Date(Date.now() + 60000) });
+
+      await bookingRepository.expireAllHeldTickets();
+
+      expect(seatEvents()).toEqual([]);
+    });
   });
 
   describe('seat holds', () => {

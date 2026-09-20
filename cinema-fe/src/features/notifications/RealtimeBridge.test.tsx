@@ -119,6 +119,93 @@ describe('RealtimeBridge', () => {
     expect(store.getState().notifications.toasts.at(-1)?.type).toBe('info');
   });
 
+  // The INVALIDATIONS table is the bulk of the bridge: one listener per domain that just marks
+  // the lists showing that domain as stale. A few representative rows stand in for the table.
+  it.each([
+    ['maintenance:updated', ['ownerMaintenance']],
+    ['support:updated', ['supportTickets']],
+    ['parking:updated', ['ownerParkingAreas']],
+    ['inventory:updated', ['ownerInventory']],
+    ['comboOrder:updated', ['comboOrders']],
+    ['refund:updated', ['myRefunds']],
+    ['payment:updated', ['myPayments']],
+    ['privateEvent:updated', ['eventPackages']],
+    ['signage:updated', ['ownerSignageScreens']],
+    ['auditLog:new', ['auditLogs']],
+    ['webhook:updated', ['webhooks']],
+    ['integration:updated', ['integrations']],
+    ['systemConfig:updated', ['systemConfig']],
+    ['review:updated', ['adminReviews']],
+    ['campaign:updated', ['ownerCampaigns']],
+    ['employee:updated', ['myEmployees']],
+    ['cashierShift:updated', ['cashierShifts']],
+    ['shift:updated', ['ownerShiftAssignments']],
+    ['checkin:new', ['ownerCheckinLogs']],
+    ['device:updated', ['ownerDevices']],
+    ['kiosk:updated', ['ownerKiosks']],
+    ['entrance:updated', ['ownerEntrances']],
+    ['room:updated', ['allRooms']],
+    ['giftCard:updated', ['myGiftCards']],
+    ['movie:updated', ['movies']],
+    ['branch:updated', ['cinemas']],
+    ['schedule:updated', ['adminSchedules']],
+    ['catalogue:updated', ['actors']],
+    ['like:updated', ['myLikedMovies']],
+    ['user:updated', ['adminUsers']],
+    ['loyalty:updated', ['myMembership']],
+    ['notification:read', ['notifications']],
+  ])('invalidates the matching queries on %s', (event, queryKey) => {
+    const { invalidateSpy } = renderBridge();
+    emit(event, { id: 1 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey });
+  });
+
+  // Being blocked or re-roled changes what this session may do, so the caller's own cached
+  // profile and permission set have to go, not just the admin list they were changed from.
+  it('drops the caller own profile and permissions on user:updated', () => {
+    const { invalidateSpy } = renderBridge();
+    emit('user:updated', { id: 1, status: 0 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['currentUser'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myPermissions'] });
+  });
+
+  // A price rule or a holiday moves ticket prices, and the seat grid renders a price per seat —
+  // so it has to be refetched, not just the pricing admin lists.
+  it('invalidates the seat grid on pricing:updated', () => {
+    const { invalidateSpy } = renderBridge();
+    emit('pricing:updated', { id: 1 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['bookedSeats'] });
+  });
+
+  it('toasts an error only for a rejected door scan', () => {
+    renderBridge();
+    const before = store.getState().notifications.toasts.length;
+    emit('checkin:new', { result: 'SUCCESS' });
+    expect(store.getState().notifications.toasts.length).toBe(before);
+
+    emit('checkin:new', { result: 'INVALID_QR' });
+    expect(store.getState().notifications.toasts.at(-1)?.type).toBe('error');
+  });
+
+  it('bumps the operations counter for the branch-floor domains', () => {
+    renderBridge();
+    const before = store.getState().realtime.operationsVersion;
+    emit('maintenance:updated', { id: 1 });
+    emit('support:updated', { id: 1 });
+    emit('parking:updated', { id: 1 });
+    emit('inventory:updated', { id: 1 });
+    expect(store.getState().realtime.operationsVersion).toBe(before + 4);
+  });
+
+  it('removes every listener it registered on unmount', () => {
+    const { unmount } = renderBridge();
+    expect((listeners.get('maintenance:updated') ?? []).length).toBeGreaterThan(0);
+    unmount();
+    expect(listeners.get('maintenance:updated') ?? []).toHaveLength(0);
+    expect(listeners.get('booking:new') ?? []).toHaveLength(0);
+    expect(listeners.get('unauthorized') ?? []).toHaveLength(0);
+  });
+
   it('refreshes the access token once for a burst of unauthorized events', async () => {
     refreshAccessTokenMock.mockResolvedValue('new-tok');
     renderBridge();

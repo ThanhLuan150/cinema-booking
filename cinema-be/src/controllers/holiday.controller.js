@@ -1,6 +1,20 @@
 const holidayRepository = require('../repositories/holiday.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A holiday flips the day_type a pricing rule matches on, so it moves ticket prices exactly like
+// a pricing rule does — and rides the same event for that reason. branch_id is null system-wide.
+function broadcastHoliday(holiday, action) {
+  if (!holiday) return;
+  emitPublic(REALTIME_EVENT.PRICING_UPDATED, {
+    action,
+    id: holiday.id,
+    date: holiday.date,
+    branchId: holiday.branch_id ?? null,
+  });
+}
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -44,6 +58,7 @@ async function create(req, res) {
   const id = await nextId('holiday');
   try {
     const holiday = await holidayRepository.create({ id, date, name: name || '', branch_id: normalizedBranchId });
+    broadcastHoliday(holiday, REALTIME_ACTION.CREATED);
     res.status(201).json(holiday);
   } catch (err) {
     if (err.code === 11000) {
@@ -69,6 +84,7 @@ async function update(req, res) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
   const updated = await holidayRepository.updateFields(holiday.id, updates);
+  broadcastHoliday(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -81,6 +97,7 @@ async function remove(req, res) {
   }
 
   await holidayRepository.remove(holiday.id);
+  broadcastHoliday(holiday, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

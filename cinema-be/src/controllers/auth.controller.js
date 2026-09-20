@@ -5,6 +5,17 @@ const nextId = require('../utils/nextId');
 const { generateOtp, otpExpiryDate } = require('../utils/otp');
 const { sendOtpEmail, sendPasswordResetEmail } = require('../utils/mailer');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, hashToken } = require('../utils/tokens');
+const { emitToAdmin, emitToAccount } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The admin user list should show a sign-up arriving, and the customer's own other tabs should
+// pick up a profile edit. Nothing identifying travels — no email, no name — because the admin
+// room is not scoped per branch and the payload is only a nudge to refetch.
+function broadcastAccount(account, action) {
+  if (!account) return;
+  emitToAdmin(REALTIME_EVENT.USER_UPDATED, { action, id: account.id, role: account.role });
+  emitToAccount(account.id, REALTIME_EVENT.USER_UPDATED, { action, id: account.id, role: account.role });
+}
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
 const REFRESH_COOKIE_OPTIONS = {
@@ -179,6 +190,7 @@ async function register(req, res) {
 
   await sendOtpEmail(normalizedEmail, otp);
 
+  broadcastAccount(account, REALTIME_ACTION.CREATED);
   res.status(201).json({
     message: 'Registration successful, please check your email',
     code: 'REGISTER_SUCCESS',
@@ -211,6 +223,7 @@ async function saveProfile(req, res) {
   const account = await authRepository.updateProfileByEmail(email, { name, phone });
   if (!account) return res.status(404).json({ message: 'Account not found' });
 
+  broadcastAccount(account, REALTIME_ACTION.UPDATED);
   res.status(201).json(account);
 }
 

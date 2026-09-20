@@ -5,6 +5,23 @@ const employeeRepository = require('../repositories/employee.repository');
 const MaintenanceRequest = require('../models/MaintenanceRequest');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Maintenance is a branch-floor concern: the technicians watching the board and the branch admin
+// need the card to move the moment someone else touches it, which is exactly what a per-branch
+// room is for. SUPER_ADMIN gets a copy via emitBranchEvent.
+function broadcastMaintenance(request, action) {
+  if (!request) return;
+  emitBranchEvent(request.branch_id, REALTIME_EVENT.MAINTENANCE_UPDATED, {
+    action,
+    id: request.id,
+    status: request.status,
+    resourceType: request.resource_type,
+    resourceName: request.resource_name,
+    roomId: request.room_id ?? null,
+  });
+}
 
 const RESOURCE_TYPES = MaintenanceRequest.RESOURCE_TYPES;
 const STATUSES = MaintenanceRequest.STATUSES;
@@ -16,6 +33,12 @@ async function putRoomUnderMaintenance(roomId) {
   const room = await roomRepository.findById(roomId);
   if (room && room.status === 'ACTIVE') {
     await roomRepository.updateFields(room.id, { status: 'MAINTENANCE' });
+    emitBranchEvent(room.cinema_id, REALTIME_EVENT.ROOM_UPDATED, {
+      action: REALTIME_ACTION.STATUS_CHANGED,
+      id: room.id,
+      name: room.name,
+      status: 'MAINTENANCE',
+    });
   }
 }
 
@@ -28,6 +51,12 @@ async function maybeRestoreRoomStatus(request) {
   const room = await roomRepository.findById(request.room_id);
   if (room && room.status === 'MAINTENANCE') {
     await roomRepository.updateFields(room.id, { status: 'ACTIVE' });
+    emitBranchEvent(room.cinema_id, REALTIME_EVENT.ROOM_UPDATED, {
+      action: REALTIME_ACTION.STATUS_CHANGED,
+      id: room.id,
+      name: room.name,
+      status: 'ACTIVE',
+    });
   }
 }
 
@@ -111,6 +140,7 @@ async function create(req, res) {
 
   if (resource_type === 'ROOM') await putRoomUnderMaintenance(room_id);
 
+  broadcastMaintenance(request, REALTIME_ACTION.CREATED);
   res.status(201).json(request);
 }
 
@@ -132,6 +162,7 @@ async function update(req, res) {
   if (req.body.resource_name !== undefined) updates.resource_name = req.body.resource_name;
 
   const updated = await maintenanceRequestRepository.updateFields(request.id, updates);
+  broadcastMaintenance(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -158,6 +189,7 @@ async function assign(req, res) {
       code: 'MAINTENANCE_NOT_ASSIGNABLE',
     });
   }
+  broadcastMaintenance(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -173,6 +205,7 @@ async function start(req, res) {
       code: 'MAINTENANCE_NOT_ASSIGNED',
     });
   }
+  broadcastMaintenance(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -191,6 +224,7 @@ async function resolve(req, res) {
   }
 
   await maybeRestoreRoomStatus(updated);
+  broadcastMaintenance(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -206,6 +240,7 @@ async function close(req, res) {
       code: 'MAINTENANCE_NOT_RESOLVED',
     });
   }
+  broadcastMaintenance(updated, REALTIME_ACTION.STATUS_CHANGED);
   res.json(updated);
 }
 
@@ -224,6 +259,7 @@ async function remove(req, res) {
 
   await maintenanceRequestRepository.remove(request.id);
   await maybeRestoreRoomStatus(request);
+  broadcastMaintenance(request, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

@@ -5,6 +5,21 @@ const { parsePagination, buildPaginatedResult } = require('../utils/pagination')
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
 const Voucher = require('../models/Voucher');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Same reasoning as promotions: a voucher's availability is customer-facing and a checkout in
+// progress needs to know it just went away. cinema_id is null for a system-wide voucher.
+function broadcastVoucher(voucher, action) {
+  if (!voucher) return;
+  emitPublic(REALTIME_EVENT.VOUCHER_UPDATED, {
+    action,
+    id: voucher.id,
+    code: voucher.code,
+    active: voucher.active,
+    branchId: voucher.cinema_id ?? null,
+  });
+}
 
 const DISCOUNT_TYPES = Object.values(Voucher.DISCOUNT_TYPE);
 const FREE_TYPES = [Voucher.DISCOUNT_TYPE.FREE_TICKET, Voucher.DISCOUNT_TYPE.FREE_COMBO];
@@ -199,6 +214,7 @@ async function create(req, res) {
     metadata: { code: voucher.code, discount_type: voucher.discount_type },
   });
 
+  broadcastVoucher(voucher, REALTIME_ACTION.CREATED);
   res.status(201).json(voucher);
 }
 
@@ -245,6 +261,7 @@ async function update(req, res) {
     metadata: { code: voucher.code, updates: Object.keys(updates) },
   });
 
+  broadcastVoucher(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -268,6 +285,7 @@ async function remove(req, res) {
     metadata: { code: voucher.code },
   });
 
+  broadcastVoucher(voucher, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

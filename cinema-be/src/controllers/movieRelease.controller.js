@@ -4,6 +4,8 @@ const movieRepository = require('../repositories/movie.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { isValidDateStr } = require('../utils/releaseWindow');
+const { emitToStaff } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
 // Attach a small movie + distributor summary so the release list is self-describing even for
 // a Branch Admin (who has movieRelease.read but no access to the distributor endpoint).
@@ -103,6 +105,12 @@ async function create(req, res) {
       status: req.body.status || 'ACTIVE',
     });
     const [decorated] = await decorate([release]);
+    emitToStaff(REALTIME_EVENT.DISTRIBUTION_UPDATED, {
+      scope: 'RELEASE',
+      action: REALTIME_ACTION.CREATED,
+      id: release.id,
+      movieId: release.movie_id,
+    });
     res.status(201).json(decorated);
   } catch (err) {
     if (err.code === 11000) {
@@ -149,6 +157,12 @@ async function update(req, res) {
   try {
     const updated = await movieReleaseRepository.updateFields(release.id, updates);
     const [decorated] = await decorate([updated]);
+    emitToStaff(REALTIME_EVENT.DISTRIBUTION_UPDATED, {
+      scope: 'RELEASE',
+      action: REALTIME_ACTION.UPDATED,
+      id: updated.id,
+      movieId: updated.movie_id,
+    });
     res.json(decorated);
   } catch (err) {
     if (err.code === 11000) {
@@ -163,6 +177,12 @@ async function remove(req, res) {
   const release = await movieReleaseRepository.findById(req.params.id);
   if (!release) return res.status(404).json({ message: 'Movie release not found' });
   await movieReleaseRepository.remove(release.id);
+  emitToStaff(REALTIME_EVENT.DISTRIBUTION_UPDATED, {
+    scope: 'RELEASE',
+    action: REALTIME_ACTION.DELETED,
+    id: release.id,
+    movieId: release.movie_id,
+  });
   res.json({ message: 'Deleted' });
 }
 

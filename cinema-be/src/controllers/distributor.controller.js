@@ -2,6 +2,15 @@ const distributorRepository = require('../repositories/distributor.repository');
 const movieReleaseRepository = require('../repositories/movieRelease.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitToStaff } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// Distributors and release windows decide whether a branch may schedule a showtime at all, so
+// every staff member's programming screen has to see a change, not just the super admin who
+// made it. Customers never see this catalogue, hence `staff` rather than public.
+function broadcastDistribution(scope, action, payload) {
+  emitToStaff(REALTIME_EVENT.DISTRIBUTION_UPDATED, { scope, action, ...payload });
+}
 
 const CODE_RE = /^[A-Z0-9][A-Z0-9_-]{1,31}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,6 +80,7 @@ async function create(req, res) {
       phone: req.body.phone ? String(req.body.phone).trim() : '',
       status: req.body.status || 'ACTIVE',
     });
+    broadcastDistribution('DISTRIBUTOR', REALTIME_ACTION.CREATED, { id: distributor.id, name: distributor.name });
     res.status(201).json(distributor);
   } catch (err) {
     if (err.code === 11000) {
@@ -106,6 +116,7 @@ async function update(req, res) {
 
   try {
     const updated = await distributorRepository.updateFields(distributor.id, updates);
+    broadcastDistribution('DISTRIBUTOR', REALTIME_ACTION.UPDATED, { id: updated.id, name: updated.name, status: updated.status });
     res.json(updated);
   } catch (err) {
     if (err.code === 11000) {
@@ -128,6 +139,7 @@ async function remove(req, res) {
   }
 
   await distributorRepository.remove(distributor.id);
+  broadcastDistribution('DISTRIBUTOR', REALTIME_ACTION.DELETED, { id: distributor.id, name: distributor.name });
   res.json({ message: 'Deleted' });
 }
 

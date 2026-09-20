@@ -271,7 +271,26 @@ On-site staff with `booking.create` + `ticket.create` + `payment.create` (Cashie
 
 ### 6.15 Realtime updates
 
-Socket.IO pushes live updates without polling: Super Admin sockets join an `admin` room, Branch Admin sockets join `owner:<accountId>` — e.g. approving a branch or changing its status invalidates the owner's cached cinema list instantly (see `realtimeSlice` / `RealtimeBridge`).
+Socket.IO pushes live updates across every module instead of polling. A socket joins the rooms its account is entitled to, which is what keeps a branch's operational data off other branches' screens:
+
+| Room | Who joins | Carries |
+| --- | --- | --- |
+| `account:<id>` | every authenticated socket | personal events — notifications, your booking/payment/refund, your shift |
+| `admin` | Super Admin | every branch's copy of each branch-scoped event |
+| `owner:<accountId>` | Branch Admin, without their employees | the payloads employees should not see — `booking:new` and its takings figure, a branch's own status change |
+| `staff` | any non-customer | cross-branch staff news — system settings, the distribution catalogue |
+| `branch:<id>` | that branch's owner + its active employees | check-ins, maintenance, support tickets, parking, inventory, cash drawers, signage, devices |
+| `schedule:<id>` | anyone viewing that showtime's seat map (opt-in, anonymous allowed) | the live seat map |
+
+Membership mirrors the HTTP permission gate (`middleware/permission.js`), and branch rooms are resolved on connect by `utils/socketRooms.js`. Event names are declared once per side — `cinema-be/src/utils/realtimeEvents.js` and `cinema-fe/src/lib/realtimeEvents.ts` — so the two cannot drift.
+
+The rooms overlap (a Branch Admin is in `owner:`, `branch:` *and* the audience of a public emit), and socket.io delivers once per room emitted to, so the rule is **one event name, one channel**. Where two audiences need different payloads they get two event names instead: `branch:activated` is the owner's toast, `branch:updated` is everyone else's cache invalidation; `booking:new` carries the amount to the owner and Super Admin, while the branch's staff get the amount-free `booking:updated`. That split keeps the takings figure on the same side of the line `report.viewFinancial` already draws.
+
+The seat map is the case that matters most. Holding, releasing, selling, refunding, cancelling or auto-expiring a seat all funnel through `booking.repository`, which pushes `seat:updated` to that showtime's room — so the website, the box office and the kiosk are three views of one grid and all three move together. The payload is deliberately identity-free (seat codes + their new status, never who holds them), so a second customer sees a seat go the moment it goes, and the client refetches the grid for the `held_by_me` flag the server computes. The box office previously had no refresh at all, which meant a cashier could try to sell a seat the website had taken minutes earlier; its poll is now a 60s fallback, as is the customer page's (down from 8s) and the kiosk's 5s.
+
+Every state-changing endpoint in the API now emits. Where several channels write the same thing, the emit lives at the seam they share rather than in each controller: seat changes in `booking.repository`, check-ins in `checkinLog.repository` (the staff desk and the QR scanners both log through it), payments in `payment.repository` (MoMo, counter, kiosk and gift card alike), and the webhook ledger in `webhook.repository`.
+
+On the client, `RealtimeBridge` (mounted once at the app root) fans events out to react-query invalidations, a few Redux counters for pages that fetch outside react-query (`realtimeSlice`), and toasts. `useBookedSeats` owns the per-showtime `schedule:<id>` subscription itself, since it is the only thing that knows which showtime is on screen; the subscription is re-sent on reconnect, because socket.io drops room membership when a connection is lost.
 
 ### 6.16 Gift Cards, Promotions & Vouchers
 

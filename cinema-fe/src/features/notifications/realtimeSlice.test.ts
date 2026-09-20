@@ -7,6 +7,10 @@ describe('realtimeSlice', () => {
     expect(state).toEqual({
       cinemaStatusVersion: 0,
       ownerBookingVersion: 0,
+      seatMapVersion: 0,
+      checkinVersion: 0,
+      operationsVersion: 0,
+      catalogueVersion: 0,
     });
   });
 
@@ -14,6 +18,7 @@ describe('realtimeSlice', () => {
     const state = reducer(undefined, bump('cinemaStatusVersion'));
     expect(state.cinemaStatusVersion).toBe(1);
     expect(state.ownerBookingVersion).toBe(0);
+    expect(state.operationsVersion).toBe(0);
   });
 
   it('bump can be applied repeatedly to the same key', () => {

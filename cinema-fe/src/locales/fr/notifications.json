@@ -9,7 +9,11 @@
     "branchActivated": "La succursale « {{name}} » a été activée.",
     "branchDisabled": "La succursale « {{name}} » a été désactivée.",
     "branchMaintenance": "La succursale « {{name}} » a été mise en maintenance.",
-    "newBooking": "Nouvelle réservation reçue : +{{amount}}đ"
+    "newBooking": "Nouvelle réservation reçue : +{{amount}}đ",
+    "showtimeCancelled": "Une séance de l’une de vos réservations a été annulée.",
+    "showtimeRescheduled": "Une séance de l’une de vos réservations a été reprogrammée.",
+    "notification": "Vous avez une nouvelle notification.",
+    "checkinFailed": "Un scan de billet a été refusé à l’entrée."
   },
   "toastContainer": {
     "dismiss": "Ignorer"

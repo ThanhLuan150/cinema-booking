@@ -4,6 +4,22 @@ const scheduleRepository = require('../repositories/schedule.repository');
 const Room = require('../models/Room');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A room going CLOSED/MAINTENANCE is what stops the programming screen from offering it for a
+// new showtime, so the branch's schedulers have to see it immediately. The maintenance module
+// flips the same field as a side effect and emits the same event (maintenanceRequest.controller).
+function broadcastRoom(room, action) {
+  if (!room) return;
+  emitBranchEvent(room.cinema_id, REALTIME_EVENT.ROOM_UPDATED, {
+    action,
+    id: room.id,
+    name: room.name,
+    code: room.code,
+    status: room.status,
+  });
+}
 
 // GET /api/room?branchId=&page=&limit=
 async function list(req, res) {
@@ -41,6 +57,7 @@ async function create(req, res) {
     type: type || '2D',
     capacity: Number(capacity),
   });
+  broadcastRoom(room, REALTIME_ACTION.CREATED);
   res.status(201).json(room);
 }
 
@@ -87,6 +104,7 @@ async function update(req, res) {
   }
 
   const room = await roomRepository.updateFields(existing.id, updates);
+  broadcastRoom(room, updates.status === undefined ? REALTIME_ACTION.UPDATED : REALTIME_ACTION.STATUS_CHANGED);
   res.json(room);
 }
 
@@ -105,6 +123,7 @@ async function remove(req, res) {
 
   await seatRepository.deleteByRoomId(existing.id);
   await roomRepository.remove(existing.id);
+  broadcastRoom(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

@@ -3,6 +3,23 @@ const shiftRepository = require('../repositories/shift.repository');
 const employeeRepository = require('../repositories/employee.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The branch's roster board — which is also how the assigned employee hears about it, since an
+// actively staffed employee is a member of their branch's room. Addressing their account room as
+// well would deliver the same change to them twice (see utils/socket.js on room overlap).
+function broadcastAssignment(assignment, action) {
+  if (!assignment) return;
+  emitBranchEvent(assignment.branch_id, REALTIME_EVENT.SHIFT_UPDATED, {
+    action,
+    id: assignment.id,
+    employeeId: assignment.employee_id,
+    shiftId: assignment.shift_id,
+    date: assignment.date,
+    status: assignment.status,
+  });
+}
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -139,6 +156,7 @@ async function create(req, res) {
     status: 'ACTIVE',
   });
 
+  broadcastAssignment(assignment, REALTIME_ACTION.CREATED);
   res.status(201).json(assignment);
 }
 
@@ -203,6 +221,7 @@ async function update(req, res) {
   }
 
   const assignment = await shiftAssignmentRepository.updateFields(existing.id, updates);
+  broadcastAssignment(assignment, REALTIME_ACTION.UPDATED);
   res.json(assignment);
 }
 
@@ -212,6 +231,7 @@ async function remove(req, res) {
   if (!existing) return res.status(404).json({ message: 'Shift assignment not found' });
 
   await shiftAssignmentRepository.remove(existing.id);
+  broadcastAssignment(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

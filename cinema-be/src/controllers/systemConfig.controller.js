@@ -3,6 +3,17 @@ const AuditLog = require('../models/AuditLog');
 const registry = require('../config/settingsRegistry');
 const systemConfigService = require('../services/systemConfig.service');
 const { recordAudit } = require('../services/auditLog.service');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
+
+// Settings are read through a cache (systemConfig.service), and several of them change what a
+// client may do right now — the seat hold window, the max seats per booking, the cancellation
+// cutoff — so the change has to reach every connected client, including the anonymous ones
+// mid-booking. Only the key and the level it changed at are sent; clients re-read the value
+// through the endpoint that already enforces who may see it.
+function broadcastSettingChange(key, branchId) {
+  emitPublic(REALTIME_EVENT.SYSTEM_CONFIG_UPDATED, { key, branchId: branchId ?? null });
+}
 
 function parseBranchId(raw) {
   if (raw === undefined || raw === null || raw === '') return null;
@@ -108,6 +119,7 @@ async function update(req, res) {
     metadata: { key, value: effective.value },
   });
 
+  broadcastSettingChange(key, branchId);
   res.json(effective);
 }
 
@@ -138,6 +150,7 @@ async function reset(req, res) {
     metadata: { key },
   });
 
+  broadcastSettingChange(key, branchId);
   res.json(effective);
 }
 

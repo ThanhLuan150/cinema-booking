@@ -1,5 +1,7 @@
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
+const { emitToAdmin, emitToBranch } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 
 async function recordAudit({
   req = null,
@@ -22,6 +24,13 @@ async function recordAudit({
       reason: reason ?? null,
       metadata: metadata ?? null,
     });
+    // The audit viewer is a live tail, and its readers are exactly the rooms the stored row is
+    // already scoped to (branch-scoped for a Branch Admin, everything for SUPER_ADMIN). The
+    // emit carries no reason/metadata — those can hold operator notes, and the viewer endpoint
+    // is where the permission check for them lives.
+    const payload = { action, entityType, entityId, branchId: branchId ?? null, performedBy: actor ?? null };
+    emitToAdmin(REALTIME_EVENT.AUDIT_LOG_NEW, payload);
+    if (branchId !== null && branchId !== undefined) emitToBranch(branchId, REALTIME_EVENT.AUDIT_LOG_NEW, payload);
   } catch (err) {
     console.error('[auditLog] failed to record', action, entityType, entityId, err.message);
   }

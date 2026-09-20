@@ -3,6 +3,25 @@ const movieReviewEligibility = require('../services/movieReviewEligibility.servi
 const Review = require('../models/Review');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// A review thread is read by anonymous visitors on the movie/cinema page, so posts, replies and
+// moderation decisions all go out publicly — but only the ids, never the comment text, so a
+// hidden or rejected review can never leak through the socket. Clients refetch the list, which
+// applies the status filter. The author and the moderation queue are part of that same public
+// audience, so they need no second copy.
+function broadcastReview(review, action) {
+  if (!review) return;
+  emitPublic(REALTIME_EVENT.REVIEW_UPDATED, {
+    action,
+    id: review.id,
+    movieId: review.movie_id ?? null,
+    cinemaId: review.cinema_id ?? null,
+    parentId: review.parent_id ?? null,
+    status: review.status,
+  });
+}
 
 const REACTION_TYPES = reviewRepository.REACTION_TYPES;
 
@@ -101,6 +120,7 @@ async function create(req, res) {
       comment: comment.trim(),
       parent_id: Number(parent_id),
     });
+    broadcastReview(reply, REALTIME_ACTION.CREATED);
     return res.status(201).json(reply);
   }
 
@@ -116,6 +136,7 @@ async function create(req, res) {
     const existing = await reviewRepository.findOwn(target, req.account.accountId);
     if (existing) {
       const updated = await reviewRepository.saveExisting(existing, { rating, comment });
+      broadcastReview(updated, REALTIME_ACTION.UPDATED);
       return res.json(updated);
     }
 
@@ -127,6 +148,7 @@ async function create(req, res) {
       rating,
       comment: comment || '',
     });
+    broadcastReview(review, REALTIME_ACTION.CREATED);
     return res.status(201).json(review);
   }
 
@@ -162,6 +184,7 @@ async function create(req, res) {
     rating,
     comment: comment || '',
   });
+  broadcastReview(review, REALTIME_ACTION.CREATED);
   res.status(201).json(review);
 }
 
@@ -186,6 +209,7 @@ async function update(req, res) {
       return res.status(400).json({ message: 'rating must be between 1 and 5' });
     }
     const updated = await reviewRepository.saveExisting(review, { rating, comment });
+    broadcastReview(updated, REALTIME_ACTION.UPDATED);
     return res.json(updated);
   }
 
@@ -193,6 +217,7 @@ async function update(req, res) {
     return res.status(400).json({ message: 'comment is required for a reply' });
   }
   const updated = await reviewRepository.saveExisting(review, { rating: null, comment: comment.trim() });
+  broadcastReview(updated, REALTIME_ACTION.UPDATED);
   res.json(updated);
 }
 
@@ -229,6 +254,7 @@ async function react(req, res) {
 async function hide(req, res) {
   const review = await reviewRepository.hide(req.params.id);
   if (!review) return res.status(404).json({ message: 'Review not found' });
+  broadcastReview(review, REALTIME_ACTION.STATUS_CHANGED);
   res.json(review);
 }
 
@@ -237,6 +263,7 @@ async function hide(req, res) {
 async function reject(req, res) {
   const review = await reviewRepository.reject(req.params.id);
   if (!review) return res.status(404).json({ message: 'Review not found' });
+  broadcastReview(review, REALTIME_ACTION.STATUS_CHANGED);
   res.json(review);
 }
 
@@ -244,6 +271,7 @@ async function reject(req, res) {
 async function restore(req, res) {
   const review = await reviewRepository.setStatus(req.params.id, Review.STATUS.VISIBLE);
   if (!review) return res.status(404).json({ message: 'Review not found' });
+  broadcastReview(review, REALTIME_ACTION.STATUS_CHANGED);
   res.json(review);
 }
 
@@ -257,6 +285,7 @@ async function remove(req, res) {
   }
 
   await reviewRepository.remove(review.id);
+  broadcastReview(review, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

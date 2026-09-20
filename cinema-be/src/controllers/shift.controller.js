@@ -2,6 +2,21 @@ const shiftRepository = require('../repositories/shift.repository');
 const shiftAssignmentRepository = require('../repositories/shiftAssignment.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
+const { emitBranchEvent } = require('../utils/socket');
+const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+
+// The shift templates the roster is built from — same screen as the assignments, so they share
+// shift:updated and are told apart by scope.
+function broadcastShift(shift, action) {
+  if (!shift) return;
+  emitBranchEvent(shift.branch_id, REALTIME_EVENT.SHIFT_UPDATED, {
+    scope: 'TEMPLATE',
+    action,
+    id: shift.id,
+    name: shift.name,
+    status: shift.status,
+  });
+}
 
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -36,6 +51,7 @@ async function create(req, res) {
     end_time,
     status: 'ACTIVE',
   });
+  broadcastShift(shift, REALTIME_ACTION.CREATED);
   res.status(201).json(shift);
 }
 
@@ -68,6 +84,7 @@ async function update(req, res) {
   }
 
   const shift = await shiftRepository.updateFields(existing.id, updates);
+  broadcastShift(shift, REALTIME_ACTION.UPDATED);
   res.json(shift);
 }
 
@@ -85,6 +102,7 @@ async function remove(req, res) {
   }
 
   await shiftRepository.remove(existing.id);
+  broadcastShift(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }
 

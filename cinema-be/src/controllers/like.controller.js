@@ -1,5 +1,7 @@
 const likeRepository = require('../repositories/like.repository');
 const nextId = require('../utils/nextId');
+const { emitPublic } = require('../utils/socket');
+const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 const { withCategories } = require('../utils/withCategories');
 
 // GET /api/like/mine -> movies the caller has liked, joined with movie + category details (auth required)
@@ -27,6 +29,8 @@ async function like(req, res) {
 
   const id = await nextId('like');
   const likeDoc = await likeRepository.create({ id, movieId: movie_id, accountId: req.account.accountId });
+  // Only the movie id: the like counter on its page is public, but who liked it is not.
+  emitPublic(REALTIME_EVENT.LIKE_UPDATED, { movieId: Number(movie_id) });
   res.status(201).json(likeDoc);
 }
 
@@ -36,6 +40,7 @@ async function unlike(req, res) {
   if (movie_id === undefined) return res.status(400).json({ message: 'movie_id is required' });
 
   await likeRepository.remove({ movieId: movie_id, accountId: req.account.accountId });
+  emitPublic(REALTIME_EVENT.LIKE_UPDATED, { movieId: Number(movie_id) });
   res.json({ message: 'Unliked' });
 }
 
