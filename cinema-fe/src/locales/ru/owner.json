@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "Сменить должность",
+    "changePositionTitle": "Сменить должность — {{name}}",
+    "changePositionSuccess": "Должность обновлена.",
+    "permissionsPreview": "Права, которые даёт эта должность",
+    "noPermissions": "Эта должность не даёт дополнительных прав.",
+    "permissionsHint": "Права выдаются только должностью и проверяются сервером; здесь их изменить нельзя.",
+    "cancel": "Отмена",
+    "savePosition": "Сохранить",
+    "permissionModules": {
+      "movie": "Фильмы",
+      "schedule": "Сеансы",
+      "room": "Залы",
+      "seat": "Места",
+      "booking": "Бронирования",
+      "ticket": "Билеты",
+      "combo": "Комбо и питание",
+      "payment": "Платежи",
+      "cashierShift": "Кассовые смены",
+      "refund": "Возвраты",
+      "user": "Аккаунты клиентов",
+      "supportTicket": "Обращения в поддержку",
+      "crm": "Профиль клиента",
+      "maintenance": "Обслуживание",
+      "inventory": "Склад",
+      "incident": "Инциденты"
+    },
+    "permissionActions": {
+      "read": "Просмотр",
+      "view": "Просмотр",
+      "create": "Создание",
+      "update": "Изменение",
+      "checkin": "Регистрация входа",
+      "sell": "Продажа",
+      "cancel": "Отмена",
+      "reschedule": "Перенос",
+      "changeShowtime": "Смена сеанса",
+      "open": "Открытие",
+      "close": "Закрытие",
+      "request": "Запрос",
+      "viewCustomer": "Поиск",
+      "order_view": "Просмотр заказов",
+      "order_update": "Изменение заказов"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "Инциденты",
+    "formTitle": "Сообщить об инциденте",
+    "branchPlaceholder": "Выберите кинотеатр",
+    "categoryLabel": "Категория",
+    "severityLabel": "Серьёзность",
+    "titleLabel": "Заголовок",
+    "titleRequired": "Введите заголовок.",
+    "descriptionLabel": "Описание",
+    "submit": "Отправить отчёт",
+    "createSuccess": "Инцидент зарегистрирован.",
+    "headers": {
+      "id": "ID",
+      "time": "Время",
+      "category": "Категория",
+      "severity": "Серьёзность",
+      "title": "Заголовок",
+      "description": "Описание"
+    },
+    "category": {
+      "THEFT": "Кража",
+      "DISTURBANCE": "Нарушение порядка",
+      "MEDICAL": "Медицинский",
+      "FIRE_SAFETY": "Пожар / безопасность",
+      "SUSPICIOUS": "Подозрительная активность",
+      "OTHER": "Другое"
+    },
+    "severity": {
+      "LOW": "Низкая",
+      "MEDIUM": "Средняя",
+      "HIGH": "Высокая"
     }
   }
 }

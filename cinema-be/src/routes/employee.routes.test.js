@@ -73,7 +73,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: await ticketStaffId() });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: await ticketStaffId() });
     expect(res.status).toBe(403);
   });
 
@@ -82,7 +82,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: await ticketStaffId() });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: await ticketStaffId() });
     expect(res.status).toBe(201);
     expect(res.body.employee_code).toMatch(/^EMP-\d{6}$/);
     expect(res.body.position.code).toBe('TICKET_STAFF');
@@ -93,7 +93,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 0, accountId: 1 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: await ticketStaffId() });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: await ticketStaffId() });
     expect(res.status).toBe(201);
   });
 
@@ -101,7 +101,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 1, accountId: 1 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: await ticketStaffId() });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: await ticketStaffId() });
     expect(res.status).toBe(403);
   });
 
@@ -110,7 +110,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: 999999 });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: 999999 });
     expect(res.status).toBe(400);
   });
 
@@ -119,7 +119,7 @@ describe('employee.routes wiring', () => {
     const res = await request(app)
       .post('/api/employee')
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
-      .send({ email: 'a@b.com', password: 'pw', cinema_id: 1, position_id: await ticketStaffId(), role: 0 });
+      .send({ email: 'a@b.com', password: 'secret123', cinema_id: 1, position_id: await ticketStaffId(), role: 0 });
     expect(res.status).toBe(201);
     const account = await Account.findOne({ email: 'a@b.com' });
     expect(account.role).toBe(3);

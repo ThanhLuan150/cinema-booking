@@ -7,6 +7,9 @@ import type {
   GiftCardTransaction,
   Holiday,
   Inventory,
+  Incident,
+  IncidentCategory,
+  IncidentSeverity,
   InventoryTransaction,
   MaintenanceRequest,
   Position,
@@ -221,7 +224,24 @@ export const deactivateEmployee = (id: number | string) => apiClient.delete(`/em
 
 export const resetEmployeePassword = (id: number | string) => apiClient.post(`/employee/${id}/reset-password`);
 
-export const getPositions = () => apiClient.get<Position[]>('/position').then((res) => res.data);
+export const getIncidents = (branchId: number | string, params?: PaginationParams) =>
+  apiClient.get<PaginatedResponse<Incident>>('/incidents', { params: { branchId, ...params } }).then((res) => res.data);
+
+export const createIncident = (payload: {
+  branch_id: number;
+  category: IncidentCategory;
+  severity: IncidentSeverity;
+  title: string;
+  description?: string;
+}) => apiClient.post<Incident>('/incidents', payload).then((res) => res.data);
+
+// withPermissions adds each Position's granted permission codes (read-only) so the admin can see
+// what an assignment hands out.
+export const getPositions = (withPermissions = false) =>
+  (withPermissions
+    ? apiClient.get<Position[]>('/position', { params: { withPermissions: true } })
+    : apiClient.get<Position[]>('/position')
+  ).then((res) => res.data);
 
 export const getShifts = (branchId: number | string | undefined, params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Shift>>('/shift', { params: { branchId, ...params } }).then((res) => res.data);

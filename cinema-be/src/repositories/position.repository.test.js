@@ -36,7 +36,7 @@ describe('position.repository', () => {
   describe('findAll', () => {
     it('returns every position sorted by id when activeOnly is not set', async () => {
       await Position.create([
-        { id: 2, code: 'COMBO_STAFF', name: 'Combo Staff', status: 0 },
+        { id: 2, code: 'CONCESSION_STAFF', name: 'Concession Staff', status: 0 },
         { id: 1, code: 'CASHIER', name: 'Cashier', status: 1 },
       ]);
       const positions = await positionRepository.findAll();
@@ -46,7 +46,7 @@ describe('position.repository', () => {
     it('only returns active positions when activeOnly is true', async () => {
       await Position.create([
         { id: 1, code: 'CASHIER', name: 'Cashier', status: 1 },
-        { id: 2, code: 'COMBO_STAFF', name: 'Combo Staff', status: 0 },
+        { id: 2, code: 'CONCESSION_STAFF', name: 'Concession Staff', status: 0 },
       ]);
       const positions = await positionRepository.findAll({ activeOnly: true });
       expect(positions.map((p) => p.code)).toEqual(['CASHIER']);

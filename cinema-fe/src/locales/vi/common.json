@@ -91,7 +91,8 @@
       "campaigns": "Chiến dịch Marketing",
       "parking": "Bãi đỗ xe",
       "privateEvents": "Sự kiện riêng",
-      "integrations": "Tích hợp hệ thống"
+      "integrations": "Tích hợp hệ thống",
+      "incidents": "Sự cố"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

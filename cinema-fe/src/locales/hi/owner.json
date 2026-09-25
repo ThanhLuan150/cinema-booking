@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "पद बदलें",
+    "changePositionTitle": "पद बदलें — {{name}}",
+    "changePositionSuccess": "पद अपडेट किया गया।",
+    "permissionsPreview": "इस पद द्वारा दी गई अनुमतियाँ",
+    "noPermissions": "यह पद कोई अतिरिक्त अनुमति नहीं देता।",
+    "permissionsHint": "अनुमतियाँ केवल पद से मिलती हैं और सर्वर द्वारा लागू की जाती हैं; उन्हें यहाँ संपादित नहीं किया जा सकता।",
+    "cancel": "रद्द करें",
+    "savePosition": "सहेजें",
+    "permissionModules": {
+      "movie": "फिल्में",
+      "schedule": "शो",
+      "room": "हॉल",
+      "seat": "सीटें",
+      "booking": "बुकिंग",
+      "ticket": "टिकट",
+      "combo": "कॉम्बो और खानपान",
+      "payment": "भुगतान",
+      "cashierShift": "कैशियर शिफ्ट",
+      "refund": "रिफंड",
+      "user": "ग्राहक खाते",
+      "supportTicket": "सहायता टिकट",
+      "crm": "ग्राहक प्रोफ़ाइल",
+      "maintenance": "रखरखाव",
+      "inventory": "इन्वेंट्री",
+      "incident": "घटनाएँ"
+    },
+    "permissionActions": {
+      "read": "देखें",
+      "view": "देखें",
+      "create": "बनाएँ",
+      "update": "अपडेट करें",
+      "checkin": "चेक-इन",
+      "sell": "बेचें",
+      "cancel": "रद्द करें",
+      "reschedule": "पुनर्निर्धारित करें",
+      "changeShowtime": "शो बदलें",
+      "open": "खोलें",
+      "close": "बंद करें",
+      "request": "अनुरोध करें",
+      "viewCustomer": "खोजें",
+      "order_view": "ऑर्डर देखें",
+      "order_update": "ऑर्डर अपडेट करें"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "घटनाएँ",
+    "formTitle": "घटना की रिपोर्ट करें",
+    "branchPlaceholder": "सिनेमा चुनें",
+    "categoryLabel": "श्रेणी",
+    "severityLabel": "गंभीरता",
+    "titleLabel": "शीर्षक",
+    "titleRequired": "कृपया शीर्षक दर्ज करें।",
+    "descriptionLabel": "विवरण",
+    "submit": "रिपोर्ट भेजें",
+    "createSuccess": "घटना दर्ज की गई।",
+    "headers": {
+      "id": "ID",
+      "time": "समय",
+      "category": "श्रेणी",
+      "severity": "गंभीरता",
+      "title": "शीर्षक",
+      "description": "विवरण"
+    },
+    "category": {
+      "THEFT": "चोरी",
+      "DISTURBANCE": "उपद्रव",
+      "MEDICAL": "चिकित्सा",
+      "FIRE_SAFETY": "आग / सुरक्षा",
+      "SUSPICIOUS": "संदिग्ध गतिविधि",
+      "OTHER": "अन्य"
+    },
+    "severity": {
+      "LOW": "कम",
+      "MEDIUM": "मध्यम",
+      "HIGH": "उच्च"
     }
   }
 }

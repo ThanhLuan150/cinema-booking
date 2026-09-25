@@ -49,7 +49,7 @@ function ComboOrdersPage() {
   const [showSellModal, setShowSellModal] = useState(false);
   const [quantities, setQuantities] = useState<Record<number, number>>({});
 
-  // Employees (Combo Staff/Cashier) are tied to one branch via currentUser.cinema_id — for
+  // Employees (Concession Staff/Cashier) are tied to one branch via currentUser.cinema_id — for
   // them the branch is implicit. Any other combo.sell holder (only SUPER_ADMIN, per RBAC) has
   // no cinema_id, so they pick a branch explicitly instead of the button just staying disabled.
   const needsBranchPicker = !currentUser?.cinema_id;

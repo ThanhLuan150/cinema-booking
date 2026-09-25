@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -93,5 +93,27 @@ describe('owner Employees List', () => {
     expect(screen.queryByText('employees.headers.branch')).not.toBeInTheDocument();
     expect(screen.queryByText('employees.allBranches')).not.toBeInTheDocument();
     expect(useMyEmployeesMock).toHaveBeenLastCalledWith('1', 1, expect.any(Number), { enabled: true });
+  });
+
+  it('offers "Change position" only for active employees and opens the picker with position permissions', () => {
+    useMyCinemasMock.mockReturnValue({ data: { data: [{ id: 1, name: 'Branch A' }] } });
+    usePositionsMock.mockReturnValue({
+      data: [{ id: 1, code: 'USHER', name: 'Usher', permissions: [{ code: 'room.read', scope: 'BRANCH' }] }],
+    });
+    useMyEmployeesMock.mockReturnValue({
+      data: {
+        data: [
+          { id: 1, branch_id: 1, employee_code: 'EMP-000001', name: 'Alice', position_id: 1, status: 1 },
+          { id: 2, branch_id: 1, employee_code: 'EMP-000002', name: 'Bob', position_id: 1, status: 0 },
+        ],
+        totalPages: 1,
+      },
+    });
+    renderPage(ROLES.owner);
+
+    const buttons = screen.getAllByRole('button', { name: 'employees.changePosition' });
+    expect(buttons).toHaveLength(1);
+    fireEvent.click(buttons[0]);
+    expect(screen.getByTestId('position-permissions')).toHaveTextContent('employees.permissionModules.room');
   });
 });

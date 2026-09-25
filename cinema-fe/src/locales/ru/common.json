@@ -71,7 +71,8 @@
       "signage": "Digital Signage",
       "campaigns": "Маркетинговые кампании",
       "parking": "Парковка",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "Инциденты"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",

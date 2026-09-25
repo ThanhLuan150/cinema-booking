@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node src/seed/seed.js",
+    "migrate:positions": "node src/seed/migratePositionCodes.js",
     "seed:demo": "node src/seed/seedDemo.js",
     "seed:showcase": "node src/seed/seedCustomerShowcase.js",
     "seed:content": "node src/seed/seedDemoContent.js",

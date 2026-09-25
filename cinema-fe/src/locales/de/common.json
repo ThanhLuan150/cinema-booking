@@ -71,7 +71,8 @@
       "signage": "Digital Signage",
       "campaigns": "Marketingkampagnen",
       "parking": "Parkplatz",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "Vorfälle"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

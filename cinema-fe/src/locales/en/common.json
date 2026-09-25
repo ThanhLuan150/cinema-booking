@@ -91,7 +91,8 @@
       "campaigns": "Marketing Campaigns",
       "parking": "Parking",
       "privateEvents": "Private Events",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "Incidents"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

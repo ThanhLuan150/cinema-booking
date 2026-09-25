@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "Changer de poste",
+    "changePositionTitle": "Changer de poste — {{name}}",
+    "changePositionSuccess": "Poste mis à jour.",
+    "permissionsPreview": "Permissions accordées par ce poste",
+    "noPermissions": "Ce poste n’accorde aucune permission supplémentaire.",
+    "permissionsHint": "Les permissions proviennent uniquement du poste et sont appliquées par le serveur ; elles ne sont pas modifiables ici.",
+    "cancel": "Annuler",
+    "savePosition": "Enregistrer",
+    "permissionModules": {
+      "movie": "Films",
+      "schedule": "Séances",
+      "room": "Salles",
+      "seat": "Sièges",
+      "booking": "Réservations",
+      "ticket": "Billets",
+      "combo": "Combos et restauration",
+      "payment": "Paiements",
+      "cashierShift": "Caisses",
+      "refund": "Remboursements",
+      "user": "Comptes clients",
+      "supportTicket": "Tickets de support",
+      "crm": "Profil client",
+      "maintenance": "Maintenance",
+      "inventory": "Stocks",
+      "incident": "Incidents"
+    },
+    "permissionActions": {
+      "read": "Consulter",
+      "view": "Consulter",
+      "create": "Créer",
+      "update": "Mettre à jour",
+      "checkin": "Enregistrer l’entrée",
+      "sell": "Vendre",
+      "cancel": "Annuler",
+      "reschedule": "Reprogrammer",
+      "changeShowtime": "Changer de séance",
+      "open": "Ouvrir",
+      "close": "Clôturer",
+      "request": "Demander",
+      "viewCustomer": "Rechercher",
+      "order_view": "Consulter les commandes",
+      "order_update": "Mettre à jour les commandes"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "Incidents",
+    "formTitle": "Signaler un incident",
+    "branchPlaceholder": "Sélectionner un cinéma",
+    "categoryLabel": "Catégorie",
+    "severityLabel": "Gravité",
+    "titleLabel": "Titre",
+    "titleRequired": "Veuillez saisir un titre.",
+    "descriptionLabel": "Description",
+    "submit": "Envoyer le signalement",
+    "createSuccess": "Incident signalé.",
+    "headers": {
+      "id": "ID",
+      "time": "Heure",
+      "category": "Catégorie",
+      "severity": "Gravité",
+      "title": "Titre",
+      "description": "Description"
+    },
+    "category": {
+      "THEFT": "Vol",
+      "DISTURBANCE": "Trouble",
+      "MEDICAL": "Médical",
+      "FIRE_SAFETY": "Incendie / sécurité",
+      "SUSPICIOUS": "Activité suspecte",
+      "OTHER": "Autre"
+    },
+    "severity": {
+      "LOW": "Faible",
+      "MEDIUM": "Moyenne",
+      "HIGH": "Élevée"
     }
   }
 }

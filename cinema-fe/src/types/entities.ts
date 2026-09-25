@@ -292,6 +292,13 @@ export interface Position {
   code: string;
   name: string;
   status?: number; // 1 = active, 0 = inactive
+  // Only present when requested with ?withPermissions=true — what the Position grants (read-only).
+  permissions?: PositionPermissionGrant[];
+}
+
+export interface PositionPermissionGrant {
+  code: string;
+  scope: 'ALL' | 'BRANCH' | 'OWN';
 }
 
 export interface Employee {
@@ -306,6 +313,21 @@ export interface Employee {
   email?: string;
   name?: string;
   phone?: string;
+}
+
+export type IncidentCategory = 'THEFT' | 'DISTURBANCE' | 'MEDICAL' | 'FIRE_SAFETY' | 'SUSPICIOUS' | 'OTHER';
+export type IncidentSeverity = 'LOW' | 'MEDIUM' | 'HIGH';
+
+export interface Incident {
+  id: number;
+  branch_id: number;
+  room_id: number | null;
+  category: IncidentCategory;
+  severity: IncidentSeverity;
+  title: string;
+  description: string;
+  reported_by: number;
+  createdAt: string;
 }
 
 export interface Shift {

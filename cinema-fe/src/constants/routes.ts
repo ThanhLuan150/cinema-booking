@@ -55,6 +55,7 @@ export const ROUTES = {
   kiosk: '/kiosk',
   ownerCombos: '/OwnerCombos',
   ownerInventory: '/OwnerInventory',
+  ownerIncidents: '/OwnerIncidents',
   ownerVouchers: '/OwnerVouchers',
   ownerGiftCards: '/OwnerGiftCards',
   ownerPromotions: '/OwnerPromotions',

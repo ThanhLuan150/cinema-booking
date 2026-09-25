@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "Position ändern",
+    "changePositionTitle": "Position ändern — {{name}}",
+    "changePositionSuccess": "Position aktualisiert.",
+    "permissionsPreview": "Berechtigungen dieser Position",
+    "noPermissions": "Diese Position gewährt keine zusätzlichen Berechtigungen.",
+    "permissionsHint": "Berechtigungen ergeben sich nur aus der Position und werden vom Server durchgesetzt; hier sind sie nicht bearbeitbar.",
+    "cancel": "Abbrechen",
+    "savePosition": "Speichern",
+    "permissionModules": {
+      "movie": "Filme",
+      "schedule": "Vorstellungen",
+      "room": "Säle",
+      "seat": "Sitzplätze",
+      "booking": "Buchungen",
+      "ticket": "Tickets",
+      "combo": "Combos & Gastronomie",
+      "payment": "Zahlungen",
+      "cashierShift": "Kassenschichten",
+      "refund": "Rückerstattungen",
+      "user": "Kundenkonten",
+      "supportTicket": "Support-Tickets",
+      "crm": "Kundenprofil",
+      "maintenance": "Wartung",
+      "inventory": "Lagerbestand",
+      "incident": "Vorfälle"
+    },
+    "permissionActions": {
+      "read": "Ansehen",
+      "view": "Ansehen",
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "checkin": "Einchecken",
+      "sell": "Verkaufen",
+      "cancel": "Stornieren",
+      "reschedule": "Verschieben",
+      "changeShowtime": "Vorstellung ändern",
+      "open": "Öffnen",
+      "close": "Schließen",
+      "request": "Anfragen",
+      "viewCustomer": "Nachschlagen",
+      "order_view": "Bestellungen ansehen",
+      "order_update": "Bestellungen aktualisieren"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "Vorfälle",
+    "formTitle": "Vorfall melden",
+    "branchPlaceholder": "Kino auswählen",
+    "categoryLabel": "Kategorie",
+    "severityLabel": "Schweregrad",
+    "titleLabel": "Titel",
+    "titleRequired": "Bitte einen Titel eingeben.",
+    "descriptionLabel": "Beschreibung",
+    "submit": "Meldung senden",
+    "createSuccess": "Vorfall gemeldet.",
+    "headers": {
+      "id": "ID",
+      "time": "Zeit",
+      "category": "Kategorie",
+      "severity": "Schweregrad",
+      "title": "Titel",
+      "description": "Beschreibung"
+    },
+    "category": {
+      "THEFT": "Diebstahl",
+      "DISTURBANCE": "Störung",
+      "MEDICAL": "Medizinisch",
+      "FIRE_SAFETY": "Brand / Sicherheit",
+      "SUSPICIOUS": "Verdächtige Aktivität",
+      "OTHER": "Sonstiges"
+    },
+    "severity": {
+      "LOW": "Niedrig",
+      "MEDIUM": "Mittel",
+      "HIGH": "Hoch"
     }
   }
 }

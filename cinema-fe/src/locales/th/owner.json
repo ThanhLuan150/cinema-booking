@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "เปลี่ยนตำแหน่ง",
+    "changePositionTitle": "เปลี่ยนตำแหน่ง — {{name}}",
+    "changePositionSuccess": "อัปเดตตำแหน่งแล้ว",
+    "permissionsPreview": "สิทธิ์ที่ตำแหน่งนี้ให้",
+    "noPermissions": "ตำแหน่งนี้ไม่ให้สิทธิ์เพิ่มเติม",
+    "permissionsHint": "สิทธิ์มาจากตำแหน่งเท่านั้นและถูกบังคับใช้โดยเซิร์ฟเวอร์ ไม่สามารถแก้ไขที่นี่ได้",
+    "cancel": "ยกเลิก",
+    "savePosition": "บันทึก",
+    "permissionModules": {
+      "movie": "ภาพยนตร์",
+      "schedule": "รอบฉาย",
+      "room": "โรงฉาย",
+      "seat": "ที่นั่ง",
+      "booking": "การจอง",
+      "ticket": "ตั๋ว",
+      "combo": "คอมโบและอาหาร",
+      "payment": "การชำระเงิน",
+      "cashierShift": "กะแคชเชียร์",
+      "refund": "การคืนเงิน",
+      "user": "บัญชีลูกค้า",
+      "supportTicket": "ตั๋วซัพพอร์ต",
+      "crm": "โปรไฟล์ลูกค้า",
+      "maintenance": "การบำรุงรักษา",
+      "inventory": "สินค้าคงคลัง",
+      "incident": "เหตุการณ์"
+    },
+    "permissionActions": {
+      "read": "ดู",
+      "view": "ดู",
+      "create": "สร้าง",
+      "update": "อัปเดต",
+      "checkin": "เช็กอิน",
+      "sell": "ขาย",
+      "cancel": "ยกเลิก",
+      "reschedule": "เลื่อนรอบ",
+      "changeShowtime": "เปลี่ยนรอบฉาย",
+      "open": "เปิด",
+      "close": "ปิด",
+      "request": "ส่งคำขอ",
+      "viewCustomer": "ค้นหา",
+      "order_view": "ดูคำสั่งซื้อ",
+      "order_update": "อัปเดตคำสั่งซื้อ"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "เหตุการณ์",
+    "formTitle": "รายงานเหตุการณ์",
+    "branchPlaceholder": "เลือกโรงภาพยนตร์",
+    "categoryLabel": "หมวดหมู่",
+    "severityLabel": "ระดับความรุนแรง",
+    "titleLabel": "หัวข้อ",
+    "titleRequired": "กรุณากรอกหัวข้อ",
+    "descriptionLabel": "รายละเอียด",
+    "submit": "ส่งรายงาน",
+    "createSuccess": "บันทึกเหตุการณ์แล้ว",
+    "headers": {
+      "id": "ID",
+      "time": "เวลา",
+      "category": "หมวดหมู่",
+      "severity": "ระดับความรุนแรง",
+      "title": "หัวข้อ",
+      "description": "รายละเอียด"
+    },
+    "category": {
+      "THEFT": "การโจรกรรม",
+      "DISTURBANCE": "การก่อกวน",
+      "MEDICAL": "การแพทย์",
+      "FIRE_SAFETY": "ไฟไหม้ / ความปลอดภัย",
+      "SUSPICIOUS": "พฤติกรรมน่าสงสัย",
+      "OTHER": "อื่น ๆ"
+    },
+    "severity": {
+      "LOW": "ต่ำ",
+      "MEDIUM": "ปานกลาง",
+      "HIGH": "สูง"
     }
   }
 }
