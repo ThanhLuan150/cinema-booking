@@ -94,6 +94,7 @@ const PERMISSIONS = [
   ['cashierShift.read', 'cashierShift'],
   ['integration.read', 'integration'], ['integration.manage', 'integration'],
   ['incident.create', 'incident'], ['incident.read', 'incident'],
+  ['attendance.clock', 'attendance'], ['attendance.read', 'attendance'], ['attendance.manage', 'attendance'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -164,6 +165,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   // Incident reports are per-branch; a Branch Admin reads (and may file) them for their own
   // branches only. Floor staff get incident.create per-Position (SECURITY), not by role.
   'incident.create': 'BRANCH', 'incident.read': 'BRANCH',
+  // Reads and corrects attendance for the branch's own employees. attendance.clock is not
+  // granted here: a Branch Admin has no employee record to clock in as.
+  'attendance.read': 'BRANCH', 'attendance.manage': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {
@@ -184,6 +188,8 @@ const EMPLOYEE_PERMISSIONS = {
   // and quoting stays with the Branch Admin.
   'privateEvent.read': 'BRANCH',
   'eventPackage.read': 'ALL',
+  // Clock themselves in/out and read only their own attendance history.
+  'attendance.clock': 'OWN', 'attendance.read': 'OWN',
 };
 
 const CUSTOMER_PERMISSIONS = {

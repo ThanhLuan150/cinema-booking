@@ -72,6 +72,8 @@ describe('systemConfig.service', () => {
           'TAX_RATE',
           'MAX_BOOKING_SEATS',
           'REFUND_POLICY',
+          'ATTENDANCE_TIMEZONE',
+          'ATTENDANCE_LATE_GRACE',
         ].sort(),
       );
     });

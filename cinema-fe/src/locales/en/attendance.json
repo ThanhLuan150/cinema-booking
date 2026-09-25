@@ -1,0 +1,89 @@
+{
+  "status": {
+    "PRESENT": "Present",
+    "LATE": "Late",
+    "ABSENT": "Absent",
+    "ON_LEAVE": "On leave"
+  },
+  "sessionState": {
+    "NOT_STARTED": "Not clocked in",
+    "WORKING": "Working",
+    "ON_BREAK": "On break",
+    "CLOCKED_OUT": "Clocked out"
+  },
+  "clock": {
+    "title": "Today's attendance",
+    "workDay": "Work day {{date}}",
+    "timezone": "Branch time ({{timezone}})",
+    "staleSession": "You still have an open session from {{date}}. Clock out to close it — if you cannot, ask your manager to correct it.",
+    "recordedAs": "Today is already recorded for you as {{status}}.",
+    "clockIn": "Clock in",
+    "breakStart": "Break start",
+    "breakEnd": "Break end",
+    "clockOut": "Clock out",
+    "worked": "Worked",
+    "clockInAction": "Clock in",
+    "breakAction": "Start break",
+    "resumeAction": "Resume work",
+    "clockOutAction": "Clock out",
+    "endBreakFirst": "End your break before clocking out.",
+    "breakTaken": "You have taken your break for this session.",
+    "dayComplete": "You have clocked out for today.",
+    "clockInSuccess": "Clocked in",
+    "breakStartSuccess": "Break started",
+    "breakEndSuccess": "Back to work",
+    "clockOutSuccess": "Clocked out"
+  },
+  "table": {
+    "date": "Date",
+    "employee": "Employee",
+    "branch": "Branch",
+    "clockIn": "Clock in",
+    "break": "Break",
+    "clockOut": "Clock out",
+    "worked": "Worked",
+    "status": "Status",
+    "note": "Note",
+    "actions": "Actions",
+    "closeSession": "Close session",
+    "empty": "No attendance records"
+  },
+  "my": {
+    "breadcrumb": "My Attendance",
+    "historyTitle": "My history"
+  },
+  "admin": {
+    "breadcrumb": "Attendance",
+    "branch": "Branch",
+    "branchPlaceholder": "Select a branch",
+    "allBranches": "All branches",
+    "employee": "Employee",
+    "allEmployees": "All employees",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "from": "From",
+    "to": "To",
+    "markAbsence": "Mark absence / leave",
+    "rangeInvalid": "The start date must not be after the end date."
+  },
+  "mark": {
+    "title": "Mark absence or leave",
+    "employee": "Employee",
+    "employeePlaceholder": "Select an employee",
+    "date": "Work day",
+    "status": "Status",
+    "note": "Note (optional)",
+    "submit": "Save",
+    "success": "Attendance recorded"
+  },
+  "close": {
+    "title": "Close open session",
+    "context": "{{employee}} clocked in at {{clockIn}} on {{date}} and never clocked out.",
+    "timezoneHint": "Enter the clock-out time as branch time ({{timezone}}).",
+    "date": "Clock-out date",
+    "time": "Clock-out time",
+    "note": "Reason (required)",
+    "submit": "Close session",
+    "success": "Session closed"
+  }
+}

@@ -182,6 +182,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.supportTickets')}
             </NavLink>
           )}
+          {hasPermission('attendance.clock') && (
+            <NavLink to={ROUTES.employeeAttendance} className={navLinkClass}>
+              <ion-icon name="time" />
+              {t('adminLayout.nav.attendance')}
+            </NavLink>
+          )}
           <NavLink to={ROUTES.employeeMySchedule} className={navLinkClass}>
             <ion-icon name="calendar" />
             {t('adminLayout.nav.mySchedule')}
@@ -246,6 +252,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <NavLink to={ROUTES.ownerParking} className={navLinkClass}>
               <ion-icon name="car" />
               {t('adminLayout.nav.parking')}
+            </NavLink>
+          )}
+          {hasPermission('attendance.read') && (
+            <NavLink to={ROUTES.ownerAttendance} className={navLinkClass}>
+              <ion-icon name="time" />
+              {t('adminLayout.nav.attendance')}
             </NavLink>
           )}
           {hasPermission('privateEvent.read') && (

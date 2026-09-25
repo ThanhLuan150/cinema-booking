@@ -30,6 +30,18 @@ async function findActiveDuplicate({ employee_id, shift_id, date, excludeId }) {
   return ShiftAssignment.findOne(filter);
 }
 
+// The employee's live roster entries for one calendar day (used by attendance to work out
+// whether a clock-in is late).
+async function findActiveForEmployeeOnDate(employeeId, date) {
+  return ShiftAssignment.find({ employee_id: Number(employeeId), date, status: 'ACTIVE' }).sort({ start_at: 1 });
+}
+
+// Live assignments that ended inside [after, before) — the candidates for an absence check.
+// The lower bound keeps the sweep from re-scanning the whole roster history every run.
+async function findActiveEndedBetween(after, before) {
+  return ShiftAssignment.find({ status: 'ACTIVE', end_at: { $gte: after, $lt: before } });
+}
+
 async function existsForShift(shiftId) {
   return ShiftAssignment.exists({ shift_id: Number(shiftId) });
 }
@@ -51,6 +63,8 @@ module.exports = {
   findById,
   findBranchIdByAssignmentId,
   findActiveDuplicate,
+  findActiveForEmployeeOnDate,
+  findActiveEndedBetween,
   existsForShift,
   create,
   updateFields,

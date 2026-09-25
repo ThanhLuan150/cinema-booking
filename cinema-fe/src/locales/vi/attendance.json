@@ -1,0 +1,89 @@
+{
+  "status": {
+    "PRESENT": "Có mặt",
+    "LATE": "Đi muộn",
+    "ABSENT": "Vắng mặt",
+    "ON_LEAVE": "Nghỉ phép"
+  },
+  "sessionState": {
+    "NOT_STARTED": "Chưa vào ca",
+    "WORKING": "Đang làm việc",
+    "ON_BREAK": "Đang nghỉ giải lao",
+    "CLOCKED_OUT": "Đã ra ca"
+  },
+  "clock": {
+    "title": "Chấm công hôm nay",
+    "workDay": "Ngày làm việc {{date}}",
+    "timezone": "Giờ chi nhánh ({{timezone}})",
+    "staleSession": "Bạn vẫn còn một phiên chưa kết thúc từ ngày {{date}}. Hãy ra ca để đóng phiên — nếu không thể, nhờ quản lý chỉnh sửa.",
+    "recordedAs": "Hôm nay đã được ghi nhận cho bạn là {{status}}.",
+    "clockIn": "Vào ca",
+    "breakStart": "Bắt đầu nghỉ",
+    "breakEnd": "Kết thúc nghỉ",
+    "clockOut": "Ra ca",
+    "worked": "Đã làm",
+    "clockInAction": "Vào ca",
+    "breakAction": "Bắt đầu nghỉ",
+    "resumeAction": "Tiếp tục làm việc",
+    "clockOutAction": "Ra ca",
+    "endBreakFirst": "Hãy kết thúc giờ nghỉ trước khi ra ca.",
+    "breakTaken": "Bạn đã nghỉ giải lao trong phiên này.",
+    "dayComplete": "Bạn đã ra ca hôm nay.",
+    "clockInSuccess": "Đã vào ca",
+    "breakStartSuccess": "Đã bắt đầu nghỉ",
+    "breakEndSuccess": "Đã quay lại làm việc",
+    "clockOutSuccess": "Đã ra ca"
+  },
+  "table": {
+    "date": "Ngày",
+    "employee": "Nhân viên",
+    "branch": "Chi nhánh",
+    "clockIn": "Vào ca",
+    "break": "Nghỉ",
+    "clockOut": "Ra ca",
+    "worked": "Đã làm",
+    "status": "Trạng thái",
+    "note": "Ghi chú",
+    "actions": "Thao tác",
+    "closeSession": "Đóng phiên",
+    "empty": "Chưa có bản ghi chấm công"
+  },
+  "my": {
+    "breadcrumb": "Chấm công của tôi",
+    "historyTitle": "Lịch sử của tôi"
+  },
+  "admin": {
+    "breadcrumb": "Chấm công",
+    "branch": "Chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "allBranches": "Tất cả chi nhánh",
+    "employee": "Nhân viên",
+    "allEmployees": "Tất cả nhân viên",
+    "status": "Trạng thái",
+    "allStatuses": "Tất cả trạng thái",
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "markAbsence": "Đánh dấu vắng / nghỉ phép",
+    "rangeInvalid": "Ngày bắt đầu không được sau ngày kết thúc."
+  },
+  "mark": {
+    "title": "Đánh dấu vắng mặt hoặc nghỉ phép",
+    "employee": "Nhân viên",
+    "employeePlaceholder": "Chọn nhân viên",
+    "date": "Ngày làm việc",
+    "status": "Trạng thái",
+    "note": "Ghi chú (không bắt buộc)",
+    "submit": "Lưu",
+    "success": "Đã ghi nhận chấm công"
+  },
+  "close": {
+    "title": "Đóng phiên đang mở",
+    "context": "{{employee}} vào ca lúc {{clockIn}} ngày {{date}} và chưa ra ca.",
+    "timezoneHint": "Nhập giờ ra ca theo giờ chi nhánh ({{timezone}}).",
+    "date": "Ngày ra ca",
+    "time": "Giờ ra ca",
+    "note": "Lý do (bắt buộc)",
+    "submit": "Đóng phiên",
+    "success": "Đã đóng phiên"
+  }
+}

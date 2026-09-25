@@ -1,3 +1,5 @@
+const { isValidTimeZone, DEFAULT_TIMEZONE } = require('../utils/attendanceTime');
+
 const TYPE = { NUMBER: 'NUMBER', STRING: 'STRING', BOOLEAN: 'BOOLEAN', JSON: 'JSON' };
 
 // A finite number, honoring min/max when the entry defines them. Returns an error message
@@ -120,6 +122,27 @@ const SETTINGS = {
     branchOverridable: true,
     validateValue: validateRefundPolicy,
   },
+  ATTENDANCE_TIMEZONE: {
+    type: TYPE.STRING,
+    module: 'attendance',
+    unit: null,
+    label: 'Attendance timezone',
+    description: 'IANA timezone (e.g. Asia/Ho_Chi_Minh) that decides which work day a clock-in belongs to.',
+    default: DEFAULT_TIMEZONE,
+    branchOverridable: true,
+    validateValue: (raw) => (isValidTimeZone(raw) ? null : 'must be a valid IANA timezone such as Asia/Ho_Chi_Minh'),
+  },
+  ATTENDANCE_LATE_GRACE: {
+    type: TYPE.NUMBER,
+    module: 'attendance',
+    unit: 'minutes',
+    label: 'Late clock-in grace period',
+    description: 'How many minutes after a shift starts an employee can still clock in without being marked LATE.',
+    default: 10,
+    min: 0,
+    max: 120,
+    branchOverridable: true,
+  },
 };
 
 const KEYS = Object.keys(SETTINGS);
@@ -149,7 +172,7 @@ function validateValue(key, rawValue) {
       value = error ? rawValue : Number(rawValue);
       break;
     case TYPE.STRING:
-      error = validateString(rawValue, entry);
+      error = validateString(rawValue, entry) || (entry.validateValue ? entry.validateValue(rawValue) : null);
       break;
     case TYPE.BOOLEAN:
       error = validateBoolean(rawValue);

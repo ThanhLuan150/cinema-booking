@@ -197,6 +197,7 @@ A Branch Admin manages the branch(es) they own (branch-scoped everywhere via `re
 - **Cashier Shifts** (`/CashierShifts`) — read every cashier's shift at their branch and settle one a cashier walked away from (`cashierShift.read`/`.close`) — a Branch Admin does not open a drawer themselves (§6.21).
 - **Employees** (`/OwnerEmployees`) — hire staff (email/password/name/phone + assign a **Position**), deactivate/reactivate, reset an employee's password.
 - **Shifts** (`/OwnerShifts`) — define named work shifts and assign employees to them (`/OwnerShifts/Assignments`) (§6.21).
+- **Attendance** (`/OwnerAttendance`) — read their branch's clock-in/out records (Super Admin: every branch), mark an absence or leave day, and close a session an employee forgot to clock out of (§6.34).
 - **Maintenance** (`/OwnerMaintenance`) — assign/close/delete maintenance requests raised at their branch (§6.6).
 - **Support Tickets** (`/SupportTickets`) — assign a customer-support ticket to a specific employee, or close/delete one (§6.7).
 - **QR Scanner devices** (`/OwnerDevices`) — register entrances and scanner devices, rotate a device's API key (§6.8).
@@ -219,6 +220,7 @@ What an employee sees is driven entirely by their resolved permissions (via Posi
 - **Maintenance** (`/OwnerMaintenance`, Maintenance Staff position) — start and resolve a maintenance request (§6.6).
 - **Parking desk** (every Employee holds `parking.operate` by default, like `maintenance.create/read`) — run vehicle entry/exit and slot assignment at a branch with parking configured (§6.26).
 - **My Schedule** (`/EmployeeMySchedule`) — the employee's own upcoming shift assignments (§6.21).
+- **My Attendance** (`/EmployeeAttendance`, `attendance.clock`) — clock in, take a break, resume, clock out, and see their own attendance history (§6.34).
 - **Notifications** — every logged-in account (customer or staff) gets a bell icon with unread count and history at `/Notifications` (§6.11).
 
 Position-based capability matrix (from [`seedPositions.js`](cinema-be/src/seed/seedPositions.js)):
@@ -242,6 +244,7 @@ Position-based capability matrix (from [`seedPositions.js`](cinema-be/src/seed/s
 - **One Employee, one Branch.** `branch_id` is set at creation and is never accepted from an update body; a Branch Admin can only touch employees of branches they own.
 - **Employees cannot change permissions.** No Position grants `employee.*`, `position.*` or any user-writing permission (Customer Service only reads users); permissions themselves are seeded ([`seedPositions.js`](cinema-be/src/seed/seedPositions.js)) and no API edits them. The employee-management endpoints additionally refuse to act on the caller's own record (`SELF_MODIFICATION_FORBIDDEN`).
 - **SUPER_ADMIN is out of reach of a Branch Admin.** Branch Admins hold no `user.update/block/approve/delete` or `branchAdmin.create`; employees are always created as role `3`; and the employee endpoints refuse a target whose account is not an ordinary employee account (`NOT_AN_EMPLOYEE_ACCOUNT`), so they cannot be used to reset the password of, or lock out, a Branch Admin or Super Admin.
+- **Live permission refresh.** Changing an employee's Position (or deactivating them) pushes `employee:updated` over Socket.IO to exactly three audiences — that employee's own `account:` room, the branch's Branch Admin (`owner:`) and Super Admin (`admin`) — never the `branch:<id>` room, so colleagues do not learn who was moved. The client drops its cached profile and permission set on receipt, so the affected employee's sidebar and access update immediately, without a reload; the backend still resolves permissions per request, so this is a UX refresh, not the security boundary.
 - **Frontend is not the security layer.** The FE only hides/shows UI from `GET /api/user/permissions`; every rule above is enforced by `requirePermission`/`requireBranchAccess` on the backend.
 - **Migrating an existing database.** `npm run migrate:positions` (in `cinema-be`) renames `COMBO_STAFF`→`CONCESSION_STAFF` and `TICKET_CHECKER`→`CHECK_IN_STAFF` in place (employees keep their assignment) and re-seeds RBAC/positions to add `USHER`, `FNB_STAFF` and the `incident.*` permissions. `npm run seed` performs the same rename automatically. Incident reports: `POST/GET /api/incidents` (no admin UI yet).
 
@@ -287,9 +290,9 @@ Socket.IO pushes live updates across every module instead of polling. A socket j
 
 | Room | Who joins | Carries |
 | --- | --- | --- |
-| `account:<id>` | every authenticated socket | personal events — notifications, your booking/payment/refund, your shift |
-| `admin` | Super Admin | every branch's copy of each branch-scoped event |
-| `owner:<accountId>` | Branch Admin, without their employees | the payloads employees should not see — `booking:new` and its takings figure, a branch's own status change |
+| `account:<id>` | every authenticated socket | personal events — notifications, your booking/payment/refund, your shift, your own `attendance:updated` |
+| `admin` | Super Admin | every branch's copy of each branch-scoped event (and every `attendance:updated`) |
+| `owner:<accountId>` | Branch Admin, without their employees | the payloads employees should not see — `booking:new` and its takings figure, a branch's own status change, `attendance:updated` for their branch's employees |
 | `staff` | any non-customer | cross-branch staff news — system settings, the distribution catalogue |
 | `branch:<id>` | that branch's owner + its active employees | check-ins, maintenance, support tickets, parking, inventory, cash drawers, signage, devices |
 | `schedule:<id>` | anyone viewing that showtime's seat map (opt-in, anonymous allowed) | the live seat map |
@@ -376,6 +379,14 @@ Beyond the base title/poster/description, a movie can carry a banner image, an i
 
 A review (movie or cinema) can only be written by a customer who actually booked and either completed or paid for that specific movie/cinema (a `Booking` in status PAID/COMPLETED with a USED ticket) — this eligibility check runs before `review.create` is ever considered, so nobody can review something they never attended (§6.2). Each review has a moderation `status` (VISIBLE / HIDDEN / REJECTED) a Super Admin controls via `review.moderate` (§6.3); the author can always edit/delete their own review (`review.update_own`/`review.delete_own`), even after eligibility has since lapsed.
 
+### 6.34 Employee Attendance
+
+An employee records their own day: **Clock In → Working → Break → Resume → Clock Out**. One `Attendance` row per employee per work day (`employee_id`, `branch_id`, `work_date`, `clock_in`, `clock_out`, `break_start`, `break_end`, `status`) with statuses `PRESENT`, `LATE`, `ABSENT`, `ON_LEAVE`. The clock endpoints take **no employee id** — they always act on the token's own employee record, so nobody can clock in for a colleague — and the **server clock** decides every timestamp (a client-sent `clock_in` is ignored). A second clock-in while a session is open (on any day, so a forgotten clock-out still blocks it) is a `409 ACTIVE_SESSION_EXISTS`; clocking out or starting a break without a clock-in is `409 NOT_CLOCKED_IN`; you cannot clock out mid-break, and there is one break per day. Every transition is a single conditional update, so a double-tap or two devices cannot both win.
+
+**Timezone.** `work_date` is the calendar day in the branch's `ATTENDANCE_TIMEZONE` (a branch-overridable System Configuration setting, IANA name, default `Asia/Ho_Chi_Minh`, validated on write — `+07:00`-style offsets and abbreviations are rejected). A client may send `timezone` on any clock action; an unknown zone is `400 INVALID_TIMEZONE` and a real-but-different one is `400 TIMEZONE_MISMATCH`. The zone is stored on each row so a later setting change never reinterprets history. `LATE` = clock-in later than the matched shift assignment's start plus `ATTENDANCE_LATE_GRACE` minutes (default 10); no roster entry means `PRESENT`. A manager's correction timestamp must carry its own offset (`Z` / `+07:00`) — a bare local time is refused rather than guessed.
+
+**Access.** `attendance.clock` (Employee, OWN) runs the clock; `attendance.read` is scope-aware — Employee sees only their own rows (a colleague's row is a 404, not a 403), Branch Admin their own branch, Super Admin everything; `attendance.manage` (Branch Admin / Super Admin) can mark a day `ABSENT`/`ON_LEAVE` (never over recorded working time) and close a session that was never clocked out (reason required). A background sweep (every 15 min) flags ended shift assignments with no attendance as `ABSENT`. Clock in, clock out, marks, corrections and automatic absences are written to the Audit Log (`ATTENDANCE_*`); every change is also pushed live as `attendance:updated` — deliberately **not** through the `branch:<id>` room (every colleague is in it, and one employee must not see another's lateness/absence), but only to the employee it is about (`account:`), the branch's Branch Admin (`owner:`) and Super Admin (`admin`). FE: `/EmployeeAttendance` and `/OwnerAttendance`.
+
 ---
 
 ## 7. Key API surfaces (see route files for full detail)
@@ -393,6 +404,7 @@ A review (movie or cinema) can only be written by a customer who actually booked
 | Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price (§6.18) |
 | Inventory | `/api/inventory` | Combo-ingredient stock levels, alerts, adjustment history (§6.19) |
 | Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
+| Attendance | `/api/attendance/{today,clock-in,break/start,break/end,clock-out}`, `/attendance`, `/attendance/me`, `/attendance/:id`, `/attendance/mark`, `/attendance/:id/close` | Employee clock (always the caller's own record) + scope-aware reads (Employee own / Branch Admin their branch / Super Admin all) + manager mark/correct actions (§6.34) |
 | Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions (booking-eligibility gated, §6.33), movie likes, branch favorites |
 | Ops | `/api/users`, `/api/block/:id`, `/api/admin/invoices` | Admin/owner back-office data |
 | Maintenance | `/api/maintenance` | Log/assign/work/close a Room/Equipment issue; a ROOM request auto-flips `Room.status` to `MAINTENANCE` |

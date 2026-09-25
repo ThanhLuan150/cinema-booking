@@ -38,6 +38,7 @@ import { parkingTicketsQueryKey } from '@/features/owner/parking/hooks/useParkin
 import { ownerInventoryQueryKey } from '@/features/owner/hooks/useOwnerInventory';
 import { inventoryAlertsQueryKey } from '@/features/owner/hooks/useInventoryAlerts';
 import { shiftAssignmentsQueryKey } from '@/features/owner/hooks/useShiftAssignments';
+import { attendanceQueryKey } from '@/features/attendance/hooks/useAttendance';
 import { myShiftAssignmentsQueryKey } from '@/features/employee/hooks/useMyShiftAssignments';
 import { cashierShiftsQueryKey } from '@/features/cashierShift/hooks/useCashierShifts';
 import { currentCashierShiftQueryKey } from '@/features/cashierShift/hooks/useCurrentCashierShift';
@@ -101,6 +102,7 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.PARKING_UPDATED]: [parkingAreasQueryKey, parkingSlotsQueryKey, parkingTicketsQueryKey],
   [REALTIME_EVENT.INVENTORY_UPDATED]: [ownerInventoryQueryKey, inventoryAlertsQueryKey],
   [REALTIME_EVENT.SHIFT_UPDATED]: [shiftAssignmentsQueryKey, myShiftAssignmentsQueryKey],
+  [REALTIME_EVENT.ATTENDANCE_UPDATED]: [attendanceQueryKey],
   [REALTIME_EVENT.CASHIER_SHIFT_UPDATED]: [cashierShiftsQueryKey, currentCashierShiftQueryKey],
   [REALTIME_EVENT.PRIVATE_EVENT_UPDATED]: [privateEventKeys.packages, privateEventKeys.mine, privateEventKeys.admin],
   [REALTIME_EVENT.SIGNAGE_UPDATED]: [
@@ -112,7 +114,11 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.DEVICE_UPDATED]: [devicesQueryKey],
   [REALTIME_EVENT.KIOSK_UPDATED]: [kiosksQueryKey],
   [REALTIME_EVENT.ENTRANCE_UPDATED]: [entrancesQueryKey],
-  [REALTIME_EVENT.EMPLOYEE_UPDATED]: [myEmployeesQueryKey],
+  // A Position change (or deactivation) rewrites what the employee may do, and their menu is
+  // built from the cached permission set — so the affected person's own profile + permissions are
+  // dropped too, not just the roster a manager is looking at. The server only sends this to that
+  // employee, their Branch Admin and Super Admin, so a refetch here is always for the right person.
+  [REALTIME_EVENT.EMPLOYEE_UPDATED]: [myEmployeesQueryKey, ['currentUser'], ['myPermissions']],
   [REALTIME_EVENT.CAMPAIGN_UPDATED]: [campaignsQueryKey],
   [REALTIME_EVENT.PROMOTION_UPDATED]: [ownerPromotionsQueryKey],
   [REALTIME_EVENT.VOUCHER_UPDATED]: [ownerVouchersQueryKey],
