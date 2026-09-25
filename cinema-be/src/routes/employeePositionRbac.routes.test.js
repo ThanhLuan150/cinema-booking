@@ -4,7 +4,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const request = require('supertest');
-const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
+const { connect, closeDatabase } = require('../../tests/dbTestUtils');
 const { authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seedPositions = require('../seed/seedPositions');
@@ -19,6 +19,7 @@ const Employee = require('../models/Employee');
 const Position = require('../models/Position');
 const Counter = require('../models/Counter');
 const Inventory = require('../models/Inventory');
+const Incident = require('../models/Incident');
 
 const app = express();
 app.use(express.json());
@@ -59,20 +60,30 @@ async function makeEmployee({ accountId, branchId = 1, positionCode, status = 1 
   return id;
 }
 
-beforeAll(async () => connect());
+// Seeding the RBAC tables is the slow part (hundreds of sequential writes), so it happens once
+// per file; each test then only resets the data it creates. Roles, permissions and positions are
+// read-only to these tests (the one that deactivates a Position restores it).
+async function resetScenario(models) {
+  for (const model of models) await model.deleteMany({});
+  await Counter.deleteOne({ name: 'account' });
+}
+
+beforeAll(async () => {
+  await connect();
+  await seedRbac();
+  await seedPositions();
+});
 beforeEach(async () => {
   nextEmployeeId = 1;
   // Hand-made fixture accounts use small ids; start the generated ones above them.
   await Counter.create({ name: 'account', seq: 1000 });
-  await seedRbac();
-  await seedPositions();
   await Branch.create([
     { id: 1, company_id: 1, owner_id: BRANCH_ADMIN_A, name: 'Branch A', code: 'A' },
     { id: 2, company_id: 1, owner_id: BRANCH_ADMIN_B, name: 'Branch B', code: 'B' },
   ]);
   await Account.create({ id: SUPER_ADMIN_ID, email: 'root@cinema.test', password: 'root-hash', role: 0, status: 1 });
 });
-afterEach(async () => clearDatabase());
+afterEach(async () => resetScenario([Account, Branch, Employee, Inventory, Incident]));
 afterAll(async () => closeDatabase());
 
 describe('a Branch Admin assigns a Position', () => {
@@ -139,7 +150,11 @@ describe('a Branch Admin assigns a Position', () => {
 
     expect((await put({ position_id: 999999 })).body.code).toBe('INVALID_POSITION');
     await Position.updateOne({ code: 'CASHIER' }, { $set: { status: 0 } });
-    expect((await put({ position_id: await positionId('CASHIER') })).body.code).toBe('INVALID_POSITION');
+    try {
+      expect((await put({ position_id: await positionId('CASHIER') })).body.code).toBe('INVALID_POSITION');
+    } finally {
+      await Position.updateOne({ code: 'CASHIER' }, { $set: { status: 1 } });
+    }
     expect((await put({ status: 7 })).body.code).toBe('INVALID_STATUS');
     expect((await put({})).status).toBe(400);
     expect((await Employee.findOne({ id: employeeId })).position_id).toBe(await positionId('USHER'));

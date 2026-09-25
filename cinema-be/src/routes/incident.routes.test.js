@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { connect, closeDatabase, clearDatabase } = require('../../tests/dbTestUtils');
+const { connect, closeDatabase } = require('../../tests/dbTestUtils');
 const { buildTestApp, authHeader } = require('../../tests/routeTestUtils');
 const seedRbac = require('../seed/seedRbac');
 const seedPositions = require('../seed/seedPositions');
@@ -9,6 +9,7 @@ const Employee = require('../models/Employee');
 const Incident = require('../models/Incident');
 const Position = require('../models/Position');
 const Room = require('../models/Room');
+const Counter = require('../models/Counter');
 
 const app = buildTestApp('/api/incidents', incidentRoutes);
 
@@ -19,10 +20,20 @@ const asEmployee = (accountId) => authHeader({ role: 3, accountId });
 const asAdminA = () => authHeader({ role: 2, accountId: 42 }); // owns branch 1
 const asSuperAdmin = () => authHeader({ role: 0, accountId: 1 });
 
-beforeAll(async () => connect());
-beforeEach(async () => {
+// Seeding the RBAC tables is the slow part (hundreds of sequential writes), so it happens once
+// per file; each test then only resets the data it creates. Roles, permissions and positions are
+// read-only to these tests (the one that deactivates a Position restores it).
+async function resetScenario(models) {
+  for (const model of models) await model.deleteMany({});
+  await Counter.deleteOne({ name: 'account' });
+}
+
+beforeAll(async () => {
+  await connect();
   await seedRbac();
   await seedPositions();
+});
+beforeEach(async () => {
   const security = await Position.findOne({ code: 'SECURITY' });
   await Branch.create([
     { id: 1, company_id: 1, owner_id: 42, name: 'Branch A', code: 'A' },
@@ -35,7 +46,7 @@ beforeEach(async () => {
   await Room.create({ id: 10, cinema_id: 1, name: 'Room 1', code: 'R1' });
   await Room.create({ id: 20, cinema_id: 2, name: 'Room 2', code: 'R2' });
 });
-afterEach(async () => clearDatabase());
+afterEach(async () => resetScenario([Branch, Employee, Incident, Room]));
 afterAll(async () => closeDatabase());
 
 const validReport = (overrides = {}) => ({
