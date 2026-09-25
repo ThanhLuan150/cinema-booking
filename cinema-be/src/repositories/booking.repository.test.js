@@ -649,10 +649,16 @@ describe('booking.repository', () => {
 
       await bookingRepository.expireAllHeldTickets();
 
-      expect(seatEvents()).toEqual([
-        [1, 'seat:updated', { scheduleId: 1, seatCodes: ['A1'], status: 'AVAILABLE' }],
-        [2, 'seat:updated', { scheduleId: 2, seatCodes: ['B2'], status: 'AVAILABLE' }],
-      ]);
+      // One event per lapsed schedule. The sweep reads the rows with an unsorted find, so the
+      // order the schedules come out in is not part of the contract.
+      const events = seatEvents();
+      expect(events).toHaveLength(2);
+      expect(events).toEqual(
+        expect.arrayContaining([
+          [1, 'seat:updated', { scheduleId: 1, seatCodes: ['A1'], status: 'AVAILABLE' }],
+          [2, 'seat:updated', { scheduleId: 2, seatCodes: ['B2'], status: 'AVAILABLE' }],
+        ]),
+      );
     });
 
     it('the expiry sweep stays quiet when no hold has lapsed', async () => {
