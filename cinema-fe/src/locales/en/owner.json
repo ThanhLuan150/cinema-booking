@@ -160,6 +160,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "Change position",
+    "changePositionTitle": "Change position — {{name}}",
+    "changePositionSuccess": "Position updated.",
+    "permissionsPreview": "Permissions this position grants",
+    "noPermissions": "This position grants no extra permissions.",
+    "permissionsHint": "Permissions come only from the position and are enforced by the server; you cannot edit them here.",
+    "cancel": "Cancel",
+    "savePosition": "Save",
+    "permissionModules": {
+      "movie": "Movies",
+      "schedule": "Showtimes",
+      "room": "Rooms",
+      "seat": "Seats",
+      "booking": "Bookings",
+      "ticket": "Tickets",
+      "combo": "Combos & F&B",
+      "payment": "Payments",
+      "cashierShift": "Cashier shifts",
+      "refund": "Refunds",
+      "user": "Customer accounts",
+      "supportTicket": "Support tickets",
+      "crm": "Customer profile",
+      "maintenance": "Maintenance",
+      "inventory": "Inventory",
+      "incident": "Incidents"
+    },
+    "permissionActions": {
+      "read": "View",
+      "view": "View",
+      "create": "Create",
+      "update": "Update",
+      "checkin": "Check in",
+      "sell": "Sell",
+      "cancel": "Cancel",
+      "reschedule": "Reschedule",
+      "changeShowtime": "Change showtime",
+      "open": "Open",
+      "close": "Close",
+      "request": "Request",
+      "viewCustomer": "Look up",
+      "order_view": "View orders",
+      "order_update": "Update orders"
     }
   },
   "combos": {
@@ -1267,6 +1310,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "Incidents",
+    "formTitle": "Report an incident",
+    "branchPlaceholder": "Select cinema",
+    "categoryLabel": "Category",
+    "severityLabel": "Severity",
+    "titleLabel": "Title",
+    "titleRequired": "Please enter a title.",
+    "descriptionLabel": "Description",
+    "submit": "Submit report",
+    "createSuccess": "Incident reported.",
+    "headers": {
+      "id": "ID",
+      "time": "Time",
+      "category": "Category",
+      "severity": "Severity",
+      "title": "Title",
+      "description": "Description"
+    },
+    "category": {
+      "THEFT": "Theft",
+      "DISTURBANCE": "Disturbance",
+      "MEDICAL": "Medical",
+      "FIRE_SAFETY": "Fire / safety",
+      "SUSPICIOUS": "Suspicious activity",
+      "OTHER": "Other"
+    },
+    "severity": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High"
     }
   }
 }

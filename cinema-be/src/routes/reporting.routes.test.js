@@ -50,11 +50,11 @@ describe('reporting.routes wiring — /reports/financial', () => {
 
 describe('reporting.routes wiring — /reports/operational', () => {
   it('allows an employee staffed at a branch, with metrics narrowed to their Position', async () => {
-    const checker = await Position.findOne({ code: 'TICKET_CHECKER' });
+    const checker = await Position.findOne({ code: 'CHECK_IN_STAFF' });
     await Employee.create({ id: 1, user_id: 55, branch_id: 3, employee_code: 'E1', position_id: checker.id, status: 1 });
     const res = await request(app).get('/api/reports/operational').set('Authorization', authHeader({ role: 3, accountId: 55 }));
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ scope: 'BRANCH', branchIds: [3], positionCode: 'TICKET_CHECKER' });
+    expect(res.body).toMatchObject({ scope: 'BRANCH', branchIds: [3], positionCode: 'CHECK_IN_STAFF' });
     expect(res.body.metrics).toHaveProperty('ticketsCheckedInToday');
     expect(res.body.metrics).not.toHaveProperty('pendingComboOrders');
   });

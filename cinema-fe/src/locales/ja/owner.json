@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "役職を変更",
+    "changePositionTitle": "役職を変更 — {{name}}",
+    "changePositionSuccess": "役職を更新しました。",
+    "permissionsPreview": "この役職が付与する権限",
+    "noPermissions": "この役職は追加の権限を付与しません。",
+    "permissionsHint": "権限は役職からのみ付与され、サーバー側で強制されます。ここでは編集できません。",
+    "cancel": "キャンセル",
+    "savePosition": "保存",
+    "permissionModules": {
+      "movie": "映画",
+      "schedule": "上映スケジュール",
+      "room": "スクリーン",
+      "seat": "座席",
+      "booking": "予約",
+      "ticket": "チケット",
+      "combo": "コンボ・飲食",
+      "payment": "支払い",
+      "cashierShift": "レジ締め",
+      "refund": "返金",
+      "user": "顧客アカウント",
+      "supportTicket": "サポートチケット",
+      "crm": "顧客プロフィール",
+      "maintenance": "メンテナンス",
+      "inventory": "在庫",
+      "incident": "インシデント"
+    },
+    "permissionActions": {
+      "read": "閲覧",
+      "view": "閲覧",
+      "create": "作成",
+      "update": "更新",
+      "checkin": "チェックイン",
+      "sell": "販売",
+      "cancel": "キャンセル",
+      "reschedule": "日程変更",
+      "changeShowtime": "上映回の変更",
+      "open": "開始",
+      "close": "終了",
+      "request": "申請",
+      "viewCustomer": "検索",
+      "order_view": "注文の閲覧",
+      "order_update": "注文の更新"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "インシデント",
+    "formTitle": "インシデントを報告",
+    "branchPlaceholder": "映画館を選択",
+    "categoryLabel": "カテゴリ",
+    "severityLabel": "重大度",
+    "titleLabel": "タイトル",
+    "titleRequired": "タイトルを入力してください。",
+    "descriptionLabel": "説明",
+    "submit": "報告を送信",
+    "createSuccess": "インシデントを報告しました。",
+    "headers": {
+      "id": "ID",
+      "time": "時刻",
+      "category": "カテゴリ",
+      "severity": "重大度",
+      "title": "タイトル",
+      "description": "説明"
+    },
+    "category": {
+      "THEFT": "窃盗",
+      "DISTURBANCE": "迷惑行為",
+      "MEDICAL": "医療",
+      "FIRE_SAFETY": "火災・安全",
+      "SUSPICIOUS": "不審な行動",
+      "OTHER": "その他"
+    },
+    "severity": {
+      "LOW": "低",
+      "MEDIUM": "中",
+      "HIGH": "高"
     }
   }
 }

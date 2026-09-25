@@ -32,7 +32,7 @@ const OWNER_B = 99; // Branch Admin of branch 2
 const CASHIER_A = 7; // account id — CASHIER at branch 1
 const CASHIER_A2 = 12; // account id — a second CASHIER at branch 1
 const CASHIER_B = 8; // account id — CASHIER at branch 2
-const COMBO_STAFF_A = 9; // account id — COMBO_STAFF at branch 1 (no cashierShift.* grants)
+const CONCESSION_STAFF_A = 9; // account id — CONCESSION_STAFF at branch 1 (no cashierShift.* grants)
 const TICKET_STAFF_A = 11; // account id — TICKET_STAFF at branch 1
 
 async function positionId(code) {
@@ -49,10 +49,10 @@ async function seedBranchesAndStaff() {
     { id: 2, user_id: CASHIER_B, branch_id: 2, employee_code: 'EMP-2', position_id: await positionId('CASHIER'), status: 1 },
     {
       id: 3,
-      user_id: COMBO_STAFF_A,
+      user_id: CONCESSION_STAFF_A,
       branch_id: 1,
       employee_code: 'EMP-3',
-      position_id: await positionId('COMBO_STAFF'),
+      position_id: await positionId('CONCESSION_STAFF'),
       status: 1,
     },
     {
@@ -109,7 +109,7 @@ describe('POST /api/cashier-shifts/open', () => {
   });
 
   it('is forbidden for an employee whose position does not work a drawer', async () => {
-    const res = await openShift(COMBO_STAFF_A);
+    const res = await openShift(CONCESSION_STAFF_A);
     expect(res.status).toBe(403);
   });
 

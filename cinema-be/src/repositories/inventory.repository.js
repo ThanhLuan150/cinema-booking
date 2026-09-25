@@ -2,6 +2,7 @@ const Inventory = require('../models/Inventory');
 const InventoryTransaction = require('../models/InventoryTransaction');
 const Combo = require('../models/Combo');
 const Branch = require('../models/Branch');
+const Employee = require('../models/Employee');
 const nextId = require('../utils/nextId');
 
 async function findById(id) {
@@ -16,6 +17,15 @@ async function findBranchIdById(id) {
 async function findOwnedBranchIds(accountId) {
   const branches = await Branch.find({ owner_id: Number(accountId) }, { id: 1 });
   return branches.map((b) => b.id);
+}
+
+// Branches whose stock an account may READ: the ones it owns (Branch Admin) plus the one it is
+// actively staffed at (an Employee whose Position grants inventory.view). Writes stay owner-only
+// — they are gated by inventory.manage + requireBranchOwnership, not by this.
+async function findReadableBranchIds(accountId) {
+  const owned = await findOwnedBranchIds(accountId);
+  const staffed = await Employee.findOne({ user_id: Number(accountId), status: 1 });
+  return staffed && !owned.includes(staffed.branch_id) ? [...owned, staffed.branch_id] : owned;
 }
 
 async function list({ branchId, branchIds, status, skip = 0, limit = 20 } = {}) {
@@ -259,6 +269,7 @@ module.exports = {
   findById,
   findBranchIdById,
   findOwnedBranchIds,
+  findReadableBranchIds,
   list,
   listLowStock,
   create,

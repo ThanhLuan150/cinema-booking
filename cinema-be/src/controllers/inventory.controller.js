@@ -21,11 +21,12 @@ function broadcastInventory(inventory, action) {
   });
 }
 
-// BRANCH: caller must own the item's branch (Branch Admin). ALL: no restriction (Super Admin).
-// There is no OWN/staff scope — inventory is warehouse management, Branch-Admin-only.
+// BRANCH: caller must own the item's branch (Branch Admin) or be actively staffed there (an
+// Employee whose Position grants inventory.view — read-only; every write is owner-only).
+// ALL: no restriction (Super Admin).
 async function canAccessInventory(req, inventory) {
   if (req.permissionScope === 'ALL') return true;
-  const ownedBranchIds = await inventoryRepository.findOwnedBranchIds(req.account.accountId);
+  const ownedBranchIds = await inventoryRepository.findReadableBranchIds(req.account.accountId);
   return ownedBranchIds.includes(inventory.branch_id);
 }
 
@@ -40,7 +41,7 @@ async function list(req, res) {
     return res.json(buildPaginatedResult({ data, total, page, limit }));
   }
 
-  const ownedBranchIds = await inventoryRepository.findOwnedBranchIds(req.account.accountId);
+  const ownedBranchIds = await inventoryRepository.findReadableBranchIds(req.account.accountId);
   if (branchId !== undefined && !ownedBranchIds.includes(branchId)) {
     return res.status(403).json({ message: 'Forbidden' });
   }
@@ -62,7 +63,7 @@ async function listAlerts(req, res) {
     return res.json(await inventoryRepository.listLowStock({ branchId }));
   }
 
-  const ownedBranchIds = await inventoryRepository.findOwnedBranchIds(req.account.accountId);
+  const ownedBranchIds = await inventoryRepository.findReadableBranchIds(req.account.accountId);
   if (branchId !== undefined && !ownedBranchIds.includes(branchId)) {
     return res.status(403).json({ message: 'Forbidden' });
   }

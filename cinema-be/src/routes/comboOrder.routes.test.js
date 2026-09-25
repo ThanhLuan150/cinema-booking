@@ -19,16 +19,16 @@ beforeEach(async () => {
 afterEach(async () => clearDatabase());
 afterAll(async () => closeDatabase());
 
-const COMBO_STAFF_ACCOUNT_ID = 7;
+const CONCESSION_STAFF_ACCOUNT_ID = 7;
 
-// Sets up Branch 1 (owned by 42), a Popcorn combo on it, and a COMBO_STAFF employee staffed there.
+// Sets up Branch 1 (owned by 42), a Popcorn combo on it, and a CONCESSION_STAFF employee staffed there.
 async function seedComboStaffAtBranch1() {
   await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Branch A', code: 'A' });
   await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn Combo', price: 50000, active: true });
-  const position = await Position.findOne({ code: 'COMBO_STAFF' });
+  const position = await Position.findOne({ code: 'CONCESSION_STAFF' });
   await Employee.create({
     id: 1,
-    user_id: COMBO_STAFF_ACCOUNT_ID,
+    user_id: CONCESSION_STAFF_ACCOUNT_ID,
     branch_id: 1,
     employee_code: 'E1',
     position_id: position.id,
@@ -62,21 +62,21 @@ describe('comboOrder.routes wiring', () => {
     expect(res.status).toBe(403);
   });
 
-  it('POST /api/combo-orders forbids a COMBO_STAFF employee staffed at a different branch', async () => {
+  it('POST /api/combo-orders forbids a CONCESSION_STAFF employee staffed at a different branch', async () => {
     await seedComboStaffAtBranch1();
     await Branch.create({ id: 2, company_id: 1, owner_id: 99, name: 'Branch B', code: 'B' });
     const res = await request(app)
       .post('/api/combo-orders')
-      .set('Authorization', authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID }))
+      .set('Authorization', authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID }))
       .send({ branch_id: 2, items: [{ combo_id: 1, quantity: 1 }] });
     expect(res.status).toBe(403);
   });
 
-  it('POST /api/combo-orders allows a COMBO_STAFF employee staffed at that branch', async () => {
+  it('POST /api/combo-orders allows a CONCESSION_STAFF employee staffed at that branch', async () => {
     await seedComboStaffAtBranch1();
     const res = await request(app)
       .post('/api/combo-orders')
-      .set('Authorization', authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID }))
+      .set('Authorization', authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID }))
       .send(orderPayload());
     expect(res.status).toBe(201);
     expect(res.body.total_price).toBe(100000);
@@ -99,23 +99,23 @@ describe('comboOrder.routes wiring', () => {
     expect(res.status).toBe(403);
   });
 
-  it('GET /api/combo-orders scopes a COMBO_STAFF employee to their own branch', async () => {
+  it('GET /api/combo-orders scopes a CONCESSION_STAFF employee to their own branch', async () => {
     await seedComboStaffAtBranch1();
     await request(app)
       .post('/api/combo-orders')
-      .set('Authorization', authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID }))
+      .set('Authorization', authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID }))
       .send(orderPayload());
 
     const res = await request(app)
       .get('/api/combo-orders')
-      .set('Authorization', authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID }));
+      .set('Authorization', authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID }));
     expect(res.status).toBe(200);
     expect(res.body.total).toBe(1);
   });
 
-  it('drives an order through pay -> prepare -> ready -> deliver as COMBO_STAFF', async () => {
+  it('drives an order through pay -> prepare -> ready -> deliver as CONCESSION_STAFF', async () => {
     await seedComboStaffAtBranch1();
-    const staffAuth = authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID });
+    const staffAuth = authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID });
 
     const created = await request(app).post('/api/combo-orders').set('Authorization', staffAuth).send(orderPayload());
     const orderId = created.body.id;
@@ -144,7 +144,7 @@ describe('comboOrder.routes wiring', () => {
     await seedComboStaffAtBranch1();
     const created = await request(app)
       .post('/api/combo-orders')
-      .set('Authorization', authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID }))
+      .set('Authorization', authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID }))
       .send(orderPayload());
 
     const res = await request(app)
@@ -156,7 +156,7 @@ describe('comboOrder.routes wiring', () => {
 
   it('POST /api/combo-orders/:id/cancel cancels a still-pending order', async () => {
     await seedComboStaffAtBranch1();
-    const staffAuth = authHeader({ role: 3, accountId: COMBO_STAFF_ACCOUNT_ID });
+    const staffAuth = authHeader({ role: 3, accountId: CONCESSION_STAFF_ACCOUNT_ID });
     const created = await request(app).post('/api/combo-orders').set('Authorization', staffAuth).send(orderPayload());
 
     const res = await request(app)

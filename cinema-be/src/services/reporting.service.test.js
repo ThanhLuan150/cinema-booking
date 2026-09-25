@@ -95,13 +95,13 @@ describe('reporting.service.getFinancialReport', () => {
 });
 
 describe('reporting.service.selectOperationalMetrics', () => {
-  it('gives a Ticket Checker check-in numbers but not the combo queue', () => {
+  it('gives a Check-in Staff check-in numbers but not the combo queue', () => {
     const keys = reportingService.selectOperationalMetrics(['ticket.read', 'ticket.checkin', 'maintenance.read']);
     expect(keys).toEqual(['ticketsIssuedToday', 'ticketsCheckedInToday', 'openMaintenance']);
     expect(keys).not.toContain('pendingComboOrders');
   });
 
-  it('gives Combo Staff the combo queue but no ticket numbers', () => {
+  it('gives Concession Staff the combo queue but no ticket numbers', () => {
     const keys = reportingService.selectOperationalMetrics(['combo.order.view', 'combo.sell', 'maintenance.read']);
     expect(keys).toEqual(['pendingComboOrders', 'openMaintenance']);
     expect(keys).not.toContain('ticketsCheckedInToday');
@@ -131,14 +131,14 @@ describe('reporting.service.getOperationalReport', () => {
   it('narrows the metrics to what the caller\'s Position grants', async () => {
     await seedRbac();
     await seedPositions();
-    const checker = await Position.findOne({ code: 'TICKET_CHECKER' });
+    const checker = await Position.findOne({ code: 'CHECK_IN_STAFF' });
     await Employee.create({ id: 1, user_id: 55, branch_id: 1, employee_code: 'E1', position_id: checker.id, status: 1 });
 
     const report = await reportingService.getOperationalReport({
       branchIds: [1],
       account: { accountId: 55, role: 3 },
     });
-    expect(report).toMatchObject({ scope: 'BRANCH', branchIds: [1], positionCode: 'TICKET_CHECKER' });
+    expect(report).toMatchObject({ scope: 'BRANCH', branchIds: [1], positionCode: 'CHECK_IN_STAFF' });
     expect(Object.keys(report.metrics).sort()).toEqual(
       ['openMaintenance', 'ticketsCheckedInToday', 'ticketsIssuedToday'].sort(),
     );

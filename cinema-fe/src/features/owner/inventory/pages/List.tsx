@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { usePermissions } from '@/hooks/usePermissions';
 import { DEFAULT_PAGE_SIZE, FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useOwnerCombos } from '../../hooks/useOwnerCombos';
@@ -20,7 +21,12 @@ function InventoryList() {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
 
-  const { data: cinemasPage } = useMyCinemas();
+  // Only a Branch Admin/Super Admin can list branches (branch.read); a staffed Employee reading
+  // stock (inventory.view) would just get a 403, and the backend already limits their rows to
+  // the branch they work at.
+  const { hasPermission } = usePermissions();
+  const canManage = hasPermission('inventory.manage');
+  const { data: cinemasPage } = useMyCinemas({ enabled: hasPermission('branch.read') });
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
   const cinemaNameById = useMemo(() => new Map(cinemas.map((c) => [c.id, c.name])), [cinemas]);
 
@@ -42,13 +48,15 @@ function InventoryList() {
         </div>
       )}
 
-      <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
-        {t('inventory.addButton')}
-      </Button>
+      {canManage && (
+        <Button type="button" variant="danger" onClick={() => dispatch(openAddModal())}>
+          {t('inventory.addButton')}
+        </Button>
+      )}
 
-      {showAddModal && <AddInventoryModal cinemas={cinemas} onClose={() => dispatch(closeAddModal())} />}
+      {canManage && showAddModal && <AddInventoryModal cinemas={cinemas} onClose={() => dispatch(closeAddModal())} />}
 
-      {stockAction && (
+      {canManage && stockAction && (
         <StockActionModal itemId={stockAction.id} mode={stockAction.mode} onClose={() => dispatch(closeStockAction())} />
       )}
 
@@ -59,6 +67,7 @@ function InventoryList() {
           items={items}
           cinemaNameById={cinemaNameById}
           comboNameById={comboNameById}
+          canManage={canManage}
           onReceive={(id) => dispatch(openStockAction({ id, mode: 'receive' }))}
           onAdjust={(id) => dispatch(openStockAction({ id, mode: 'adjust' }))}
           onDeduct={(id) => dispatch(openStockAction({ id, mode: 'deduct' }))}

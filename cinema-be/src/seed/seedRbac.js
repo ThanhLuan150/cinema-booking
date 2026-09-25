@@ -93,6 +93,7 @@ const PERMISSIONS = [
   ['cashierShift.open', 'cashierShift'], ['cashierShift.close', 'cashierShift'],
   ['cashierShift.read', 'cashierShift'],
   ['integration.read', 'integration'], ['integration.manage', 'integration'],
+  ['incident.create', 'incident'], ['incident.read', 'incident'],
 ];
 
 const SUPER_ADMIN_PERMISSIONS = PERMISSIONS.map(([code]) => code);
@@ -160,6 +161,9 @@ const BRANCH_ADMIN_PERMISSIONS = {
   // can settle one a cashier walked away from, but they do not work a drawer themselves
   // (no cashierShift.open) — that stays with the CASHIER/TICKET_STAFF Positions.
   'cashierShift.read': 'BRANCH', 'cashierShift.close': 'BRANCH',
+  // Incident reports are per-branch; a Branch Admin reads (and may file) them for their own
+  // branches only. Floor staff get incident.create per-Position (SECURITY), not by role.
+  'incident.create': 'BRANCH', 'incident.read': 'BRANCH',
 };
 
 const EMPLOYEE_PERMISSIONS = {

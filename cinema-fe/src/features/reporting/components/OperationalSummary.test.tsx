@@ -49,9 +49,9 @@ describe('OperationalSummary', () => {
     expect(screen.getByText('30')).toBeInTheDocument();
   });
 
-  it('renders only the metrics a Ticket Checker receives', () => {
+  it('renders only the metrics a Check-in Staff receives', () => {
     useOperationalReportMock.mockReturnValue(
-      report({ ticketsIssuedToday: 30, ticketsCheckedInToday: 12, openMaintenance: 1 }, 'TICKET_CHECKER'),
+      report({ ticketsIssuedToday: 30, ticketsCheckedInToday: 12, openMaintenance: 1 }, 'CHECK_IN_STAFF'),
     );
     render(<OperationalSummary />);
     expect(screen.getByText('operational.ticketsCheckedInToday')).toBeInTheDocument();
@@ -59,9 +59,9 @@ describe('OperationalSummary', () => {
     expect(screen.queryByText('operational.showtimesToday')).not.toBeInTheDocument();
   });
 
-  it('renders only the combo queue for Combo Staff', () => {
+  it('renders only the combo queue for Concession Staff', () => {
     useOperationalReportMock.mockReturnValue(
-      report({ pendingComboOrders: 3, openMaintenance: 0 }, 'COMBO_STAFF'),
+      report({ pendingComboOrders: 3, openMaintenance: 0 }, 'CONCESSION_STAFF'),
     );
     render(<OperationalSummary />);
     expect(screen.getByText('operational.pendingComboOrders')).toBeInTheDocument();

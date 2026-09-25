@@ -71,7 +71,8 @@
       "signage": "Digital Signage",
       "campaigns": "营销活动",
       "parking": "停车场",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "事件"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

@@ -160,6 +160,49 @@
       "emailRequired": "Vui lòng nhập email.",
       "passwordInvalid": "Mật khẩu phải có ít nhất 6 ký tự.",
       "positionRequired": "Vui lòng chọn vị trí."
+    },
+    "changePosition": "Đổi vị trí",
+    "changePositionTitle": "Đổi vị trí — {{name}}",
+    "changePositionSuccess": "Đã cập nhật vị trí.",
+    "permissionsPreview": "Quyền mà vị trí này cấp",
+    "noPermissions": "Vị trí này không cấp thêm quyền nào.",
+    "permissionsHint": "Quyền chỉ đến từ vị trí và do máy chủ kiểm soát; bạn không thể chỉnh sửa ở đây.",
+    "cancel": "Hủy",
+    "savePosition": "Lưu",
+    "permissionModules": {
+      "movie": "Phim",
+      "schedule": "Suất chiếu",
+      "room": "Phòng chiếu",
+      "seat": "Ghế",
+      "booking": "Đặt vé",
+      "ticket": "Vé",
+      "combo": "Combo & đồ ăn",
+      "payment": "Thanh toán",
+      "cashierShift": "Ca thu ngân",
+      "refund": "Hoàn tiền",
+      "user": "Tài khoản khách hàng",
+      "supportTicket": "Yêu cầu hỗ trợ",
+      "crm": "Hồ sơ khách hàng",
+      "maintenance": "Bảo trì",
+      "inventory": "Kho",
+      "incident": "Sự cố"
+    },
+    "permissionActions": {
+      "read": "Xem",
+      "view": "Xem",
+      "create": "Tạo",
+      "update": "Cập nhật",
+      "checkin": "Check-in",
+      "sell": "Bán",
+      "cancel": "Hủy",
+      "reschedule": "Đổi lịch",
+      "changeShowtime": "Đổi suất chiếu",
+      "open": "Mở",
+      "close": "Đóng",
+      "request": "Yêu cầu",
+      "viewCustomer": "Tra cứu",
+      "order_view": "Xem đơn",
+      "order_update": "Cập nhật đơn"
     }
   },
   "combos": {
@@ -1267,6 +1310,39 @@
     "bannerStatus": {
       "ACTIVE": "Kích hoạt",
       "INACTIVE": "Tắt"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "Sự cố",
+    "formTitle": "Báo cáo sự cố",
+    "branchPlaceholder": "Chọn rạp",
+    "categoryLabel": "Loại",
+    "severityLabel": "Mức độ",
+    "titleLabel": "Tiêu đề",
+    "titleRequired": "Vui lòng nhập tiêu đề.",
+    "descriptionLabel": "Mô tả",
+    "submit": "Gửi báo cáo",
+    "createSuccess": "Đã ghi nhận sự cố.",
+    "headers": {
+      "id": "ID",
+      "time": "Thời gian",
+      "category": "Loại",
+      "severity": "Mức độ",
+      "title": "Tiêu đề",
+      "description": "Mô tả"
+    },
+    "category": {
+      "THEFT": "Trộm cắp",
+      "DISTURBANCE": "Gây rối",
+      "MEDICAL": "Y tế",
+      "FIRE_SAFETY": "Cháy nổ / an toàn",
+      "SUSPICIOUS": "Hoạt động đáng ngờ",
+      "OTHER": "Khác"
+    },
+    "severity": {
+      "LOW": "Thấp",
+      "MEDIUM": "Trung bình",
+      "HIGH": "Cao"
     }
   }
 }

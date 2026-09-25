@@ -105,7 +105,7 @@ Every account has one numeric `role` (stored in the JWT):
 | `0` | **Super Admin** | Platform operator — manages the whole system |
 | `1` | **Customer** | Public end-user who books tickets |
 | `2` | **Branch Admin** ("Owner") | Manages one or more branches on behalf of a Company |
-| `3` | **Employee** | On-site staff at one branch, with a **Position** (Ticket Staff, Cashier, Combo Staff, Ticket Checker, Customer Service, Security, Cleaning Staff, Maintenance Staff) that determines exactly what they can do |
+| `3` | **Employee** | On-site staff at one branch, with a **Position** (Ticket Staff, Cashier, Concession Staff, Check-in Staff, Usher, Customer Service, Security, F&B Staff, Cleaning Staff, Maintenance Staff) that determines exactly what they can do |
 
 ### 5.3 Permission model (RBAC)
 
@@ -113,7 +113,7 @@ Authorization is **not** hardcoded per role in the routes — every protected ro
 
 1. The account's `role` resolves to a `Role` document (`SUPER_ADMIN` / `CUSTOMER` / `BRANCH_ADMIN` / `EMPLOYEE`).
 2. `RolePermission` looks up whether that role has the requested permission code, and its **scope**: `ALL` (any branch) or `BRANCH` (own branch(es) only) or `OWN` (own records only).
-3. For an `EMPLOYEE` with no direct role permission, the middleware falls back to the account's **Position** (`Employee.position_id` → `PositionPermission`) — so two employees at the same branch can have different capabilities depending on whether they're a Cashier, a Ticket Checker, etc.
+3. For an `EMPLOYEE` with no direct role permission, the middleware falls back to the account's **Position** (`Employee.position_id` → `PositionPermission`) — so two employees at the same branch can have different capabilities depending on whether they're a Cashier, Check-in Staff, etc.
 4. `requireBranchAccess` / `requireBranchOwnership` additionally enforce that a `BRANCH`-scoped user can only touch **their own branch's** data (Super Admin bypasses this).
 
 The frontend mirrors this: `GET /api/user/permissions` returns the caller's resolved permission codes, consumed via the [`usePermissions()`](cinema-fe/src/hooks/usePermissions.ts) hook to conditionally render nav items/buttons (e.g. an Employee only sees "Counter Sale" if they have `booking.create`, and "Check-in" if they have `ticket.checkin`). Coarser page-level guarding uses [`RequireRole`](cinema-fe/src/app/RequireRole.tsx) with role groups from [`constants/roles.ts`](cinema-fe/src/constants/roles.ts):
@@ -213,7 +213,7 @@ What an employee sees is driven entirely by their resolved permissions (via Posi
 - **Counter Sale** (`/EmployeeCounterSale`, needs `booking.create` + `payment.create`) — the earlier, simpler counter-sale screen: pick a showtime, select seats from the live seat grid, optionally look up a registered customer by email, take a cash payment, and issue the ticket(s). Still available alongside Box Office.
 - **Check-in** (`/EmployeeCheckIn`, needs `ticket.checkin`) — scan/enter a ticket code, view the booking (movie/branch/showtime/seat/paid status), and mark it **checked in** at the door (§6.8).
 - **Cashier Shifts** (`/CashierShifts`, needs `cashierShift.open`) — open a drawer session before taking any cash payment, close it out at end of shift (§6.21).
-- **Combo Orders** (`/ComboOrders`, needs `combo.order.view` — only the Combo Staff position, not Ticket Staff/Cashier) — sell/fulfill concession-only orders not tied to a ticket (§6.20).
+- **Combo Orders** (`/ComboOrders`, needs `combo.order.view` — only the Concession Staff and F&B Staff positions, not Ticket Staff/Cashier) — sell/fulfill concession-only orders not tied to a ticket (§6.20).
 - **Booking Management** (Customer Service position, needs `booking.read`) — look up and act on any booking at the branch: cancel, reschedule, change showtime (§6.23). Also sees the **Refund Management** queue and can raise a refund request (`refund.request`), though only a Branch Admin can approve/process it (§6.22).
 - **Support Tickets** (`/SupportTickets`, Customer Service position) — claim or work an assigned customer-support ticket (§6.7).
 - **Maintenance** (`/OwnerMaintenance`, Maintenance Staff position) — start and resolve a maintenance request (§6.6).
@@ -227,11 +227,23 @@ Position-based capability matrix (from [`seedPositions.js`](cinema-be/src/seed/s
 |---|---|
 | **Ticket Staff** | Box Office / counter sales, issue tickets, cancel bookings, sell combos, take payment, open/close a cashier shift |
 | **Cashier** | Box Office / counter sales, sell combos, take payment, open/close a cashier shift |
-| **Combo Staff** | Sell/manage combo orders, take payment (no cashier shift of their own) |
-| **Ticket Checker** | Door check-in only |
+| **Concession Staff** (was Combo Staff) | Sell/manage combo orders, take payment, view inventory (no cashier shift of their own) |
+| **Check-in Staff** (was Ticket Checker) | Door check-in only |
+| **Usher** | Door check-in plus read-only room/seat layout to seat guests |
+| **F&B Staff** (code `FNB_STAFF`) | Work the combo-order queue (prepare/deliver) and view inventory — cannot sell |
 | **Customer Service** | Claim/work support tickets, read/cancel/reschedule bookings, request refunds, look up any customer |
 | **Maintenance Staff** | Start and resolve a maintenance request (assigning/closing stays Branch-Admin-only) |
-| **Security / Cleaning Staff** | No system permissions (staff records exist for HR tracking only) |
+| **Security** | Read rooms, file and read branch incident reports (`incident.create`/`incident.read`, §6.5.1) |
+| **Cleaning Staff** | No position-level permissions (staff records exist for HR tracking only) |
+
+#### 6.5.1 Position & permission management (Ticket 42)
+
+- **Assigning a Position.** A Branch Admin (own branches) or Super Admin picks the Position when hiring an employee and can change it later from **Employees → Change position** (`PUT /api/employee/:id { position_id }`, `employee.update`). The dialog previews the permissions the Position grants (`GET /api/position?withPermissions=true`, read-only). The new Position governs the employee's very next request — permissions are resolved per request, never cached in the token.
+- **One Employee, one Branch.** `branch_id` is set at creation and is never accepted from an update body; a Branch Admin can only touch employees of branches they own.
+- **Employees cannot change permissions.** No Position grants `employee.*`, `position.*` or any user-writing permission (Customer Service only reads users); permissions themselves are seeded ([`seedPositions.js`](cinema-be/src/seed/seedPositions.js)) and no API edits them. The employee-management endpoints additionally refuse to act on the caller's own record (`SELF_MODIFICATION_FORBIDDEN`).
+- **SUPER_ADMIN is out of reach of a Branch Admin.** Branch Admins hold no `user.update/block/approve/delete` or `branchAdmin.create`; employees are always created as role `3`; and the employee endpoints refuse a target whose account is not an ordinary employee account (`NOT_AN_EMPLOYEE_ACCOUNT`), so they cannot be used to reset the password of, or lock out, a Branch Admin or Super Admin.
+- **Frontend is not the security layer.** The FE only hides/shows UI from `GET /api/user/permissions`; every rule above is enforced by `requirePermission`/`requireBranchAccess` on the backend.
+- **Migrating an existing database.** `npm run migrate:positions` (in `cinema-be`) renames `COMBO_STAFF`→`CONCESSION_STAFF` and `TICKET_CHECKER`→`CHECK_IN_STAFF` in place (employees keep their assignment) and re-seeds RBAC/positions to add `USHER`, `FNB_STAFF` and the `incident.*` permissions. `npm run seed` performs the same rename automatically. Incident reports: `POST/GET /api/incidents` (no admin UI yet).
 
 ### 6.6 Maintenance requests
 
@@ -247,7 +259,7 @@ Each branch registers its physical **Entrances** and **Devices** (handheld/kiosk
 
 ### 6.9 Reporting & dashboards
 
-`AdminDashboard`, `OwnerDashboard`, and `EmployeeDashboard` all render the same underlying Reporting components, just scoped differently. `report.viewFinancial` (Super Admin: every branch; Branch Admin: their own) drives the revenue/refund/discount financial report — net revenue is always `ticket + combo revenue − discounts − refunds`, computed from actual Payment/Refund/ComboOrder records, never a naive sum of booking totals. `report.viewOperational` (also granted to every Employee) drives a lighter, permission-derived summary — an employee only sees the metrics matching permissions they actually hold (e.g. a Ticket Checker sees today's check-in count but not pending combo orders). This replaced the old standalone dashboard permission/endpoints entirely.
+`AdminDashboard`, `OwnerDashboard`, and `EmployeeDashboard` all render the same underlying Reporting components, just scoped differently. `report.viewFinancial` (Super Admin: every branch; Branch Admin: their own) drives the revenue/refund/discount financial report — net revenue is always `ticket + combo revenue − discounts − refunds`, computed from actual Payment/Refund/ComboOrder records, never a naive sum of booking totals. `report.viewOperational` (also granted to every Employee) drives a lighter, permission-derived summary — an employee only sees the metrics matching permissions they actually hold (e.g. Check-in Staff sees today's check-in count but not pending combo orders). This replaced the old standalone dashboard permission/endpoints entirely.
 
 ### 6.10 Audit Log
 

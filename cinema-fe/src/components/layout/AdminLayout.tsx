@@ -152,6 +152,18 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.comboOrders')}
             </NavLink>
           )}
+          {hasPermission('incident.read') && (
+            <NavLink to={ROUTES.ownerIncidents} className={navLinkClass}>
+              <ion-icon name="shield-checkmark" />
+              {t('adminLayout.nav.incidents')}
+            </NavLink>
+          )}
+          {hasPermission('inventory.view') && (
+            <NavLink to={ROUTES.ownerInventory} className={navLinkClass}>
+              <ion-icon name="cube" />
+              {t('adminLayout.nav.inventory')}
+            </NavLink>
+          )}
           {hasPermission('maintenance.read') && (
             <NavLink to={ROUTES.ownerMaintenance} className={navLinkClass}>
               <ion-icon name="construct" />
@@ -246,6 +258,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <ion-icon name="fast-food" />
             {t('adminLayout.nav.combos')}
           </NavLink>
+          {hasPermission('incident.read') && (
+            <NavLink to={ROUTES.ownerIncidents} className={navLinkClass}>
+              <ion-icon name="shield-checkmark" />
+              {t('adminLayout.nav.incidents')}
+            </NavLink>
+          )}
           {hasPermission('inventory.view') && (
             <NavLink to={ROUTES.ownerInventory} className={navLinkClass}>
               <ion-icon name="cube" />

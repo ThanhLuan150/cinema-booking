@@ -254,6 +254,11 @@ describe('owner.api', () => {
     expect(getMock).toHaveBeenCalledWith('/position');
   });
 
+  it('getPositions(true) asks for each position with its permissions', async () => {
+    await ownerApi.getPositions(true);
+    expect(getMock).toHaveBeenCalledWith('/position', { params: { withPermissions: true } });
+  });
+
   it('getMaintenanceRequests gets /maintenance with branchId param', async () => {
     await ownerApi.getMaintenanceRequests(1, { page: 1, limit: 20 });
     expect(getMock).toHaveBeenCalledWith('/maintenance', { params: { branchId: 1, page: 1, limit: 20 } });

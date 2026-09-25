@@ -29,7 +29,7 @@ async function canAccessOrder(req, order) {
 }
 
 // POST /api/combo-orders { branch_id, account_id?, booking_id?, items: [{ combo_id, quantity }] }
-// Combo Staff/Cashier "sell a combo" action (combo.sell permission, branch-scoped via
+// Concession Staff/Cashier "sell a combo" action (combo.sell permission, branch-scoped via
 // requireBranchAccess). account_id is optional (anonymous walk-up sale); booking_id optionally
 // links the order to a customer's existing booking at the same branch.
 async function createOrder(req, res) {

@@ -18,7 +18,10 @@ vi.mock('react-i18next', async (importOriginal) => {
   };
 });
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
-vi.mock('@/hooks/usePermissions', () => ({ usePermissions: () => ({ hasPermission: () => true }) }));
+let grantedPermissions: Set<string> | null = null; // null = grant everything (Branch Admin)
+vi.mock('@/hooks/usePermissions', () => ({
+  usePermissions: () => ({ hasPermission: (code: string) => grantedPermissions === null || grantedPermissions.has(code) }),
+}));
 
 const useMyCinemasMock = vi.fn();
 vi.mock('../../hooks/useMyCinemas', () => ({ useMyCinemas: (...args: unknown[]) => useMyCinemasMock(...args) }));
@@ -80,6 +83,7 @@ function renderPage() {
 
 describe('Owner Inventory List', () => {
   beforeEach(() => {
+    grantedPermissions = null;
     useMyCinemasMock.mockReset();
     useOwnerCombosMock.mockReset();
     useComboComponentsMock.mockReset();
@@ -114,6 +118,23 @@ describe('Owner Inventory List', () => {
     expect(screen.getByText('Cinema A')).toBeInTheDocument();
     expect(screen.getByText('Popcorn Combo')).toBeInTheDocument();
     expect(screen.getByText('inventory.statusInStock')).toBeInTheDocument();
+  });
+
+  it('is read-only for an Employee holding only inventory.view: no branch list fetch, no write actions', () => {
+    grantedPermissions = new Set(['inventory.view']);
+    useOwnerInventoryMock.mockReturnValue({
+      data: {
+        data: [{ id: 1, branch_id: 1, combo_id: null, item: 'Popcorn', quantity: 40, minimum_quantity: 10, unit: 'pcs', status: 'IN_STOCK' }],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.getByText('Popcorn')).toBeInTheDocument();
+    expect(screen.getByText('inventory.historyButton')).toBeInTheDocument();
+    for (const key of ['inventory.addButton', 'inventory.receive', 'inventory.adjust', 'inventory.deduct']) {
+      expect(screen.queryByText(key)).not.toBeInTheDocument();
+    }
+    expect(useMyCinemasMock).toHaveBeenCalledWith({ enabled: false });
   });
 
   it('shows a not-linked placeholder when combo_id is null', () => {

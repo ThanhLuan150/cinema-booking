@@ -87,7 +87,7 @@ describe('reporting.controller.operational', () => {
     await seedRbac();
     await seedPositions();
     await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Mine', code: 'M' });
-    const comboStaff = await Position.findOne({ code: 'COMBO_STAFF' });
+    const comboStaff = await Position.findOne({ code: 'CONCESSION_STAFF' });
     // resolveAccessibleBranchIds falls back to the employee's staffed branch
     await Employee.create({ id: 1, user_id: 55, branch_id: 1, employee_code: 'E1', position_id: comboStaff.id, status: 1 });
 
@@ -99,8 +99,8 @@ describe('reporting.controller.operational', () => {
     const [payload] = res.json.mock.calls[0];
     expect(payload.scope).toBe('BRANCH');
     expect(payload.branchIds).toEqual([1]);
-    expect(payload.positionCode).toBe('COMBO_STAFF');
-    // Combo Staff runs the counter queue; they have no business seeing check-in throughput.
+    expect(payload.positionCode).toBe('CONCESSION_STAFF');
+    // Concession Staff runs the counter queue; they have no business seeing check-in throughput.
     expect(payload.metrics).toHaveProperty('pendingComboOrders');
     expect(payload.metrics).not.toHaveProperty('ticketsCheckedInToday');
   });
@@ -109,7 +109,7 @@ describe('reporting.controller.operational', () => {
     await seedRbac();
     await seedPositions();
     await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'Mine', code: 'M' });
-    const checker = await Position.findOne({ code: 'TICKET_CHECKER' });
+    const checker = await Position.findOne({ code: 'CHECK_IN_STAFF' });
     await Employee.create({ id: 1, user_id: 55, branch_id: 1, employee_code: 'E1', position_id: checker.id, status: 1 });
 
     const res = mockRes();

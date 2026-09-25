@@ -39,7 +39,7 @@ const comboOrderSchema = new mongoose.Schema(
     delivered_at: { type: Date, default: null },
     cancelled_at: { type: Date, default: null },
     cancel_reason: { type: String, default: null },
-    created_by: { type: Number, default: null }, // Combo Staff/Cashier account who took the order
+    created_by: { type: Number, default: null }, // Concession Staff/Cashier account who took the order
   },
   { timestamps: true },
 );

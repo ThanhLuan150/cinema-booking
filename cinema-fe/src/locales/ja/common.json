@@ -71,7 +71,8 @@
       "signage": "Digital Signage",
       "campaigns": "マーケティングキャンペーン",
       "parking": "駐車場",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "インシデント"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

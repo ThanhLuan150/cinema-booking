@@ -37,6 +37,7 @@ const holidayRoutes = require('./holiday.routes');
 const inventoryRoutes = require('./inventory.routes');
 const loyaltyRoutes = require('./loyalty.routes');
 const maintenanceRequestRoutes = require('./maintenanceRequest.routes');
+const incidentRoutes = require('./incident.routes');
 const supportTicketRoutes = require('./supportTicket.routes');
 const entranceRoutes = require('./entrance.routes');
 const deviceRoutes = require('./device.routes');
@@ -94,6 +95,7 @@ router.use('/pricingRule', pricingRuleRoutes);
 router.use('/pricingHoliday', holidayRoutes);
 router.use('/inventory', inventoryRoutes);
 router.use('/maintenance', maintenanceRequestRoutes);
+router.use('/incidents', incidentRoutes);
 router.use('/support-tickets', supportTicketRoutes);
 // QR Scanner device management: /entrance (branch entrances), /devices (scanners + check-in
 router.use('/entrance', entranceRoutes);

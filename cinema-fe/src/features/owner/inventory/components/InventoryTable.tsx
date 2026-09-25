@@ -9,6 +9,9 @@ interface InventoryTableProps {
   items: Inventory[];
   cinemaNameById: Map<number, string>;
   comboNameById: Map<number, string>;
+  // Stock changes and deletion need inventory.manage; a Position that only holds inventory.view
+  // (Concession/F&B Staff) sees the table and the history but none of the write actions.
+  canManage: boolean;
   onReceive: (id: number) => void;
   onAdjust: (id: number) => void;
   onDeduct: (id: number) => void;
@@ -19,6 +22,7 @@ export function InventoryTable({
   items,
   cinemaNameById,
   comboNameById,
+  canManage,
   onReceive,
   onAdjust,
   onDeduct,
@@ -53,27 +57,31 @@ export function InventoryTable({
             <Badge variant={STATUS_VARIANT[item.status]}>{t(STATUS_LABEL_KEY[item.status])}</Badge>
           </td>
           <td className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-              onClick={() => onReceive(item.id)}
-            >
-              {t('inventory.receive')}
-            </button>
-            <button
-              type="button"
-              className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-              onClick={() => onAdjust(item.id)}
-            >
-              {t('inventory.adjust')}
-            </button>
-            <button
-              type="button"
-              className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-              onClick={() => onDeduct(item.id)}
-            >
-              {t('inventory.deduct')}
-            </button>
+            {canManage && (
+              <>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => onReceive(item.id)}
+                >
+                  {t('inventory.receive')}
+                </button>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => onAdjust(item.id)}
+                >
+                  {t('inventory.adjust')}
+                </button>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                  onClick={() => onDeduct(item.id)}
+                >
+                  {t('inventory.deduct')}
+                </button>
+              </>
+            )}
             <button
               type="button"
               className="text-sm font-medium text-txt/70 transition-colors hover:text-txt"
@@ -81,7 +89,7 @@ export function InventoryTable({
             >
               {t('inventory.historyButton')}
             </button>
-            <DeleteInventoryButton id={item.id} />
+            {canManage && <DeleteInventoryButton id={item.id} />}
           </td>
         </tr>
       ))}

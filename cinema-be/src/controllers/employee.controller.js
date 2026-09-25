@@ -26,6 +26,40 @@ function broadcastEmployee(employee, action) {
 const { sendTempPasswordEmail } = require('../utils/mailer');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
+const EMPLOYEE_ACCOUNT_ROLE = 3;
+const MIN_PASSWORD_LENGTH = 6;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Loads the employee an admin is trying to modify plus the account behind it, and refuses the
+// two cases the route-level branch check cannot see:
+//  - the caller acting on their own record (nobody edits their own position/status/password
+//    through the admin endpoints — a Branch Admin has no Employee record, but an account that
+//    somehow holds both must not be able to promote itself), and
+//  - an Employee row whose account is not an ordinary EMPLOYEE (role 3). These routes must never
+//    be a side door to reset the password of, or lock out, a Branch Admin or SUPER_ADMIN.
+// Sends the response itself and returns null when the target may not be modified.
+async function loadManageableEmployee(req, res) {
+  const employee = await employeeRepository.findById(req.params.id);
+  if (!employee) {
+    res.status(404).json({ message: 'Employee not found' });
+    return null;
+  }
+  const account = await authRepository.findById(employee.user_id);
+  if (!account) {
+    res.status(404).json({ message: 'Employee not found' });
+    return null;
+  }
+  if (req.account && account.id === req.account.accountId) {
+    res.status(403).json({ message: 'You cannot modify your own employee record', code: 'SELF_MODIFICATION_FORBIDDEN' });
+    return null;
+  }
+  if (account.role !== EMPLOYEE_ACCOUNT_ROLE) {
+    res.status(403).json({ message: 'Target account is not an employee', code: 'NOT_AN_EMPLOYEE_ACCOUNT' });
+    return null;
+  }
+  return { employee, account };
+}
+
 function toEmployeeJson(employee, account, position) {
   return {
     ...employee.toJSON(),
@@ -59,13 +93,22 @@ async function create(req, res) {
   if (!email || !password) {
     return res.status(400).json({ message: 'email and password are required' });
   }
+  if (!EMAIL_PATTERN.test(String(email).trim())) {
+    return res.status(400).json({ message: 'email is not a valid address', code: 'INVALID_EMAIL' });
+  }
+  if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+    return res.status(400).json({
+      message: `password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+      code: 'PASSWORD_TOO_SHORT',
+    });
+  }
   if (!position_id) {
     return res.status(400).json({ message: 'position_id is required' });
   }
   const position = await positionRepository.findActiveById(position_id);
   if (!position) return res.status(400).json({ message: 'Invalid position_id', code: 'INVALID_POSITION' });
 
-  const normalizedEmail = String(email).toLowerCase();
+  const normalizedEmail = String(email).trim().toLowerCase();
   const existing = await authRepository.findByEmail(normalizedEmail);
   if (existing) return res.status(409).json({ message: 'Email already exists', code: 'EMAIL_ALREADY_EXISTS' });
 
@@ -77,7 +120,7 @@ async function create(req, res) {
     password: hashed,
     name: name || '',
     phone: phone || '',
-    role: 3,
+    role: EMPLOYEE_ACCOUNT_ROLE,
     status: 1,
     approved: true,
     verified: true,
@@ -107,8 +150,12 @@ async function create(req, res) {
 }
 
 // PUT /api/employee/:id { position_id, status } (branch admin/super admin, cinema-scoped)
+// Only position_id and status are editable here: branch_id (an Employee belongs to exactly one
+// Branch) and user_id are never taken from the body.
 async function update(req, res) {
-  const before = await employeeRepository.findById(req.params.id);
+  const target = await loadManageableEmployee(req, res);
+  if (!target) return;
+  const before = target.employee;
 
   const updates = {};
   if (req.body.position_id !== undefined) {
@@ -116,10 +163,26 @@ async function update(req, res) {
     if (!position) return res.status(400).json({ message: 'Invalid position_id', code: 'INVALID_POSITION' });
     updates.position_id = position.id;
   }
-  if (req.body.status !== undefined) updates.status = Number(req.body.status);
+  if (req.body.status !== undefined) {
+    const status = Number(req.body.status);
+    if (![0, 1].includes(status)) {
+      return res.status(400).json({ message: 'status must be 0 or 1', code: 'INVALID_STATUS' });
+    }
+    updates.status = status;
+  }
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: 'position_id or status is required' });
+  }
 
   const employee = await employeeRepository.updateFields(req.params.id, updates);
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
+
+  // Deactivating locks the login and reactivating must unlock it again — remove() has always
+  // locked the account, so a status-only update that left it locked would "reactivate" someone
+  // who still cannot sign in.
+  if (updates.status !== undefined && target.account.status !== updates.status) {
+    await userRepository.updateFields(target.account.id, { status: updates.status });
+  }
 
   const positionChanged =
     updates.position_id !== undefined && before && before.position_id !== updates.position_id;
@@ -144,6 +207,9 @@ async function update(req, res) {
 // employee record and locks the underlying account instead of hard-deleting, so past
 // bookings/check-ins the employee created keep a valid user_id/created_by reference.
 async function remove(req, res) {
+  const target = await loadManageableEmployee(req, res);
+  if (!target) return;
+
   const employee = await employeeRepository.updateFields(req.params.id, { status: 0 });
   if (!employee) return res.status(404).json({ message: 'Employee not found' });
 
@@ -156,11 +222,9 @@ async function remove(req, res) {
 // POST /api/employee/:id/reset-password (branch admin/super admin, cinema-scoped) — generates a
 // new temporary password and emails it to the employee; never returned in the API response.
 async function resetPassword(req, res) {
-  const employee = await employeeRepository.findById(req.params.id);
-  if (!employee) return res.status(404).json({ message: 'Employee not found' });
-
-  const account = await authRepository.findById(employee.user_id);
-  if (!account) return res.status(404).json({ message: 'Employee not found' });
+  const target = await loadManageableEmployee(req, res);
+  if (!target) return;
+  const { account } = target;
 
   const tempPassword = crypto.randomBytes(6).toString('hex');
   const hashed = await bcrypt.hash(tempPassword, 10);

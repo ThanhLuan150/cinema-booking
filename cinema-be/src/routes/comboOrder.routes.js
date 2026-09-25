@@ -7,7 +7,7 @@ const comboOrderController = require('../controllers/comboOrder.controller');
 const router = express.Router();
 
 // POST /api/combo-orders { branch_id, account_id?, booking_id?, items: [{ combo_id, quantity }] }
-// (combo.sell permission, branch-scoped to the target branch — Combo Staff/Cashier sell here)
+// (combo.sell permission, branch-scoped to the target branch — Concession Staff/Cashier sell here)
 router.post(
   '/',
   requireAuth,

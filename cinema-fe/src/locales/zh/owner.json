@@ -138,6 +138,49 @@
       "emailRequired": "Please enter an email.",
       "passwordInvalid": "Password must be at least 6 characters.",
       "positionRequired": "Please select a position."
+    },
+    "changePosition": "更改职位",
+    "changePositionTitle": "更改职位 — {{name}}",
+    "changePositionSuccess": "职位已更新。",
+    "permissionsPreview": "此职位授予的权限",
+    "noPermissions": "此职位不授予额外权限。",
+    "permissionsHint": "权限仅来自职位并由服务器强制执行；无法在此处编辑。",
+    "cancel": "取消",
+    "savePosition": "保存",
+    "permissionModules": {
+      "movie": "电影",
+      "schedule": "场次",
+      "room": "放映厅",
+      "seat": "座位",
+      "booking": "订单",
+      "ticket": "影票",
+      "combo": "套餐与餐饮",
+      "payment": "支付",
+      "cashierShift": "收银班次",
+      "refund": "退款",
+      "user": "客户账户",
+      "supportTicket": "客服工单",
+      "crm": "客户档案",
+      "maintenance": "维护",
+      "inventory": "库存",
+      "incident": "事件"
+    },
+    "permissionActions": {
+      "read": "查看",
+      "view": "查看",
+      "create": "创建",
+      "update": "更新",
+      "checkin": "检票",
+      "sell": "销售",
+      "cancel": "取消",
+      "reschedule": "改期",
+      "changeShowtime": "更换场次",
+      "open": "开启",
+      "close": "关闭",
+      "request": "申请",
+      "viewCustomer": "查询",
+      "order_view": "查看订单",
+      "order_update": "更新订单"
     }
   },
   "combos": {
@@ -604,6 +647,39 @@
     "bannerStatus": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    }
+  },
+  "incidents": {
+    "breadcrumb": "事件",
+    "formTitle": "上报事件",
+    "branchPlaceholder": "选择影院",
+    "categoryLabel": "类别",
+    "severityLabel": "严重程度",
+    "titleLabel": "标题",
+    "titleRequired": "请输入标题。",
+    "descriptionLabel": "描述",
+    "submit": "提交报告",
+    "createSuccess": "事件已上报。",
+    "headers": {
+      "id": "ID",
+      "time": "时间",
+      "category": "类别",
+      "severity": "严重程度",
+      "title": "标题",
+      "description": "描述"
+    },
+    "category": {
+      "THEFT": "盗窃",
+      "DISTURBANCE": "扰乱秩序",
+      "MEDICAL": "医疗",
+      "FIRE_SAFETY": "火灾 / 安全",
+      "SUSPICIOUS": "可疑行为",
+      "OTHER": "其他"
+    },
+    "severity": {
+      "LOW": "低",
+      "MEDIUM": "中",
+      "HIGH": "高"
     }
   }
 }

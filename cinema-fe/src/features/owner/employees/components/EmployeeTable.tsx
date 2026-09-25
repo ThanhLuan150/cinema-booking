@@ -15,6 +15,7 @@ interface EmployeeTableProps {
   canDelete: boolean;
   onDeactivate: (employeeId: number) => void;
   onReactivate: (employeeId: number) => void;
+  onChangePosition: (employee: Employee) => void;
   onResetPassword: (employeeId: number) => void;
 }
 
@@ -29,6 +30,7 @@ export function EmployeeTable({
   canDelete,
   onDeactivate,
   onReactivate,
+  onChangePosition,
   onResetPassword,
 }: EmployeeTableProps) {
   const { t } = useTranslation('owner');
@@ -81,6 +83,15 @@ export function EmployeeTable({
                         {t('employees.reactivate')}
                       </button>
                     )}
+                {canUpdate && employee.status === 1 && (
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                    onClick={() => onChangePosition(employee)}
+                  >
+                    {t('employees.changePosition')}
+                  </button>
+                )}
                 {canUpdate && (
                   <button
                     type="button"

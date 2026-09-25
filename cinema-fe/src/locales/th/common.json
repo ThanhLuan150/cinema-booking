@@ -71,7 +71,8 @@
       "signage": "Digital Signage",
       "campaigns": "แคมเปญการตลาด",
       "parking": "ที่จอดรถ",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "incidents": "เหตุการณ์"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

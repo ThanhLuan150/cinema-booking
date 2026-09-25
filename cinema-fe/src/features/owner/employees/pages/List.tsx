@@ -24,13 +24,16 @@ import {
 import { closeAddModal, openAddModal, setSelectedbranchId } from '../../store/ownerEmployeesSlice';
 import type { EmployeeFormValues } from '../../types/owner.types';
 import { ALL_BRANCHES } from '../constants';
+import type { Employee } from '@/types/entities';
 import { AddEmployeeModal } from '../components/AddEmployeeModal';
+import { ChangePositionModal } from '../components/ChangePositionModal';
 import { EmployeeTable } from '../components/EmployeeTable';
 
 function EmployeeList() {
   const { t } = useTranslation('owner');
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
+  const [positionTarget, setPositionTarget] = useState<Employee | null>(null);
   const isAdmin = useAuthRole() === ROLES.admin;
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = useMemo(() => cinemasPage?.data ?? [], [cinemasPage]);
@@ -64,6 +67,19 @@ function EmployeeList() {
       try {
         await updateEmployeeMutation.mutateAsync({ id, status: 1 });
         toast.success(t('employees.reactivateSuccess'));
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, t));
+      }
+    },
+    [updateEmployeeMutation, t],
+  );
+
+  const handleChangePosition = useCallback(
+    async (id: number, positionId: number) => {
+      try {
+        await updateEmployeeMutation.mutateAsync({ id, position_id: positionId });
+        toast.success(t('employees.changePositionSuccess'));
+        setPositionTarget(null);
       } catch (error) {
         toast.error(getApiErrorMessage(error, t));
       }
@@ -143,6 +159,16 @@ function EmployeeList() {
         />
       )}
 
+      {positionTarget && (
+        <ChangePositionModal
+          employee={positionTarget}
+          positions={positions ?? []}
+          isSubmitting={updateEmployeeMutation.isPending}
+          onClose={() => setPositionTarget(null)}
+          onSubmit={handleChangePosition}
+        />
+      )}
+
       <EmployeeTable
         employees={employees}
         isAllBranches={isAllBranches}
@@ -154,6 +180,7 @@ function EmployeeList() {
         canDelete={hasPermission('employee.delete')}
         onDeactivate={handleDeactivate}
         onReactivate={handleReactivate}
+        onChangePosition={setPositionTarget}
         onResetPassword={handleResetPassword}
       />
     </AdminLayout>
