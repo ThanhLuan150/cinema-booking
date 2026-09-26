@@ -90,6 +90,7 @@
     "statusCancelled": "Cancelled",
     "headers": {
       "shift": "Shift",
+      "position": "Position",
       "date": "Date",
       "time": "Time",
       "status": "Status"

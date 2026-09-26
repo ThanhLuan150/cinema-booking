@@ -216,7 +216,10 @@ export interface ShiftFormValues {
 export interface ShiftAssignmentFormValues {
   employee_id: string;
   shift_id: string;
+  position_id: string; // '' = the employee's own Position
   date: string;
+  start_time: string; // HH:mm — pre-filled from the chosen Shift, editable
+  end_time: string; // HH:mm — at or before start_time means the shift ends the next day
 }
 
 export interface OwnerShiftsState {

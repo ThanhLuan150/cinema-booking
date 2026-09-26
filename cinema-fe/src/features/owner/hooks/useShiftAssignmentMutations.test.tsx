@@ -28,9 +28,80 @@ describe('useShiftAssignmentMutations', () => {
   it('creates a shift assignment with numeric ids', async () => {
     createShiftAssignmentMock.mockResolvedValue({});
     const { result } = renderHook(() => useCreateShiftAssignment(), { wrapper });
-    result.current.mutate({ employee_id: '1', shift_id: '2', date: '2026-08-12' });
+    result.current.mutate({
+      employee_id: '1',
+      shift_id: '2',
+      position_id: '',
+      date: '2026-08-12',
+      start_time: '',
+      end_time: '',
+    });
     await waitFor(() =>
       expect(createShiftAssignmentMock).toHaveBeenCalledWith({ employee_id: 1, shift_id: 2, date: '2026-08-12' }),
+    );
+  });
+
+  it('sends the chosen start/end as explicit instants in the browser timezone', async () => {
+    createShiftAssignmentMock.mockResolvedValue({});
+    const { result } = renderHook(() => useCreateShiftAssignment(), { wrapper });
+    result.current.mutate({
+      employee_id: '1',
+      shift_id: '2',
+      position_id: '',
+      date: '2026-08-12',
+      start_time: '09:00',
+      end_time: '13:30',
+    });
+    await waitFor(() =>
+      expect(createShiftAssignmentMock).toHaveBeenCalledWith({
+        employee_id: 1,
+        shift_id: 2,
+        date: '2026-08-12',
+        start_at: new Date('2026-08-12T09:00:00').toISOString(),
+        end_at: new Date('2026-08-12T13:30:00').toISOString(),
+      }),
+    );
+  });
+
+  it('rolls an end time at or before the start onto the next day (overnight shift)', async () => {
+    createShiftAssignmentMock.mockResolvedValue({});
+    const { result } = renderHook(() => useCreateShiftAssignment(), { wrapper });
+    result.current.mutate({
+      employee_id: '1',
+      shift_id: '2',
+      position_id: '',
+      date: '2026-08-12',
+      start_time: '22:00',
+      end_time: '02:00',
+    });
+    await waitFor(() =>
+      expect(createShiftAssignmentMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          start_at: new Date('2026-08-12T22:00:00').toISOString(),
+          end_at: new Date('2026-08-13T02:00:00').toISOString(),
+        }),
+      ),
+    );
+  });
+
+  it('sends the chosen position as a number, and omits it when left on the default', async () => {
+    createShiftAssignmentMock.mockResolvedValue({});
+    const { result } = renderHook(() => useCreateShiftAssignment(), { wrapper });
+    result.current.mutate({
+      employee_id: '1',
+      shift_id: '2',
+      position_id: '4',
+      date: '2026-08-12',
+      start_time: '',
+      end_time: '',
+    });
+    await waitFor(() =>
+      expect(createShiftAssignmentMock).toHaveBeenCalledWith({
+        employee_id: 1,
+        shift_id: 2,
+        position_id: 4,
+        date: '2026-08-12',
+      }),
     );
   });
 

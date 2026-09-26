@@ -589,6 +589,8 @@
     "employeePlaceholder": "Chọn nhân viên",
     "shiftLabel": "Ca làm việc",
     "shiftPlaceholder": "Chọn ca làm việc",
+    "positionLabel": "Vị trí",
+    "positionPlaceholder": "Vị trí của nhân viên (mặc định)",
     "dateLabel": "Ngày",
     "submit": "Phân ca",
     "createSuccess": "Đã phân ca làm việc.",
@@ -611,6 +613,7 @@
       "id": "ID",
       "employee": "Nhân viên",
       "shift": "Ca làm việc",
+      "position": "Vị trí",
       "date": "Ngày",
       "time": "Thời gian",
       "status": "Trạng thái",
@@ -619,7 +622,8 @@
     "validation": {
       "employeeRequired": "Vui lòng chọn nhân viên.",
       "shiftRequired": "Vui lòng chọn ca làm việc.",
-      "dateRequired": "Vui lòng chọn ngày."
+      "dateRequired": "Vui lòng chọn ngày.",
+      "zeroLength": "Giờ kết thúc phải khác giờ bắt đầu."
     }
   },
   "maintenance": {

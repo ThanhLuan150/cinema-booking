@@ -18,13 +18,23 @@ router.get(
   asyncHandler(shiftAssignmentController.listMine),
 );
 
+// A Super Admin (ALL scope) may list without a branchId to see the whole system; everyone else
+// must name a branch, which then goes through the usual ownership gate.
+function requireBranchUnlessSuperAdmin(req, res, next) {
+  if (req.permissionScope === 'ALL' && (req.query.branchId === undefined || req.query.branchId === '')) {
+    req.branchId = null;
+    return next();
+  }
+  return requireBranchOwnership((r) => Number(r.query.branchId))(req, res, next);
+}
+
 // GET /api/shiftAssignment?branchId=&employeeId=&date= -> management view (shiftAssignment.read
 // permission, owner-scoped — only the branch's own admin, not a merely-staffed employee)
 router.get(
   '/',
   requireAuth,
   requirePermission('shiftAssignment.read'),
-  requireBranchOwnership((req) => Number(req.query.branchId)),
+  requireBranchUnlessSuperAdmin,
   asyncHandler(shiftAssignmentController.list),
 );
 

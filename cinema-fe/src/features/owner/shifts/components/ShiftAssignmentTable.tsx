@@ -39,6 +39,7 @@ export function ShiftAssignmentTable({
           t('shiftAssignments.headers.id'),
           t('shiftAssignments.headers.employee'),
           t('shiftAssignments.headers.shift'),
+          t('shiftAssignments.headers.position'),
           t('shiftAssignments.headers.date'),
           t('shiftAssignments.headers.time'),
           t('shiftAssignments.headers.status'),
@@ -53,6 +54,7 @@ export function ShiftAssignmentTable({
               <td>{assignment.id}</td>
               <td>{employee?.name || employee?.employee_code || assignment.employee_id}</td>
               <td>{shift?.name || assignment.shift_id}</td>
+              <td>{assignment.position?.name || '—'}</td>
               <td>{assignment.date}</td>
               <td>
                 {formatAssignmentTime(assignment.start_at)} - {formatAssignmentTime(assignment.end_at)}

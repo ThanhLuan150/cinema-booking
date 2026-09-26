@@ -188,6 +188,42 @@ describe('RealtimeBridge', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['bookedSeats'] });
   });
 
+  // The employee hears about their own roster change as a toast. The list refresh already comes
+  // from shift:updated, so myShift:updated must not invalidate anything itself (it would refetch twice).
+  describe('myShift:updated', () => {
+    const lastToast = () => store.getState().notifications.toasts.at(-1);
+
+    it.each([
+      ['CREATED', 'ACTIVE', 'realtimeBridge.myShiftAssigned'],
+      ['UPDATED', 'ACTIVE', 'realtimeBridge.myShiftUpdated'],
+      ['UPDATED', 'CANCELLED', 'realtimeBridge.myShiftCancelled'],
+      ['DELETED', 'ACTIVE', 'realtimeBridge.myShiftRemoved'],
+    ])('toasts the right message for %s / %s', (action, status, messageKey) => {
+      renderBridge();
+      const before = store.getState().notifications.toasts.length;
+      emit('myShift:updated', {
+        action,
+        status,
+        date: '2026-12-03',
+        startAt: '2026-12-03T11:00:00.000Z',
+        endAt: '2026-12-03T14:00:00.000Z',
+      });
+      expect(store.getState().notifications.toasts.length).toBe(before + 1);
+      expect(lastToast()?.message).toBe(messageKey);
+    });
+
+    it('does not invalidate any query itself', () => {
+      const { invalidateSpy } = renderBridge();
+      emit('myShift:updated', { action: 'CREATED', status: 'ACTIVE', date: '2026-12-03' });
+      expect(invalidateSpy).not.toHaveBeenCalled();
+    });
+
+    it('survives a payload without times', () => {
+      renderBridge();
+      expect(() => emit('myShift:updated', { action: 'UPDATED' })).not.toThrow();
+    });
+  });
+
   it('toasts an error only for a rejected door scan', () => {
     renderBridge();
     const before = store.getState().notifications.toasts.length;

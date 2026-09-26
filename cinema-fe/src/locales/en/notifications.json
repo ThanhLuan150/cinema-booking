@@ -13,7 +13,11 @@
     "showtimeCancelled": "A showtime for one of your bookings has been cancelled.",
     "showtimeRescheduled": "A showtime for one of your bookings has been rescheduled.",
     "notification": "You have a new notification.",
-    "checkinFailed": "A ticket scan was rejected at the door."
+    "checkinFailed": "A ticket scan was rejected at the door.",
+    "myShiftAssigned": "You were assigned a shift on {{date}}, {{start}} - {{end}}.",
+    "myShiftUpdated": "Your shift on {{date}} was changed: {{start}} - {{end}}.",
+    "myShiftCancelled": "Your shift on {{date}} was cancelled.",
+    "myShiftRemoved": "Your shift on {{date}} was removed."
   },
   "toastContainer": {
     "dismiss": "Dismiss"

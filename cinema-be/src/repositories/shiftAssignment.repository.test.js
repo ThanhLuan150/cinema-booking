@@ -71,6 +71,75 @@ describe('shiftAssignment.repository', () => {
     expect(duplicate).toBeNull();
   });
 
+  describe('findOverlapping', () => {
+    const at = (iso) => new Date(iso);
+
+    it('finds a partially overlapping assignment', async () => {
+      await ShiftAssignment.create(baseFields());
+      const found = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-10T15:00:00'),
+        end_at: at('2026-01-10T20:00:00'),
+      });
+      expect(found.id).toBe(1);
+    });
+
+    it('finds an assignment that fully contains, or is contained by, the range', async () => {
+      await ShiftAssignment.create(baseFields());
+      const containing = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-10T09:00:00'),
+        end_at: at('2026-01-10T10:00:00'),
+      });
+      const contained = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-10T06:00:00'),
+        end_at: at('2026-01-10T22:00:00'),
+      });
+      expect(containing).not.toBeNull();
+      expect(contained).not.toBeNull();
+    });
+
+    it('treats back-to-back shifts as non-overlapping', async () => {
+      await ShiftAssignment.create(baseFields());
+      const after = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-10T16:00:00'),
+        end_at: at('2026-01-10T22:00:00'),
+      });
+      const before = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-10T00:00:00'),
+        end_at: at('2026-01-10T08:00:00'),
+      });
+      expect(after).toBeNull();
+      expect(before).toBeNull();
+    });
+
+    it('catches an overnight shift spilling into the next calendar day', async () => {
+      await ShiftAssignment.create(
+        baseFields({ start_at: at('2026-01-10T20:00:00'), end_at: at('2026-01-11T04:00:00') }),
+      );
+      const found = await shiftAssignmentRepository.findOverlapping({
+        employee_id: 1,
+        start_at: at('2026-01-11T02:00:00'),
+        end_at: at('2026-01-11T10:00:00'),
+      });
+      expect(found).not.toBeNull();
+    });
+
+    it('ignores cancelled assignments, other employees and the excluded id', async () => {
+      await ShiftAssignment.create([
+        baseFields({ id: 1, status: 'CANCELLED' }),
+        baseFields({ id: 2, employee_id: 2 }),
+        baseFields({ id: 3 }),
+      ]);
+      const range = { start_at: at('2026-01-10T09:00:00'), end_at: at('2026-01-10T10:00:00') };
+      expect((await shiftAssignmentRepository.findOverlapping({ employee_id: 1, ...range })).id).toBe(3);
+      expect(await shiftAssignmentRepository.findOverlapping({ employee_id: 1, ...range, excludeId: 3 })).toBeNull();
+    });
+  });
+
   it('existsForShift reflects whether any assignment references the shift', async () => {
     expect(await shiftAssignmentRepository.existsForShift(1)).toBeFalsy();
     await ShiftAssignment.create(baseFields());

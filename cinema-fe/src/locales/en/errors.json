@@ -41,6 +41,8 @@
   "SHIFT_NOT_ACTIVE": "This shift is not active",
   "BRANCH_MISMATCH": "Employee and shift must belong to the same branch",
   "DUPLICATE_ASSIGNMENT": "This employee is already assigned to this shift on this date",
+  "SHIFT_OVERLAP": "This employee already has another shift that overlaps this time",
+  "INVALID_POSITION": "The selected position is not valid",
   "SEAT_UNAVAILABLE": "One or more selected seats are no longer available",
   "NOT_YOUR_HOLD": "This seat is held by another customer",
   "TICKET_NOT_FOUND": "Ticket not found",

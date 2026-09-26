@@ -90,6 +90,7 @@
     "statusCancelled": "Đã hủy",
     "headers": {
       "shift": "Ca làm việc",
+      "position": "Vị trí",
       "date": "Ngày",
       "time": "Thời gian",
       "status": "Trạng thái"

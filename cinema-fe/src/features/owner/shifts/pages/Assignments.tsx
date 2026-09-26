@@ -12,6 +12,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { DEFAULT_PAGE_SIZE, FULL_LIST_FETCH_LIMIT } from '@/constants/pagination';
 import { useMyCinemas } from '../../hooks/useMyCinemas';
 import { useMyEmployees } from '../../hooks/useMyEmployees';
+import { usePositions } from '../../hooks/usePositions';
 import { useShifts } from '../../hooks/useShifts';
 import { useShiftAssignments } from '../../hooks/useShiftAssignments';
 import {
@@ -48,6 +49,7 @@ function ShiftAssignmentList() {
   const { data: shiftsPage } = useShifts(selectedbranchId || undefined, 1, FULL_LIST_FETCH_LIMIT);
   const shifts = useMemo(() => shiftsPage?.data ?? [], [shiftsPage]);
   const activeShifts = useMemo(() => shifts.filter((shift) => shift.status === 'ACTIVE'), [shifts]);
+  const { data: positions } = usePositions();
 
   const filters = useMemo(
     () => ({
@@ -149,6 +151,7 @@ function ShiftAssignmentList() {
         <AssignShiftModal
           employees={employees}
           activeShifts={activeShifts}
+          positions={positions ?? []}
           isSubmitting={createAssignmentMutation.isPending}
           onClose={() => dispatch(closeAssignModal())}
           onSubmit={handleCreate}
