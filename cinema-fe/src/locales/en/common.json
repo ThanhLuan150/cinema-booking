@@ -95,7 +95,8 @@
       "integrations": "Integrations",
       "incidents": "Incidents",
       "purchaseOrders": "Purchase orders",
-      "suppliers": "Suppliers"
+      "suppliers": "Suppliers",
+      "recipes": "Recipes"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

@@ -95,7 +95,8 @@
       "integrations": "Tích hợp hệ thống",
       "incidents": "Sự cố",
       "purchaseOrders": "Đơn nhập hàng",
-      "suppliers": "Nhà cung cấp"
+      "suppliers": "Nhà cung cấp",
+      "recipes": "Công thức"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

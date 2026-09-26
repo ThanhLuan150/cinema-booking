@@ -1459,5 +1459,84 @@
     "cancelSuccess": "Purchase order cancelled.",
     "deleteSuccess": "Draft deleted.",
     "receiveSuccess": "Stock received and added to inventory."
+  },
+  "recipes": {
+    "breadcrumb": "Recipes",
+    "addButton": "New recipe",
+    "addTitle": "New recipe",
+    "editTitle": "Edit recipe: {{name}}",
+    "detailTitle": "Recipe: {{name}}",
+    "filters": {
+      "branchLabel": "Filter by branch",
+      "allBranches": "All branches"
+    },
+    "headers": {
+      "product": "Product",
+      "branch": "Branch",
+      "ingredients": "Ingredients",
+      "cost": "Cost / portion",
+      "price": "Price",
+      "margin": "Margin",
+      "availability": "Can make",
+      "actions": "Actions",
+      "perPortion": "Per portion",
+      "inStock": "In stock",
+      "lineCost": "Cost",
+      "status": "Status"
+    },
+    "empty": "No recipes yet.",
+    "view": "View",
+    "canMake": "{{count}} portions",
+    "cannotMake": "Out of stock",
+    "limiting": "(runs out first)",
+    "missingIngredient": "Ingredient no longer exists",
+    "stockStatus": {
+      "IN_STOCK": "In stock",
+      "LOW_STOCK": "Low",
+      "OUT_OF_STOCK": "Out"
+    },
+    "fields": {
+      "branch": "Branch",
+      "branchPlaceholder": "Select a branch",
+      "product": "Product",
+      "productPlaceholder": "Select a product",
+      "ingredient": "Ingredient",
+      "ingredientPlaceholder": "Select an ingredient",
+      "quantity": "Quantity",
+      "note": "Note"
+    },
+    "ingredientsTitle": "Ingredients",
+    "perPortionHint": "Quantities are for one portion, in each ingredient’s own unit. Selling one deducts them from stock.",
+    "pickBranchFirst": "Select a branch to choose ingredients.",
+    "noEligibleProducts": "Every food and beverage item in this branch already has a recipe or its own stock record.",
+    "noIngredients": "This branch has no raw stock items yet. Add ingredients in Inventory first.",
+    "addLine": "Add ingredient",
+    "removeLine": "Remove this ingredient",
+    "save": "Save recipe",
+    "edit": "Edit",
+    "delete": "Delete recipe",
+    "preview": {
+      "cost": "Cost / portion",
+      "margin": "Margin",
+      "maxServings": "Portions in stock"
+    },
+    "availability": {
+      "servings": "Portions",
+      "ok": "Stock covers {{count}} portion(s).",
+      "short": "Not enough: {{items}}"
+    },
+    "createSuccess": "Recipe created.",
+    "updateSuccess": "Recipe updated.",
+    "deleteSuccess": "Recipe deleted.",
+    "deleteConfirm": "Delete the recipe for {{name}}? It will no longer be limited by ingredient stock.",
+    "validation": {
+      "branchRequired": "Select a branch.",
+      "productRequired": "Select a product.",
+      "linesRequired": "Add at least one ingredient.",
+      "lineInvalid": "Every ingredient needs a selection and a quantity above 0.",
+      "duplicateLine": "An ingredient can only appear once.",
+      "tooManyLines": "A recipe can have at most 50 ingredients.",
+      "noteTooLong": "The note can be at most 500 characters."
+    }
   }
 }

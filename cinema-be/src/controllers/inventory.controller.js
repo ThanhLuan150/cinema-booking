@@ -1,5 +1,6 @@
 const inventoryRepository = require('../repositories/inventory.repository');
 const purchaseOrderRepository = require('../repositories/purchaseOrder.repository');
+const recipeRepository = require('../repositories/recipe.repository');
 const comboRepository = require('../repositories/combo.repository');
 const Inventory = require('../models/Inventory');
 const InventoryTransaction = require('../models/InventoryTransaction');
@@ -154,6 +155,11 @@ async function validateComboLink(branchId, comboId) {
   if (combo.type === Combo.TYPE.COMBO) {
     return { status: 400, code: 'COMBO_NOT_STOCKABLE', message: 'Only FOOD or BEVERAGE items can be stock-tracked, not a COMBO bundle' };
   }
+  // Ticket 47: a product made from a recipe draws on its ingredients; counting it directly as well
+  // would deduct it twice.
+  if (await recipeRepository.findByProductId(comboId)) {
+    return { status: 409, code: 'PRODUCT_HAS_RECIPE', message: 'This product has a recipe; its stock comes from the recipe ingredients' };
+  }
   return null;
 }
 
@@ -233,6 +239,24 @@ async function update(req, res) {
     }
   }
 
+  // An ingredient's recipe quantities are written in its stock unit and it must stay raw stock, so
+  // neither may change while a recipe uses it (Ticket 47).
+  const existing = await inventoryRepository.findById(req.params.id);
+  if (existing && (await recipeRepository.existsForInventory(existing.id))) {
+    if (updates.combo_id !== undefined && updates.combo_id !== null) {
+      return res.status(409).json({
+        message: 'This item is an ingredient of a recipe and cannot be linked to a product',
+        code: 'INGREDIENT_IN_RECIPE',
+      });
+    }
+    if (updates.unit !== undefined && updates.unit !== existing.unit) {
+      return res.status(409).json({
+        message: 'The unit of an ingredient used in a recipe cannot be changed',
+        code: 'INGREDIENT_UNIT_LOCKED',
+      });
+    }
+  }
+
   let inventory;
   try {
     inventory = await inventoryRepository.updateFields(req.params.id, updates);
@@ -253,6 +277,13 @@ async function remove(req, res) {
     return res.status(409).json({
       message: 'This product is on an open purchase order. Cancel or receive the order first.',
       code: 'INVENTORY_IN_OPEN_PURCHASE_ORDER',
+    });
+  }
+  // A recipe that lists this ingredient could no longer be made (Ticket 47).
+  if (existing && (await recipeRepository.existsForInventory(existing.id))) {
+    return res.status(409).json({
+      message: 'This item is an ingredient of a recipe. Remove it from the recipe first.',
+      code: 'INVENTORY_IN_RECIPE',
     });
   }
   await inventoryRepository.remove(req.params.id);

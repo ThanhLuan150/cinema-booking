@@ -159,5 +159,19 @@
   "INVENTORY_MISSING": "Một sản phẩm trong đơn không còn tồn tại ở chi nhánh, nên chưa nhận hàng.",
   "INVENTORY_IN_OPEN_PURCHASE_ORDER": "Sản phẩm này đang nằm trong đơn nhập hàng chưa hoàn tất. Hãy hủy hoặc nhận hàng đơn đó trước.",
   "EXPECTED_BEFORE_ORDER": "Ngày giao dự kiến không được trước ngày đặt.",
-  "TOTAL_TOO_LARGE": "Tổng tiền của đơn quá lớn."
+  "TOTAL_TOO_LARGE": "Tổng tiền của đơn quá lớn.",
+  "RECIPE_EMPTY": "Công thức cần ít nhất một nguyên liệu.",
+  "TOO_MANY_INGREDIENTS": "Một công thức có tối đa 50 nguyên liệu.",
+  "DUPLICATE_INGREDIENT": "Một nguyên liệu chỉ được xuất hiện một lần trong công thức.",
+  "INGREDIENT_NOT_FOUND": "Một nguyên liệu không còn tồn tại.",
+  "INGREDIENT_BRANCH_MISMATCH": "Một nguyên liệu thuộc chi nhánh khác.",
+  "INGREDIENT_NOT_ALLOWED": "Mặt hàng kho đã liên kết với sản phẩm không thể dùng làm nguyên liệu.",
+  "PRODUCT_NOT_FOUND": "Sản phẩm đã chọn không còn tồn tại.",
+  "PRODUCT_NOT_RECIPE_ELIGIBLE": "Chỉ món ăn hoặc đồ uống mới có công thức, không phải combo.",
+  "PRODUCT_ALREADY_TRACKED": "Sản phẩm này đã có bản ghi kho riêng. Hãy gỡ liên kết trước khi thêm công thức.",
+  "PRODUCT_HAS_RECIPE": "Sản phẩm này có công thức nên tồn kho được tính từ nguyên liệu.",
+  "RECIPE_ALREADY_EXISTS": "Sản phẩm này đã có công thức.",
+  "INVENTORY_IN_RECIPE": "Mặt hàng này là nguyên liệu của một công thức. Hãy gỡ khỏi công thức trước.",
+  "INGREDIENT_IN_RECIPE": "Mặt hàng này là nguyên liệu của một công thức nên không thể liên kết với sản phẩm.",
+  "INGREDIENT_UNIT_LOCKED": "Không thể đổi đơn vị của nguyên liệu đang dùng trong công thức."
 }
