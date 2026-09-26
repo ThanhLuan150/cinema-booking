@@ -69,6 +69,7 @@ const REALTIME_EVENT = {
   SUPPORT_UPDATED: 'support:updated',
   PARKING_UPDATED: 'parking:updated',
   INVENTORY_UPDATED: 'inventory:updated',
+  PURCHASE_ORDER_UPDATED: 'purchaseOrder:updated',
   SHIFT_UPDATED: 'shift:updated',
   // Same change as shift:updated, addressed to the one employee it is about (account room) so they
   // get a toast. A different name on purpose: the employee is also in the branch room that

@@ -93,7 +93,9 @@
       "attendance": "Chấm công",
       "privateEvents": "Sự kiện riêng",
       "integrations": "Tích hợp hệ thống",
-      "incidents": "Sự cố"
+      "incidents": "Sự cố",
+      "purchaseOrders": "Đơn nhập hàng",
+      "suppliers": "Nhà cung cấp"
     },
     "toggleMenu": "Bật/tắt menu quản trị",
     "adminFallback": "Quản trị viên",

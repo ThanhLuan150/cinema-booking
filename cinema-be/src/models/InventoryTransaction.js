@@ -43,7 +43,10 @@ InventoryTransaction.TYPE = {
   ADJUSTMENT: 'ADJUSTMENT',
   WASTE: 'WASTE',
 };
-InventoryTransaction.REF = { SALE: 'COMBO_ORDER', RETURN: 'COMBO_ORDER_RETURN' };
+// PURCHASE_ORDER (Ticket 46): the IMPORT rows written when a Purchase Order is received,
+// ref_code `${purchaseOrder.code}:${inventory_id}` — one per line, unique, so a retried receipt
+// cannot add a line twice.
+InventoryTransaction.REF = { SALE: 'COMBO_ORDER', RETURN: 'COMBO_ORDER_RETURN', PURCHASE_ORDER: 'PURCHASE_ORDER' };
 // Pre-Ticket-45 rows used these names; seed/migrateInventoryMovements.js rewrites them in place.
 InventoryTransaction.LEGACY_TYPE_MAP = { RECEIVE: 'IMPORT', ADJUST: 'ADJUSTMENT' };
 

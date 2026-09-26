@@ -36,6 +36,10 @@ async function findById(id) {
   return Inventory.findOne({ id: Number(id) });
 }
 
+async function findByIds(ids) {
+  return Inventory.find({ id: { $in: ids.map(Number) } });
+}
+
 async function findBranchIdById(id) {
   const inventory = await Inventory.findOne({ id: Number(id) });
   return inventory ? inventory.branch_id : null;
@@ -180,7 +184,10 @@ async function logTransaction({
 //       floor at 0, for a sale that is already paid for), 'set' (absolute stocktake count).
 // Returns null (no such record), { insufficient, available, item } (strict shortfall), or
 // { inventory, previousStatus, before, after, applied } with `inventory` in its post-update state.
-async function moveQuantity(id, { mode, amount }) {
+//
+// `session` (optional) runs the update inside a caller-owned transaction (Purchase Order receipt);
+// null/undefined keeps the standalone single-document behaviour every other caller relies on.
+async function moveQuantity(id, { mode, amount, session = null }) {
   const filter = { id: Number(id) };
   let expression;
   if (mode === 'add') expression = { $add: ['$quantity', amount] };
@@ -193,10 +200,10 @@ async function moveQuantity(id, { mode, amount }) {
   const before = await Inventory.findOneAndUpdate(
     filter,
     [{ $set: { quantity: expression } }, { $set: { status: Inventory.STATUS_EXPR } }],
-    { returnDocument: 'before' },
+    { returnDocument: 'before', session },
   );
   if (!before) {
-    const current = await Inventory.findOne({ id: Number(id) });
+    const current = await Inventory.findOne({ id: Number(id) }).session(session);
     return current ? { insufficient: true, available: current.quantity, item: current.item } : null;
   }
 
@@ -334,30 +341,41 @@ async function assertAvailableForComboIds(branchId, comboIds) {
 
 // Claims the ledger row for one (order, combo) movement. The unique (ref_type, ref_code) index
 // makes this the idempotency gate: returns null when the movement was already claimed.
-async function claimMovement({ inventory, type, refType, refCode, reason }) {
+async function claimMovement({ inventory, type, refType, refCode, reason, performedBy = null, session = null }) {
+  // The id comes from the counter OUTSIDE any transaction (no session): a rolled-back movement
+  // just leaves a gap in the sequence, and a hot counter document is never held by a transaction.
+  const id = await nextId('inventoryTransaction');
   try {
-    return await InventoryTransaction.create({
-      id: await nextId('inventoryTransaction'),
-      inventory_id: inventory.id,
-      branch_id: inventory.branch_id,
-      type,
-      quantity_change: 0,
-      quantity_before: inventory.quantity,
-      quantity_after: inventory.quantity,
-      reason,
-      ref_type: refType,
-      ref_code: refCode,
-    });
+    const [claim] = await InventoryTransaction.create(
+      [
+        {
+          id,
+          inventory_id: inventory.id,
+          branch_id: inventory.branch_id,
+          type,
+          quantity_change: 0,
+          quantity_before: inventory.quantity,
+          quantity_after: inventory.quantity,
+          reason,
+          ref_type: refType,
+          ref_code: refCode,
+          performed_by: performedBy,
+        },
+      ],
+      { session },
+    );
+    return claim;
   } catch (err) {
     if (err.code === 11000) return null;
     throw err;
   }
 }
 
-async function settleMovement(claim, moved) {
+async function settleMovement(claim, moved, session = null) {
   await InventoryTransaction.updateOne(
     { id: claim.id },
     { $set: { quantity_change: moved.applied, quantity_before: moved.before, quantity_after: moved.after } },
+    { session },
   );
 }
 
@@ -476,6 +494,55 @@ async function restockForComboOrder(order, { performedBy = null, reason } = {}) 
   return results;
 }
 
+// Adds ONE Purchase Order line to its Inventory record (Ticket 46), leaving an IMPORT ledger row
+// keyed `${order.code}:${inventory_id}`. Called only from purchaseOrder.repository.receive, which
+// owns the surrounding transaction — hence no broadcast here: the caller announces the stock
+// changes once the whole receipt has committed.
+//   { missing: true }    the product no longer exists in the order's branch
+//   { skipped: true }    this order already imported this line (idempotent replay)
+//   { claim, moved }     applied; `moved` is what moveQuantity returned
+// A failure between the stock update and its ledger settlement is re-thrown with `err.partial`
+// so a non-transactional caller can still compensate the increment that did land.
+async function receivePurchaseLine({ order, line, performedBy = null, session = null }) {
+  const inventory = await Inventory.findOne({ id: Number(line.inventory_id), branch_id: order.branch_id }).session(session);
+  if (!inventory) return { missing: true };
+
+  const claim = await claimMovement({
+    inventory,
+    type: TYPE.IMPORT,
+    refType: REF.PURCHASE_ORDER,
+    refCode: `${order.code}:${line.inventory_id}`,
+    reason: `Purchase order ${order.code}`,
+    performedBy,
+    session,
+  });
+  if (!claim) return { skipped: true };
+
+  const moved = await moveQuantity(inventory.id, { mode: 'add', amount: line.quantity, session });
+  if (!moved) {
+    // Deleted between the read and the update: nothing was added, so just withdraw the claim.
+    await InventoryTransaction.deleteOne({ id: claim.id }).session(session);
+    return { missing: true };
+  }
+  try {
+    await settleMovement(claim, moved, session);
+  } catch (err) {
+    err.partial = { claim, moved };
+    throw err;
+  }
+  return { claim, moved };
+}
+
+// Reverses lines applied by receivePurchaseLine when the receipt could not complete and there is
+// no transaction to roll them back. Clamped, so a unit that was already sold in the meantime can
+// never drive stock negative; the ledger rows are withdrawn so history shows no receipt.
+async function undoPurchaseLines(applied) {
+  for (const { claim, moved } of [...applied].reverse()) {
+    if (moved.applied > 0) await moveQuantity(moved.inventory.id, { mode: 'clamp', amount: moved.applied });
+    await InventoryTransaction.deleteOne({ id: claim.id });
+  }
+}
+
 async function listTransactions(inventoryId, { skip = 0, limit = 20, type } = {}) {
   const filter = { inventory_id: Number(inventoryId) };
   if (type) filter.type = type;
@@ -495,6 +562,7 @@ async function listCategories(branchIds) {
 module.exports = {
   broadcastInventory,
   findById,
+  findByIds,
   findBranchIdById,
   findOwnedBranchIds,
   findReadableBranchIds,
@@ -514,5 +582,7 @@ module.exports = {
   assertAvailableForComboIds,
   deductForComboOrder,
   restockForComboOrder,
+  receivePurchaseLine,
+  undoPurchaseLines,
   listTransactions,
 };

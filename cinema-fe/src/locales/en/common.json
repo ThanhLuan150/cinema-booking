@@ -93,7 +93,9 @@
       "attendance": "Attendance",
       "privateEvents": "Private Events",
       "integrations": "Integrations",
-      "incidents": "Incidents"
+      "incidents": "Incidents",
+      "purchaseOrders": "Purchase orders",
+      "suppliers": "Suppliers"
     },
     "toggleMenu": "Toggle admin menu",
     "adminFallback": "Admin",

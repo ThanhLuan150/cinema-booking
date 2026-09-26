@@ -1378,5 +1378,86 @@
       "MEDIUM": "Medium",
       "HIGH": "High"
     }
+  },
+  "purchaseOrders": {
+    "breadcrumb": "Purchase orders",
+    "addButton": "New purchase order",
+    "addTitle": "New purchase order",
+    "editTitle": "Edit {{code}}",
+    "detailTitle": "Purchase order {{code}}",
+    "filters": {
+      "searchLabel": "Search by order code",
+      "searchPlaceholder": "Search by order code",
+      "statusLabel": "Filter by status",
+      "allStatuses": "All statuses",
+      "supplierLabel": "Filter by supplier",
+      "allSuppliers": "All suppliers"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "ORDERED": "Ordered",
+      "RECEIVED": "Received",
+      "CANCELLED": "Cancelled"
+    },
+    "headers": {
+      "code": "Order",
+      "supplier": "Supplier",
+      "branch": "Branch",
+      "orderDate": "Order date",
+      "expectedDate": "Expected",
+      "status": "Status",
+      "total": "Total",
+      "actions": "Actions"
+    },
+    "empty": "No purchase orders yet.",
+    "view": "View",
+    "fields": {
+      "branch": "Branch",
+      "branchPlaceholder": "Select a branch",
+      "supplier": "Supplier",
+      "supplierPlaceholder": "Select a supplier",
+      "orderDate": "Order date",
+      "expectedDate": "Expected delivery",
+      "product": "Product",
+      "productPlaceholder": "Select a product",
+      "quantity": "Quantity",
+      "unitCost": "Unit cost",
+      "note": "Note"
+    },
+    "linesTitle": "Products",
+    "pickBranchFirst": "Select a branch to choose products.",
+    "addLine": "Add product",
+    "removeLine": "Remove this product",
+    "totalLabel": "Total",
+    "lineTotal": "Amount",
+    "saveDraft": "Save as draft",
+    "createSuccess": "Draft purchase order created.",
+    "updateSuccess": "Purchase order updated.",
+    "validation": {
+      "branchRequired": "Select a branch.",
+      "supplierRequired": "Select a supplier.",
+      "expectedBeforeOrder": "The expected date cannot be before the order date.",
+      "linesRequired": "Add at least one product.",
+      "lineInvalid": "Every product needs a selection and a quantity above 0.",
+      "costInvalid": "Unit cost must be 0 or more.",
+      "duplicateLine": "A product can only appear once on an order."
+    },
+    "receivedAt": "Received",
+    "cancelledAt": "Cancelled",
+    "cancelReason": "Reason: {{reason}}",
+    "orderedHint": "Stock is added to inventory only when this order is received.",
+    "delete": "Delete draft",
+    "edit": "Edit",
+    "confirmOrder": "Confirm order",
+    "cancelOrder": "Cancel order",
+    "receiveStock": "Receive stock",
+    "confirmConfirm": "Confirm purchase order {{code}}? Its products can no longer be changed.",
+    "cancelConfirm": "Cancel purchase order {{code}}?",
+    "deleteConfirm": "Delete draft {{code}}?",
+    "receiveConfirm": "Receive {{code}}? This adds all {{count}} product line(s) to inventory and cannot be undone.",
+    "confirmSuccess": "Purchase order confirmed.",
+    "cancelSuccess": "Purchase order cancelled.",
+    "deleteSuccess": "Draft deleted.",
+    "receiveSuccess": "Stock received and added to inventory."
   }
 }

@@ -154,6 +154,52 @@ export interface Inventory {
   status: InventoryStatus;
 }
 
+// Ticket 46 — the company-wide supplier catalogue and a branch's stock orders against it.
+export type SupplierStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface Supplier {
+  id: number;
+  name: string;
+  code: string;
+  email: string;
+  phone: string;
+  address: string;
+  status: SupplierStatus;
+}
+
+export type PurchaseOrderStatus = 'DRAFT' | 'ORDERED' | 'RECEIVED' | 'CANCELLED';
+
+export interface PurchaseOrderLine {
+  inventory_id: number;
+  item: string;
+  sku: string | null;
+  unit: string;
+  quantity: number;
+  unit_cost: number;
+  line_total: number;
+}
+
+export interface PurchaseOrder {
+  id: number;
+  code: string;
+  supplier_id: number;
+  // Small summary the API embeds so nobody needs supplier.read just to see who an order is with.
+  supplier: Pick<Supplier, 'id' | 'name' | 'code' | 'status'> | null;
+  branch_id: number;
+  order_date: string;
+  expected_date: string | null;
+  status: PurchaseOrderStatus;
+  total_amount: number;
+  items: PurchaseOrderLine[];
+  note: string;
+  ordered_at: string | null;
+  received_at: string | null;
+  cancelled_at: string | null;
+  cancel_reason: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type InventoryTransactionType = 'IMPORT' | 'SALE' | 'RETURN' | 'ADJUSTMENT' | 'WASTE';
 // Rows written before Ticket 45 carry these until `npm run migrate:inventory` has been run.
 export type LegacyInventoryTransactionType = 'RECEIVE' | 'ADJUST' | 'DEDUCT';

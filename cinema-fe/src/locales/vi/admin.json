@@ -621,5 +621,46 @@
       "lastError": "Lỗi gần nhất",
       "payload": "Dữ liệu"
     }
+  },
+  "suppliers": {
+    "breadcrumb": "Nhà cung cấp",
+    "searchLabel": "Tìm nhà cung cấp",
+    "searchPlaceholder": "Tên hoặc mã",
+    "allStatuses": "Tất cả trạng thái",
+    "addButton": "Thêm nhà cung cấp",
+    "addTitle": "Thêm nhà cung cấp",
+    "editTitle": "Sửa {{name}}",
+    "fields": {
+      "name": "Tên",
+      "code": "Mã",
+      "email": "Email",
+      "phone": "Điện thoại",
+      "address": "Địa chỉ",
+      "status": "Trạng thái"
+    },
+    "status": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Ngừng hoạt động"
+    },
+    "headers": {
+      "name": "Tên",
+      "code": "Mã",
+      "email": "Email",
+      "phone": "Điện thoại",
+      "address": "Địa chỉ",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "empty": "Chưa có nhà cung cấp nào.",
+    "deleteConfirm": "Xóa nhà cung cấp {{name}}?",
+    "deleteSuccess": "Đã xóa nhà cung cấp.",
+    "createSuccess": "Đã tạo nhà cung cấp.",
+    "updateSuccess": "Đã cập nhật nhà cung cấp.",
+    "validation": {
+      "required": "Tên và mã là bắt buộc."
+    }
   }
 }

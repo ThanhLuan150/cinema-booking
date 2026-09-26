@@ -1,4 +1,5 @@
 const inventoryRepository = require('../repositories/inventory.repository');
+const purchaseOrderRepository = require('../repositories/purchaseOrder.repository');
 const comboRepository = require('../repositories/combo.repository');
 const Inventory = require('../models/Inventory');
 const InventoryTransaction = require('../models/InventoryTransaction');
@@ -247,6 +248,13 @@ async function update(req, res) {
 // DELETE /api/inventory/:id
 async function remove(req, res) {
   const existing = await inventoryRepository.findById(req.params.id);
+  // A DRAFT/ORDERED Purchase Order still expects to receive into this product (Ticket 46).
+  if (existing && (await purchaseOrderRepository.existsOpenForInventory(existing.id))) {
+    return res.status(409).json({
+      message: 'This product is on an open purchase order. Cancel or receive the order first.',
+      code: 'INVENTORY_IN_OPEN_PURCHASE_ORDER',
+    });
+  }
   await inventoryRepository.remove(req.params.id);
   broadcastInventory(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });

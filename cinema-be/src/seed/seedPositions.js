@@ -59,6 +59,9 @@ const POSITION_PERMISSIONS = {
     'cashierShift.close': 'OWN',
     'cashierShift.read': 'OWN',
   },
+  // Receiving supplier stock is deliberately NOT granted to any Position: an ordinary Employee cannot
+  // bring stock in. To let a Position (e.g. a warehouse/concession lead) receive Purchase Orders,
+  // add 'purchaseOrder.read': 'BRANCH' and 'purchaseOrder.receive': 'BRANCH' to it here (Ticket 46).
   CONCESSION_STAFF: {
     'combo.view': 'BRANCH',
     'combo.sell': 'BRANCH',

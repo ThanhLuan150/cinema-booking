@@ -131,7 +131,7 @@ A fast scan of "what can each role actually do" — see §6 below for the full w
 |---|---|
 | **Customer** | Browse/search movies & cinemas; book & pay for tickets (MoMo or gift card); rate & review movies/cinemas they've actually attended; manage profile, membership tier & loyalty points; redeem gift cards; request a private cinema rental; track payment history and refund requests; get notified of booking/payment/showtime events |
 | **Super Admin** | Everything, system-wide: movie catalog (incl. distributors & release windows), schedules, companies & branches, actors/directors, users, system-wide transactions/payments, review moderation, promotions & notification templates, external integrations & webhooks, global system configuration, platform-wide reporting |
-| **Branch Admin ("Owner")** | Everything scoped to the branch(es) they own: rooms/seat maps, combos & inventory, vouchers/promotions/campaigns, dynamic pricing rules & holidays, employees & shift scheduling, kiosks, digital signage, parking, QR check-in devices, maintenance, support tickets, private-event requests, audit log, branch-level system config, branch reporting |
+| **Branch Admin ("Owner")** | Everything scoped to the branch(es) they own: rooms/seat maps, combos & inventory (with supplier purchase orders), vouchers/promotions/campaigns, dynamic pricing rules & holidays, employees & shift scheduling, kiosks, digital signage, parking, QR check-in devices, maintenance, support tickets, private-event requests, audit log, branch-level system config, branch reporting |
 | **Employee** (capability set by Position — §6.5) | Whichever of: selling tickets (Box Office / Counter Sale), fulfilling combo orders, door check-in, opening/closing a cashier shift, handling customer-support tickets, requesting refunds, or working a maintenance ticket — their Position grants |
 
 ---
@@ -321,7 +321,7 @@ Ticket prices are never hardcoded: a **Pricing Rule** (branch, room type, seat t
 
 ### 6.19 Inventory
 
-Each branch keeps its **own** F&B stock (`inventory.view`/`inventory.manage`); a Branch Admin can neither see nor change another branch's. A product carries name, SKU (unique per branch), category, unit, cost/selling price, current stock and a minimum stock; its status is `IN_STOCK`, `LOW_STOCK` (stock ≤ minimum) or `OUT_OF_STOCK` (0). Every change is a **stock movement** in the item's history: `IMPORT` (received), `SALE` (automatic), `RETURN`, `ADJUSTMENT` (stocktake count) or `WASTE`. FE: `/OwnerInventory` (search/filter, add/edit, import/return/adjust/waste, history by type; staff get a toast when an item first drops to low stock).
+Each branch keeps its **own** F&B stock (`inventory.view`/`inventory.manage`); a Branch Admin can neither see nor change another branch's. A product carries name, SKU (unique per branch), category, unit, cost/selling price, current stock and a minimum stock; its status is `IN_STOCK`, `LOW_STOCK` (stock ≤ minimum) or `OUT_OF_STOCK` (0). Every change is a **stock movement** in the item's history: `IMPORT` (received — by hand, or by receiving a Purchase Order, §6.35), `SALE` (automatic), `RETURN`, `ADJUSTMENT` (stocktake count) or `WASTE`. FE: `/OwnerInventory` (search/filter, add/edit, import/return/adjust/waste, history by type; staff get a toast when an item first drops to low stock).
 
 Linking a product to a FOOD/BEVERAGE Combo item makes it **sale-limited** — a COMBO bundle counts through the items it contains, and an item with no link is never limited:
 
@@ -395,6 +395,21 @@ An employee records their own day: **Clock In → Working → Break → Resume �
 
 **Access.** `attendance.clock` (Employee, OWN) runs the clock; `attendance.read` is scope-aware — Employee sees only their own rows (a colleague's row is a 404, not a 403), Branch Admin their own branch, Super Admin everything; `attendance.manage` (Branch Admin / Super Admin) can mark a day `ABSENT`/`ON_LEAVE` (never over recorded working time) and close a session that was never clocked out (reason required). A background sweep (every 15 min) flags ended shift assignments with no attendance as `ABSENT`. Clock in, clock out, marks, corrections and automatic absences are written to the Audit Log (`ATTENDANCE_*`); every change is also pushed live as `attendance:updated` — deliberately **not** through the `branch:<id>` room (every colleague is in it, and one employee must not see another's lateness/absence), but only to the employee it is about (`account:`), the branch's Branch Admin (`owner:`) and Super Admin (`admin`). FE: `/EmployeeAttendance` and `/OwnerAttendance`.
 
+### 6.35 Suppliers & Purchase Orders
+
+A **Supplier** (`name`, unique `code`, `email`, `phone`, `address`, `status` ACTIVE/INACTIVE) is a company-wide catalogue: the Super Admin maintains it (`supplier.manage`), a Branch Admin only reads it (`supplier.read`) to pick one. A supplier with purchase orders cannot be deleted (`409 SUPPLIER_IN_USE`) — deactivate it; an inactive supplier cannot be put on a new or confirmed order. FE: `/Suppliers`.
+
+A **Purchase Order** buys stock for **one branch** from one supplier: `DRAFT → ORDERED → RECEIVED` (or `CANCELLED` from DRAFT/ORDERED). Lines are that branch's own Inventory products (`inventory_id`, `quantity` > 0, `unit_cost` defaulting to the product's `cost_price`), snapshotting name/SKU/unit; **`total_amount` is always computed on the server**, never accepted from a client. A DRAFT is freely editable/deletable; **ORDERED freezes the lines**. FE: `/OwnerPurchaseOrders`.
+
+**Only `RECEIVED` raises stock.** DRAFT and ORDERED never touch Inventory. `POST /api/purchase-orders/:id/receive` flips ORDERED → RECEIVED and adds **every line** to Inventory (one `IMPORT` history row per line, `ref_type: PURCHASE_ORDER`, `ref_code: PO-…:<inventory_id>`) as **one unit**:
+
+- **On a replica set / Atlas** it runs in a real MongoDB transaction — any failure rolls back the status change, every increment and every history row together.
+- **On a standalone `mongod`** (default local dev) there are no transactions, so the same steps run as a guarded status flip (the once-only gate: a second receive or a cancel finds the order no longer ORDERED), idempotent per-line ledger claims, and explicit compensation if a line fails. (A hard process crash mid-receipt cannot be compensated there — use a replica set in production.) Detected automatically (`utils/withTransaction.js`).
+
+Double receives (`409 PURCHASE_ORDER_ALREADY_RECEIVED`), receive-vs-cancel races and a product that vanished mid-way (`409 INVENTORY_MISSING`, nothing applied) are all safe. A RECEIVED order cannot be cancelled; correct stock with an inventory waste/adjustment. A product on a DRAFT/ORDERED order cannot be deleted from Inventory.
+
+**Access.** `purchaseOrder.read` / `.manage` (create, edit a draft, confirm, cancel, delete a draft) / `.receive` are BRANCH-scoped for a Branch Admin (own branches only; another branch's orders are `403`) and ALL for the Super Admin. **Receiving is its own permission** so being able to manage orders does not by itself let anyone bring stock in: an ordinary Employee holds none of the three and is refused everywhere (the direct `/api/inventory/:id/import` stays Branch-Admin-only too). To let a Position (e.g. a warehouse lead) receive, grant it `purchaseOrder.read` + `purchaseOrder.receive` in `seedPositions.js`; such an Employee can then receive — and only receive — orders for the branch they are staffed at. Every step is written to the Audit Log (`PURCHASE_ORDER_*`, `SUPPLIER_*`) and pushed live as `purchaseOrder:updated` (plus the existing `inventory:updated` per product).
+
 ---
 
 ## 7. Key API surfaces (see route files for full detail)
@@ -411,6 +426,7 @@ An employee records their own day: **Clock In → Working → Break → Resume �
 | Loyalty | `/api/loyalty/*`, `/api/membership-levels` | Points balance/history/redeem + membership tier configuration (§6.17) |
 | Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price (§6.18) |
 | Inventory | `/api/inventory` | Per-branch F&B products, stock movements (`import`/`return`/`adjust`/`waste`), low-stock alerts, movement history (§6.19) |
+| Suppliers & Purchase Orders | `/api/suppliers`, `/api/purchase-orders` | Company supplier catalogue; per-branch purchase orders (`confirm`/`cancel`/`receive`) — `receive` is the only path that raises stock from a supplier, atomically (§6.35) |
 | Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
 | Attendance | `/api/attendance/{today,clock-in,break/start,break/end,clock-out}`, `/attendance`, `/attendance/me`, `/attendance/:id`, `/attendance/mark`, `/attendance/:id/close` | Employee clock (always the caller's own record) + scope-aware reads (Employee own / Branch Admin their branch / Super Admin all) + manager mark/correct actions (§6.34) |
 | Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions (booking-eligibility gated, §6.33), movie likes, branch favorites |
