@@ -109,7 +109,7 @@ async function validate(req, res) {
   const comboIds = Array.isArray(combo_ids) ? combo_ids : [];
 
   if (Array.isArray(ticket_ids) && ticket_ids.length > 0) {
-    const priced = await bookingRepository.priceOrderItems({ ticketIds: ticket_ids, comboIds });
+    const priced = await bookingRepository.priceOrderItems({ ticketIds: ticket_ids, comboIds, enforceStock: false });
     if (!priced) return res.status(400).json({ message: 'Unable to price this order', code: 'PRICING_FAILED' });
     effectiveCinemaId = priced.cinemaId;
     effectiveOrderValue = priced.orderValue;

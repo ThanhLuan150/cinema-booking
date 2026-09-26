@@ -27,6 +27,7 @@ import type {
   CinemaFormValues,
   CreateComboPayload,
   CreateInventoryPayload,
+  UpdateInventoryPayload,
   EmployeeFormValues,
   GenerateSeatMapPayload,
   GiftCardFormValues,
@@ -72,32 +73,41 @@ export const updateCombo = (id: number | string, payload: Record<string, unknown
 
 export const deleteCombo = (id: number | string) => apiClient.delete(`/combo/${id}`);
 
-export const getOwnerInventory = (branchId?: number | string, params?: PaginationParams & { status?: string }) =>
+export const getOwnerInventory = (
+  branchId?: number | string,
+  params?: PaginationParams & { status?: string; q?: string; category?: string },
+) =>
   apiClient.get<PaginatedResponse<Inventory>>('/inventory', { params: { branchId, ...params } }).then((res) => res.data);
 
 export const getInventoryAlerts = (branchId?: number | string) =>
   apiClient.get<Inventory[]>('/inventory/alerts', { params: { branchId } }).then((res) => res.data);
 
-export const getInventoryHistory = (id: number | string, params?: PaginationParams) =>
+export const getInventoryCategories = (branchId?: number | string) =>
+  apiClient.get<string[]>('/inventory/categories', { params: { branchId } }).then((res) => res.data);
+
+export const getInventoryHistory = (id: number | string, params?: PaginationParams & { type?: string }) =>
   apiClient
     .get<PaginatedResponse<InventoryTransaction>>(`/inventory/${id}/history`, { params })
     .then((res) => res.data);
 
 export const createInventory = (payload: CreateInventoryPayload) => apiClient.post('/inventory', payload);
 
-export const updateInventory = (id: number | string, payload: Record<string, unknown>) =>
+export const updateInventory = (id: number | string, payload: Partial<UpdateInventoryPayload>) =>
   apiClient.put(`/inventory/${id}`, payload);
 
 export const deleteInventory = (id: number | string) => apiClient.delete(`/inventory/${id}`);
 
-export const receiveInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
-  apiClient.post(`/inventory/${id}/receive`, payload);
+export const importInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
+  apiClient.post(`/inventory/${id}/import`, payload);
+
+export const returnInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
+  apiClient.post(`/inventory/${id}/return`, payload);
 
 export const adjustInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
   apiClient.post(`/inventory/${id}/adjust`, payload);
 
-export const deductInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
-  apiClient.post(`/inventory/${id}/deduct`, payload);
+export const wasteInventory = (id: number | string, payload: { quantity: number; reason?: string }) =>
+  apiClient.post(`/inventory/${id}/waste`, payload);
 
 export const getOwnerVouchers = (branchId?: number | string, params?: PaginationParams) =>
   apiClient.get<PaginatedResponse<Voucher>>('/voucher', { params: { branchId, ...params } }).then((res) => res.data);

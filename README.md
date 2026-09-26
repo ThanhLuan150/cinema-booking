@@ -321,7 +321,15 @@ Ticket prices are never hardcoded: a **Pricing Rule** (branch, room type, seat t
 
 ### 6.19 Inventory
 
-Branches track stock levels for combo ingredients/supplies (`inventory.view`/`inventory.manage`) — current quantity, low-stock/out-of-stock alerts, and a history of stock-in/stock-out adjustments, optionally linked to a Combo so selling it can be reconciled against consumption. FE: `/OwnerInventory`.
+Each branch keeps its **own** F&B stock (`inventory.view`/`inventory.manage`); a Branch Admin can neither see nor change another branch's. A product carries name, SKU (unique per branch), category, unit, cost/selling price, current stock and a minimum stock; its status is `IN_STOCK`, `LOW_STOCK` (stock ≤ minimum) or `OUT_OF_STOCK` (0). Every change is a **stock movement** in the item's history: `IMPORT` (received), `SALE` (automatic), `RETURN`, `ADJUSTMENT` (stocktake count) or `WASTE`. FE: `/OwnerInventory` (search/filter, add/edit, import/return/adjust/waste, history by type; staff get a toast when an item first drops to low stock).
+
+Linking a product to a FOOD/BEVERAGE Combo item makes it **sale-limited** — a COMBO bundle counts through the items it contains, and an item with no link is never limited:
+
+- **No overselling.** Creating a combo order (and pricing any ticket booking that includes combos: MoMo, kiosk, counter, box office, gift card) is refused with `409 INSUFFICIENT_STOCK` when a linked item is short. The hard guarantee is at payment: stock is deducted with one atomic guarded update per item (all-or-nothing across a bundle), so of N concurrent payments for the last units exactly as many succeed as there is stock, the rest are refused with the order left `PENDING`. A booking that was already paid when its combos are recorded is never refused — it deducts down to zero and no further.
+- **Concurrency.** Every stock change is a single-document atomic update (`quantity` and `status` written together; the ledger row records the exact pre/post image) — no read-modify-write, no replica set or multi-document transaction needed.
+- **Returns.** Cancelling a paid combo order restocks exactly what it deducted (`RETURN`), once, however often it is retried.
+
+`npm run migrate:inventory` (in `cinema-be`) upgrades an existing database: it renames the old ledger types (`RECEIVE`/`ADJUST`/`DEDUCT`) to the new ones, reports any branch that tracks the same combo in two records, and builds the new unique indexes.
 
 ### 6.20 Combo Orders
 
@@ -402,7 +410,7 @@ An employee records their own day: **Clock In → Working → Break → Resume �
 | Commerce | `/api/combo`, `/api/combo-orders`, `/api/voucher`, `/api/gift-cards`, `/api/promotion` | Concessions, concession-only orders (§6.20), and three discount mechanisms (§6.16) — all branch-scoped |
 | Loyalty | `/api/loyalty/*`, `/api/membership-levels` | Points balance/history/redeem + membership tier configuration (§6.17) |
 | Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price (§6.18) |
-| Inventory | `/api/inventory` | Combo-ingredient stock levels, alerts, adjustment history (§6.19) |
+| Inventory | `/api/inventory` | Per-branch F&B products, stock movements (`import`/`return`/`adjust`/`waste`), low-stock alerts, movement history (§6.19) |
 | Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
 | Attendance | `/api/attendance/{today,clock-in,break/start,break/end,clock-out}`, `/attendance`, `/attendance/me`, `/attendance/:id`, `/attendance/mark`, `/attendance/:id/close` | Employee clock (always the caller's own record) + scope-aware reads (Employee own / Branch Admin their branch / Super Admin all) + manager mark/correct actions (§6.34) |
 | Social | `/api/review`, `/api/like`, `/api/cinema/favorite` | Ratings/replies/reactions (booking-eligibility gated, §6.33), movie likes, branch favorites |

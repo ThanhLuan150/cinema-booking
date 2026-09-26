@@ -52,21 +52,21 @@ describe('inventory.routes wiring', () => {
     expect(res.status).toBe(201);
   });
 
-  it('POST /api/inventory/:id/receive is forbidden for a non-owning Branch Admin', async () => {
+  it('POST /api/inventory/:id/import is forbidden for a non-owning Branch Admin', async () => {
     await Branch.create({ id: 1, company_id: 1, owner_id: 99, name: 'A', code: 'A' });
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 10, minimumQuantity: 5, unit: 'pcs' });
     const res = await request(app)
-      .post(`/api/inventory/${item.id}/receive`)
+      .post(`/api/inventory/${item.id}/import`)
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
       .send({ quantity: 5 });
     expect(res.status).toBe(403);
   });
 
-  it('POST /api/inventory/:id/receive succeeds for the owning Branch Admin', async () => {
+  it('POST /api/inventory/:id/import succeeds for the owning Branch Admin', async () => {
     await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 10, minimumQuantity: 5, unit: 'pcs' });
     const res = await request(app)
-      .post(`/api/inventory/${item.id}/receive`)
+      .post(`/api/inventory/${item.id}/import`)
       .set('Authorization', authHeader({ role: 2, accountId: 42 }))
       .send({ quantity: 5 });
     expect(res.status).toBe(200);

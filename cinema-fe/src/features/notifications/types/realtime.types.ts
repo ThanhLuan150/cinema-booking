@@ -34,6 +34,15 @@ export interface MyShiftEvent {
   status?: 'ACTIVE' | 'CANCELLED';
 }
 
+// A stock movement at the branch. `lowStock` is true only on the write that carries an item INTO
+// low/out of stock (the server compares against the previous status), so it is safe to toast on.
+export interface InventoryEvent {
+  item?: string;
+  quantity?: number;
+  status?: string;
+  lowStock?: boolean;
+}
+
 export interface ShowtimeChangeEvent {
   bookingId?: number;
   scheduleId?: number;

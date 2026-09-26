@@ -17,7 +17,8 @@
     "myShiftAssigned": "Bạn vừa được phân ca ngày {{date}}, {{start}} - {{end}}.",
     "myShiftUpdated": "Ca làm ngày {{date}} của bạn đã thay đổi: {{start}} - {{end}}.",
     "myShiftCancelled": "Ca làm ngày {{date}} của bạn đã bị hủy.",
-    "myShiftRemoved": "Ca làm ngày {{date}} của bạn đã bị xóa."
+    "myShiftRemoved": "Ca làm ngày {{date}} của bạn đã bị xóa.",
+    "inventoryLow": "Sắp hết hàng: {{item}} — còn {{quantity}}."
   },
   "toastContainer": {
     "dismiss": "Đóng"

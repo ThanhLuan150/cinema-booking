@@ -73,18 +73,18 @@ describe('inventory.controller create', () => {
   });
 });
 
-describe('inventory.controller receive/adjust/deduct', () => {
-  it('receive rejects a non-positive quantity', async () => {
+describe('inventory.controller import/adjust/waste', () => {
+  it('import rejects a non-positive quantity', async () => {
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 5, minimumQuantity: 5, unit: 'pcs' });
     const res = mockRes();
-    await inventoryController.receive({ params: { id: item.id }, body: { quantity: 0 }, account: { accountId: 1 } }, res);
+    await inventoryController.importStock({ params: { id: item.id }, body: { quantity: 0 }, account: { accountId: 1 } }, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('receive increases quantity and returns the updated item', async () => {
+  it('import increases quantity and returns the updated item', async () => {
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 5, minimumQuantity: 5, unit: 'pcs' });
     const res = mockRes();
-    await inventoryController.receive({ params: { id: item.id }, body: { quantity: 10 }, account: { accountId: 1 } }, res);
+    await inventoryController.importStock({ params: { id: item.id }, body: { quantity: 10 }, account: { accountId: 1 } }, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ quantity: 15 }));
   });
 
@@ -95,17 +95,20 @@ describe('inventory.controller receive/adjust/deduct', () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ quantity: 12 }));
   });
 
-  it('deduct returns 400 INSUFFICIENT_STOCK rather than going negative', async () => {
+  it('waste returns 409 INSUFFICIENT_STOCK (with what is available) rather than going negative', async () => {
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 3, minimumQuantity: 5, unit: 'pcs' });
     const res = mockRes();
-    await inventoryController.deduct({ params: { id: item.id }, body: { quantity: 10 }, account: { accountId: 1 } }, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ code: 'INSUFFICIENT_STOCK' }));
+    await inventoryController.waste({ params: { id: item.id }, body: { quantity: 10 }, account: { accountId: 1 } }, res);
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ code: 'INSUFFICIENT_STOCK', requested: 10, available: 3 }),
+    );
+    expect((await Inventory.findOne({ id: item.id })).quantity).toBe(3);
   });
 
-  it('receive/adjust/deduct return 404 for an unknown item', async () => {
+  it('import/adjust/waste return 404 for an unknown item', async () => {
     const res = mockRes();
-    await inventoryController.receive({ params: { id: 999 }, body: { quantity: 1 }, account: { accountId: 1 } }, res);
+    await inventoryController.importStock({ params: { id: 999 }, body: { quantity: 1 }, account: { accountId: 1 } }, res);
     expect(res.status).toHaveBeenCalledWith(404);
   });
 });
@@ -122,7 +125,7 @@ describe('inventory.controller getById/getHistory scoping', () => {
   it('getHistory returns paginated transactions for an owned item', async () => {
     await Branch.create({ id: 1, company_id: 1, owner_id: 42, name: 'A', code: 'A' });
     const item = await inventoryRepository.create({ branchId: 1, item: 'Popcorn', quantity: 10, minimumQuantity: 5, unit: 'pcs' });
-    await inventoryRepository.receiveStock(item.id, { quantity: 5, performedBy: 42 });
+    await inventoryRepository.importStock(item.id, { quantity: 5, performedBy: 42 });
 
     const res = mockRes();
     await inventoryController.getHistory(

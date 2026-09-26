@@ -132,5 +132,13 @@
   "INVALID_TIMESTAMP": "Thời gian phải kèm theo múi giờ",
   "FUTURE_TIMESTAMP": "Thời gian không được ở tương lai",
   "SESSION_NOT_OPEN": "Bản ghi này không có phiên nào đang mở để đóng",
-  "ATTENDANCE_NOT_EMPLOYEE": "Chỉ nhân viên mới có thể chấm công"
+  "ATTENDANCE_NOT_EMPLOYEE": "Chỉ nhân viên mới có thể chấm công",
+  "INSUFFICIENT_STOCK": "Không đủ hàng trong kho cho {{item}}: cần {{requested}}, còn {{available}}.",
+  "DUPLICATE_ITEM": "Rạp này đã có mặt hàng cùng tên.",
+  "DUPLICATE_SKU": "Mã SKU này đã được dùng trong rạp.",
+  "COMBO_ALREADY_TRACKED": "Món combo này đã có bản ghi kho trong rạp.",
+  "COMBO_NOT_STOCKABLE": "Chỉ món ĐỒ ĂN hoặc ĐỒ UỐNG mới theo dõi được tồn kho, không phải combo gộp.",
+  "INVALID_SKU": "SKU chỉ gồm chữ, số, dấu chấm, gạch ngang và gạch dưới (tối đa 40 ký tự).",
+  "COMBO_NOT_FOUND": "Món combo đã chọn không còn tồn tại.",
+  "COMBO_BRANCH_MISMATCH": "Món combo đã chọn thuộc rạp khác."
 }

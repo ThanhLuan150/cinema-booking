@@ -20,6 +20,8 @@ const Employee = require('../models/Employee');
 const Movie = require('../models/Movie');
 const Combo = require('../models/Combo');
 const ComboOrder = require('../models/ComboOrder');
+const Inventory = require('../models/Inventory');
+const InsufficientStockError = require('../utils/InsufficientStockError');
 const PointsTransaction = require('../models/PointsTransaction');
 const AuditLog = require('../models/AuditLog');
 
@@ -959,6 +961,35 @@ describe('booking.repository', () => {
       );
     });
 
+    it('finalizeMomoOrder deducts combo stock but never goes negative when it ran out after the customer paid', async () => {
+      await Account.create({ id: 10, email: 'buyer@example.com', password: 'x' });
+      await Combo.create({ id: 1, cinema_id: 1, name: 'Popcorn', price: 50000, type: 'FOOD' });
+      await Inventory.create({ id: 1, branch_id: 1, combo_id: 1, item: 'Popcorn', quantity: 1, minimum_quantity: 0, unit: 'pcs' });
+      await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 2 });
+      await bookingRepository.createPendingBooking({
+        code: 'BK-STOCK',
+        accountId: 10,
+        scheduleId: 1,
+        branchId: 1,
+        ticketIds: [1],
+        comboIds: [1, 1, 1],
+        totalPrice: 250000,
+        expiresAt: new Date(Date.now() + 60000),
+      });
+
+      const result = await bookingRepository.finalizeMomoOrder(
+        'BK-STOCK',
+        { ticketIds: [1], comboIds: [1, 1, 1], totalPrice: 250000, accountId: 10 },
+        { comboPaymentMethod: 'MOMO' },
+      );
+
+      expect(result.alreadyProcessed).toBe(false); // the paid booking is honoured, not refused
+      expect((await ComboOrder.findOne({ status: 'PAID' })).items[0].quantity).toBe(3);
+      const stock = await Inventory.findOne({ id: 1 });
+      expect(stock.quantity).toBe(0);
+      expect(stock.status).toBe('OUT_OF_STOCK');
+    });
+
     it('createCounterSale creates a linked ComboOrder paid by CASH when combos were purchased', async () => {
       await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
       await Branch.create({ id: 1, company_id: 1, owner_id: 1, name: 'C1', code: 'A' });
@@ -1540,6 +1571,50 @@ describe('booking.repository', () => {
         expect(priced.orderValue).toBe(140000);
         expect(priced.ticketPrices).toEqual([100000]);
         expect(priced.combos).toEqual([{ id: 1, price: 40000 }]);
+      });
+
+      describe('stock enforcement', () => {
+        async function seedShow(stock) {
+          await Schedule.create({
+            id: 1, movie_id: 7, room_id: 1, cinema_id: 5,
+            movie_date: '2026-01-01', time_begin: '10:00', time_end: '12:00', price: 100000,
+          });
+          await Ticket.create({ id: 1, schedule_id: 1, seat_index: 0, seat_code: 'A1', status: 1 });
+          await Combo.create({ id: 1, cinema_id: 5, name: 'Popcorn', price: 40000, type: 'FOOD' });
+          await Inventory.create({ id: 1, branch_id: 5, combo_id: 1, item: 'Popcorn', quantity: stock, minimum_quantity: 0, unit: 'pcs' });
+        }
+
+        it("refuses an order whose combos exceed the showing branch's stock (a repeated id counts as quantity)", async () => {
+          await seedShow(2);
+          await expect(bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1, 1, 1] })).rejects.toBeInstanceOf(
+            InsufficientStockError,
+          );
+          await expect(
+            bookingRepository.computeOrderPricing({ ticketIds: [1], comboIds: [1, 1, 1], accountId: 1 }),
+          ).rejects.toMatchObject({ code: 'INSUFFICIENT_STOCK', status: 409 });
+        });
+
+        it('allows an order that fits, including exactly the remaining stock', async () => {
+          await seedShow(2);
+          await expect(bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1, 1] })).resolves.toMatchObject({
+            comboTotal: 40000,
+          });
+        });
+
+        it('a read-only preview (enforceStock: false) is not blocked', async () => {
+          await seedShow(0);
+          await expect(
+            bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1], enforceStock: false }),
+          ).resolves.not.toBeNull();
+        });
+
+        it("another branch's stock is not consulted", async () => {
+          await seedShow(0);
+          await Inventory.create({ id: 2, branch_id: 6, combo_id: 1, item: 'Popcorn', quantity: 999, minimum_quantity: 0, unit: 'pcs' });
+          await expect(bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1] })).rejects.toBeInstanceOf(
+            InsufficientStockError,
+          );
+        });
       });
     });
   });

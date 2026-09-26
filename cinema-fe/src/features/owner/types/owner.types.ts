@@ -127,26 +127,42 @@ export interface OwnerCombosState {
   showAddModal: boolean;
 }
 
-export interface InventoryFormValues {
-  cinema_id: string;
+// The catalogue fields an item keeps after creation (everything the edit form can change).
+export interface InventoryDetailValues {
   item: string;
-  combo_id: string; // '' means this item is not linked to a Combo (no auto-deduction on sale)
-  quantity: string;
+  sku: string; // '' means no SKU
+  category: string;
+  combo_id: string; // '' means this item is not linked to a Combo (no stock check/deduction on sale)
   minimum_quantity: string;
   unit: string;
+  cost_price: string;
+  selling_price: string;
+}
+
+export interface InventoryFormValues extends InventoryDetailValues {
+  cinema_id: string;
+  quantity: string;
 }
 
 // Wire payload for POST /inventory — numeric fields already coerced from InventoryFormValues.
 export interface CreateInventoryPayload {
   branch_id: number;
   item: string;
+  sku: string | null;
+  category: string;
   combo_id: number | null;
   quantity: number;
   minimum_quantity: number;
   unit: string;
+  cost_price: number;
+  selling_price: number;
 }
 
-export type StockActionMode = 'receive' | 'adjust' | 'deduct';
+// Wire payload for PUT /inventory/:id. Quantity is deliberately absent: it only changes through
+// a stock movement so the history stays explainable.
+export type UpdateInventoryPayload = Omit<CreateInventoryPayload, 'branch_id' | 'quantity'>;
+
+export type StockActionMode = 'import' | 'return' | 'adjust' | 'waste';
 
 export interface StockActionFormValues {
   quantity: string;
@@ -155,6 +171,7 @@ export interface StockActionFormValues {
 
 export interface OwnerInventoryState {
   showAddModal: boolean;
+  editItemId: number | null;
   stockAction: { id: number; mode: StockActionMode } | null;
   historyItemId: number | null;
 }

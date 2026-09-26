@@ -144,19 +144,25 @@ export interface Inventory {
   branch_id: number;
   combo_id: number | null;
   item: string;
+  sku: string | null;
+  category: string;
   quantity: number;
   minimum_quantity: number;
   unit: string;
+  cost_price: number;
+  selling_price: number;
   status: InventoryStatus;
 }
 
-export type InventoryTransactionType = 'RECEIVE' | 'ADJUST' | 'DEDUCT';
+export type InventoryTransactionType = 'IMPORT' | 'SALE' | 'RETURN' | 'ADJUSTMENT' | 'WASTE';
+// Rows written before Ticket 45 carry these until `npm run migrate:inventory` has been run.
+export type LegacyInventoryTransactionType = 'RECEIVE' | 'ADJUST' | 'DEDUCT';
 
 export interface InventoryTransaction {
   id: number;
   inventory_id: number;
   branch_id: number;
-  type: InventoryTransactionType;
+  type: InventoryTransactionType | LegacyInventoryTransactionType;
   quantity_change: number;
   quantity_before: number;
   quantity_after: number;

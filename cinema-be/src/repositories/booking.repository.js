@@ -16,6 +16,7 @@ const Combo = require('../models/Combo');
 const Payment = require('../models/Payment');
 const paymentRepository = require('./payment.repository');
 const comboOrderRepository = require('./comboOrder.repository');
+const inventoryRepository = require('./inventory.repository');
 const nextId = require('../utils/nextId');
 const { generateQrToken } = require('../utils/qrToken');
 const { sendInvoiceEmail } = require('../utils/mailer');
@@ -84,7 +85,8 @@ async function createLinkedComboOrder({ bookingId, branchId, accountId, comboIds
     totalPrice,
     createdBy,
   });
-  return comboOrderRepository.markPaid(order.id, paymentMethod);
+  // The customer has already paid for the booking, so stock is deducted best-effort (floor at 0).
+  return comboOrderRepository.markPaid(order.id, paymentMethod, { allowShortfall: true });
 }
 
 async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = null } = {}) {
@@ -954,7 +956,12 @@ async function calculateTicketPrices(schedule, tickets, accountId) {
 // applied — the shared, authoritative building block for computeOrderPricing below AND for
 // any other module (e.g. the Voucher preview endpoint, Gift Card payment) that needs a
 // backend-computed order total from real ticket/combo ids rather than an FE-supplied number.
-async function priceOrderItems({ ticketIds, comboIds = [], accountId = null }) {
+//
+// enforceStock (default on): refuses the order (InsufficientStockError -> 409 INSUFFICIENT_STOCK)
+// when a combo in it is tracked in the showing branch's inventory and there is not enough. Every
+// checkout path (MoMo, kiosk, counter, box office, gift card) prices through here, so this is the
+// one place that stops an oversell BEFORE the customer pays. Read-only previews pass false.
+async function priceOrderItems({ ticketIds, comboIds = [], accountId = null, enforceStock = true }) {
   const tickets = await findTicketsByIds(ticketIds);
   if (tickets.length === 0) return null;
 
@@ -965,6 +972,10 @@ async function priceOrderItems({ ticketIds, comboIds = [], accountId = null }) {
   const priceByTicketId = await calculateTicketPrices(schedule, tickets, accountId);
   const ticketPriceRows = tickets.map((t) => ({ ticketId: t.id, price: priceByTicketId.get(t.id)?.price ?? 0 }));
   const seatTotal = ticketPriceRows.reduce((sum, t) => sum + t.price, 0);
+
+  if (enforceStock && comboIds.length > 0 && schedule.cinema_id != null) {
+    await inventoryRepository.assertAvailableForComboIds(schedule.cinema_id, comboIds);
+  }
 
   const combos = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
   const comboTotal = combos.reduce((sum, c) => sum + c.price, 0);
