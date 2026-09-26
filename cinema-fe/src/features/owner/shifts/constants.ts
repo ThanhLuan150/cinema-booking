@@ -28,14 +28,31 @@ export const editShiftFormValues = (shift: Shift): ShiftFormValues => ({
 export const emptyShiftAssignmentForm = (): ShiftAssignmentFormValues => ({
   employee_id: '',
   shift_id: '',
+  position_id: '',
   date: '',
+  start_time: '',
+  end_time: '',
 });
+
+// The concrete start/end instants for a date plus two HH:mm times, in the browser's timezone — the
+// same clock the admin reads the table in. An end at or before the start rolls to the next day.
+export function buildAssignmentRange(date: string, startTime: string, endTime: string) {
+  const start = new Date(`${date}T${startTime}:00`);
+  const end = new Date(`${date}T${endTime}:00`);
+  if (endTime <= startTime) end.setDate(end.getDate() + 1);
+  return { start_at: start.toISOString(), end_at: end.toISOString() };
+}
 
 export const validateShiftAssignmentForm = (values: ShiftAssignmentFormValues, t: TFunction) => {
   const errors: Partial<Record<keyof ShiftAssignmentFormValues, string>> = {};
   if (!values.employee_id) errors.employee_id = t('shiftAssignments.validation.employeeRequired');
   if (!values.shift_id) errors.shift_id = t('shiftAssignments.validation.shiftRequired');
   if (!values.date) errors.date = t('shiftAssignments.validation.dateRequired');
+  if (!values.start_time) errors.start_time = t('shifts.validation.startTimeRequired');
+  if (!values.end_time) errors.end_time = t('shifts.validation.endTimeRequired');
+  else if (values.start_time && values.end_time === values.start_time) {
+    errors.end_time = t('shiftAssignments.validation.zeroLength');
+  }
   return errors;
 };
 

@@ -30,6 +30,21 @@ async function findActiveDuplicate({ employee_id, shift_id, date, excludeId }) {
   return ShiftAssignment.findOne(filter);
 }
 
+// The employee's live assignment whose time range intersects [start_at, end_at), or null.
+// Half-open on both sides, so back-to-back shifts (one ends exactly when the next starts) don't
+// conflict. Compares absolute instants rather than `date`, so it also catches an overnight shift
+// spilling into the next calendar day.
+async function findOverlapping({ employee_id, start_at, end_at, excludeId }) {
+  const filter = {
+    employee_id: Number(employee_id),
+    status: 'ACTIVE',
+    start_at: { $lt: end_at },
+    end_at: { $gt: start_at },
+  };
+  if (excludeId !== undefined) filter.id = { $ne: Number(excludeId) };
+  return ShiftAssignment.findOne(filter).sort({ start_at: 1 });
+}
+
 // The employee's live roster entries for one calendar day (used by attendance to work out
 // whether a clock-in is late).
 async function findActiveForEmployeeOnDate(employeeId, date) {
@@ -63,6 +78,7 @@ module.exports = {
   findById,
   findBranchIdByAssignmentId,
   findActiveDuplicate,
+  findOverlapping,
   findActiveForEmployeeOnDate,
   findActiveEndedBetween,
   existsForShift,

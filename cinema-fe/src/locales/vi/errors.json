@@ -41,6 +41,8 @@
   "SHIFT_NOT_ACTIVE": "Ca làm việc này không hoạt động",
   "BRANCH_MISMATCH": "Nhân viên và ca làm việc phải thuộc cùng một chi nhánh",
   "DUPLICATE_ASSIGNMENT": "Nhân viên này đã được phân vào ca làm việc này trong ngày này",
+  "SHIFT_OVERLAP": "Nhân viên này đã có ca làm việc khác trùng thời gian",
+  "INVALID_POSITION": "Vị trí đã chọn không hợp lệ",
   "SEAT_UNAVAILABLE": "Một hoặc nhiều ghế đã chọn không còn khả dụng",
   "NOT_YOUR_HOLD": "Ghế này đang được khách hàng khác giữ",
   "TICKET_NOT_FOUND": "Không tìm thấy vé",

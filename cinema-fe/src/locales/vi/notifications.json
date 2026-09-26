@@ -13,7 +13,11 @@
     "showtimeCancelled": "Một suất chiếu trong đơn đặt vé của bạn đã bị hủy.",
     "showtimeRescheduled": "Một suất chiếu trong đơn đặt vé của bạn đã được đổi lịch.",
     "notification": "Bạn có một thông báo mới.",
-    "checkinFailed": "Một lượt quét vé tại cửa đã bị từ chối."
+    "checkinFailed": "Một lượt quét vé tại cửa đã bị từ chối.",
+    "myShiftAssigned": "Bạn vừa được phân ca ngày {{date}}, {{start}} - {{end}}.",
+    "myShiftUpdated": "Ca làm ngày {{date}} của bạn đã thay đổi: {{start}} - {{end}}.",
+    "myShiftCancelled": "Ca làm ngày {{date}} của bạn đã bị hủy.",
+    "myShiftRemoved": "Ca làm ngày {{date}} của bạn đã bị xóa."
   },
   "toastContainer": {
     "dismiss": "Đóng"

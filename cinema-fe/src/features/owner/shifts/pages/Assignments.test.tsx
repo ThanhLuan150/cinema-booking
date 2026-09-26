@@ -30,6 +30,11 @@ vi.mock('../../hooks/useMyEmployees', () => ({
   useMyEmployees: (...args: unknown[]) => useMyEmployeesMock(...args),
 }));
 
+const usePositionsMock = vi.fn();
+vi.mock('../../hooks/usePositions', () => ({
+  usePositions: () => usePositionsMock(),
+}));
+
 const useShiftsMock = vi.fn();
 vi.mock('../../hooks/useShifts', () => ({
   useShifts: (...args: unknown[]) => useShiftsMock(...args),
@@ -73,6 +78,14 @@ describe('Owner Shift Assignments List', () => {
     useMyCinemasMock.mockReset();
     useMyEmployeesMock.mockReset();
     useShiftsMock.mockReset();
+    usePositionsMock.mockReset();
+    usePositionsMock.mockReturnValue({
+      data: [
+        { id: 1, code: 'TICKET_STAFF', name: 'Ticket Staff', status: 1 },
+        { id: 2, code: 'CASHIER', name: 'Cashier', status: 1 },
+        { id: 3, code: 'RETIRED', name: 'Retired', status: 0 },
+      ],
+    });
     useShiftAssignmentsMock.mockReset();
     createAssignmentMutate.mockReset();
     cancelAssignmentMutate.mockReset();
@@ -224,7 +237,14 @@ describe('Owner Shift Assignments List', () => {
 
     fireEvent.click(screen.getByText('shiftAssignments.submit'));
     await waitFor(() =>
-      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: expectedDate }),
+      expect(createAssignmentMutate).toHaveBeenCalledWith({
+        employee_id: '1',
+        shift_id: '1',
+        position_id: '',
+        date: expectedDate,
+        start_time: '08:00',
+        end_time: '16:00',
+      }),
     );
   });
 
@@ -242,8 +262,113 @@ describe('Owner Shift Assignments List', () => {
 
     fireEvent.click(screen.getByText('shiftAssignments.submit'));
     await waitFor(() =>
-      expect(createAssignmentMutate).toHaveBeenCalledWith({ employee_id: '1', shift_id: '1', date: expectedDate }),
+      expect(createAssignmentMutate).toHaveBeenCalledWith({
+        employee_id: '1',
+        shift_id: '1',
+        position_id: '',
+        date: expectedDate,
+        start_time: '08:00',
+        end_time: '16:00',
+      }),
     );
+  });
+
+  it('submits the chosen position and only offers active positions', async () => {
+    useShiftAssignmentsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    createAssignmentMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('shiftAssignments.assignButton'));
+
+    fireEvent.click(screen.getByText('shiftAssignments.employeePlaceholder'));
+    fireEvent.click(screen.getByText('Staff A'));
+    fireEvent.click(screen.getByText('shiftAssignments.shiftPlaceholder'));
+    fireEvent.click(screen.getByText('Morning (08:00-16:00)'));
+    fireEvent.click(screen.getByText('shiftAssignments.positionPlaceholder'));
+    expect(screen.queryByText('Retired')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Cashier'));
+    const expectedDate = pickNextMonthFirstFromCalendar();
+
+    fireEvent.click(screen.getByText('shiftAssignments.submit'));
+    await waitFor(() =>
+      expect(createAssignmentMutate).toHaveBeenCalledWith({
+        employee_id: '1',
+        shift_id: '1',
+        position_id: '2',
+        date: expectedDate,
+        start_time: '08:00',
+        end_time: '16:00',
+      }),
+    );
+  });
+
+  it('pre-fills start/end from the chosen shift and submits the admin\'s edited times', async () => {
+    useShiftAssignmentsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    createAssignmentMutate.mockResolvedValue({});
+    renderPage();
+    fireEvent.click(screen.getByText('shiftAssignments.assignButton'));
+
+    fireEvent.click(screen.getByText('shiftAssignments.employeePlaceholder'));
+    fireEvent.click(screen.getByText('Staff A'));
+    fireEvent.click(screen.getByText('shiftAssignments.shiftPlaceholder'));
+    fireEvent.click(screen.getByText('Morning (08:00-16:00)'));
+
+    const startInput = screen.getByLabelText('shifts.startTimeLabel') as HTMLInputElement;
+    const endInput = screen.getByLabelText('shifts.endTimeLabel') as HTMLInputElement;
+    expect(startInput.value).toBe('08:00');
+    expect(endInput.value).toBe('16:00');
+
+    fireEvent.change(startInput, { target: { name: 'start_time', value: '10:30' } });
+    fireEvent.change(endInput, { target: { name: 'end_time', value: '14:00' } });
+    const expectedDate = pickNextMonthFirstFromCalendar();
+
+    fireEvent.click(screen.getByText('shiftAssignments.submit'));
+    await waitFor(() =>
+      expect(createAssignmentMutate).toHaveBeenCalledWith(
+        expect.objectContaining({ date: expectedDate, start_time: '10:30', end_time: '14:00' }),
+      ),
+    );
+  });
+
+  it('requires start and end times and rejects a zero-length range', async () => {
+    useShiftAssignmentsMock.mockReturnValue({ data: { data: [], totalPages: 1 } });
+    renderPage();
+    fireEvent.click(screen.getByText('shiftAssignments.assignButton'));
+
+    fireEvent.click(screen.getByText('shiftAssignments.employeePlaceholder'));
+    fireEvent.click(screen.getByText('Staff A'));
+    fireEvent.click(screen.getByText('shiftAssignments.shiftPlaceholder'));
+    fireEvent.click(screen.getByText('Morning (08:00-16:00)'));
+    pickNextMonthFirstFromCalendar();
+    fireEvent.change(screen.getByLabelText('shifts.endTimeLabel'), { target: { name: 'end_time', value: '08:00' } });
+
+    fireEvent.click(screen.getByText('shiftAssignments.submit'));
+    expect(await screen.findByText('shiftAssignments.validation.zeroLength')).toBeInTheDocument();
+    expect(createAssignmentMutate).not.toHaveBeenCalled();
+  });
+
+  it('shows the position each shift is worked as', () => {
+    useShiftAssignmentsMock.mockReturnValue({
+      data: {
+        data: [
+          {
+            id: 1,
+            employee_id: 1,
+            shift_id: 1,
+            branch_id: 1,
+            position_id: 2,
+            position: { code: 'CASHIER', name: 'Cashier' },
+            date: '2026-08-12',
+            start_at: '2026-08-12T08:00:00',
+            end_at: '2026-08-12T16:00:00',
+            status: 'ACTIVE',
+          },
+        ],
+        totalPages: 1,
+      },
+    });
+    renderPage();
+    expect(screen.getByText('shiftAssignments.headers.position')).toBeInTheDocument();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
   });
 
   it('hides the assign button when the caller lacks shiftAssignment.create', () => {

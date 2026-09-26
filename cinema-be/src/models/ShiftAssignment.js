@@ -9,6 +9,9 @@ const shiftAssignmentSchema = new mongoose.Schema(
     // Denormalized from the employee/shift's shared branch (they're required to match) so
     // branch-scoped queries — and a future Attendance module — don't need a join to filter.
     branch_id: { type: Number, required: true, index: true },
+    // The Position the employee works this shift as. Optional only because rows created before
+    // Ticket 44 lack it; the API always sets it (defaulting to the employee's own Position).
+    position_id: { type: Number, index: true },
     date: { type: String, required: true, index: true }, // YYYY-MM-DD
     start_at: { type: Date, required: true },
     end_at: { type: Date, required: true },

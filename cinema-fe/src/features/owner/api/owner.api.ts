@@ -265,6 +265,7 @@ export const getShiftAssignments = (
 export const createShiftAssignment = (payload: {
   employee_id: number;
   shift_id: number;
+  position_id?: number;
   date: string;
   start_at?: string;
   end_at?: string;

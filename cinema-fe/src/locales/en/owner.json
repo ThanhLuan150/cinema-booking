@@ -589,6 +589,8 @@
     "employeePlaceholder": "Select employee",
     "shiftLabel": "Shift",
     "shiftPlaceholder": "Select shift",
+    "positionLabel": "Position",
+    "positionPlaceholder": "Employee's own position (default)",
     "dateLabel": "Date",
     "submit": "Assign",
     "createSuccess": "Shift assigned.",
@@ -611,6 +613,7 @@
       "id": "ID",
       "employee": "Employee",
       "shift": "Shift",
+      "position": "Position",
       "date": "Date",
       "time": "Time",
       "status": "Status",
@@ -619,7 +622,8 @@
     "validation": {
       "employeeRequired": "Please select an employee.",
       "shiftRequired": "Please select a shift.",
-      "dateRequired": "Please select a date."
+      "dateRequired": "Please select a date.",
+      "zeroLength": "End time must differ from the start time."
     }
   },
   "maintenance": {

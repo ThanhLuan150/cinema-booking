@@ -23,6 +23,17 @@ export interface BookingEvent {
   amount?: number;
 }
 
+// Sent only to the employee a shift assignment is about (account room).
+export interface MyShiftEvent {
+  action?: RealtimeAction;
+  id?: number;
+  date?: string;
+  startAt?: string;
+  endAt?: string;
+  positionId?: number;
+  status?: 'ACTIVE' | 'CANCELLED';
+}
+
 export interface ShowtimeChangeEvent {
   bookingId?: number;
   scheduleId?: number;

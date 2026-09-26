@@ -344,6 +344,9 @@ export interface ShiftAssignment {
   employee_id: number;
   shift_id: number;
   branch_id: number;
+  // The Position the shift is worked as. Absent on rows created before shift Positions existed.
+  position_id?: number;
+  position?: { code: string; name: string };
   date: string; // YYYY-MM-DD
   start_at: string; // ISO datetime
   end_at: string; // ISO datetime

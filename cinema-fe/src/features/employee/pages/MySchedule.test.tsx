@@ -73,4 +73,26 @@ describe('MySchedule', () => {
     expect(screen.getByText('08:00 - 16:00')).toBeInTheDocument();
     expect(screen.getByText('mySchedule.statusActive')).toBeInTheDocument();
   });
+
+  it('shows the position the shift is worked as, with a dash for legacy rows without one', () => {
+    const base = {
+      employee_id: 1,
+      shift_id: 5,
+      branch_id: 1,
+      start_at: '2026-08-12T08:00:00',
+      end_at: '2026-08-12T16:00:00',
+      status: 'ACTIVE',
+    };
+    useMyShiftAssignmentsMock.mockReturnValue({
+      data: {
+        data: [
+          { ...base, id: 1, date: '2026-08-12', position: { code: 'CASHIER', name: 'Cashier' } },
+          { ...base, id: 2, date: '2026-08-13' },
+        ],
+      },
+    });
+    renderPage();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
 });

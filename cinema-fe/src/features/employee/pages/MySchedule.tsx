@@ -25,6 +25,7 @@ function MySchedule() {
         <DataTable
           headers={[
             t('mySchedule.headers.shift'),
+            t('mySchedule.headers.position'),
             t('mySchedule.headers.date'),
             t('mySchedule.headers.time'),
             t('mySchedule.headers.status'),
@@ -33,6 +34,7 @@ function MySchedule() {
           {assignments.map((assignment) => (
             <tr key={assignment.id}>
               <td>{assignment.shift?.name || t('mySchedule.shiftLabel', { id: assignment.shift_id })}</td>
+              <td>{assignment.position?.name || '—'}</td>
               <td>{assignment.date}</td>
               <td>
                 {formatTime(assignment.start_at)} - {formatTime(assignment.end_at)}

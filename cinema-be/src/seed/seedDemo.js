@@ -485,6 +485,7 @@ async function run() {
               employee_id: emp.id,
               shift_id: morning.id,
               branch_id: b.id,
+              position_id: emp.position_id,
               date: isoDay(-d), // today .. +4 days
               start_at: atFutureDay(d, 8),
               end_at: atFutureDay(d, 16),

@@ -70,6 +70,10 @@ const REALTIME_EVENT = {
   PARKING_UPDATED: 'parking:updated',
   INVENTORY_UPDATED: 'inventory:updated',
   SHIFT_UPDATED: 'shift:updated',
+  // Same change as shift:updated, addressed to the one employee it is about (account room) so they
+  // get a toast. A different name on purpose: the employee is also in the branch room that
+  // carries shift:updated, and one event name must only ever travel down one channel.
+  MY_SHIFT_UPDATED: 'myShift:updated',
   ATTENDANCE_UPDATED: 'attendance:updated',
   CASHIER_SHIFT_UPDATED: 'cashierShift:updated',
   PRIVATE_EVENT_UPDATED: 'privateEvent:updated',

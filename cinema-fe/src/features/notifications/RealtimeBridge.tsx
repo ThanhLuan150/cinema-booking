@@ -71,7 +71,8 @@ import { myPointsHistoryQueryKey } from '@/features/membership/hooks/useMyPoints
 
 import { bump } from './realtimeSlice';
 import { toast } from './toast';
-import type { BookingEvent, CinemaEvent, MovieEvent, ShowtimeChangeEvent } from './types/realtime.types';
+import { formatAssignmentTime } from '@/features/owner/shifts/constants';
+import type { BookingEvent, CinemaEvent, MovieEvent, MyShiftEvent, ShowtimeChangeEvent } from './types/realtime.types';
 
 // Every server event that only needs "the lists that show this thing are now stale". The server
 // scopes delivery (an event reaches a room, not everyone), so a client that receives one is by
@@ -241,7 +242,22 @@ export function RealtimeBridge() {
       }
     };
     const onOperationsEvent = () => dispatch(bump('operationsVersion'));
+    // Tells an employee their own roster changed. The list itself is refreshed by shift:updated
+    // (they are in the branch room too), so this only adds the toast — invalidating here as well
+    // would refetch it twice.
+    const onMyShift = (payload: MyShiftEvent) => {
+      const params = {
+        date: payload?.date ?? '',
+        start: payload?.startAt ? formatAssignmentTime(payload.startAt) : '',
+        end: payload?.endAt ? formatAssignmentTime(payload.endAt) : '',
+      };
+      if (payload?.action === 'DELETED') return toast.info(t('realtimeBridge.myShiftRemoved', params));
+      if (payload?.status === 'CANCELLED') return toast.info(t('realtimeBridge.myShiftCancelled', params));
+      if (payload?.action === 'CREATED') return toast.info(t('realtimeBridge.myShiftAssigned', params));
+      return toast.info(t('realtimeBridge.myShiftUpdated', params));
+    };
 
+    socket.on(REALTIME_EVENT.MY_SHIFT_UPDATED, onMyShift);
     socket.on(REALTIME_EVENT.MOVIE_NEW, onMovieNew);
     socket.on(REALTIME_EVENT.BRANCH_ACTIVATED, onBranchActivated);
     socket.on(REALTIME_EVENT.BRANCH_DISABLED, onBranchDisabled);
@@ -257,6 +273,7 @@ export function RealtimeBridge() {
     socket.on(REALTIME_EVENT.INVENTORY_UPDATED, onOperationsEvent);
 
     return () => {
+      socket.off(REALTIME_EVENT.MY_SHIFT_UPDATED, onMyShift);
       socket.off(REALTIME_EVENT.MOVIE_NEW, onMovieNew);
       socket.off(REALTIME_EVENT.BRANCH_ACTIVATED, onBranchActivated);
       socket.off(REALTIME_EVENT.BRANCH_DISABLED, onBranchDisabled);
