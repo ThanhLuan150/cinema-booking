@@ -1,7 +1,7 @@
 const registry = require('./settingsRegistry');
 
 describe('settingsRegistry', () => {
-  it('exposes the 7 business settings from the ticket', () => {
+  it('exposes every registered business setting', () => {
     expect(registry.KEYS.sort()).toEqual(
       [
         'BOOKING_HOLD_TIME',
@@ -11,6 +11,8 @@ describe('settingsRegistry', () => {
         'TAX_RATE',
         'MAX_BOOKING_SEATS',
         'REFUND_POLICY',
+        'ATTENDANCE_TIMEZONE',
+        'ATTENDANCE_LATE_GRACE',
       ].sort(),
     );
   });

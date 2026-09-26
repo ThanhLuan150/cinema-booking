@@ -50,6 +50,7 @@ const cashierShiftRoutes = require('./cashierShift.routes');
 const kioskRoutes = require('./kiosk.routes');
 const signageRoutes = require('./signage.routes');
 const parkingRoutes = require('./parking.routes');
+const attendanceRoutes = require('./attendance.routes');
 const campaignRoutes = require('./campaign.routes');
 const customerCrmRoutes = require('./customerCrm.routes');
 const privateEventRoutes = require('./privateEvent.routes');
@@ -107,6 +108,10 @@ router.use('/signage', signageRoutes);
 // Parking (Ticket 39): /parking/areas + /parking/slots (per-branch infrastructure) and
 // /parking/tickets (the vehicle entry -> assign slot -> exit -> fee -> payment -> release flow).
 router.use('/parking', parkingRoutes);
+// Employee Attendance (Ticket 43): /attendance/{today,clock-in,break/start,break/end,clock-out} are
+// the caller's own clock; /attendance, /attendance/me, /attendance/:id read; /attendance/mark and
+// /attendance/:id/close are manager actions.
+router.use('/attendance', attendanceRoutes);
 // Marketing Campaign (Ticket 37) — kept separate from /promotion. /campaigns/public is the
 // unauthenticated customer feed; everything else is campaign.read / campaign.manage / campaign.notify.
 router.use('/campaigns', campaignRoutes);

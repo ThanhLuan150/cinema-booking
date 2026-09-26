@@ -353,6 +353,40 @@ export interface ShiftAssignment {
   shift?: { name: string; start_time: string; end_time: string };
 }
 
+export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'ON_LEAVE';
+// Where a row is in Clock In -> Break -> Resume -> Clock Out. Derived by the backend.
+export type AttendanceSessionState = 'NOT_STARTED' | 'WORKING' | 'ON_BREAK' | 'CLOCKED_OUT';
+
+export interface Attendance {
+  id: number;
+  employee_id: number;
+  branch_id: number;
+  work_date: string; // YYYY-MM-DD, the calendar day in `timezone`
+  timezone: string; // IANA zone the work day was cut in (the branch's attendance timezone)
+  shift_assignment_id: number | null;
+  clock_in: string | null; // ISO instants
+  clock_out: string | null;
+  break_start: string | null;
+  break_end: string | null;
+  status: AttendanceStatus;
+  note: string | null;
+  recorded_by: number | null;
+  session_state: AttendanceSessionState;
+  worked_minutes: number;
+  break_minutes: number;
+  // Only on the list endpoints, so a manager's table can name the person.
+  employee?: { id: number; employee_code: string; name?: string; email?: string };
+}
+
+// GET /api/attendance/today — the caller's own clock state.
+export interface TodayAttendance {
+  work_date: string;
+  timezone: string;
+  server_time: string;
+  session_state: AttendanceSessionState;
+  attendance: Attendance | null;
+}
+
 export type MaintenanceResourceType =
   | 'ROOM'
   | 'PROJECTOR'

@@ -66,6 +66,8 @@ import EmployeeCounterSale from '@/features/employee/pages/CounterSale';
 import EmployeeBoxOffice from '@/features/employee/pages/BoxOffice';
 import EmployeeCheckIn from '@/features/employee/pages/CheckIn';
 import EmployeeMySchedule from '@/features/employee/pages/MySchedule';
+import MyAttendance from '@/features/attendance/pages/MyAttendancePage';
+import AttendanceManagement from '@/features/attendance/pages/AttendanceManagementPage';
 import BookingManagement from '@/features/booking/pages/BookingManagementPage';
 import RefundManagement from '@/features/admin/refunds/pages/List';
 import SupportTickets from '@/features/customerService/pages/SupportTicketsPage';
@@ -405,6 +407,22 @@ export function AppRouter() {
         element={
           <RequireRole roles={EMPLOYEE_ONLY_ROLES}>
             <EmployeeMySchedule />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.employeeAttendance}
+        element={
+          <RequireRole roles={EMPLOYEE_ONLY_ROLES}>
+            <MyAttendance />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerAttendance}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <AttendanceManagement />
           </RequireRole>
         }
       />

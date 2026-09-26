@@ -83,4 +83,6 @@ export const ROUTES = {
   employeeBoxOffice: '/BoxOffice',
   employeeCheckIn: '/EmployeeCheckIn',
   employeeMySchedule: '/EmployeeMySchedule',
+  employeeAttendance: '/EmployeeAttendance',
+  ownerAttendance: '/OwnerAttendance',
 } as const;

@@ -3,25 +3,38 @@ const crypto = require('crypto');
 const employeeRepository = require('../repositories/employee.repository');
 const positionRepository = require('../repositories/position.repository');
 const authRepository = require('../repositories/auth.repository');
+const branchRepository = require('../repositories/branch.repository');
 const userRepository = require('../repositories/user.repository');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
-const { emitBranchEvent } = require('../utils/socket');
+const { emitToAdmin, emitToOwner, emitToAccount } = require('../utils/socket');
 const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 
-// Changing someone's position changes their permissions, and deactivating them ends their shift —
-// both are things the branch's roster, and the person themselves, need to see straight away
-// rather than at the next navigation. The branch room covers both: a staffed employee is already
-// a member of it, so no separate account-addressed copy is needed. Nothing account-identifying
-// rides along either — just the ids.
-function broadcastEmployee(employee, action) {
+// Changing someone's position changes their permissions, and deactivating them ends their access:
+// the person themselves has to see that straight away (their menu and permission set are cached
+// client-side), and the people managing the roster need the list refreshed. So it goes to exactly
+// those audiences — the employee's own account room, the branch's Branch Admin (`owner:`) and
+// Super Admin (`admin`) — and NOT to the `branch:<id>` room, which would also tell every
+// colleague who was moved or deactivated. Three different sockets' rooms, so nobody gets it
+// twice. Nothing account-identifying rides along, just ids. Non-throwing: a failed lookup or emit
+// must never fail the change that was already saved.
+async function broadcastEmployee(employee, action) {
   if (!employee) return;
-  emitBranchEvent(employee.branch_id, REALTIME_EVENT.EMPLOYEE_UPDATED, {
-    action,
-    id: employee.id,
-    positionId: employee.position_id,
-    status: employee.status,
-  });
+  try {
+    const payload = {
+      action,
+      id: employee.id,
+      positionId: employee.position_id,
+      status: employee.status,
+      branchId: employee.branch_id,
+    };
+    const branch = await branchRepository.findById(employee.branch_id);
+    emitToAdmin(REALTIME_EVENT.EMPLOYEE_UPDATED, payload);
+    if (branch) emitToOwner(branch.owner_id, REALTIME_EVENT.EMPLOYEE_UPDATED, payload);
+    emitToAccount(employee.user_id, REALTIME_EVENT.EMPLOYEE_UPDATED, payload);
+  } catch (err) {
+    console.error('[employee] failed to broadcast', employee.id, err.message);
+  }
 }
 const { sendTempPasswordEmail } = require('../utils/mailer');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
@@ -145,7 +158,7 @@ async function create(req, res) {
     metadata: { employee_code: employee.employee_code, position_id: employee.position_id },
   });
 
-  broadcastEmployee(employee, REALTIME_ACTION.CREATED);
+  await broadcastEmployee(employee, REALTIME_ACTION.CREATED);
   res.status(201).json(toEmployeeJson(employee, account, position));
 }
 
@@ -199,7 +212,7 @@ async function update(req, res) {
 
   const account = await authRepository.findById(employee.user_id);
   const position = await positionRepository.findById(employee.position_id);
-  broadcastEmployee(employee, REALTIME_ACTION.UPDATED);
+  await broadcastEmployee(employee, REALTIME_ACTION.UPDATED);
   res.json(toEmployeeJson(employee, account, position));
 }
 
@@ -215,7 +228,7 @@ async function remove(req, res) {
 
   await userRepository.updateFields(employee.user_id, { status: 0 });
 
-  broadcastEmployee(employee, REALTIME_ACTION.STATUS_CHANGED);
+  await broadcastEmployee(employee, REALTIME_ACTION.STATUS_CHANGED);
   res.json({ message: 'Deactivated' });
 }
 

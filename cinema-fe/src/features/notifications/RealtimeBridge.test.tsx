@@ -140,6 +140,7 @@ describe('RealtimeBridge', () => {
     ['employee:updated', ['myEmployees']],
     ['cashierShift:updated', ['cashierShifts']],
     ['shift:updated', ['ownerShiftAssignments']],
+    ['attendance:updated', ['attendance']],
     ['checkin:new', ['ownerCheckinLogs']],
     ['device:updated', ['ownerDevices']],
     ['kiosk:updated', ['ownerKiosks']],
@@ -158,6 +159,16 @@ describe('RealtimeBridge', () => {
     const { invalidateSpy } = renderBridge();
     emit(event, { id: 1 });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey });
+  });
+
+  // Moving an employee to another Position changes what they may do — their own cached
+  // permission set (which builds the sidebar) has to be dropped, not just the manager's roster.
+  it('drops the employee’s own profile and permissions on employee:updated', () => {
+    const { invalidateSpy } = renderBridge();
+    emit('employee:updated', { id: 1, positionId: 3, status: 1 });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myEmployees'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['currentUser'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['myPermissions'] });
   });
 
   // Being blocked or re-roled changes what this session may do, so the caller's own cached

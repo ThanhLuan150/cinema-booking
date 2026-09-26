@@ -61,6 +61,7 @@ export const REALTIME_EVENT = {
   PARKING_UPDATED: 'parking:updated',
   INVENTORY_UPDATED: 'inventory:updated',
   SHIFT_UPDATED: 'shift:updated',
+  ATTENDANCE_UPDATED: 'attendance:updated',
   CASHIER_SHIFT_UPDATED: 'cashierShift:updated',
   PRIVATE_EVENT_UPDATED: 'privateEvent:updated',
   SIGNAGE_UPDATED: 'signage:updated',
