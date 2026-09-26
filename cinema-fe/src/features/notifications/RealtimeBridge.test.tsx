@@ -128,6 +128,8 @@ describe('RealtimeBridge', () => {
     ['inventory:updated', ['ownerInventory']],
     ['purchaseOrder:updated', ['purchaseOrders']],
     ['purchaseOrder:updated', ['suppliers']],
+    ['recipe:updated', ['recipes']],
+    ['inventory:updated', ['recipes']],
     ['comboOrder:updated', ['comboOrders']],
     ['refund:updated', ['myRefunds']],
     ['payment:updated', ['myPayments']],

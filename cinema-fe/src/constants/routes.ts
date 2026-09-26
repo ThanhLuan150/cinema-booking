@@ -56,6 +56,7 @@ export const ROUTES = {
   ownerCombos: '/OwnerCombos',
   ownerInventory: '/OwnerInventory',
   ownerPurchaseOrders: '/OwnerPurchaseOrders',
+  ownerRecipes: '/OwnerRecipes',
   ownerIncidents: '/OwnerIncidents',
   ownerVouchers: '/OwnerVouchers',
   ownerGiftCards: '/OwnerGiftCards',

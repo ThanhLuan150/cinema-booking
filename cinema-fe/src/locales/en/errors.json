@@ -159,5 +159,19 @@
   "INVENTORY_MISSING": "A product on this order no longer exists in the branch, so nothing was received.",
   "INVENTORY_IN_OPEN_PURCHASE_ORDER": "This product is on an open purchase order. Cancel or receive the order first.",
   "EXPECTED_BEFORE_ORDER": "The expected date cannot be before the order date.",
-  "TOTAL_TOO_LARGE": "The order total is too large."
+  "TOTAL_TOO_LARGE": "The order total is too large.",
+  "RECIPE_EMPTY": "A recipe needs at least one ingredient.",
+  "TOO_MANY_INGREDIENTS": "A recipe can have at most 50 ingredients.",
+  "DUPLICATE_INGREDIENT": "An ingredient can only appear once in a recipe.",
+  "INGREDIENT_NOT_FOUND": "One of the ingredients no longer exists.",
+  "INGREDIENT_BRANCH_MISMATCH": "An ingredient belongs to a different branch.",
+  "INGREDIENT_NOT_ALLOWED": "A stock item linked to a product cannot be used as an ingredient.",
+  "PRODUCT_NOT_FOUND": "The selected product no longer exists.",
+  "PRODUCT_NOT_RECIPE_ELIGIBLE": "Only a food or beverage item has a recipe, not a combo bundle.",
+  "PRODUCT_ALREADY_TRACKED": "This product already has its own stock record. Unlink it before adding a recipe.",
+  "PRODUCT_HAS_RECIPE": "This product has a recipe, so its stock comes from the ingredients.",
+  "RECIPE_ALREADY_EXISTS": "This product already has a recipe.",
+  "INVENTORY_IN_RECIPE": "This item is an ingredient of a recipe. Remove it from the recipe first.",
+  "INGREDIENT_IN_RECIPE": "This item is an ingredient of a recipe and cannot be linked to a product.",
+  "INGREDIENT_UNIT_LOCKED": "The unit of an ingredient used in a recipe cannot be changed."
 }

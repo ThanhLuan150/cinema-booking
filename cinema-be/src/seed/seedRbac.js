@@ -71,6 +71,7 @@ const PERMISSIONS = [
   ['supplier.read', 'supplier'], ['supplier.manage', 'supplier'],
   ['purchaseOrder.read', 'purchaseOrder'], ['purchaseOrder.manage', 'purchaseOrder'],
   ['purchaseOrder.receive', 'purchaseOrder'],
+  ['recipe.read', 'recipe'], ['recipe.manage', 'recipe'],
   ['loyalty.read', 'loyalty'], ['loyalty.redeem', 'loyalty'], ['loyaltyConfig.manage', 'loyalty'],
   ['membershipLevel.read', 'loyalty'], ['membershipLevel.manage', 'loyalty'],
   ['maintenance.create', 'maintenance'], ['maintenance.read', 'maintenance'],
@@ -145,6 +146,7 @@ const BRANCH_ADMIN_PERMISSIONS = {
   // their Position (see seedPositions.js).
   'supplier.read': 'ALL',
   'purchaseOrder.read': 'BRANCH', 'purchaseOrder.manage': 'BRANCH', 'purchaseOrder.receive': 'BRANCH',
+  'recipe.read': 'BRANCH', 'recipe.manage': 'BRANCH',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
   'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
   // QR scanner devices & branch entrances are per-branch equipment the Branch Admin manages.

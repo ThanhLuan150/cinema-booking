@@ -1079,3 +1079,56 @@ export interface Webhook {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface RecipeIngredient {
+  inventory_id: number;
+  // Per ONE portion, in the ingredient's own stock unit.
+  quantity: number;
+  // The stock record is gone (or belongs to another branch): the product cannot be made.
+  missing: boolean;
+  item: string | null;
+  sku: string | null;
+  unit: string | null;
+  cost_price: number;
+  line_cost: number;
+  stock_quantity: number;
+  minimum_quantity: number;
+  status: InventoryStatus;
+}
+
+export interface Recipe {
+  id: number;
+  branch_id: number;
+  product_id: number;
+  product: Pick<Combo, 'id' | 'name' | 'type' | 'price' | 'active'> | null;
+  ingredients: RecipeIngredient[];
+  note: string;
+  cost_per_portion: number;
+  margin: number | null;
+  margin_percent: number | null;
+  // Whole portions the current stock can make, and which ingredient runs out first.
+  max_servings: number;
+  limiting_ingredient_id: number | null;
+  can_make: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecipeAvailabilityLine {
+  inventory_id: number;
+  requested: number;
+  available: number;
+  item: string | null;
+  unit: string | null;
+}
+
+export interface RecipeAvailability {
+  recipe_id: number;
+  product_id: number;
+  servings: number;
+  can_make: boolean;
+  max_servings: number;
+  limiting_ingredient_id: number | null;
+  requirements: RecipeAvailabilityLine[];
+  shortages: RecipeAvailabilityLine[];
+}

@@ -4,6 +4,8 @@ const Combo = require('../models/Combo');
 const Branch = require('../models/Branch');
 const Employee = require('../models/Employee');
 const nextId = require('../utils/nextId');
+const recipeRepository = require('./recipe.repository');
+const { aggregateDemand, roundQuantity, QUANTITY_PRECISION } = require('../utils/recipeCalculation');
 const InsufficientStockError = require('../utils/InsufficientStockError');
 const { emitBranchEvent } = require('../utils/socket');
 const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
@@ -38,6 +40,11 @@ async function findById(id) {
 
 async function findByIds(ids) {
   return Inventory.find({ id: { $in: ids.map(Number) } });
+}
+
+// The record that counts this product's own stock (Inventory.combo_id link), if any.
+async function findTrackedForProduct(branchId, comboId) {
+  return Inventory.findOne({ branch_id: Number(branchId), combo_id: Number(comboId) });
 }
 
 async function findBranchIdById(id) {
@@ -189,12 +196,15 @@ async function logTransaction({
 // null/undefined keeps the standalone single-document behaviour every other caller relies on.
 async function moveQuantity(id, { mode, amount, session = null }) {
   const filter = { id: Number(id) };
+  // Fractional stock (recipe ingredients: 0.15 kg) drifts in doubles, so results are snapped to
+  // the QUANTITY_PRECISION grid server-side; whole-number stock is unaffected.
+  const snap = (expr) => ({ $round: [expr, QUANTITY_PRECISION] });
   let expression;
-  if (mode === 'add') expression = { $add: ['$quantity', amount] };
+  if (mode === 'add') expression = snap({ $add: ['$quantity', amount] });
   else if (mode === 'subtract') {
     filter.quantity = { $gte: amount };
-    expression = { $subtract: ['$quantity', amount] };
-  } else if (mode === 'clamp') expression = { $max: [0, { $subtract: ['$quantity', amount] }] };
+    expression = snap({ $subtract: ['$quantity', amount] });
+  } else if (mode === 'clamp') expression = { $max: [0, snap({ $subtract: ['$quantity', amount] })] };
   else expression = { $literal: amount };
 
   const before = await Inventory.findOneAndUpdate(
@@ -208,15 +218,15 @@ async function moveQuantity(id, { mode, amount, session = null }) {
   }
 
   let after;
-  if (mode === 'add') after = before.quantity + amount;
-  else if (mode === 'subtract') after = before.quantity - amount;
-  else if (mode === 'clamp') after = Math.max(0, before.quantity - amount);
+  if (mode === 'add') after = roundQuantity(before.quantity + amount);
+  else if (mode === 'subtract') after = roundQuantity(before.quantity - amount);
+  else if (mode === 'clamp') after = Math.max(0, roundQuantity(before.quantity - amount));
   else after = amount;
 
   const { quantity: quantityBefore, status: previousStatus } = before;
   before.quantity = after;
   before.status = Inventory.computeStatus(after, before.minimum_quantity);
-  return { inventory: before, previousStatus, before: quantityBefore, after, applied: after - quantityBefore };
+  return { inventory: before, previousStatus, before: quantityBefore, after, applied: roundQuantity(after - quantityBefore) };
 }
 
 // Applies a movement atomically and writes its ledger row. Shortfall/not-found pass straight
@@ -294,34 +304,64 @@ async function resolveDeductionLines(orderItems) {
   return lines;
 }
 
-// The tracked inventory record for each base combo of a sale, in THIS branch only — branch A's
-// stock is never consulted or touched by a sale at branch B. Untracked combos (no record) are
-// simply absent: they are not stock-limited.
-async function loadTrackedLines(branchId, orderItems) {
-  const lines = await resolveDeductionLines(orderItems);
-  const records = await Inventory.find({ branch_id: Number(branchId), combo_id: { $in: [...lines.keys()] } });
-  const recordByCombo = new Map(records.map((r) => [r.combo_id, r]));
-  const tracked = [];
-  for (const [comboId, quantity] of lines) {
-    const inventory = recordByCombo.get(comboId);
-    if (inventory) tracked.push({ comboId, quantity, inventory });
+async function loadStockLines(branchId, orderItems) {
+  const baseLines = await resolveDeductionLines(orderItems);
+  const recipes = await recipeRepository.findByProductIds([...baseLines.keys()], branchId);
+  const recipeByProduct = new Map(recipes.map((r) => [r.product_id, r]));
+
+  const recipeEntries = [];
+  const directLines = [];
+  for (const [comboId, quantity] of baseLines) {
+    const recipe = recipeByProduct.get(comboId);
+    if (recipe) recipeEntries.push({ ingredients: recipe.ingredients, servings: quantity, productId: comboId });
+    else directLines.push([comboId, quantity]);
   }
-  return tracked;
+  const demand = aggregateDemand(recipeEntries);
+
+  const conditions = [];
+  if (directLines.length > 0) conditions.push({ combo_id: { $in: directLines.map(([id]) => id) } });
+  if (demand.size > 0) conditions.push({ id: { $in: [...demand.keys()] } });
+  const records = conditions.length > 0 ? await Inventory.find({ branch_id: Number(branchId), $or: conditions }) : [];
+  const recordByCombo = new Map(records.filter((r) => r.combo_id !== null).map((r) => [r.combo_id, r]));
+  const recordById = new Map(records.map((r) => [r.id, r]));
+
+  const lines = [];
+  for (const [comboId, quantity] of directLines) {
+    const inventory = recordByCombo.get(comboId);
+    if (inventory) lines.push({ key: String(comboId), comboId, quantity, inventory });
+  }
+  for (const [inventoryId, { quantity, productIds }] of [...demand].sort(([a], [b]) => a - b)) {
+    lines.push({
+      key: `ING${inventoryId}`,
+      comboId: null,
+      ingredient: true,
+      inventoryId,
+      productIds,
+      quantity,
+      inventory: recordById.get(inventoryId) || null,
+    });
+  }
+  return lines;
+}
+
+function shortageOf(line) {
+  const { comboId, quantity, inventory, ingredient, inventoryId, productIds } = line;
+  const shortage = {
+    combo_id: comboId,
+    inventory_id: inventory ? inventory.id : inventoryId,
+    item: inventory ? inventory.item : `Ingredient #${inventoryId}`,
+    requested: quantity,
+    available: inventory ? inventory.quantity : 0,
+  };
+  if (ingredient) Object.assign(shortage, { ingredient: true, product_ids: productIds, unit: inventory ? inventory.unit : null });
+  return shortage;
 }
 
 // Read-only availability check for a prospective sale. Advisory: it fails fast with a friendly
 // error, while the strict atomic deduction at payment time is what actually forbids overselling.
 async function findShortages(branchId, orderItems) {
-  const tracked = await loadTrackedLines(branchId, orderItems);
-  return tracked
-    .filter(({ quantity, inventory }) => inventory.quantity < quantity)
-    .map(({ comboId, quantity, inventory }) => ({
-      combo_id: comboId,
-      inventory_id: inventory.id,
-      item: inventory.item,
-      requested: quantity,
-      available: inventory.quantity,
-    }));
+  const lines = await loadStockLines(branchId, orderItems);
+  return lines.filter(({ quantity, inventory }) => !inventory || inventory.quantity < quantity).map(shortageOf);
 }
 
 async function assertAvailable(branchId, orderItems) {
@@ -394,12 +434,17 @@ async function settleMovement(claim, moved, session = null) {
 //                         ledger row records the amount actually taken.
 // Resolves to per-line results; a line with `skipped: true` was already processed.
 async function deductForComboOrder(order, { allowShortfall = false } = {}) {
-  const tracked = await loadTrackedLines(order.branch_id, order.items);
+  const stockLines = await loadStockLines(order.branch_id, order.items);
+  // A recipe pointing at a record that is gone cannot be fulfilled: refuse before touching stock. An
+  // already-paid sale has no such option, so it just skips what it cannot deduct.
+  const missing = stockLines.filter((line) => !line.inventory);
+  if (missing.length > 0 && !allowShortfall) throw new InsufficientStockError(missing.map(shortageOf));
+  const tracked = stockLines.filter((line) => line.inventory);
   const done = []; // lines applied in this call, kept so strict mode can undo them
   const results = [];
 
-  for (const { comboId, quantity, inventory } of tracked) {
-    const refCode = `${order.code}:${comboId}`;
+  for (const { key, comboId, quantity, inventory, ingredient } of tracked) {
+    const refCode = `${order.code}:${key}`;
     const claim = await claimMovement({
       inventory,
       type: TYPE.SALE,
@@ -408,7 +453,7 @@ async function deductForComboOrder(order, { allowShortfall = false } = {}) {
       reason: `Combo order ${order.code}`,
     });
     if (!claim) {
-      results.push({ inventoryId: inventory.id, comboId, skipped: true });
+      results.push({ inventoryId: inventory.id, comboId, skipped: true, ...(ingredient && { ingredient: true }) });
       continue;
     }
 
@@ -430,8 +475,9 @@ async function deductForComboOrder(order, { allowShortfall = false } = {}) {
       inventoryId: inventory.id,
       comboId,
       quantityDeducted: -moved.applied,
-      shortfall: quantity + moved.applied, // > 0 only in allowShortfall mode when stock ran out
+      shortfall: roundQuantity(quantity + moved.applied), // > 0 only in allowShortfall mode when stock ran out
       skipped: false,
+      ...(ingredient && { ingredient: true }),
     });
   }
 
@@ -563,6 +609,7 @@ module.exports = {
   broadcastInventory,
   findById,
   findByIds,
+  findTrackedForProduct,
   findBranchIdById,
   findOwnedBranchIds,
   findReadableBranchIds,

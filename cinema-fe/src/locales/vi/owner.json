@@ -1459,5 +1459,84 @@
     "cancelSuccess": "Đã hủy đơn nhập hàng.",
     "deleteSuccess": "Đã xóa bản nháp.",
     "receiveSuccess": "Đã nhận hàng và cộng vào kho."
+  },
+  "recipes": {
+    "breadcrumb": "Công thức",
+    "addButton": "Công thức mới",
+    "addTitle": "Công thức mới",
+    "editTitle": "Sửa công thức: {{name}}",
+    "detailTitle": "Công thức: {{name}}",
+    "filters": {
+      "branchLabel": "Lọc theo chi nhánh",
+      "allBranches": "Tất cả chi nhánh"
+    },
+    "headers": {
+      "product": "Sản phẩm",
+      "branch": "Chi nhánh",
+      "ingredients": "Nguyên liệu",
+      "cost": "Giá vốn / suất",
+      "price": "Giá bán",
+      "margin": "Biên lợi nhuận",
+      "availability": "Có thể làm",
+      "actions": "Thao tác",
+      "perPortion": "Mỗi suất",
+      "inStock": "Tồn kho",
+      "lineCost": "Chi phí",
+      "status": "Trạng thái"
+    },
+    "empty": "Chưa có công thức nào.",
+    "view": "Xem",
+    "canMake": "{{count}} suất",
+    "cannotMake": "Hết hàng",
+    "limiting": "(hết trước)",
+    "missingIngredient": "Nguyên liệu không còn tồn tại",
+    "stockStatus": {
+      "IN_STOCK": "Còn hàng",
+      "LOW_STOCK": "Sắp hết",
+      "OUT_OF_STOCK": "Hết"
+    },
+    "fields": {
+      "branch": "Chi nhánh",
+      "branchPlaceholder": "Chọn chi nhánh",
+      "product": "Sản phẩm",
+      "productPlaceholder": "Chọn sản phẩm",
+      "ingredient": "Nguyên liệu",
+      "ingredientPlaceholder": "Chọn nguyên liệu",
+      "quantity": "Số lượng",
+      "note": "Ghi chú"
+    },
+    "ingredientsTitle": "Nguyên liệu",
+    "perPortionHint": "Số lượng tính cho một suất, theo đơn vị của từng nguyên liệu. Bán một suất sẽ trừ các số này khỏi kho.",
+    "pickBranchFirst": "Chọn chi nhánh để chọn nguyên liệu.",
+    "noEligibleProducts": "Mọi món ăn và đồ uống của chi nhánh này đã có công thức hoặc bản ghi kho riêng.",
+    "noIngredients": "Chi nhánh này chưa có nguyên liệu thô. Hãy thêm nguyên liệu trong Kho trước.",
+    "addLine": "Thêm nguyên liệu",
+    "removeLine": "Xóa nguyên liệu này",
+    "save": "Lưu công thức",
+    "edit": "Sửa",
+    "delete": "Xóa công thức",
+    "preview": {
+      "cost": "Giá vốn / suất",
+      "margin": "Biên lợi nhuận",
+      "maxServings": "Số suất trong kho"
+    },
+    "availability": {
+      "servings": "Số suất",
+      "ok": "Kho đủ cho {{count}} suất.",
+      "short": "Không đủ: {{items}}"
+    },
+    "createSuccess": "Đã tạo công thức.",
+    "updateSuccess": "Đã cập nhật công thức.",
+    "deleteSuccess": "Đã xóa công thức.",
+    "deleteConfirm": "Xóa công thức của {{name}}? Sản phẩm sẽ không còn bị giới hạn bởi tồn kho nguyên liệu.",
+    "validation": {
+      "branchRequired": "Chọn chi nhánh.",
+      "productRequired": "Chọn sản phẩm.",
+      "linesRequired": "Thêm ít nhất một nguyên liệu.",
+      "lineInvalid": "Mỗi nguyên liệu cần được chọn và có số lượng lớn hơn 0.",
+      "duplicateLine": "Một nguyên liệu chỉ được xuất hiện một lần.",
+      "tooManyLines": "Một công thức có tối đa 50 nguyên liệu.",
+      "noteTooLong": "Ghi chú tối đa 500 ký tự."
+    }
   }
 }

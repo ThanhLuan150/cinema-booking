@@ -56,6 +56,7 @@ import { adminReviewsQueryKey } from '@/features/admin/reviews/hooks/useAdminRev
 import { distributorsQueryKey } from '@/features/admin/distribution/hooks/useDistributors';
 import { suppliersQueryKey } from '@/features/admin/suppliers/hooks/useSuppliers';
 import { purchaseOrdersQueryKey, branchProductsQueryKey } from '@/features/owner/purchaseOrders/hooks/usePurchaseOrders';
+import { recipesQueryKey, branchIngredientsQueryKey } from '@/features/owner/recipes/hooks/useRecipes';
 import { movieReleasesQueryKey } from '@/features/admin/distribution/hooks/useMovieReleases';
 import { membershipLevelsQueryKey } from '@/features/membership/hooks/useMembershipLevels';
 import { myMembershipQueryKey } from '@/features/membership/hooks/useMyMembership';
@@ -110,7 +111,9 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.ROOM_UPDATED]: [allRoomsQueryKey],
   [REALTIME_EVENT.SUPPORT_UPDATED]: [supportTicketsQueryKey],
   [REALTIME_EVENT.PARKING_UPDATED]: [parkingAreasQueryKey, parkingSlotsQueryKey, parkingTicketsQueryKey],
-  [REALTIME_EVENT.INVENTORY_UPDATED]: [ownerInventoryQueryKey, inventoryAlertsQueryKey],
+  // A stock move also changes how many portions a recipe can make, so recipes refresh with it.
+  [REALTIME_EVENT.INVENTORY_UPDATED]: [ownerInventoryQueryKey, inventoryAlertsQueryKey, recipesQueryKey, branchIngredientsQueryKey],
+  [REALTIME_EVENT.RECIPE_UPDATED]: [recipesQueryKey],
   // One event for the supplier catalogue and a branch's orders (payload.scope tells them apart);
   // both lists are cheap and only refetch if a page is observing them.
   [REALTIME_EVENT.PURCHASE_ORDER_UPDATED]: [purchaseOrdersQueryKey, suppliersQueryKey, branchProductsQueryKey],

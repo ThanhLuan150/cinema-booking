@@ -1,4 +1,5 @@
 const comboRepository = require('../repositories/combo.repository');
+const recipeRepository = require('../repositories/recipe.repository');
 const Combo = require('../models/Combo');
 const nextId = require('../utils/nextId');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
@@ -101,6 +102,11 @@ async function update(req, res) {
   for (const field of fields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
+  // A recipe describes how ONE food/beverage item is made; turning the product into a bundle
+  // would leave the recipe silently ignored (Ticket 47).
+  if (updates.type === Combo.TYPE.COMBO && (await recipeRepository.findByProductId(req.params.id))) {
+    return res.status(409).json({ message: 'This product has a recipe; delete the recipe before making it a COMBO', code: 'PRODUCT_HAS_RECIPE' });
+  }
   const combo = await comboRepository.updateFields(req.params.id, updates);
   if (!combo) return res.status(404).json({ message: 'Combo not found' });
   broadcastCombo(combo, REALTIME_ACTION.UPDATED);
@@ -111,6 +117,8 @@ async function update(req, res) {
 async function remove(req, res) {
   const existing = await comboRepository.findById(req.params.id);
   await comboRepository.remove(req.params.id);
+  // The recipe belongs to the product: it goes with it.
+  await recipeRepository.removeByProductId(req.params.id);
   broadcastCombo(existing, REALTIME_ACTION.DELETED);
   res.json({ message: 'Deleted' });
 }

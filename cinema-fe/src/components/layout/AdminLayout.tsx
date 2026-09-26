@@ -170,6 +170,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.purchaseOrders')}
             </NavLink>
           )}
+          {hasPermission('recipe.read') && (
+            <NavLink to={ROUTES.ownerRecipes} className={navLinkClass}>
+              <ion-icon name="restaurant" />
+              {t('adminLayout.nav.recipes')}
+            </NavLink>
+          )}
           {hasPermission('maintenance.read') && (
             <NavLink to={ROUTES.ownerMaintenance} className={navLinkClass}>
               <ion-icon name="construct" />
@@ -298,6 +304,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <NavLink to={ROUTES.ownerPurchaseOrders} className={navLinkClass}>
               <ion-icon name="cart" />
               {t('adminLayout.nav.purchaseOrders')}
+            </NavLink>
+          )}
+          {hasPermission('recipe.read') && (
+            <NavLink to={ROUTES.ownerRecipes} className={navLinkClass}>
+              <ion-icon name="restaurant" />
+              {t('adminLayout.nav.recipes')}
             </NavLink>
           )}
           <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>

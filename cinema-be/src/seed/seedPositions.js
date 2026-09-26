@@ -83,6 +83,10 @@ const POSITION_PERMISSIONS = {
     'seat.read': 'BRANCH',
   },
   // Prepares and hands over F&B orders the counter took — works the order queue but does not sell.
+  // Recipes are deliberately NOT granted to any Position (Ticket 47): an ordinary Employee can neither
+  // change nor read them. To let prep staff see what to make add 'recipe.read': 'BRANCH' to FNB_STAFF;
+  // to let a lead edit recipes also add 'recipe.manage': 'BRANCH' (such an Employee then changes recipes
+  // only at the branch they are staffed at).
   FNB_STAFF: {
     'combo.view': 'BRANCH',
     'combo.order.view': 'BRANCH',
