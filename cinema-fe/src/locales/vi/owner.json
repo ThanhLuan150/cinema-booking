@@ -1378,5 +1378,86 @@
       "MEDIUM": "Trung bình",
       "HIGH": "Cao"
     }
+  },
+  "purchaseOrders": {
+    "breadcrumb": "Đơn nhập hàng",
+    "addButton": "Tạo đơn nhập hàng",
+    "addTitle": "Tạo đơn nhập hàng",
+    "editTitle": "Sửa {{code}}",
+    "detailTitle": "Đơn nhập hàng {{code}}",
+    "filters": {
+      "searchLabel": "Tìm theo mã đơn",
+      "searchPlaceholder": "Tìm theo mã đơn",
+      "statusLabel": "Lọc theo trạng thái",
+      "allStatuses": "Tất cả trạng thái",
+      "supplierLabel": "Lọc theo nhà cung cấp",
+      "allSuppliers": "Tất cả nhà cung cấp"
+    },
+    "status": {
+      "DRAFT": "Nháp",
+      "ORDERED": "Đã đặt hàng",
+      "RECEIVED": "Đã nhận hàng",
+      "CANCELLED": "Đã hủy"
+    },
+    "headers": {
+      "code": "Đơn",
+      "supplier": "Nhà cung cấp",
+      "branch": "Chi nhánh",
+      "orderDate": "Ngày đặt",
+      "expectedDate": "Dự kiến",
+      "status": "Trạng thái",
+      "total": "Tổng tiền",
+      "actions": "Thao tác"
+    },
+    "empty": "Chưa có đơn nhập hàng nào.",
+    "view": "Xem",
+    "fields": {
+      "branch": "Chi nhánh",
+      "branchPlaceholder": "Chọn chi nhánh",
+      "supplier": "Nhà cung cấp",
+      "supplierPlaceholder": "Chọn nhà cung cấp",
+      "orderDate": "Ngày đặt",
+      "expectedDate": "Ngày giao dự kiến",
+      "product": "Sản phẩm",
+      "productPlaceholder": "Chọn sản phẩm",
+      "quantity": "Số lượng",
+      "unitCost": "Đơn giá nhập",
+      "note": "Ghi chú"
+    },
+    "linesTitle": "Sản phẩm",
+    "pickBranchFirst": "Chọn chi nhánh để chọn sản phẩm.",
+    "addLine": "Thêm sản phẩm",
+    "removeLine": "Xóa sản phẩm này",
+    "totalLabel": "Tổng cộng",
+    "lineTotal": "Thành tiền",
+    "saveDraft": "Lưu nháp",
+    "createSuccess": "Đã tạo đơn nhập hàng nháp.",
+    "updateSuccess": "Đã cập nhật đơn nhập hàng.",
+    "validation": {
+      "branchRequired": "Vui lòng chọn chi nhánh.",
+      "supplierRequired": "Vui lòng chọn nhà cung cấp.",
+      "expectedBeforeOrder": "Ngày giao dự kiến không được trước ngày đặt.",
+      "linesRequired": "Thêm ít nhất một sản phẩm.",
+      "lineInvalid": "Mỗi dòng cần chọn sản phẩm và số lượng lớn hơn 0.",
+      "costInvalid": "Đơn giá nhập phải từ 0 trở lên.",
+      "duplicateLine": "Mỗi sản phẩm chỉ xuất hiện một lần trong đơn."
+    },
+    "receivedAt": "Đã nhận",
+    "cancelledAt": "Đã hủy",
+    "cancelReason": "Lý do: {{reason}}",
+    "orderedHint": "Hàng chỉ được cộng vào kho khi đơn này được nhận hàng.",
+    "delete": "Xóa bản nháp",
+    "edit": "Sửa",
+    "confirmOrder": "Xác nhận đơn",
+    "cancelOrder": "Hủy đơn",
+    "receiveStock": "Nhận hàng",
+    "confirmConfirm": "Xác nhận đơn nhập hàng {{code}}? Sau đó sẽ không thể đổi sản phẩm.",
+    "cancelConfirm": "Hủy đơn nhập hàng {{code}}?",
+    "deleteConfirm": "Xóa bản nháp {{code}}?",
+    "receiveConfirm": "Nhận hàng đơn {{code}}? Thao tác này cộng {{count}} dòng sản phẩm vào kho và không thể hoàn tác.",
+    "confirmSuccess": "Đã xác nhận đơn nhập hàng.",
+    "cancelSuccess": "Đã hủy đơn nhập hàng.",
+    "deleteSuccess": "Đã xóa bản nháp.",
+    "receiveSuccess": "Đã nhận hàng và cộng vào kho."
   }
 }

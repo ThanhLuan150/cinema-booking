@@ -126,6 +126,8 @@ describe('RealtimeBridge', () => {
     ['support:updated', ['supportTickets']],
     ['parking:updated', ['ownerParkingAreas']],
     ['inventory:updated', ['ownerInventory']],
+    ['purchaseOrder:updated', ['purchaseOrders']],
+    ['purchaseOrder:updated', ['suppliers']],
     ['comboOrder:updated', ['comboOrders']],
     ['refund:updated', ['myRefunds']],
     ['payment:updated', ['myPayments']],

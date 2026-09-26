@@ -1,10 +1,14 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoMemoryServer, MongoMemoryReplSet } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 
 let mongod;
 
-async function connect() {
-  mongod = await MongoMemoryServer.create({ instance: { launchTimeout: 30000 } });
+// `replSet: true` starts a single-node replica set instead of a standalone server — the only way to
+// exercise real multi-document transactions (a standalone mongod rejects them).
+async function connect({ replSet = false } = {}) {
+  mongod = replSet
+    ? await MongoMemoryReplSet.create({ replSet: { count: 1 }, instanceOpts: [{ launchTimeout: 30000 }] })
+    : await MongoMemoryServer.create({ instance: { launchTimeout: 30000 } });
   await mongoose.connect(mongod.getUri());
 }
 

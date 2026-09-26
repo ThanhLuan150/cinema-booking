@@ -54,6 +54,8 @@ import { ownerPricingRulesQueryKey } from '@/features/owner/hooks/useOwnerPricin
 import { ownerHolidaysQueryKey } from '@/features/owner/hooks/useOwnerHolidays';
 import { adminReviewsQueryKey } from '@/features/admin/reviews/hooks/useAdminReviews';
 import { distributorsQueryKey } from '@/features/admin/distribution/hooks/useDistributors';
+import { suppliersQueryKey } from '@/features/admin/suppliers/hooks/useSuppliers';
+import { purchaseOrdersQueryKey, branchProductsQueryKey } from '@/features/owner/purchaseOrders/hooks/usePurchaseOrders';
 import { movieReleasesQueryKey } from '@/features/admin/distribution/hooks/useMovieReleases';
 import { membershipLevelsQueryKey } from '@/features/membership/hooks/useMembershipLevels';
 import { myMembershipQueryKey } from '@/features/membership/hooks/useMyMembership';
@@ -109,6 +111,9 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.SUPPORT_UPDATED]: [supportTicketsQueryKey],
   [REALTIME_EVENT.PARKING_UPDATED]: [parkingAreasQueryKey, parkingSlotsQueryKey, parkingTicketsQueryKey],
   [REALTIME_EVENT.INVENTORY_UPDATED]: [ownerInventoryQueryKey, inventoryAlertsQueryKey],
+  // One event for the supplier catalogue and a branch's orders (payload.scope tells them apart);
+  // both lists are cheap and only refetch if a page is observing them.
+  [REALTIME_EVENT.PURCHASE_ORDER_UPDATED]: [purchaseOrdersQueryKey, suppliersQueryKey, branchProductsQueryKey],
   [REALTIME_EVENT.SHIFT_UPDATED]: [shiftAssignmentsQueryKey, myShiftAssignmentsQueryKey],
   [REALTIME_EVENT.ATTENDANCE_UPDATED]: [attendanceQueryKey],
   [REALTIME_EVENT.CASHIER_SHIFT_UPDATED]: [cashierShiftsQueryKey, currentCashierShiftQueryKey],

@@ -48,6 +48,8 @@ import IntegrationsPage from '@/features/admin/integrations/pages/IntegrationsPa
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import OwnerCombos from '@/features/owner/combos/pages/List';
 import OwnerInventory from '@/features/owner/inventory/pages/List';
+import OwnerPurchaseOrders from '@/features/owner/purchaseOrders/pages/List';
+import SuppliersPage from '@/features/admin/suppliers/pages/SuppliersPage';
 import OwnerIncidents from '@/features/owner/incidents/pages/List';
 import OwnerVouchers from '@/features/owner/vouchers/pages/List';
 import OwnerGiftCards from '@/features/owner/giftCards/pages/List';
@@ -311,6 +313,22 @@ export function AppRouter() {
         element={
           <RequireRole roles={STAFF_ROLES}>
             <OwnerInventory />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.ownerPurchaseOrders}
+        element={
+          <RequireRole roles={STAFF_ROLES}>
+            <OwnerPurchaseOrders />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.suppliers}
+        element={
+          <RequireRole roles={MANAGEMENT_ROLES}>
+            <SuppliersPage />
           </RequireRole>
         }
       />

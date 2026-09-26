@@ -164,6 +164,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.inventory')}
             </NavLink>
           )}
+          {hasPermission('purchaseOrder.read') && (
+            <NavLink to={ROUTES.ownerPurchaseOrders} className={navLinkClass}>
+              <ion-icon name="cart" />
+              {t('adminLayout.nav.purchaseOrders')}
+            </NavLink>
+          )}
           {hasPermission('maintenance.read') && (
             <NavLink to={ROUTES.ownerMaintenance} className={navLinkClass}>
               <ion-icon name="construct" />
@@ -213,6 +219,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <NavLink to={ROUTES.distribution} className={navLinkClass}>
               <ion-icon name="briefcase" />
               {t('adminLayout.nav.distribution')}
+            </NavLink>
+          )}
+          {hasPermission('supplier.read') && (
+            <NavLink to={ROUTES.suppliers} className={navLinkClass}>
+              <ion-icon name="business-outline" />
+              {t('adminLayout.nav.suppliers')}
             </NavLink>
           )}
           <NavLink
@@ -280,6 +292,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <NavLink to={ROUTES.ownerInventory} className={navLinkClass}>
               <ion-icon name="cube" />
               {t('adminLayout.nav.inventory')}
+            </NavLink>
+          )}
+          {hasPermission('purchaseOrder.read') && (
+            <NavLink to={ROUTES.ownerPurchaseOrders} className={navLinkClass}>
+              <ion-icon name="cart" />
+              {t('adminLayout.nav.purchaseOrders')}
             </NavLink>
           )}
           <NavLink to={ROUTES.ownerVouchers} className={navLinkClass}>

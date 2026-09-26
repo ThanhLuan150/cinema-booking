@@ -621,5 +621,46 @@
       "lastError": "Last error",
       "payload": "Payload"
     }
+  },
+  "suppliers": {
+    "breadcrumb": "Suppliers",
+    "searchLabel": "Search suppliers",
+    "searchPlaceholder": "Name or code",
+    "allStatuses": "All statuses",
+    "addButton": "Add supplier",
+    "addTitle": "Add supplier",
+    "editTitle": "Edit {{name}}",
+    "fields": {
+      "name": "Name",
+      "code": "Code",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "status": "Status"
+    },
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "headers": {
+      "name": "Name",
+      "code": "Code",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "empty": "No suppliers yet.",
+    "deleteConfirm": "Delete supplier {{name}}?",
+    "deleteSuccess": "Supplier deleted.",
+    "createSuccess": "Supplier created.",
+    "updateSuccess": "Supplier updated.",
+    "validation": {
+      "required": "Name and code are required."
+    }
   }
 }

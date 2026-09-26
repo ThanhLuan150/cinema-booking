@@ -68,6 +68,9 @@ const PERMISSIONS = [
   ['refund.request', 'refund'], ['refund.read', 'refund'],
   ['refund.approve', 'refund'], ['refund.process', 'refund'],
   ['inventory.view', 'inventory'], ['inventory.manage', 'inventory'],
+  ['supplier.read', 'supplier'], ['supplier.manage', 'supplier'],
+  ['purchaseOrder.read', 'purchaseOrder'], ['purchaseOrder.manage', 'purchaseOrder'],
+  ['purchaseOrder.receive', 'purchaseOrder'],
   ['loyalty.read', 'loyalty'], ['loyalty.redeem', 'loyalty'], ['loyaltyConfig.manage', 'loyalty'],
   ['membershipLevel.read', 'loyalty'], ['membershipLevel.manage', 'loyalty'],
   ['maintenance.create', 'maintenance'], ['maintenance.read', 'maintenance'],
@@ -136,6 +139,12 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'pricingRule.update': 'BRANCH', 'pricingRule.delete': 'BRANCH',
   'refund.read': 'BRANCH', 'refund.approve': 'BRANCH', 'refund.process': 'BRANCH',
   'inventory.view': 'BRANCH', 'inventory.manage': 'BRANCH',
+  // Suppliers are a company-wide catalogue the Super Admin maintains; a Branch Admin reads it to
+  // pick one. Purchase Orders are per-branch: read/manage/receive only for their own branches.
+  // Employees get none of these by role — receiving stock needs purchaseOrder.receive granted to
+  // their Position (see seedPositions.js).
+  'supplier.read': 'ALL',
+  'purchaseOrder.read': 'BRANCH', 'purchaseOrder.manage': 'BRANCH', 'purchaseOrder.receive': 'BRANCH',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
   'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
   // QR scanner devices & branch entrances are per-branch equipment the Branch Admin manages.
