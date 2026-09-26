@@ -72,7 +72,14 @@ import { myPointsHistoryQueryKey } from '@/features/membership/hooks/useMyPoints
 import { bump } from './realtimeSlice';
 import { toast } from './toast';
 import { formatAssignmentTime } from '@/features/owner/shifts/constants';
-import type { BookingEvent, CinemaEvent, MovieEvent, MyShiftEvent, ShowtimeChangeEvent } from './types/realtime.types';
+import type {
+  BookingEvent,
+  CinemaEvent,
+  InventoryEvent,
+  MovieEvent,
+  MyShiftEvent,
+  ShowtimeChangeEvent,
+} from './types/realtime.types';
 
 // Every server event that only needs "the lists that show this thing are now stale". The server
 // scopes delivery (an event reaches a room, not everyone), so a client that receives one is by
@@ -242,6 +249,14 @@ export function RealtimeBridge() {
       }
     };
     const onOperationsEvent = () => dispatch(bump('operationsVersion'));
+    // Stock moves refresh the lists like any operations event, and additionally warn the branch's
+    // staff the moment an item crosses into low/out of stock (once per crossing, not per sale).
+    const onInventory = (payload: InventoryEvent) => {
+      onOperationsEvent();
+      if (payload?.lowStock) {
+        toast.info(t('realtimeBridge.inventoryLow', { item: payload.item ?? '', quantity: payload.quantity ?? 0 }));
+      }
+    };
     // Tells an employee their own roster changed. The list itself is refreshed by shift:updated
     // (they are in the branch room too), so this only adds the toast — invalidating here as well
     // would refetch it twice.
@@ -270,7 +285,7 @@ export function RealtimeBridge() {
     socket.on(REALTIME_EVENT.MAINTENANCE_UPDATED, onOperationsEvent);
     socket.on(REALTIME_EVENT.SUPPORT_UPDATED, onOperationsEvent);
     socket.on(REALTIME_EVENT.PARKING_UPDATED, onOperationsEvent);
-    socket.on(REALTIME_EVENT.INVENTORY_UPDATED, onOperationsEvent);
+    socket.on(REALTIME_EVENT.INVENTORY_UPDATED, onInventory);
 
     return () => {
       socket.off(REALTIME_EVENT.MY_SHIFT_UPDATED, onMyShift);
@@ -286,7 +301,7 @@ export function RealtimeBridge() {
       socket.off(REALTIME_EVENT.MAINTENANCE_UPDATED, onOperationsEvent);
       socket.off(REALTIME_EVENT.SUPPORT_UPDATED, onOperationsEvent);
       socket.off(REALTIME_EVENT.PARKING_UPDATED, onOperationsEvent);
-      socket.off(REALTIME_EVENT.INVENTORY_UPDATED, onOperationsEvent);
+      socket.off(REALTIME_EVENT.INVENTORY_UPDATED, onInventory);
     };
     // Re-register listeners when the translator changes so socket callbacks
     // always use the current language instead of a stale closure over `t`.

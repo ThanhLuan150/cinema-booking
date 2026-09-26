@@ -1,6 +1,7 @@
 const comboOrderRepository = require('../repositories/comboOrder.repository');
 const comboRepository = require('../repositories/combo.repository');
 const bookingRepository = require('../repositories/booking.repository');
+const inventoryRepository = require('../repositories/inventory.repository');
 const cashierShiftService = require('../services/cashierShift.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { emitBranchEvent, emitToAccount } = require('../utils/socket');
@@ -74,6 +75,11 @@ async function createOrder(req, res) {
     }
   }
 
+  // Fail fast (409 INSUFFICIENT_STOCK) rather than let the counter build an order it cannot fill.
+  // Advisory only: two PENDING orders may both pass here, but stock is deducted atomically when
+  // an order is paid (comboOrder.repository.markPaid), which is where overselling is truly refused.
+  await inventoryRepository.assertAvailable(req.branchId, orderItems);
+
   const totalPrice = orderItems.reduce((sum, item) => sum + item.line_total, 0);
   const order = await comboOrderRepository.createOrder({
     branchId: req.branchId,
@@ -112,7 +118,9 @@ async function getOrderById(req, res) {
   res.json(order);
 }
 
-// POST /api/combo-orders/:id/pay { method: 'CASH' | 'MOMO' } -> PENDING -> PAID (payment.create permission)
+// POST /api/combo-orders/:id/pay { method: 'CASH' | 'MOMO' } -> PENDING -> PAID (payment.create permission).
+// Deducts the sold items from the branch's inventory; 409 INSUFFICIENT_STOCK (order stays PENDING)
+// when a tracked item has run short since the order was created.
 async function payOrder(req, res) {
   const order = await comboOrderRepository.findById(req.params.id);
   if (!order) return res.status(404).json({ message: 'Combo order not found' });
@@ -184,7 +192,8 @@ async function deliverOrder(req, res) {
   res.json(updated);
 }
 
-// POST /api/combo-orders/:id/cancel { reason } -> PENDING/PAID/PREPARING -> CANCELLED
+// POST /api/combo-orders/:id/cancel { reason } -> PENDING/PAID/PREPARING -> CANCELLED (stock the
+// sale had taken is returned to inventory)
 async function cancelOrder(req, res) {
   const order = await comboOrderRepository.findById(req.params.id);
   if (!order) return res.status(404).json({ message: 'Combo order not found' });
@@ -197,7 +206,9 @@ async function cancelOrder(req, res) {
     });
   }
 
-  const updated = await comboOrderRepository.cancel(order.id, req.body?.reason);
+  const updated = await comboOrderRepository.cancel(order.id, req.body?.reason, {
+    performedBy: req.account?.accountId ?? null,
+  });
   if (!updated) {
     return res.status(400).json({
       message: `Order cannot be cancelled from status ${order.status}`,

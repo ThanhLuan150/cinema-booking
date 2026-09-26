@@ -259,7 +259,7 @@
     "comboLabel": "Liên kết món combo (tùy chọn)",
     "comboPlaceholder": "Không liên kết với món combo",
     "comboSelectCinemaFirst": "Vui lòng chọn rạp trước để liên kết món combo.",
-    "comboHint": "Liên kết với món ĐỒ ĂN/ĐỒ UỐNG sẽ tự động trừ kho mỗi khi món đó được bán.",
+    "comboHint": "Liên kết với món ĐỒ ĂN/ĐỒ UỐNG sẽ theo dõi tồn kho: bán món đó sẽ trừ kho, và không thể bán vượt quá số lượng tồn.",
     "quantityLabel": "Số lượng",
     "minQuantityLabel": "Số lượng tối thiểu",
     "unitLabel": "Đơn vị",
@@ -275,9 +275,7 @@
     "statusLowStock": "Sắp hết hàng",
     "statusOutOfStock": "Hết hàng",
     "notLinked": "—",
-    "receive": "Nhập kho",
     "adjust": "Điều chỉnh",
-    "deduct": "Trừ kho",
     "historyButton": "Lịch sử",
     "delete": "Xóa",
     "headers": {
@@ -289,20 +287,25 @@
       "minQuantity": "SL tối thiểu",
       "unit": "Đơn vị",
       "status": "Trạng thái",
-      "actions": "Hành động"
+      "actions": "Hành động",
+      "category": "Danh mục",
+      "costPrice": "Giá vốn",
+      "sellingPrice": "Giá bán"
     },
     "stockAction": {
-      "receiveTitle": "Nhập kho",
       "adjustTitle": "Điều chỉnh kho",
-      "deductTitle": "Trừ kho",
       "quantityLabel": "Số lượng",
       "adjustQuantityHint": "Nhập số lượng thực tế đã kiểm đếm.",
       "reasonLabel": "Lý do (tùy chọn)",
       "submit": "Xác nhận",
-      "receiveSuccess": "Đã nhập kho.",
       "adjustSuccess": "Đã điều chỉnh kho.",
-      "deductSuccess": "Đã trừ kho.",
-      "error": "Không thể cập nhật kho."
+      "error": "Không thể cập nhật kho.",
+      "importTitle": "Nhập kho",
+      "returnTitle": "Trả hàng về kho",
+      "wasteTitle": "Hủy hàng",
+      "importSuccess": "Đã nhập kho.",
+      "returnSuccess": "Đã trả hàng về kho.",
+      "wasteSuccess": "Đã hủy hàng."
     },
     "history": {
       "title": "Lịch sử kho",
@@ -315,9 +318,13 @@
         "after": "Sau",
         "reason": "Lý do"
       },
-      "typeReceive": "Nhập kho",
-      "typeAdjust": "Điều chỉnh",
-      "typeDeduct": "Trừ kho"
+      "filterLabel": "Loại biến động",
+      "allTypes": "Tất cả biến động",
+      "typeImport": "Nhập kho",
+      "typeSale": "Bán hàng",
+      "typeReturn": "Trả hàng",
+      "typeAdjustment": "Điều chỉnh",
+      "typeWaste": "Hủy hàng"
     },
     "validation": {
       "cinemaRequired": "Vui lòng chọn rạp.",
@@ -326,7 +333,30 @@
       "quantityInvalid": "Số lượng không được âm.",
       "minQuantityInvalid": "Số lượng tối thiểu không được âm.",
       "stockQuantityRequired": "Vui lòng nhập số lượng lớn hơn 0.",
-      "adjustQuantityRequired": "Vui lòng nhập số lượng (từ 0 trở lên)."
+      "adjustQuantityRequired": "Vui lòng nhập số lượng (từ 0 trở lên).",
+      "skuInvalid": "SKU chỉ gồm chữ, số, dấu chấm, gạch ngang và gạch dưới (tối đa 40 ký tự).",
+      "categoryTooLong": "Danh mục tối đa 60 ký tự.",
+      "priceInvalid": "Giá không được âm."
+    },
+    "editTitle": "Sửa mặt hàng trong kho",
+    "editQuantityHint": "Tồn kho hiện tại: {{quantity}}. Hãy đổi bằng Nhập kho, Trả hàng, Điều chỉnh hoặc Hủy hàng để lịch sử kho luôn đầy đủ.",
+    "save": "Lưu",
+    "updateSuccess": "Đã cập nhật mặt hàng.",
+    "skuLabel": "Mã SKU",
+    "categoryLabel": "Danh mục",
+    "costPriceLabel": "Giá vốn",
+    "sellingPriceLabel": "Giá bán",
+    "import": "Nhập kho",
+    "return": "Trả hàng",
+    "waste": "Hủy hàng",
+    "edit": "Sửa",
+    "filters": {
+      "searchLabel": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo tên hoặc mã SKU",
+      "statusLabel": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái",
+      "categoryLabel": "Danh mục",
+      "allCategories": "Tất cả danh mục"
     }
   },
   "vouchers": {

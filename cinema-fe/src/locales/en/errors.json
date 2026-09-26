@@ -132,5 +132,13 @@
   "INVALID_TIMESTAMP": "The time must include a timezone offset",
   "FUTURE_TIMESTAMP": "The time cannot be in the future",
   "SESSION_NOT_OPEN": "This record has no open session to close",
-  "ATTENDANCE_NOT_EMPLOYEE": "Only an employee can record attendance"
+  "ATTENDANCE_NOT_EMPLOYEE": "Only an employee can record attendance",
+  "INSUFFICIENT_STOCK": "Not enough stock for {{item}}: {{requested}} needed, {{available}} available.",
+  "DUPLICATE_ITEM": "An item with this name already exists in this cinema.",
+  "DUPLICATE_SKU": "This SKU is already used in this cinema.",
+  "COMBO_ALREADY_TRACKED": "This combo item already has a stock record in this cinema.",
+  "COMBO_NOT_STOCKABLE": "Only FOOD or BEVERAGE items can be stock-tracked, not a COMBO bundle.",
+  "INVALID_SKU": "SKU may only contain letters, digits, dot, dash and underscore (max 40).",
+  "COMBO_NOT_FOUND": "The selected combo item no longer exists.",
+  "COMBO_BRANCH_MISMATCH": "The selected combo item belongs to a different cinema."
 }

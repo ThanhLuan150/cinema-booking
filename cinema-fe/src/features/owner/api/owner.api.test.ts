@@ -103,13 +103,37 @@ describe('owner.api', () => {
     expect(getMock).toHaveBeenCalledWith('/inventory/alerts', { params: { branchId: 1 } });
   });
 
+  it('getOwnerInventory forwards the search/status/category filters', async () => {
+    await ownerApi.getOwnerInventory(undefined, { page: 2, status: 'LOW_STOCK', q: 'pop', category: 'Food' });
+    expect(getMock).toHaveBeenCalledWith('/inventory', {
+      params: { branchId: undefined, page: 2, status: 'LOW_STOCK', q: 'pop', category: 'Food' },
+    });
+  });
+
+  it('getInventoryCategories gets /inventory/categories and unwraps the list', async () => {
+    getMock.mockResolvedValueOnce({ data: ['Beverage', 'Food'] });
+    await expect(ownerApi.getInventoryCategories()).resolves.toEqual(['Beverage', 'Food']);
+    expect(getMock).toHaveBeenCalledWith('/inventory/categories', { params: { branchId: undefined } });
+  });
+
   it('getInventoryHistory gets /inventory/:id/history', async () => {
     await ownerApi.getInventoryHistory(1, { page: 1 } as any);
     expect(getMock).toHaveBeenCalledWith('/inventory/1/history', { params: { page: 1 } });
   });
 
   it('createInventory posts to /inventory', async () => {
-    const payload = { branch_id: 1, item: 'Popcorn', combo_id: null, quantity: 10, minimum_quantity: 5, unit: 'pcs' };
+    const payload = {
+      branch_id: 1,
+      item: 'Popcorn',
+      sku: 'POP-L',
+      category: 'Food',
+      combo_id: null,
+      quantity: 10,
+      minimum_quantity: 5,
+      unit: 'pcs',
+      cost_price: 18000,
+      selling_price: 55000,
+    };
     await ownerApi.createInventory(payload);
     expect(postMock).toHaveBeenCalledWith('/inventory', payload);
   });
@@ -124,9 +148,14 @@ describe('owner.api', () => {
     expect(deleteMock).toHaveBeenCalledWith('/inventory/1');
   });
 
-  it('receiveInventory posts to /inventory/:id/receive', async () => {
-    await ownerApi.receiveInventory(1, { quantity: 10, reason: 'restock' });
-    expect(postMock).toHaveBeenCalledWith('/inventory/1/receive', { quantity: 10, reason: 'restock' });
+  it('importInventory posts to /inventory/:id/import', async () => {
+    await ownerApi.importInventory(1, { quantity: 10, reason: 'restock' });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/import', { quantity: 10, reason: 'restock' });
+  });
+
+  it('returnInventory posts to /inventory/:id/return', async () => {
+    await ownerApi.returnInventory(1, { quantity: 2 });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/return', { quantity: 2 });
   });
 
   it('adjustInventory posts to /inventory/:id/adjust', async () => {
@@ -134,9 +163,9 @@ describe('owner.api', () => {
     expect(postMock).toHaveBeenCalledWith('/inventory/1/adjust', { quantity: 8 });
   });
 
-  it('deductInventory posts to /inventory/:id/deduct', async () => {
-    await ownerApi.deductInventory(1, { quantity: 2, reason: 'spoiled' });
-    expect(postMock).toHaveBeenCalledWith('/inventory/1/deduct', { quantity: 2, reason: 'spoiled' });
+  it('wasteInventory posts to /inventory/:id/waste', async () => {
+    await ownerApi.wasteInventory(1, { quantity: 2, reason: 'spoiled' });
+    expect(postMock).toHaveBeenCalledWith('/inventory/1/waste', { quantity: 2, reason: 'spoiled' });
   });
 
   it('getOwnerVouchers gets /voucher with branchId param', async () => {

@@ -17,7 +17,8 @@
     "myShiftAssigned": "You were assigned a shift on {{date}}, {{start}} - {{end}}.",
     "myShiftUpdated": "Your shift on {{date}} was changed: {{start}} - {{end}}.",
     "myShiftCancelled": "Your shift on {{date}} was cancelled.",
-    "myShiftRemoved": "Your shift on {{date}} was removed."
+    "myShiftRemoved": "Your shift on {{date}} was removed.",
+    "inventoryLow": "Low stock: {{item}} — {{quantity}} left."
   },
   "toastContainer": {
     "dismiss": "Dismiss"

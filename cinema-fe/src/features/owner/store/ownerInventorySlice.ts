@@ -3,6 +3,7 @@ import type { OwnerInventoryState, StockActionMode } from '../types/owner.types'
 
 const initialState: OwnerInventoryState = {
   showAddModal: false,
+  editItemId: null,
   stockAction: null,
   historyItemId: null,
 };
@@ -16,6 +17,12 @@ const ownerInventorySlice = createSlice({
     },
     closeAddModal(state) {
       state.showAddModal = false;
+    },
+    openEditModal(state, action: PayloadAction<number>) {
+      state.editItemId = action.payload;
+    },
+    closeEditModal(state) {
+      state.editItemId = null;
     },
     openStockAction(state, action: PayloadAction<{ id: number; mode: StockActionMode }>) {
       state.stockAction = action.payload;
@@ -32,6 +39,14 @@ const ownerInventorySlice = createSlice({
   },
 });
 
-export const { openAddModal, closeAddModal, openStockAction, closeStockAction, openHistory, closeHistory } =
-  ownerInventorySlice.actions;
+export const {
+  openAddModal,
+  closeAddModal,
+  openEditModal,
+  closeEditModal,
+  openStockAction,
+  closeStockAction,
+  openHistory,
+  closeHistory,
+} = ownerInventorySlice.actions;
 export default ownerInventorySlice.reducer;

@@ -388,7 +388,12 @@ describe('inventory.view granted to concession positions is branch-scoped and re
       .set('Authorization', asEmployee(70))
       .send({ branch_id: 1, item: 'Hack', unit: 'pcs' });
     expect(create.status).toBe(403);
-    expect((await request(app).post('/api/inventory/1/receive').set('Authorization', asEmployee(70)).send({ quantity: 5 })).status).toBe(403);
+    for (const action of ['import', 'return', 'adjust', 'waste']) {
+      const res = await request(app).post(`/api/inventory/1/${action}`).set('Authorization', asEmployee(70)).send({ quantity: 5 });
+      expect([action, res.status]).toEqual([action, 403]); // 403, not a 404 from a mistyped route
+    }
+    expect((await request(app).put('/api/inventory/1').set('Authorization', asEmployee(70)).send({ item: 'Hack' })).status).toBe(403);
+    expect((await request(app).delete('/api/inventory/1').set('Authorization', asEmployee(70))).status).toBe(403);
     expect((await Inventory.findOne({ id: 1 })).quantity).toBe(10);
   });
 

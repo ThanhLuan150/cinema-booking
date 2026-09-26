@@ -244,6 +244,37 @@ describe('RealtimeBridge', () => {
     expect(store.getState().realtime.operationsVersion).toBe(before + 4);
   });
 
+  // A stock movement always refreshes the lists, but only the write that carries an item INTO
+  // low/out of stock (lowStock: true, decided by the server from the previous status) warns staff.
+  describe('inventory:updated low-stock warning', () => {
+    const toasts = () => store.getState().notifications.toasts;
+
+    it('toasts once when an item crosses into low stock', () => {
+      renderBridge();
+      const before = toasts().length;
+      emit('inventory:updated', { id: 1, item: 'Popcorn', quantity: 4, status: 'LOW_STOCK', lowStock: true });
+      expect(toasts().length).toBe(before + 1);
+      expect(toasts().at(-1)?.type).toBe('info');
+      expect(toasts().at(-1)?.message).toContain('realtimeBridge.inventoryLow');
+    });
+
+    it('stays quiet for an ordinary movement or one that happens while already low', () => {
+      renderBridge();
+      const before = toasts().length;
+      emit('inventory:updated', { id: 1, item: 'Popcorn', quantity: 40, status: 'IN_STOCK', lowStock: false });
+      emit('inventory:updated', { id: 1, item: 'Popcorn', quantity: 3, status: 'LOW_STOCK', lowStock: false });
+      emit('inventory:updated', { id: 1 });
+      expect(toasts().length).toBe(before);
+    });
+
+    it('still refreshes the inventory views when it warns', () => {
+      renderBridge();
+      const before = store.getState().realtime.operationsVersion;
+      emit('inventory:updated', { id: 1, item: 'Popcorn', quantity: 0, status: 'OUT_OF_STOCK', lowStock: true });
+      expect(store.getState().realtime.operationsVersion).toBe(before + 1);
+    });
+  });
+
   it('removes every listener it registered on unmount', () => {
     const { unmount } = renderBridge();
     expect((listeners.get('maintenance:updated') ?? []).length).toBeGreaterThan(0);

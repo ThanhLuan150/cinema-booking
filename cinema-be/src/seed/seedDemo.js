@@ -351,17 +351,27 @@ async function run() {
     async () => Boolean(await Inventory.findOne({ id: { $gte: ID_BASE } })),
     async () => {
       let n = 0;
+      // `comboType` links a row to the branch's FOOD/BEVERAGE combo so selling that combo draws it
+      // down (Ticket 45); the rest are warehouse-only stock.
       const items = [
-        { item: 'Bắp nổ (kg)', quantity: 120, minimum_quantity: 20, unit: 'kg' },
-        { item: 'Ly giấy', quantity: 850, minimum_quantity: 200, unit: 'cái' },
-        { item: 'Syrup Pepsi (lít)', quantity: 12, minimum_quantity: 20, unit: 'lít' },
-        { item: 'Nước suối (chai)', quantity: 0, minimum_quantity: 50, unit: 'chai' },
+        { item: 'Bắp ngọt (lớn)', sku: 'POP-L', category: 'Food', comboType: 'FOOD', quantity: 120, minimum_quantity: 20, unit: 'phần', cost_price: 18000, selling_price: 55000 },
+        { item: 'Pepsi (lớn)', sku: 'PEPSI-L', category: 'Beverage', comboType: 'BEVERAGE', quantity: 200, minimum_quantity: 40, unit: 'ly', cost_price: 9000, selling_price: 35000 },
+        { item: 'Bắp nổ (kg)', sku: 'CORN-KG', category: 'Ingredient', quantity: 120, minimum_quantity: 20, unit: 'kg', cost_price: 42000, selling_price: 0 },
+        { item: 'Ly giấy', sku: 'CUP-PAPER', category: 'Packaging', quantity: 850, minimum_quantity: 200, unit: 'cái', cost_price: 800, selling_price: 0 },
+        { item: 'Syrup Pepsi (lít)', sku: 'SYRUP-PEPSI', category: 'Ingredient', quantity: 12, minimum_quantity: 20, unit: 'lít', cost_price: 95000, selling_price: 0 },
+        { item: 'Nước suối (chai)', sku: 'WATER-BTL', category: 'Beverage', quantity: 0, minimum_quantity: 50, unit: 'chai', cost_price: 4000, selling_price: 12000 },
       ];
       for (const b of branches) {
-        for (const it of items) {
-          const status =
-            it.quantity <= 0 ? 'OUT_OF_STOCK' : it.quantity < it.minimum_quantity ? 'LOW_STOCK' : 'IN_STOCK';
-          await Inventory.create({ id: nid(), branch_id: b.id, ...it, status });
+        const combos = combosByBranch.get(b.id) || [];
+        for (const { comboType, ...it } of items) {
+          const combo = comboType ? combos.find((c) => c.type === comboType) : null;
+          await Inventory.create({
+            id: nid(),
+            branch_id: b.id,
+            combo_id: combo ? combo.id : null,
+            ...it,
+            status: Inventory.computeStatus(it.quantity, it.minimum_quantity),
+          });
           n += 1;
         }
       }

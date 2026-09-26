@@ -259,7 +259,7 @@
     "comboLabel": "Linked combo item (optional)",
     "comboPlaceholder": "Not linked to a combo item",
     "comboSelectCinemaFirst": "Select a cinema first to link a combo item.",
-    "comboHint": "Linking a FOOD/BEVERAGE item auto-deducts this record whenever it sells.",
+    "comboHint": "Linking a FOOD/BEVERAGE item tracks its stock: selling it deducts stock, and a sale beyond stock is refused.",
     "quantityLabel": "Quantity",
     "minQuantityLabel": "Minimum quantity",
     "unitLabel": "Unit",
@@ -275,9 +275,7 @@
     "statusLowStock": "Low stock",
     "statusOutOfStock": "Out of stock",
     "notLinked": "—",
-    "receive": "Receive",
     "adjust": "Adjust",
-    "deduct": "Deduct",
     "historyButton": "History",
     "delete": "Delete",
     "headers": {
@@ -289,20 +287,25 @@
       "minQuantity": "Min. quantity",
       "unit": "Unit",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "category": "Category",
+      "costPrice": "Cost price",
+      "sellingPrice": "Selling price"
     },
     "stockAction": {
-      "receiveTitle": "Receive stock",
       "adjustTitle": "Adjust stock",
-      "deductTitle": "Deduct stock",
       "quantityLabel": "Quantity",
       "adjustQuantityHint": "Enter the actual counted quantity.",
       "reasonLabel": "Reason (optional)",
       "submit": "Confirm",
-      "receiveSuccess": "Stock received.",
       "adjustSuccess": "Stock adjusted.",
-      "deductSuccess": "Stock deducted.",
-      "error": "Unable to update stock."
+      "error": "Unable to update stock.",
+      "importTitle": "Import stock",
+      "returnTitle": "Return stock",
+      "wasteTitle": "Write off stock",
+      "importSuccess": "Stock imported.",
+      "returnSuccess": "Stock returned.",
+      "wasteSuccess": "Stock written off."
     },
     "history": {
       "title": "Stock history",
@@ -315,9 +318,13 @@
         "after": "After",
         "reason": "Reason"
       },
-      "typeReceive": "Receive",
-      "typeAdjust": "Adjust",
-      "typeDeduct": "Deduct"
+      "filterLabel": "Movement type",
+      "allTypes": "All movements",
+      "typeImport": "Import",
+      "typeSale": "Sale",
+      "typeReturn": "Return",
+      "typeAdjustment": "Adjustment",
+      "typeWaste": "Waste"
     },
     "validation": {
       "cinemaRequired": "Please select a cinema.",
@@ -326,7 +333,30 @@
       "quantityInvalid": "Quantity must not be negative.",
       "minQuantityInvalid": "Minimum quantity must not be negative.",
       "stockQuantityRequired": "Please enter a quantity greater than 0.",
-      "adjustQuantityRequired": "Please enter a quantity (0 or more)."
+      "adjustQuantityRequired": "Please enter a quantity (0 or more).",
+      "skuInvalid": "SKU may only contain letters, digits, dot, dash and underscore (max 40).",
+      "categoryTooLong": "Category must be at most 60 characters.",
+      "priceInvalid": "Price must not be negative."
+    },
+    "editTitle": "Edit inventory item",
+    "editQuantityHint": "Current stock: {{quantity}}. Change it with Import, Return, Adjust or Waste so the history stays complete.",
+    "save": "Save",
+    "updateSuccess": "Inventory item updated.",
+    "skuLabel": "SKU",
+    "categoryLabel": "Category",
+    "costPriceLabel": "Cost price",
+    "sellingPriceLabel": "Selling price",
+    "import": "Import",
+    "return": "Return",
+    "waste": "Waste",
+    "edit": "Edit",
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by name or SKU",
+      "statusLabel": "Status",
+      "allStatuses": "All statuses",
+      "categoryLabel": "Category",
+      "allCategories": "All categories"
     }
   },
   "vouchers": {

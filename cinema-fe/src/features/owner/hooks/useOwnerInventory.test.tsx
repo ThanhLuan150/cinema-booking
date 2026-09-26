@@ -15,10 +15,35 @@ function wrapper({ children }: { children: React.ReactNode }) {
 describe('useOwnerInventory', () => {
   beforeEach(() => getOwnerInventoryMock.mockReset());
 
-  it('fetches the owner\'s inventory for the given page/limit/status', async () => {
+  it("fetches the owner's inventory for the given page/limit/status", async () => {
     getOwnerInventoryMock.mockResolvedValue({ data: [] });
-    const { result } = renderHook(() => useOwnerInventory(1, 20, 'LOW_STOCK'), { wrapper });
+    const { result } = renderHook(() => useOwnerInventory(1, 20, { status: 'LOW_STOCK' }), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(getOwnerInventoryMock).toHaveBeenCalledWith(undefined, { page: 1, limit: 20, status: 'LOW_STOCK' });
+    expect(getOwnerInventoryMock).toHaveBeenCalledWith(undefined, {
+      page: 1,
+      limit: 20,
+      status: 'LOW_STOCK',
+      q: undefined,
+      category: undefined,
+    });
+  });
+
+  it('passes the search text and category through', async () => {
+    getOwnerInventoryMock.mockResolvedValue({ data: [] });
+    const { result } = renderHook(() => useOwnerInventory(2, 10, { q: 'pop', category: 'Food' }), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(getOwnerInventoryMock).toHaveBeenCalledWith(undefined, {
+      page: 2,
+      limit: 10,
+      status: undefined,
+      q: 'pop',
+      category: 'Food',
+    });
+  });
+
+  it('works with no filters at all', async () => {
+    getOwnerInventoryMock.mockResolvedValue({ data: [] });
+    const { result } = renderHook(() => useOwnerInventory(1, 20), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 });
