@@ -4,18 +4,10 @@ const bookingRepository = require('../repositories/booking.repository');
 const inventoryRepository = require('../repositories/inventory.repository');
 const cashierShiftService = require('../services/cashierShift.service');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
-const { emitBranchEvent, emitToAccount } = require('../utils/socket');
-const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+const { REALTIME_ACTION } = require('../utils/realtimeEvents');
 
-// The concession counter runs this as a kitchen display: every status hop has to land on the
-// branch's screens without a refresh. The customer who ordered also gets their own copy so
-// "your order is ready" arrives the moment staff taps it.
-function broadcastComboOrder(order, action) {
-  if (!order) return;
-  const payload = { action, id: order.id, code: order.code ?? null, status: order.status };
-  emitBranchEvent(order.branch_id, REALTIME_EVENT.COMBO_ORDER_UPDATED, payload);
-  emitToAccount(order.account_id, REALTIME_EVENT.COMBO_ORDER_UPDATED, payload);
-}
+// Shared with the Kitchen Display and the booking channels (see comboOrder.repository.broadcastOrder).
+const broadcastComboOrder = comboOrderRepository.broadcastOrder;
 
 // BRANCH: caller must have access to the order's branch (owner or staffed employee, same as
 // booking/refund). ALL: no restriction. There is no OWN scope — combo orders are staff-created

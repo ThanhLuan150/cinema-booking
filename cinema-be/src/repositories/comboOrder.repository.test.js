@@ -97,6 +97,47 @@ describe('comboOrder.repository', () => {
     expect(cancelled.cancelled_at).toBeInstanceOf(Date);
     expect(await ComboOrder.countDocuments({ status: 'CANCELLED' })).toBe(1);
   });
+
+  it('cancel honours fromStatuses (the Kitchen Display never cancels a PENDING order)', async () => {
+    const kdsOnly = { fromStatuses: ['PAID', 'PREPARING'] };
+    const pending = await comboOrderRepository.createOrder({ branchId: 1, items, totalPrice: 100000 });
+    expect(await comboOrderRepository.cancel(pending.id, 'x', kdsOnly)).toBeNull();
+    expect((await ComboOrder.findOne({ id: pending.id })).status).toBe('PENDING');
+
+    const paid = await comboOrderRepository.createOrder({ branchId: 1, items, totalPrice: 100000 });
+    await comboOrderRepository.markPaid(paid.id, 'CASH');
+    expect((await comboOrderRepository.cancel(paid.id, 'x', kdsOnly)).status).toBe('CANCELLED');
+
+    // A non-cancellable status smuggled into fromStatuses is ignored.
+    const ready = await comboOrderRepository.createOrder({ branchId: 1, items, totalPrice: 100000 });
+    await comboOrderRepository.markPaid(ready.id, 'CASH');
+    await comboOrderRepository.markPreparing(ready.id);
+    await comboOrderRepository.markReady(ready.id);
+    expect(await comboOrderRepository.cancel(ready.id, 'x', { fromStatuses: ['READY'] })).toBeNull();
+  });
+
+  it('listForKitchen returns only paid orders of the branch, oldest payment first, and flags truncation', async () => {
+    const make = async (branchId, paid) => {
+      const order = await comboOrderRepository.createOrder({ branchId, items, totalPrice: 100000 });
+      if (paid) await comboOrderRepository.markPaid(order.id, 'CASH');
+      return order;
+    };
+    const first = await make(1, true);
+    await make(1, false); // PENDING: never on the kitchen queue
+    const second = await make(1, true);
+    await make(2, true); // other branch
+    await ComboOrder.updateOne({ id: first.id }, { $set: { paid_at: new Date('2026-01-01T10:00:00Z') } });
+    await ComboOrder.updateOne({ id: second.id }, { $set: { paid_at: new Date('2026-01-01T09:00:00Z') } });
+
+    const everything = [{ status: 'PENDING' }, { status: 'PAID' }];
+    const { data, truncated } = await comboOrderRepository.listForKitchen(1, everything);
+    expect(data.map((o) => o.id)).toEqual([second.id, first.id]);
+    expect(truncated).toBe(false);
+
+    const limited = await comboOrderRepository.listForKitchen(1, everything, { limit: 1 });
+    expect(limited.data.map((o) => o.id)).toEqual([second.id]);
+    expect(limited.truncated).toBe(true);
+  });
 });
 
 describe('comboOrder.repository markPaid inventory deduction', () => {

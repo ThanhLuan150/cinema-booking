@@ -73,7 +73,8 @@
       "parking": "पार्किंग",
       "attendance": "उपस्थिति",
       "integrations": "Integrations",
-      "incidents": "घटनाएँ"
+      "incidents": "घटनाएँ",
+      "kitchenDisplay": "किचन डिस्प्ले"
     },
     "toggleMenu": "एडमिन मेनू टॉगल करें",
     "adminFallback": "एडमिन",

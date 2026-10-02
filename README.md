@@ -333,7 +333,7 @@ Linking a product to a FOOD/BEVERAGE Combo item makes it **sale-limited** — a 
 
 ### 6.20 Combo Orders
 
-A **Combo Order** is a concession-only sale (popcorn/drinks) that doesn't require a ticket — it can stand alone or be linked to a Booking. It moves through **PENDING → PAID → PREPARING → READY → DELIVERED** (or **CANCELLED**), created with `combo.sell` and managed end-to-end (list/fulfill) with `combo.order.view`/`.update` — only the **Combo Staff** Position holds both; Ticket Staff/Cashier can sell a combo alongside a ticket booking but don't see the standalone fulfillment queue. FE: `/ComboOrders`.
+A **Combo Order** is a concession-only sale (popcorn/drinks) that doesn't require a ticket — it can stand alone or be linked to a Booking. It moves through **PENDING → PAID → PREPARING → READY → DELIVERED** (or **CANCELLED**), created with `combo.sell` and managed end-to-end (list/fulfill) with `combo.order.view`/`.update` — the **Concession Staff** and **F&B Staff** Positions hold both; Ticket Staff/Cashier can sell a combo alongside a ticket booking but don't see the fulfillment queue. Once paid, an order is worked from the **Kitchen Display** (§6.37). FE: `/ComboOrders`.
 
 ### 6.21 Cashier Shifts & Staff Scheduling
 
@@ -426,6 +426,30 @@ An **Ingredient** is not a new model: it is a per-branch **Inventory** record (�
 
 ---
 
+### 6.37 Kitchen Display System (KDS)
+
+The **Kitchen Display** is how F&B staff work paid combo orders: `Customer / Cashier → create F&B order → payment → KDS → PREPARING → READY → COMPLETED` (or **CANCELLED**). It is **not a second order table**: its five statuses are a view of the Combo Order's real status (§6.20), so the counter's `/ComboOrders` page and the kitchen screen always agree.
+
+| KDS status | Combo Order status | Timestamp (set in the same atomic update) |
+|---|---|---|
+| NEW | PAID | `paid_at` — when the order reached the kitchen |
+| PREPARING | PREPARING | `prepared_at` |
+| READY | READY | `ready_at` |
+| COMPLETED | DELIVERED | `delivered_at` |
+| CANCELLED | CANCELLED (after payment) | `cancelled_at` + `cancel_reason` |
+
+- **Only paid orders.** An order appears when payment clears — the counter's `/pay` and every booking channel (web MoMo, box office, kiosk combos via `createLinkedComboOrder`, which now also broadcasts). A PENDING order, or one cancelled before payment, is never on the board and cannot be moved from it (`409 KDS_ORDER_NOT_PAID`).
+- **Forward-only transitions:** NEW → PREPARING → READY → COMPLETED; cancel from NEW/PREPARING only, with a **mandatory reason** (`400 KDS_CANCEL_REASON_REQUIRED`; stock the sale took is returned; refused once the paying cashier shift is closed, `409 SHIFT_CLOSED`). Skipping or going back is `409 INVALID_KDS_TRANSITION`. Each step is one status-guarded atomic update, so when two staff tap the same card exactly one wins and the other gets `409 KDS_STATUS_CONFLICT`.
+- **No price edits.** The update body may carry only `status` (and `reason`); any price field is refused with `400 KDS_PRICE_READONLY` (anything else, `400 KDS_FIELD_NOT_ALLOWED`). The board itself is price-free — items, quantities, times, customer and seat only.
+- **Branch isolation.** Every route is pinned to a branch in the URL (`/api/kds/branches/:branchId/…`): the caller must be staffed at (or own) that branch, and an order of any other branch is refused (`403 KDS_BRANCH_MISMATCH`) — even for the Super Admin, who can watch any branch's board but only process an order from its own branch's board.
+- **Access.** No new permissions — the KDS is the kitchen's view of combo orders: `combo.order.view` reads the board, `combo.order.update` moves orders. **F&B Staff** and **Concession Staff** hold both (BRANCH); a Cashier, Branch Admin or Customer has neither. A viewer with only `.view` gets a read-only board.
+
+**Branches** (`GET /api/kds/branches`): the branches whose KDS the caller may open — every branch for the Super Admin, the staffed (or owned) branch otherwise — each with how many orders are waiting in its kitchen (`counts` NEW/PREPARING/READY, `active`). **Board** (`GET /api/kds/branches/:branchId/orders?status=NEW,PREPARING&recentMinutes=60`): every active order (NEW/PREPARING/READY) oldest payment first, plus orders finished within the last `recentMinutes` (default 60, max 720); each order carries its code, items × quantity, created time, KDS status, all five status timestamps, the customer's name and — for a combo bought with tickets — booking code, seats, room and showtime, plus the server-computed `next_statuses`. **Update**: `PATCH /api/kds/branches/:branchId/orders/:id/status { status, reason? }`. Changes are pushed live as the existing `comboOrder:updated` (branch room + the customer); the page also polls every 30 s as a safety net.
+
+FE: `/KitchenDisplay` — four lanes (New / Preparing / Ready / Done). A card moves on **either by dragging it into the next lane or by tapping its button**: drag works with mouse, pen and touch (Pointer Events; a vertical swipe still scrolls on a tablet), only the next lane accepts the drop (no skipping or going back), and dropping on Done means *complete* — cancelling is never a drop, it stays a button with a required reason. The card moves at once and snaps back with the server's reason if the update is refused (e.g. someone else moved it first). Waiting timer since payment (amber after 10 min, red after 20 min, measured against the server clock). Employees see their own kitchen; the Super Admin picks a branch from a list showing each kitchen's waiting count, and opens on the busiest one.
+
+---
+
 ## 7. Key API surfaces (see route files for full detail)
 
 | Area | Base path | Notes |
@@ -441,6 +465,7 @@ An **Ingredient** is not a new model: it is a per-branch **Inventory** record (�
 | Pricing | `/api/pricingRule`, `/api/pricingHoliday` | Pricing Rule CRUD (priority, effective dates, branch scope) driving the ticket pricing engine; never trust a client-sent price (§6.18) |
 | Inventory | `/api/inventory` | Per-branch F&B products, stock movements (`import`/`return`/`adjust`/`waste`), low-stock alerts, movement history (§6.19) |
 | Suppliers & Purchase Orders | `/api/suppliers`, `/api/purchase-orders` | Company supplier catalogue; per-branch purchase orders (`confirm`/`cancel`/`receive`) — `receive` is the only path that raises stock from a supplier, atomically (§6.35) |
+| Kitchen Display | `/api/kds/branches`, `/api/kds/branches/:branchId/orders`, `/api/kds/branches/:branchId/orders/:id/status` | Paid combo orders of one branch for F&B staff (NEW → PREPARING → READY → COMPLETED / CANCELLED); status-only updates, no prices, other branches refused (§6.37) |
 | Recipes | `/api/recipes` | Per-branch recipes on FOOD/BEVERAGE products (`ingredients: [{ inventory_id, quantity }]`); cost/margin/`max_servings` calculation, `GET /:id/availability?servings=N`; selling a product deducts its ingredients atomically (§6.36) |
 | Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
 | Attendance | `/api/attendance/{today,clock-in,break/start,break/end,clock-out}`, `/attendance`, `/attendance/me`, `/attendance/:id`, `/attendance/mark`, `/attendance/:id/close` | Employee clock (always the caller's own record) + scope-aware reads (Employee own / Branch Admin their branch / Super Admin all) + manager mark/correct actions (§6.34) |

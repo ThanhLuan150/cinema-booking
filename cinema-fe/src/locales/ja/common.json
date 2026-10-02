@@ -73,7 +73,8 @@
       "parking": "駐車場",
       "attendance": "勤怠管理",
       "integrations": "Integrations",
-      "incidents": "インシデント"
+      "incidents": "インシデント",
+      "kitchenDisplay": "キッチンディスプレイ"
     },
     "toggleMenu": "管理者メニューの開閉",
     "adminFallback": "管理者",

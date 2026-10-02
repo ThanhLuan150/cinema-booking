@@ -44,6 +44,9 @@ const comboOrderSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// Kitchen Display queue: one branch's paid orders by status, oldest payment first.
+comboOrderSchema.index({ branch_id: 1, status: 1, paid_at: 1 });
+
 withCleanJSON(comboOrderSchema);
 
 const ComboOrder = mongoose.model('ComboOrder', comboOrderSchema);

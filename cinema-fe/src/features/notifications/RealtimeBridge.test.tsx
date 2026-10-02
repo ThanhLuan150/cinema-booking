@@ -131,6 +131,7 @@ describe('RealtimeBridge', () => {
     ['recipe:updated', ['recipes']],
     ['inventory:updated', ['recipes']],
     ['comboOrder:updated', ['comboOrders']],
+    ['comboOrder:updated', ['kdsBoard']],
     ['refund:updated', ['myRefunds']],
     ['payment:updated', ['myPayments']],
     ['privateEvent:updated', ['eventPackages']],

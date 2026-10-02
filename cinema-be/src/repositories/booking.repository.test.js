@@ -959,6 +959,10 @@ describe('booking.repository', () => {
           expect.objectContaining({ combo_id: 2, quantity: 1, unit_price: 20000, line_total: 20000 }),
         ]),
       );
+      // Paid from the start, so it is announced to the branch (Kitchen Display) and the customer.
+      const payload = { action: 'CREATED', id: order.id, code: order.code, status: 'PAID' };
+      expect(socket.emitBranchEvent).toHaveBeenCalledWith(1, 'comboOrder:updated', payload);
+      expect(socket.emitToAccount).toHaveBeenCalledWith(10, 'comboOrder:updated', payload);
     });
 
     it('finalizeMomoOrder deducts combo stock but never goes negative when it ran out after the customer paid', async () => {

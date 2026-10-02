@@ -73,7 +73,8 @@
       "parking": "ที่จอดรถ",
       "attendance": "การลงเวลา",
       "integrations": "Integrations",
-      "incidents": "เหตุการณ์"
+      "incidents": "เหตุการณ์",
+      "kitchenDisplay": "จอแสดงผลห้องครัว"
     },
     "toggleMenu": "เปิด/ปิดเมนูผู้ดูแลระบบ",
     "adminFallback": "ผู้ดูแลระบบ",

@@ -173,5 +173,14 @@
   "RECIPE_ALREADY_EXISTS": "This product already has a recipe.",
   "INVENTORY_IN_RECIPE": "This item is an ingredient of a recipe. Remove it from the recipe first.",
   "INGREDIENT_IN_RECIPE": "This item is an ingredient of a recipe and cannot be linked to a product.",
-  "INGREDIENT_UNIT_LOCKED": "The unit of an ingredient used in a recipe cannot be changed."
+  "INGREDIENT_UNIT_LOCKED": "The unit of an ingredient used in a recipe cannot be changed.",
+  "KDS_BRANCH_MISMATCH": "This order belongs to another branch and can't be processed on this kitchen display.",
+  "KDS_ORDER_NOT_FOUND": "Order not found.",
+  "KDS_STATUS_CONFLICT": "Someone else updated this order first — the board has been refreshed.",
+  "INVALID_KDS_TRANSITION": "This order can't move from {{from}} to {{to}}.",
+  "INVALID_KDS_STATUS": "Unknown kitchen status.",
+  "KDS_ORDER_NOT_PAID": "Only a paid order is sent to the kitchen.",
+  "KDS_PRICE_READONLY": "Prices can't be changed from the kitchen display.",
+  "KDS_FIELD_NOT_ALLOWED": "The kitchen display can only change an order’s status.",
+  "KDS_CANCEL_REASON_REQUIRED": "Please give a reason for cancelling."
 }

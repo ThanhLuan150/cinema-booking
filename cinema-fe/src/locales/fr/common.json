@@ -73,7 +73,8 @@
       "parking": "Stationnement",
       "attendance": "Pointage",
       "integrations": "Integrations",
-      "incidents": "Incidents"
+      "incidents": "Incidents",
+      "kitchenDisplay": "Écran cuisine"
     },
     "toggleMenu": "Afficher/masquer le menu admin",
     "adminFallback": "Admin",

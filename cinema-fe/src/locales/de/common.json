@@ -73,7 +73,8 @@
       "parking": "Parkplatz",
       "attendance": "Anwesenheit",
       "integrations": "Integrations",
-      "incidents": "Vorfälle"
+      "incidents": "Vorfälle",
+      "kitchenDisplay": "Küchendisplay"
     },
     "toggleMenu": "Admin-Menü umschalten",
     "adminFallback": "Admin",

@@ -152,6 +152,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.comboOrders')}
             </NavLink>
           )}
+          {hasPermission('combo.order.view') && (
+            <NavLink to={ROUTES.kitchenDisplay} className={navLinkClass}>
+              <ion-icon name="restaurant" />
+              {t('adminLayout.nav.kitchenDisplay')}
+            </NavLink>
+          )}
           {hasPermission('incident.read') && (
             <NavLink to={ROUTES.ownerIncidents} className={navLinkClass}>
               <ion-icon name="shield-checkmark" />
@@ -366,6 +372,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
             <NavLink to={ROUTES.comboOrders} className={navLinkClass}>
               <ion-icon name="fast-food-outline" />
               {t('adminLayout.nav.comboOrders')}
+            </NavLink>
+          )}
+          {hasPermission('combo.order.view') && (
+            <NavLink to={ROUTES.kitchenDisplay} className={navLinkClass}>
+              <ion-icon name="restaurant-outline" />
+              {t('adminLayout.nav.kitchenDisplay')}
             </NavLink>
           )}
           {hasPermission('cashierShift.read') && (

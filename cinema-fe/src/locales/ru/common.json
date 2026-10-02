@@ -73,7 +73,8 @@
       "parking": "Парковка",
       "attendance": "Посещаемость",
       "integrations": "Integrations",
-      "incidents": "Инциденты"
+      "incidents": "Инциденты",
+      "kitchenDisplay": "Кухонный экран"
     },
     "toggleMenu": "Открыть/закрыть меню администратора",
     "adminFallback": "Администратор",
