@@ -88,6 +88,9 @@ import Cinemas from '@/features/movies/pages/Cinemas';
 import BookTicket from '@/features/booking/pages/BookTicketPage';
 import BookSeat from '@/features/booking/pages/BookSeatPage';
 import PaymentResult from '@/features/booking/pages/PaymentResultPage';
+import InSeatOrder from '@/features/inSeat/pages/InSeatOrderPage';
+import InSeatPaymentResult from '@/features/inSeat/pages/InSeatPaymentResultPage';
+import InSeatOrderTracking from '@/features/inSeat/pages/InSeatOrderTrackingPage';
 import About from '@/features/static/pages/AboutPage';
 import Faq from '@/features/static/pages/FaqPage';
 import Contact from '@/features/static/pages/ContactPage';
@@ -124,6 +127,11 @@ export function AppRouter() {
       <Route path={ROUTES.requestPrivateEvent} element={<RequestPrivateEvent />} />
       <Route path={ROUTES.myPrivateEvents} element={<MyPrivateEvents />} />
       <Route path={ROUTES.notifications} element={<NotificationsPage />} />
+      {/* In-seat F&B ordering: the page a seat's QR opens. Each page asks the visitor to sign in itself,
+          so the scanned QR survives the login round-trip (?next=). */}
+      <Route path={ROUTES.inSeat} element={<InSeatOrder />} />
+      <Route path={ROUTES.inSeatPaymentResult} element={<InSeatPaymentResult />} />
+      <Route path="/InSeat/Orders/:code" element={<InSeatOrderTracking />} />
       <Route
         path={ROUTES.adminUsers}
         element={

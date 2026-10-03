@@ -14,6 +14,7 @@ const { parsePagination, buildPaginatedResult } = require('../utils/pagination')
 const systemConfigService = require('../services/systemConfig.service');
 const cashierShiftService = require('../services/cashierShift.service');
 const webhookService = require('../services/webhook.service');
+const inSeatOrderService = require('../services/inSeatOrder.service');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
@@ -368,6 +369,11 @@ async function auditMomoOutcome(req, orderId, { success }) {
 // current status), so calling this twice for the same orderId is always safe — that's what
 // makes both MoMo's own retried IPN calls and our own webhook-retry replays safe to run.
 async function applyMomoPaymentOutcome(req, body) {
+  if (await inSeatOrderService.isInSeatPaymentCode(body.orderId)) {
+    const result = await inSeatOrderService.applyMomoOutcome(body);
+    return { success: Boolean(result.success), skip: Boolean(result.alreadyProcessed) };
+  }
+
   await paymentRepository.markProcessing(body.orderId);
   const orderPayload = decodeExtraData(body.extraData);
 
@@ -439,6 +445,18 @@ async function momoConfirm(req, res) {
   const orderPayload = decodeExtraData(req.body.extraData);
   if (orderPayload.accountId && Number(orderPayload.accountId) !== req.account.accountId) {
     return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  // An in-seat order's result posted here (instead of /in-seat/orders/:code/momo-confirm) must still
+  // reach its own handler — finalizeMomoOrder would mark the payment PAID and leave the order unpaid.
+  if (await inSeatOrderService.isInSeatPaymentCode(req.body.orderId)) {
+    const payment = await paymentRepository.findByCode(req.body.orderId);
+    if (payment.account_id !== req.account.accountId) return res.status(403).json({ message: 'Forbidden' });
+    const result = await inSeatOrderService.applyMomoOutcome(req.body);
+    if (!result.success) {
+      return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
+    }
+    return res.json({ message: 'success', alreadyProcessed: Boolean(result.alreadyProcessed) });
   }
 
   // See momoIpn: PENDING -> PROCESSING while this callback is being handled.

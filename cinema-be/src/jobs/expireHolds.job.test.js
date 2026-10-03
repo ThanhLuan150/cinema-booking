@@ -5,6 +5,10 @@ jest.mock('../repositories/booking.repository', () => ({
   expireStalePendingBookings: jest.fn().mockResolvedValue(0),
   expireIssuedTickets: jest.fn().mockResolvedValue(0),
 }));
+jest.mock('../services/inSeatOrder.service', () => ({
+  expireStalePendingOrders: jest.fn().mockResolvedValue(0),
+}));
+const inSeatOrderService = require('../services/inSeatOrder.service');
 
 describe('startSeatHoldSweep', () => {
   beforeEach(() => {
@@ -54,6 +58,19 @@ describe('startSeatHoldSweep', () => {
     jest.advanceTimersByTime(30000);
     await Promise.resolve();
     expect(bookingRepository.expireIssuedTickets).toHaveBeenCalledTimes(1);
+
+    clearInterval(timer);
+  });
+
+  it('also periodically cancels in-seat F&B orders whose payment never arrived (Ticket 49)', async () => {
+    const { startSeatHoldSweep } = require('./expireHolds.job');
+    const timer = startSeatHoldSweep();
+
+    expect(inSeatOrderService.expireStalePendingOrders).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(30000);
+    await Promise.resolve();
+    expect(inSeatOrderService.expireStalePendingOrders).toHaveBeenCalledTimes(1);
 
     clearInterval(timer);
   });

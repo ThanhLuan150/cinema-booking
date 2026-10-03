@@ -1,5 +1,6 @@
 const paymentRepository = require('../repositories/payment.repository');
 const bookingRepository = require('../repositories/booking.repository');
+const Payment = require('../models/Payment');
 const { parsePagination, buildPaginatedResult } = require('../utils/pagination');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 
@@ -85,8 +86,12 @@ async function confirmRefund(req, res) {
     });
   }
 
-  const booking = await bookingRepository.findBookingById(updated.booking_id);
-  if (booking) await bookingRepository.applyRefund(booking);
+  // An in-seat F&B payment (Ticket 49) points at the booking of the seat the food went to, but it paid
+  // only for the food — refunding it must never refund or release that booking's tickets.
+  if (updated.type !== Payment.TYPE.IN_SEAT) {
+    const booking = await bookingRepository.findBookingById(updated.booking_id);
+    if (booking) await bookingRepository.applyRefund(booking);
+  }
 
   await recordAudit({
     req,

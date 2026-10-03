@@ -55,7 +55,8 @@
     "timeline": "Status times",
     "reason": "Reason: {{reason}}",
     "dragHint": "Drag into the next lane, or use the button",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "deliverTo": "Deliver to seat {{seat}} · {{room}}"
   },
   "cancelModal": {
     "title": "Cancel order {{code}}",

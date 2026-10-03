@@ -17,6 +17,13 @@ export interface KdsBookingInfo {
   showtime: { date: string; time: string } | null;
 }
 
+export interface KdsDelivery {
+  type: 'SEAT';
+  seat: string;
+  room: string | null;
+  showtime: { date: string; time: string } | null;
+}
+
 /** The kitchen's view of a paid combo order. Deliberately carries no prices. */
 export interface KdsOrder {
   id: number;
@@ -30,6 +37,10 @@ export interface KdsOrder {
   timestamps: Record<KdsStatus, string | null>;
   customer: { id: number; name: string | null } | null;
   booking: KdsBookingInfo | null;
+  /** 'IN_SEAT' when the customer ordered from their seat (null for counter / booking combos). */
+  channel?: 'IN_SEAT' | null;
+  /** In-seat orders: the exact seat to walk the finished order to. */
+  delivery?: KdsDelivery | null;
   cancel_reason: string | null;
   /** Server-computed allowed next statuses — the single source of truth for which buttons show. */
   next_statuses: KdsTargetStatus[];

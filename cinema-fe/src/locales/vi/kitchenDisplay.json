@@ -55,7 +55,8 @@
     "timeline": "Thời điểm các trạng thái",
     "reason": "Lý do: {{reason}}",
     "dragHint": "Kéo sang cột kế tiếp hoặc bấm nút",
-    "saving": "Đang lưu…"
+    "saving": "Đang lưu…",
+    "deliverTo": "Giao tới ghế {{seat}} · {{room}}"
   },
   "cancelModal": {
     "title": "Hủy đơn {{code}}",

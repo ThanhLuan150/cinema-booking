@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -20,7 +20,9 @@ vi.mock('react-i18next', async (importOriginal) => {
     }),
   };
 });
-vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
+  useCurrentUser: () => ({ data: undefined }),
+}));
 
 const useMyCinemasMock = vi.fn();
 vi.mock('@/features/owner/hooks/useMyCinemas', () => ({ useMyCinemas: () => useMyCinemasMock() }));
@@ -29,13 +31,29 @@ const useAllRoomsMock = vi.fn();
 vi.mock('@/features/owner/hooks/useAllRooms', () => ({ useAllRooms: () => useAllRoomsMock() }));
 
 const useMyMoviesMock = vi.fn();
-vi.mock('../../movies/hooks/useMyMovies', () => ({ useMyMovies: (...args: unknown[]) => useMyMoviesMock(...args) }));
+vi.mock('../../movies/hooks/useMyMovies', () => ({
+  useMyMovies: (...args: unknown[]) => useMyMoviesMock(...args),
+}));
 
 const useSchedulesMock = vi.fn();
-vi.mock('../hooks/useSchedules', () => ({ useSchedules: (...args: unknown[]) => useSchedulesMock(...args) }));
+vi.mock('../hooks/useSchedules', () => ({
+  useSchedules: (...args: unknown[]) => useSchedulesMock(...args),
+}));
 
 vi.mock('../components/Add', () => ({ default: () => <div>Add Schedule Modal</div> }));
-vi.mock('../components/Reschedule', () => ({ default: () => <div>Reschedule Schedule Modal</div> }));
+vi.mock('../components/Reschedule', () => ({
+  default: () => <div>Reschedule Schedule Modal</div>,
+}));
+
+let grantedPermissions = new Set<string>();
+vi.mock('@/hooks/usePermissions', () => ({
+  usePermissions: () => ({ hasPermission: (code: string) => grantedPermissions.has(code) }),
+}));
+vi.mock('@/features/inSeat/components/SeatQrSheetModal', () => ({
+  SeatQrSheetModal: ({ scheduleId }: { scheduleId: number }) => (
+    <div>Seat QR sheet for {scheduleId}</div>
+  ),
+}));
 
 import AdminSchedulesList from './List';
 
@@ -44,7 +62,12 @@ function renderPage(role: number | null = null) {
   const store = configureStore({
     reducer: { auth: authReducer },
     preloadedState: {
-      auth: { accessToken: null, userId: null, role: role == null ? null : String(role), account: null },
+      auth: {
+        accessToken: null,
+        userId: null,
+        role: role == null ? null : String(role),
+        account: null,
+      },
     },
   });
   return render(
@@ -60,6 +83,7 @@ function renderPage(role: number | null = null) {
 
 describe('Admin Schedules List', () => {
   beforeEach(() => {
+    grantedPermissions = new Set();
     useMyCinemasMock.mockReset();
     useAllRoomsMock.mockReset();
     useMyMoviesMock.mockReset();
@@ -73,7 +97,16 @@ describe('Admin Schedules List', () => {
     useSchedulesMock.mockReturnValue({
       data: {
         data: [
-          { id: 1, movie_id: 1, room_id: 1, time_begin: '10:00', time_end: '12:00', movie_date: '2026-01-01', price: 1000, status: 'ACTIVE' },
+          {
+            id: 1,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '10:00',
+            time_end: '12:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'ACTIVE',
+          },
         ],
         totalPages: 1,
       },
@@ -89,7 +122,16 @@ describe('Admin Schedules List', () => {
     useSchedulesMock.mockReturnValue({
       data: {
         data: [
-          { id: 1, movie_id: 1, room_id: 1, time_begin: '10:00', time_end: '12:00', movie_date: '2026-01-01', price: 1000, status: 'CANCELLED' },
+          {
+            id: 1,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '10:00',
+            time_end: '12:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'CANCELLED',
+          },
         ],
         totalPages: 1,
       },
@@ -103,7 +145,16 @@ describe('Admin Schedules List', () => {
     useSchedulesMock.mockReturnValue({
       data: {
         data: [
-          { id: 1, movie_id: 1, room_id: 1, time_begin: '10:00', time_end: '12:00', movie_date: '2026-01-01', price: 1000, status: 'ACTIVE' },
+          {
+            id: 1,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '10:00',
+            time_end: '12:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'ACTIVE',
+          },
         ],
         totalPages: 1,
       },
@@ -118,7 +169,16 @@ describe('Admin Schedules List', () => {
     useSchedulesMock.mockReturnValue({
       data: {
         data: [
-          { id: 1, movie_id: 1, room_id: 1, time_begin: '10:00', time_end: '12:00', movie_date: '2026-01-01', price: 1000, status: 'ACTIVE' },
+          {
+            id: 1,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '10:00',
+            time_end: '12:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'ACTIVE',
+          },
         ],
         totalPages: 1,
       },
@@ -127,5 +187,45 @@ describe('Admin Schedules List', () => {
     expect(screen.queryByText('schedules.list.addButton')).not.toBeInTheDocument();
     expect(screen.queryByText('schedules.list.cancelButton')).not.toBeInTheDocument();
     expect(screen.queryByText('schedules.list.rescheduleButton')).not.toBeInTheDocument();
+  });
+
+  it('offers the seat QR sheet (In-Seat F&B ordering) only to holders of inSeatOrder.qr, for active showtimes', () => {
+    useSchedulesMock.mockReturnValue({
+      data: {
+        data: [
+          {
+            id: 7,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '10:00',
+            time_end: '12:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'ACTIVE',
+          },
+          {
+            id: 8,
+            movie_id: 1,
+            room_id: 1,
+            time_begin: '13:00',
+            time_end: '15:00',
+            movie_date: '2026-01-01',
+            price: 1000,
+            status: 'CANCELLED',
+          },
+        ],
+        totalPages: 1,
+      },
+    });
+    const { unmount } = renderPage(ROLES.owner);
+    expect(screen.queryByText('inSeat:qrSheet.button')).not.toBeInTheDocument();
+    unmount();
+
+    grantedPermissions = new Set(['inSeatOrder.qr']);
+    renderPage(ROLES.owner);
+    const buttons = screen.getAllByText('inSeat:qrSheet.button');
+    expect(buttons).toHaveLength(1); // not for the cancelled showtime
+    fireEvent.click(buttons[0]);
+    expect(screen.getByText('Seat QR sheet for 7')).toBeInTheDocument();
   });
 });

@@ -127,6 +127,28 @@ describe('seedRbac', () => {
     expect(await RolePermission.findOne({ role_id: employeeRole.id, permission_id: permission.id })).toBeNull();
   });
 
+  it('grants in-seat ordering to customers (OWN) and seat-QR printing to branch admins (BRANCH) only (Ticket 49)', async () => {
+    await seedRbac();
+    const scopeOf = async (roleCode, code) => {
+      const role = await Role.findOne({ code: roleCode });
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      return link ? link.scope : null;
+    };
+
+    for (const code of ['inSeatOrder.create', 'inSeatOrder.read']) {
+      expect(await scopeOf('CUSTOMER', code)).toBe('OWN');
+      expect(await scopeOf('BRANCH_ADMIN', code)).toBeNull();
+      expect(await scopeOf('EMPLOYEE', code)).toBeNull();
+    }
+    expect(await scopeOf('BRANCH_ADMIN', 'inSeatOrder.qr')).toBe('BRANCH');
+    expect(await scopeOf('CUSTOMER', 'inSeatOrder.qr')).toBeNull();
+    expect(await scopeOf('EMPLOYEE', 'inSeatOrder.qr')).toBeNull();
+    for (const code of ['inSeatOrder.create', 'inSeatOrder.read', 'inSeatOrder.qr']) {
+      expect(await scopeOf('SUPER_ADMIN', code)).toBe('ALL');
+    }
+  });
+
   it('grants customer schedule.read (ALL scope) so any logged-in customer can browse showtimes to book', async () => {
     await seedRbac();
     const customer = await Role.findOne({ code: 'CUSTOMER' });

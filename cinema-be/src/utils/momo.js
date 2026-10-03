@@ -14,16 +14,32 @@ function decodeExtraData(extraData) {
   }
 }
 
+const DEFAULT_REDIRECT_URL = 'http://localhost:3000/PaymentResult';
+
+// Where MoMo sends the customer's browser back to after an in-seat F&B payment (Ticket 49): its own
+// page, so it can show the order's kitchen progress instead of the ticket-booking result. Defaults to
+// the same site as MOMO_REDIRECT_URL. The IPN (server-to-server) URL is the shared one either way.
+function inSeatRedirectUrl() {
+  if (process.env.MOMO_INSEAT_REDIRECT_URL) return process.env.MOMO_INSEAT_REDIRECT_URL;
+  const base = process.env.MOMO_REDIRECT_URL || DEFAULT_REDIRECT_URL;
+  try {
+    return new URL('/InSeat/PaymentResult', base).toString();
+  } catch {
+    return 'http://localhost:3000/InSeat/PaymentResult';
+  }
+}
+
 // Creates a MoMo "captureWallet" payment request and returns the hosted payUrl the
 // browser should redirect to. `orderPayload` is round-tripped through MoMo's
 // `extraData` field so the IPN/redirect callback can recover what was being purchased
-// without needing a separate "pending order" table.
-async function createMomoPaymentUrl(amount, orderId, orderPayload) {
+// without needing a separate "pending order" table. `options.redirectUrl` / `options.orderInfo`
+// override the ticket-booking defaults (the in-seat F&B flow returns to its own page).
+async function createMomoPaymentUrl(amount, orderId, orderPayload, options = {}) {
   const partnerCode = process.env.MOMO_PARTNER_CODE;
   const accessKey = process.env.MOMO_ACCESS_KEY;
   const secretKey = process.env.MOMO_SECRET_KEY;
   const endpoint = process.env.MOMO_ENDPOINT || 'https://test-payment.momo.vn/v2/gateway/api/create';
-  const redirectUrl = process.env.MOMO_REDIRECT_URL || 'http://localhost:3000/PaymentResult';
+  const redirectUrl = options.redirectUrl || process.env.MOMO_REDIRECT_URL || DEFAULT_REDIRECT_URL;
   const ipnUrl = process.env.MOMO_IPN_URL || 'http://localhost:8000/api/MomoPayment/ipn';
 
   const safeAmount = Math.max(1000, Math.round(Number(amount) || 0));
@@ -37,7 +53,7 @@ async function createMomoPaymentUrl(amount, orderId, orderPayload) {
   }
 
   const requestId = `${partnerCode}-${Date.now()}`;
-  const orderInfo = 'Pay for cinema ticket';
+  const orderInfo = options.orderInfo || 'Pay for cinema ticket';
   const requestType = 'captureWallet';
 
   const rawSignature =
@@ -100,4 +116,4 @@ function verifyMomoSignature(params) {
   return expected === signature;
 }
 
-module.exports = { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData, encodeExtraData };
+module.exports = { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData, encodeExtraData, inSeatRedirectUrl };

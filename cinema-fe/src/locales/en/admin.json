@@ -306,7 +306,8 @@
     ],
     "type": {
       "online": "Online",
-      "counter": "Counter"
+      "counter": "Counter",
+      "inSeat": "In-seat F&B"
     },
     "status": {
       "pending": "Pending",
