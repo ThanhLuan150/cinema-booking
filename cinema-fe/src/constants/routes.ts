@@ -72,6 +72,7 @@ export const ROUTES = {
   notificationTemplates: '/NotificationTemplates',
   systemConfig: '/SystemConfig',
   comboOrders: '/ComboOrders',
+  kitchenDisplay: '/KitchenDisplay',
   cashierShifts: '/CashierShifts',
   ownerEmployees: '/OwnerEmployees',
   ownerShifts: '/OwnerShifts',

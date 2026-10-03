@@ -86,7 +86,12 @@ async function createLinkedComboOrder({ bookingId, branchId, accountId, comboIds
     createdBy,
   });
   // The customer has already paid for the booking, so stock is deducted best-effort (floor at 0).
-  return comboOrderRepository.markPaid(order.id, paymentMethod, { allowShortfall: true });
+  const paid = await comboOrderRepository.markPaid(order.id, paymentMethod, { allowShortfall: true });
+  // Paid from the start, so it goes straight onto the branch's Kitchen Display — announce it the
+  // same way the counter's /pay does, or an online/kiosk/box-office combo would only appear on the
+  // next poll.
+  comboOrderRepository.broadcastOrder(paid, REALTIME_ACTION.CREATED);
+  return paid;
 }
 
 async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = null } = {}) {

@@ -173,5 +173,14 @@
   "RECIPE_ALREADY_EXISTS": "Sản phẩm này đã có công thức.",
   "INVENTORY_IN_RECIPE": "Mặt hàng này là nguyên liệu của một công thức. Hãy gỡ khỏi công thức trước.",
   "INGREDIENT_IN_RECIPE": "Mặt hàng này là nguyên liệu của một công thức nên không thể liên kết với sản phẩm.",
-  "INGREDIENT_UNIT_LOCKED": "Không thể đổi đơn vị của nguyên liệu đang dùng trong công thức."
+  "INGREDIENT_UNIT_LOCKED": "Không thể đổi đơn vị của nguyên liệu đang dùng trong công thức.",
+  "KDS_BRANCH_MISMATCH": "Đơn này thuộc chi nhánh khác, không thể xử lý trên màn hình bếp này.",
+  "KDS_ORDER_NOT_FOUND": "Không tìm thấy đơn.",
+  "KDS_STATUS_CONFLICT": "Người khác vừa cập nhật đơn này — màn hình đã được làm mới.",
+  "INVALID_KDS_TRANSITION": "Không thể chuyển đơn từ {{from}} sang {{to}}.",
+  "INVALID_KDS_STATUS": "Trạng thái bếp không hợp lệ.",
+  "KDS_ORDER_NOT_PAID": "Chỉ đơn đã thanh toán mới được chuyển xuống bếp.",
+  "KDS_PRICE_READONLY": "Không thể sửa giá từ màn hình bếp.",
+  "KDS_FIELD_NOT_ALLOWED": "Màn hình bếp chỉ được thay đổi trạng thái đơn.",
+  "KDS_CANCEL_REASON_REQUIRED": "Vui lòng nhập lý do hủy."
 }

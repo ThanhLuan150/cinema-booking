@@ -73,7 +73,8 @@
       "parking": "停车场",
       "attendance": "考勤",
       "integrations": "Integrations",
-      "incidents": "事件"
+      "incidents": "事件",
+      "kitchenDisplay": "厨房显示屏"
     },
     "toggleMenu": "切换管理菜单",
     "adminFallback": "管理员",

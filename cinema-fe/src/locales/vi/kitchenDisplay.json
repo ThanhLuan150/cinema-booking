@@ -1,0 +1,68 @@
+{
+  "breadcrumb": "Màn hình bếp",
+  "branchLabel": "Chi nhánh",
+  "branchOption": "{{name}} ({{count}} đơn chờ)",
+  "summary": "Tóm tắt hàng chờ",
+  "noBranch": "Không có chi nhánh nào để hiển thị màn hình bếp.",
+  "loadError": "Không tải được màn hình bếp.",
+  "readOnly": "Bạn có thể theo dõi hàng chờ của bếp nhưng không thể cập nhật.",
+  "truncated": "Đang hiển thị {{count}} đơn đầu tiên — hoàn thành bớt đơn để thấy các đơn còn lại.",
+  "lastUpdated": "Cập nhật lúc {{time}}",
+  "refresh": "Làm mới",
+  "emptyLane": "Không có đơn",
+  "dragHint": "Kéo thẻ sang cột kế tiếp — hoặc bấm nút trên thẻ — để chuyển trạng thái.",
+  "lanes": {
+    "NEW": "Mới",
+    "PREPARING": "Đang chuẩn bị",
+    "READY": "Sẵn sàng",
+    "DONE": "Đã xong ({{minutes}} phút gần nhất)"
+  },
+  "status": {
+    "NEW": "Mới",
+    "PREPARING": "Đang chuẩn bị",
+    "READY": "Sẵn sàng",
+    "COMPLETED": "Hoàn tất",
+    "CANCELLED": "Đã hủy"
+  },
+  "actions": {
+    "PREPARING": "Bắt đầu chuẩn bị",
+    "READY": "Đánh dấu sẵn sàng",
+    "COMPLETED": "Hoàn tất",
+    "cancel": "Hủy"
+  },
+  "drop": {
+    "PREPARING": "Thả vào đây để bắt đầu chuẩn bị",
+    "READY": "Thả vào đây để đánh dấu sẵn sàng",
+    "COMPLETED": "Thả vào đây để hoàn tất"
+  },
+  "success": {
+    "PREPARING": "{{code}} đang được chuẩn bị.",
+    "READY": "{{code}} đã sẵn sàng để giao.",
+    "COMPLETED": "{{code}} đã hoàn tất.",
+    "CANCELLED": "Đã hủy {{code}}."
+  },
+  "card": {
+    "label": "Đơn {{code}}",
+    "createdAt": "Đặt lúc {{time}}",
+    "waiting": "{{minutes}} phút",
+    "items_one": "{{count}} món",
+    "items_other": "{{count}} món",
+    "customer": "Khách hàng",
+    "customerNoName": "Khách hàng #{{id}}",
+    "seats": "Ghế",
+    "room": "Phòng",
+    "showtime": "Suất chiếu",
+    "timeline": "Thời điểm các trạng thái",
+    "reason": "Lý do: {{reason}}",
+    "dragHint": "Kéo sang cột kế tiếp hoặc bấm nút",
+    "saving": "Đang lưu…"
+  },
+  "cancelModal": {
+    "title": "Hủy đơn {{code}}",
+    "reasonLabel": "Lý do",
+    "reasonPlaceholder": "VD: máy hỏng, hết nguyên liệu",
+    "reasonRequired": "Vui lòng nhập lý do hủy.",
+    "back": "Giữ đơn",
+    "submit": "Hủy đơn"
+  }
+}

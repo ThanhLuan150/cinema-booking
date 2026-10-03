@@ -25,6 +25,7 @@ import { adminRefundsQueryKey } from '@/features/refund/hooks/useAdminRefunds';
 import { myGiftCardsQueryKey } from '@/features/giftCards/hooks/useMyGiftCards';
 import { ownerGiftCardsQueryKey } from '@/features/owner/hooks/useOwnerGiftCards';
 import { comboOrdersQueryKey } from '@/features/comboOrder/hooks/useComboOrders';
+import { kdsBoardQueryKey } from '@/features/kitchenDisplay/hooks/useKdsBoard';
 import { ownerCombosQueryKey } from '@/features/owner/hooks/useOwnerCombos';
 import { checkinLogsQueryKey } from '@/features/owner/devices/hooks/useCheckinLogs';
 import { devicesQueryKey } from '@/features/owner/devices/hooks/useDevices';
@@ -104,7 +105,8 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey],
   [REALTIME_EVENT.REFUND_UPDATED]: [myRefundsQueryKey, adminRefundsQueryKey],
   [REALTIME_EVENT.GIFT_CARD_UPDATED]: [myGiftCardsQueryKey, ownerGiftCardsQueryKey],
-  [REALTIME_EVENT.COMBO_ORDER_UPDATED]: [comboOrdersQueryKey],
+  // The counter's order list and the Kitchen Display read the same orders.
+  [REALTIME_EVENT.COMBO_ORDER_UPDATED]: [comboOrdersQueryKey, kdsBoardQueryKey],
   [REALTIME_EVENT.COMBO_UPDATED]: [ownerCombosQueryKey],
   [REALTIME_EVENT.CHECKIN_NEW]: [checkinLogsQueryKey, bookingsQueryKey, myTicketsQueryKey],
   [REALTIME_EVENT.MAINTENANCE_UPDATED]: [ownerMaintenanceQueryKey],

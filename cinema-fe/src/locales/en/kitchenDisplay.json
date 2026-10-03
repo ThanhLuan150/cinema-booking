@@ -1,0 +1,68 @@
+{
+  "breadcrumb": "Kitchen Display",
+  "branchLabel": "Kitchen branch",
+  "branchOption": "{{name}} ({{count}} waiting)",
+  "summary": "Queue summary",
+  "noBranch": "There is no branch whose kitchen you can display.",
+  "loadError": "Could not load the kitchen display.",
+  "readOnly": "You can follow the kitchen queue but not update it.",
+  "truncated": "Showing the first {{count}} orders — finish some to see the rest.",
+  "lastUpdated": "Updated {{time}}",
+  "refresh": "Refresh",
+  "emptyLane": "No orders",
+  "dragHint": "Drag a card into the next lane — or tap its button — to move it on.",
+  "lanes": {
+    "NEW": "New",
+    "PREPARING": "Preparing",
+    "READY": "Ready",
+    "DONE": "Done (last {{minutes}} min)"
+  },
+  "status": {
+    "NEW": "New",
+    "PREPARING": "Preparing",
+    "READY": "Ready",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled"
+  },
+  "actions": {
+    "PREPARING": "Start preparing",
+    "READY": "Mark ready",
+    "COMPLETED": "Complete",
+    "cancel": "Cancel"
+  },
+  "drop": {
+    "PREPARING": "Drop here to start preparing",
+    "READY": "Drop here to mark ready",
+    "COMPLETED": "Drop here to complete"
+  },
+  "success": {
+    "PREPARING": "{{code}} is now being prepared.",
+    "READY": "{{code}} is ready to hand over.",
+    "COMPLETED": "{{code}} completed.",
+    "CANCELLED": "{{code}} cancelled."
+  },
+  "card": {
+    "label": "Order {{code}}",
+    "createdAt": "Ordered {{time}}",
+    "waiting": "{{minutes}} min",
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "customer": "Customer",
+    "customerNoName": "Customer #{{id}}",
+    "seats": "Seats",
+    "room": "Room",
+    "showtime": "Showtime",
+    "timeline": "Status times",
+    "reason": "Reason: {{reason}}",
+    "dragHint": "Drag into the next lane, or use the button",
+    "saving": "Saving…"
+  },
+  "cancelModal": {
+    "title": "Cancel order {{code}}",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "e.g. machine broken, item ran out",
+    "reasonRequired": "Please give a reason for cancelling.",
+    "back": "Keep order",
+    "submit": "Cancel order"
+  }
+}

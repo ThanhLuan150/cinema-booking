@@ -41,6 +41,20 @@ const emp3 = () => authHeader({ role: 3, accountId: 9 });
 const emp4 = () => authHeader({ role: 3, accountId: 10 });
 
 const MINUTE = 60000;
+// Everything jest can fake except Date: pinning the wall clock must not stall the Mongo driver or
+// supertest, which rely on real timers and ticks.
+const REAL_TIMERS = [
+  'hrtime',
+  'nextTick',
+  'performance',
+  'queueMicrotask',
+  'setImmediate',
+  'clearImmediate',
+  'setInterval',
+  'clearInterval',
+  'setTimeout',
+  'clearTimeout',
+];
 
 async function seedWorld() {
   // Rows inserted by hand below use small ids; start the API's id counter well clear of them.
@@ -398,19 +412,28 @@ describe('attendance.routes — timezone validation', () => {
   });
 
   it('cuts the work day in the branch’s configured zone, not the server’s', async () => {
-    await seedWorld();
-    await systemConfigService.setValue({ key: 'ATTENDANCE_TIMEZONE', branchId: 1, value: 'Pacific/Pago_Pago', accountId: 1 });
-    const before = oracleDate(-11);
-    const res = await post('/clock-in', emp1());
-    expect(res.status).toBe(201);
-    expect(res.body.timezone).toBe('Pacific/Pago_Pago');
-    expectWorkDate(res.body.work_date, -11, before);
+    // Vietnam (UTC+7) and Pago Pago (UTC-11) share a calendar date every day between 11:00 and 17:00
+    // UTC, so asserting "different days" against the real clock failed whenever the suite ran then
+    // (CI at 16:51 UTC did). Pin the clock — Date only; Mongo and supertest keep real timers — to an
+    // instant where the zones disagree: 20:00 UTC is already 03:00 on the 3rd in Vietnam but still
+    // 09:00 on the 2nd in Pago Pago.
+    jest.useFakeTimers({ now: new Date('2026-10-02T20:00:00Z'), doNotFake: REAL_TIMERS });
+    try {
+      await seedWorld();
+      await systemConfigService.setValue({ key: 'ATTENDANCE_TIMEZONE', branchId: 1, value: 'Pacific/Pago_Pago', accountId: 1 });
+      const res = await post('/clock-in', emp1());
+      expect(res.status).toBe(201);
+      expect(res.body.timezone).toBe('Pacific/Pago_Pago');
+      expect(res.body.work_date).toBe('2026-10-02');
 
-    // Branch 2 was not overridden, so its employees are still on Vietnam time.
-    const other = await post('/clock-in', emp3());
-    expect(other.body.timezone).toBe('Asia/Ho_Chi_Minh');
-    // Vietnam is 18h ahead of Pago Pago, so the two branches are never on the same calendar day.
-    expect(other.body.work_date).not.toBe(res.body.work_date);
+      // Branch 2 was not overridden, so its employees are still on Vietnam time — already the next day.
+      const other = await post('/clock-in', emp3());
+      expect(other.status).toBe(201);
+      expect(other.body.timezone).toBe('Asia/Ho_Chi_Minh');
+      expect(other.body.work_date).toBe('2026-10-03');
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('now rejects the old branch zone once the branch has been reconfigured', async () => {
