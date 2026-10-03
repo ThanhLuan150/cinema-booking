@@ -27,7 +27,8 @@
     "myActivity": "My Activity",
     "notifications": "Notifications",
     "myGiftCards": "My Gift Cards",
-    "myPrivateEvents": "My Private Events"
+    "myPrivateEvents": "My Private Events",
+    "inSeatOrder": "Order to my seat"
   },
   "footer": {
     "tagline": "We guarantee quality and satisfaction when coming to our movie ticket booking site.",

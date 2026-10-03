@@ -6,6 +6,8 @@ import { Pagination } from '@/components/ui/Pagination';
 import { useMyCinemas } from '@/features/owner/hooks/useMyCinemas';
 import { useAllRooms } from '@/features/owner/hooks/useAllRooms';
 import { useAuthRole } from '@/features/auth/hooks/useAuth';
+import { usePermissions } from '@/hooks/usePermissions';
+import { SeatQrSheetModal } from '@/features/inSeat/components/SeatQrSheetModal';
 import { ROLES } from '@/constants/roles';
 import { toast } from '@/features/notifications/toast';
 import { confirmDialog } from '@/features/notifications/confirm';
@@ -25,6 +27,8 @@ const List = () => {
   const role = useAuthRole();
   // Both Super Admin (ALL scope) and Branch Admin (BRANCH scope) can create/cancel showtimes.
   const canManageShowtimes = role === ROLES.admin || role === ROLES.owner;
+  const { hasPermission } = usePermissions();
+  const canPrintSeatQr = hasPermission('inSeatOrder.qr');
   const { data: cinemasPage } = useMyCinemas();
   const cinemas = cinemasPage?.data;
   const { data: roomsPage } = useAllRooms();
@@ -37,12 +41,20 @@ const List = () => {
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [rescheduleTarget, setRescheduleTarget] = useState<Schedule | null>(null);
+  const [seatQrTarget, setSeatQrTarget] = useState<Schedule | null>(null);
 
-  const { data, isLoading } = useSchedules({ branchId: cinemaFilter || undefined, roomId: roomFilter || undefined }, page, DEFAULT_PAGE_SIZE);
+  const { data, isLoading } = useSchedules(
+    { branchId: cinemaFilter || undefined, roomId: roomFilter || undefined },
+    page,
+    DEFAULT_PAGE_SIZE,
+  );
   const schedules = data?.data ?? [];
   const cancelScheduleMutation = useCancelSchedule();
 
-  const roomById = useMemo(() => new Map((rooms ?? []).map((room) => [String(room.id), room])), [rooms]);
+  const roomById = useMemo(
+    () => new Map((rooms ?? []).map((room) => [String(room.id), room])),
+    [rooms],
+  );
   const cinemaNameById = useMemo(
     () => new Map((cinemas ?? []).map((cinema) => [String(cinema.id), cinema.name])),
     [cinemas],
@@ -95,9 +107,16 @@ const List = () => {
       />
 
       {showAddModal && <Add id={null} handleCloseAddSchedule={() => setShowAddModal(false)} />}
-      {rescheduleTarget && <Reschedule schedule={rescheduleTarget} onClose={() => setRescheduleTarget(null)} />}
+      {rescheduleTarget && (
+        <Reschedule schedule={rescheduleTarget} onClose={() => setRescheduleTarget(null)} />
+      )}
+      {seatQrTarget && (
+        <SeatQrSheetModal scheduleId={seatQrTarget.id} onClose={() => setSeatQrTarget(null)} />
+      )}
 
-      <DataTable headers={t('schedules.list.headers', { returnObjects: true }) as unknown as string[]}>
+      <DataTable
+        headers={t('schedules.list.headers', { returnObjects: true }) as unknown as string[]}
+      >
         {schedules.map((schedule) => {
           const room = roomById.get(String(schedule.room_id));
           const cinemaName = room ? cinemaNameById.get(String(room.cinema_id)) : undefined;
@@ -109,7 +128,9 @@ const List = () => {
               roomName={room?.name ?? schedule.room_id}
               movieName={movieNameById.get(String(schedule.movie_id)) ?? schedule.movie_id}
               canManageShowtimes={canManageShowtimes}
+              canPrintSeatQr={canPrintSeatQr}
               onReschedule={setRescheduleTarget}
+              onSeatQr={setSeatQrTarget}
               onCancel={handleCancel}
             />
           );

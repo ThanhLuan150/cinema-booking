@@ -17,9 +17,14 @@ export function buildAccountNavItems(t: TFunction): AccountNavItem[] {
     { to: ROUTES.myGiftCards, icon: 'fa-solid fa-gift', label: t('header.myGiftCards') },
     { to: ROUTES.myBookings, icon: 'fa-solid fa-ticket', label: t('header.myBookings') },
     { to: ROUTES.myTickets, icon: 'fa-solid fa-qrcode', label: t('header.myTickets') },
+    { to: ROUTES.inSeat, icon: 'fa-solid fa-burger', label: t('header.inSeatOrder') },
     { to: ROUTES.paymentHistory, icon: 'fa-solid fa-receipt', label: t('header.paymentHistory') },
     { to: ROUTES.myRefunds, icon: 'fa-solid fa-hand-holding-dollar', label: t('header.myRefunds') },
-    { to: ROUTES.myPrivateEvents, icon: 'fa-solid fa-champagne-glasses', label: t('header.myPrivateEvents') },
+    {
+      to: ROUTES.myPrivateEvents,
+      icon: 'fa-solid fa-champagne-glasses',
+      label: t('header.myPrivateEvents'),
+    },
     { to: ROUTES.notifications, icon: 'fa-regular fa-bell', label: t('header.notifications') },
     { to: ROUTES.changePassword, icon: 'fa-solid fa-lock', label: t('header.changePassword') },
   ];

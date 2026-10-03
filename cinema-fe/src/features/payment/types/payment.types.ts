@@ -1,5 +1,5 @@
 export type PaymentLifecycleStatus = 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'REFUND_PENDING' | 'REFUNDED';
-export type PaymentType = 'ONLINE' | 'COUNTER';
+export type PaymentType = 'ONLINE' | 'COUNTER' | 'IN_SEAT';
 export type PaymentMethod = 'MOMO' | 'CASH';
 
 export interface Payment {

@@ -9,8 +9,11 @@ export interface ListItemProps {
   roomName: string | number | undefined;
   movieName: string | number | undefined;
   canManageShowtimes: boolean;
+  /** inSeatOrder.qr: may print this showtime's seat QR codes for in-seat ordering. */
+  canPrintSeatQr?: boolean;
   onReschedule: (schedule: Schedule) => void;
   onCancel: (id: number) => void;
+  onSeatQr?: (schedule: Schedule) => void;
 }
 
 export const ListItem = ({
@@ -19,8 +22,10 @@ export const ListItem = ({
   roomName,
   movieName,
   canManageShowtimes,
+  canPrintSeatQr = false,
   onReschedule,
   onCancel,
+  onSeatQr,
 }: ListItemProps) => {
   const { t } = useTranslation('admin');
   const isCancelled = schedule.status === 'CANCELLED';
@@ -41,20 +46,35 @@ export const ListItem = ({
         </Badge>
       </td>
       <td>
-        {canManageShowtimes && !isCancelled && (
+        {!isCancelled && (canManageShowtimes || canPrintSeatQr) && (
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="ghost" size="sm" onClick={() => onReschedule(schedule)}>
-              {t('schedules.list.rescheduleButton')}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
-              onClick={() => onCancel(schedule.id)}
-            >
-              {t('schedules.list.cancelButton')}
-            </Button>
+            {canPrintSeatQr && onSeatQr && (
+              <Button type="button" variant="ghost" size="sm" onClick={() => onSeatQr(schedule)}>
+                <i className="fa-solid fa-qrcode" aria-hidden="true" />
+                {t('inSeat:qrSheet.button')}
+              </Button>
+            )}
+            {canManageShowtimes && (
+              <>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onReschedule(schedule)}
+                >
+                  {t('schedules.list.rescheduleButton')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-500 hover:bg-red-500/10 hover:text-red-400"
+                  onClick={() => onCancel(schedule.id)}
+                >
+                  {t('schedules.list.cancelButton')}
+                </Button>
+              </>
+            )}
           </div>
         )}
       </td>

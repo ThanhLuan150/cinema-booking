@@ -112,6 +112,16 @@ export function KdsOrderCard({
         </div>
       </header>
 
+      {order.delivery && (
+        <p
+          data-testid="kds-delivery"
+          className="flex items-center gap-2 rounded-lg bg-accent/15 px-3 py-2 text-sm font-semibold text-white"
+        >
+          <i className="fa-solid fa-couch text-accent" aria-hidden="true" />
+          {t('card.deliverTo', { seat: order.delivery.seat, room: order.delivery.room ?? '' })}
+        </p>
+      )}
+
       <ul className="flex flex-col gap-1" aria-label={t('card.items', { count: order.item_count })}>
         {order.items.map((item) => (
           <li key={`${item.combo_id}-${item.name}`} className="flex items-baseline gap-2 text-base">
@@ -131,7 +141,7 @@ export function KdsOrderCard({
               <dd>{order.customer.name || t('card.customerNoName', { id: order.customer.id })}</dd>
             </>
           )}
-          {order.booking && order.booking.seats.length > 0 && (
+          {!order.delivery && order.booking && order.booking.seats.length > 0 && (
             <>
               <dt className="text-txt/60">{t('card.seats')}</dt>
               <dd className="font-semibold">{order.booking.seats.join(', ')}</dd>

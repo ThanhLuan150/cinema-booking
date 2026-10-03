@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import { toFormikValidate } from '@/lib/formikZod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import apiClient from 'services/apiClient';
@@ -16,10 +16,14 @@ import { buildLoginSchema, type LoginFormValues } from '../schemas/login.schema'
 import { toast } from '@/features/notifications/toast';
 import { ROUTES } from '@/constants/routes';
 import { ROLES } from '@/constants/roles';
+import { safeNextPath } from '../utils/nextPath';
 
 export function LoginForm() {
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
+  // e.g. a customer who scanned a seat QR before signing in goes straight back to it.
+  const [searchParams] = useSearchParams();
+  const nextPath = safeNextPath(searchParams.get('next'));
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const [error, setError] = useState('');
@@ -42,7 +46,7 @@ export function LoginForm() {
 
       toast.success(t('login.loginSuccess'));
       if (role == String(ROLES.customer)) {
-        navigate(ROUTES.home);
+        navigate(nextPath ?? ROUTES.home);
       } else if (role == String(ROLES.admin)) {
         navigate(ROUTES.adminDashboard);
       } else if (role == String(ROLES.employee)) {

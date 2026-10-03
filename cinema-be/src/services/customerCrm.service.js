@@ -129,7 +129,11 @@ async function buildCustomerProfile({ accountId, branchIds = null, redact = fals
 
   // Base set: the customer's PAID payments -> the bookings they paid for that also sit in
   // the branch scope and are actually sold (PAID/COMPLETED).
-  const payments = await Payment.find({ account_id: id, status: Payment.STATUS.PAID }, { booking_id: 1 });
+  // In-seat F&B payments are left out here: their food is counted with the standalone combos below.
+  const payments = await Payment.find(
+    { account_id: id, status: Payment.STATUS.PAID, type: { $ne: Payment.TYPE.IN_SEAT } },
+    { booking_id: 1 },
+  );
   const paidBookingIds = [...new Set(payments.map((p) => p.booking_id).filter((v) => v != null))];
   const bookings = await Booking.find({
     id: { $in: paidBookingIds },
@@ -143,7 +147,7 @@ async function buildCustomerProfile({ accountId, branchIds = null, redact = fals
     Invoice.find({ account_id: id, booking_id: { $in: bookingIds }, status: 1 }),
     ComboOrder.find({
       account_id: id,
-      booking_id: null,
+      ...ComboOrder.separatelyPaidFilter(),
       status: { $in: PAID_COMBO_STATUSES },
       ...branchIn('branch_id', branchIds),
     }),

@@ -24,6 +24,7 @@ const seatRoutes = require('./seat.routes');
 const comboRoutes = require('./combo.routes');
 const comboOrderRoutes = require('./comboOrder.routes');
 const kdsRoutes = require('./kds.routes');
+const inSeatOrderRoutes = require('./inSeatOrder.routes');
 const voucherRoutes = require('./voucher.routes');
 const giftCardRoutes = require('./giftCard.routes');
 const promotionRoutes = require('./promotion.routes');
@@ -89,6 +90,9 @@ router.use('/seat', seatRoutes);
 router.use('/combo', comboRoutes);
 router.use('/combo-orders', comboOrderRoutes);
 router.use('/kds', kdsRoutes);
+// In-Seat F&B Ordering (Ticket 49): /in-seat/session, /in-seat/orders[/:code[/momo-confirm]],
+// /in-seat/showtimes/:scheduleId/seat-qr (the printable seat QR sheet).
+router.use('/in-seat', inSeatOrderRoutes);
 router.use('/voucher', voucherRoutes);
 router.use('/gift-cards', giftCardRoutes);
 router.use('/promotion', promotionRoutes);

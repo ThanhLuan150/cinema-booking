@@ -26,6 +26,7 @@ import { myGiftCardsQueryKey } from '@/features/giftCards/hooks/useMyGiftCards';
 import { ownerGiftCardsQueryKey } from '@/features/owner/hooks/useOwnerGiftCards';
 import { comboOrdersQueryKey } from '@/features/comboOrder/hooks/useComboOrders';
 import { kdsBoardQueryKey } from '@/features/kitchenDisplay/hooks/useKdsBoard';
+import { inSeatQueryKey } from '@/features/inSeat/hooks/useInSeat';
 import { ownerCombosQueryKey } from '@/features/owner/hooks/useOwnerCombos';
 import { checkinLogsQueryKey } from '@/features/owner/devices/hooks/useCheckinLogs';
 import { devicesQueryKey } from '@/features/owner/devices/hooks/useDevices';
@@ -102,11 +103,12 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.BRANCH_UPDATED]: [adminCinemasQueryKey, myCinemasQueryKey, ['cinemas'], ['topCinemas']],
   [REALTIME_EVENT.SCHEDULE_UPDATED]: [schedulesQueryKey, moviesQueryKey],
   [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey],
-  [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey],
+  [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey, inSeatQueryKey],
   [REALTIME_EVENT.REFUND_UPDATED]: [myRefundsQueryKey, adminRefundsQueryKey],
   [REALTIME_EVENT.GIFT_CARD_UPDATED]: [myGiftCardsQueryKey, ownerGiftCardsQueryKey],
-  // The counter's order list and the Kitchen Display read the same orders.
-  [REALTIME_EVENT.COMBO_ORDER_UPDATED]: [comboOrdersQueryKey, kdsBoardQueryKey],
+  // The counter's order list and the Kitchen Display read the same orders — and so does the customer's
+  // in-seat tracking screen (the server sends their own copy to their account room).
+  [REALTIME_EVENT.COMBO_ORDER_UPDATED]: [comboOrdersQueryKey, kdsBoardQueryKey, inSeatQueryKey],
   [REALTIME_EVENT.COMBO_UPDATED]: [ownerCombosQueryKey],
   [REALTIME_EVENT.CHECKIN_NEW]: [checkinLogsQueryKey, bookingsQueryKey, myTicketsQueryKey],
   [REALTIME_EVENT.MAINTENANCE_UPDATED]: [ownerMaintenanceQueryKey],

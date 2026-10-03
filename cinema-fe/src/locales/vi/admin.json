@@ -306,7 +306,8 @@
     ],
     "type": {
       "online": "Online",
-      "counter": "Tại quầy"
+      "counter": "Tại quầy",
+      "inSeat": "Gọi món tại ghế"
     },
     "status": {
       "pending": "Chờ thanh toán",

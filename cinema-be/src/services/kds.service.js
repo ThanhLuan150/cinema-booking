@@ -60,7 +60,11 @@ async function loadContext(orders) {
   ]);
 
   const ticketIds = [...new Set(bookings.flatMap((b) => b.ticket_ids || []))];
-  const scheduleIds = [...new Set(bookings.map((b) => b.schedule_id))];
+  // In-seat orders (Ticket 49) also name the exact seat/room/showtime to deliver to.
+  const deliveries = orders.map((o) => o.seat_delivery).filter(Boolean);
+  const scheduleIds = [
+    ...new Set([...bookings.map((b) => b.schedule_id), ...deliveries.map((d) => d.schedule_id)]),
+  ];
   const [tickets, schedules] = await Promise.all([
     ticketIds.length ? Ticket.find({ id: { $in: ticketIds } }, { id: 1, seat_code: 1 }).lean() : [],
     scheduleIds.length
@@ -70,7 +74,9 @@ async function loadContext(orders) {
         ).lean()
       : [],
   ]);
-  const roomIds = [...new Set(schedules.map((s) => s.room_id))];
+  const roomIds = [
+    ...new Set([...schedules.map((s) => s.room_id), ...deliveries.map((d) => d.room_id)]),
+  ];
   const rooms = roomIds.length
     ? await Room.find({ id: { $in: roomIds } }, { id: 1, name: 1 }).lean()
     : [];
@@ -103,6 +109,22 @@ function presentBooking(order, context) {
   };
 }
 
+// In-seat orders only: where staff walk the finished order to. Taken from the order itself (the seat
+// validated against the customer's ticket when it was placed), not from the booking — a booking may
+// hold several seats, but the food goes to the one whose QR was scanned.
+function presentDelivery(order, context) {
+  const delivery = order.seat_delivery;
+  if (order.channel !== 'IN_SEAT' || !delivery) return null;
+  const schedule = context.scheduleById.get(delivery.schedule_id);
+  const room = context.roomById.get(delivery.room_id);
+  return {
+    type: 'SEAT',
+    seat: delivery.seat_code,
+    room: room ? room.name : null,
+    showtime: schedule ? { date: schedule.movie_date, time: schedule.time_begin } : null,
+  };
+}
+
 // The KDS shape of an order. Deliberately price-free: the kitchen sees what to make and for whom, not
 // what it cost, and there is no field here a client could echo back to change a price.
 function presentOrder(order, context) {
@@ -126,6 +148,8 @@ function presentOrder(order, context) {
     timestamps,
     customer: account ? { id: account.id, name: account.name || null } : null,
     booking: presentBooking(order, context),
+    channel: order.channel ?? null,
+    delivery: presentDelivery(order, context),
     cancel_reason: order.cancel_reason ?? null,
     next_statuses: status ? KDS_TRANSITIONS[status] : [],
   };

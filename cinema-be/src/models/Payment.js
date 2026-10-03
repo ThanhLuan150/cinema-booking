@@ -4,12 +4,14 @@ const { withCleanJSON } = require('./plugins');
 const paymentSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
-    code: { type: String, required: true, unique: true, index: true }, // = Booking.code (order id)
+    // = Booking.code (order id). For type IN_SEAT it is the ComboOrder.code instead, and booking_id is
+    // the booking that holds the seat the food goes to — that booking was paid by its own Payment.
+    code: { type: String, required: true, unique: true, index: true },
     booking_id: { type: Number, required: true, index: true },
     account_id: { type: Number, required: true, index: true },
     branch_id: { type: Number, default: null, index: true },
     shift_id: { type: Number, default: null, index: true },
-    type: { type: String, enum: ['ONLINE', 'COUNTER', 'KIOSK'], required: true },
+    type: { type: String, enum: ['ONLINE', 'COUNTER', 'KIOSK', 'IN_SEAT'], required: true },
     method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT', 'GIFT_CARD'], required: true },
     amount: { type: Number, required: true },
     status: {
@@ -45,7 +47,7 @@ Payment.STATUS = {
   REFUND_PENDING: 'REFUND_PENDING',
   REFUNDED: 'REFUNDED',
 };
-Payment.TYPE = { ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK' };
+Payment.TYPE = { ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK', IN_SEAT: 'IN_SEAT' };
 Payment.METHOD = { MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT', GIFT_CARD: 'GIFT_CARD' };
 
 module.exports = Payment;

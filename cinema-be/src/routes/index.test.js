@@ -45,6 +45,11 @@ describe('routes/index composition', () => {
     expect(res.status).toBe(401);
   });
 
+  it('mounts the in-seat ordering routes', async () => {
+    const res = await request(app).post('/api/in-seat/session').send({});
+    expect(res.status).toBe(401); // reached the in-seat route's auth guard
+  });
+
   it('mounts the maintenance routes', async () => {
     const res = await request(app).get('/api/maintenance');
     expect(res.status).toBe(401);

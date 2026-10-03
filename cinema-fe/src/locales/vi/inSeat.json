@@ -1,0 +1,122 @@
+{
+  "pageTitle": "Gọi món tại ghế",
+  "scan": {
+    "title": "Quét mã QR trên ghế của bạn",
+    "hint": "Hướng camera vào mã trên ghế, hoặc dán đường dẫn mà mã mở ra.",
+    "startCamera": "Quét bằng camera",
+    "stopCamera": "Tắt camera",
+    "manualLabel": "Đường dẫn QR của ghế",
+    "manualPlaceholder": "Dán đường dẫn QR của ghế",
+    "submit": "Mở",
+    "invalid": "Đây không phải mã QR của ghế. Hãy dùng mã trên ghế, không phải mã trên vé.",
+    "again": "Quét lại mã QR của ghế"
+  },
+  "login": {
+    "title": "Đăng nhập để gọi món",
+    "body": "Món được giao tới ghế cho tài khoản đang giữ vé của ghế đó. Đăng nhập xong bạn sẽ quay lại ngay trang này.",
+    "action": "Đăng nhập"
+  },
+  "seat": {
+    "label": "Ghế của bạn",
+    "seat": "Ghế",
+    "room": "Phòng",
+    "showtime": "Suất chiếu",
+    "cinema": "Rạp",
+    "ticketValid": "Vé hợp lệ cho ghế này",
+    "checkedIn": "Đã check-in — vé hợp lệ cho ghế này"
+  },
+  "ordering": {
+    "notOpen": "Gọi món tại ghế sẽ mở lúc {{time}}.",
+    "closed": "Đã hết giờ gọi món tại ghế cho suất chiếu này.",
+    "closesAt": "Nhận đơn đến {{time}}."
+  },
+  "menu": {
+    "title": "Thực đơn",
+    "empty": "Hiện chưa có món nào để gọi.",
+    "add": "Thêm một {{name}}",
+    "remove": "Bớt một {{name}}",
+    "quantity": "{{count}} × {{name}}",
+    "type": {
+      "COMBO": "Combo",
+      "FOOD": "Đồ ăn",
+      "BEVERAGE": "Đồ uống"
+    }
+  },
+  "cart": {
+    "title": "Đơn của bạn",
+    "empty": "Hãy chọn món từ thực đơn.",
+    "items_one": "{{count}} món",
+    "items_other": "{{count}} món",
+    "totalHint": "Rạp xác nhận số tiền cuối cùng khi bạn thanh toán.",
+    "pay": "Thanh toán {{amount}} bằng MoMo",
+    "paying": "Đang mở MoMo…"
+  },
+  "orders": {
+    "title": "Đã gọi tới ghế này"
+  },
+  "status": {
+    "PENDING": "Chờ thanh toán",
+    "PAID": "Đang chờ bếp",
+    "PREPARING": "Đang chuẩn bị",
+    "READY": "Đang mang tới",
+    "DELIVERED": "Đã giao",
+    "CANCELLED": "Đã huỷ"
+  },
+  "track": {
+    "title": "Đơn {{code}}",
+    "progress": "Tiến độ đơn",
+    "deliverTo": "Tới ghế {{seat}} · {{room}}",
+    "showtime": "Suất {{time}}",
+    "steps": {
+      "PAID": "Đã thanh toán",
+      "PREPARING": "Đang làm",
+      "READY": "Sẵn sàng",
+      "DELIVERED": "Đã giao"
+    },
+    "message": {
+      "PAID": "Đã nhận thanh toán — đơn của bạn đang chờ bếp.",
+      "PREPARING": "Bếp đang chuẩn bị đơn của bạn.",
+      "READY": "Đơn đã sẵn sàng và đang được mang tới ghế.",
+      "DELIVERED": "Đã giao tới ghế. Chúc bạn xem phim vui vẻ!"
+    },
+    "awaitingPayment": "Hoàn tất thanh toán để gửi đơn xuống bếp.",
+    "paymentExpired": "Đã hết thời gian thanh toán cho đơn này.",
+    "continuePayment": "Tiếp tục thanh toán",
+    "cancelled": "Đơn này đã bị huỷ.",
+    "reason": "Lý do: {{reason}}",
+    "refundPending": "Tiền của bạn sẽ được hoàn lại.",
+    "refunded": "Tiền của bạn đã được hoàn lại.",
+    "items": "Món",
+    "total": "Tổng cộng",
+    "paidWith": "{{method}} · {{status}}",
+    "paymentStatus": {
+      "PENDING": "chờ thanh toán",
+      "PROCESSING": "đang xử lý",
+      "PAID": "đã thanh toán",
+      "FAILED": "thất bại",
+      "REFUND_PENDING": "chờ hoàn tiền",
+      "REFUNDED": "đã hoàn tiền"
+    },
+    "orderMore": "Gọi thêm tới ghế này",
+    "scanSeat": "Quét mã QR của ghế",
+    "notFound": "Không tìm thấy đơn này."
+  },
+  "result": {
+    "processing": "Đang xác nhận thanh toán…",
+    "paid": "Đã nhận thanh toán — đơn của bạn đang được gửi xuống bếp.",
+    "notPaid": "Thanh toán không thành công nên đơn đã bị huỷ.",
+    "missing": "Trang này cần kết quả thanh toán từ MoMo.",
+    "viewOrder": "Xem đơn"
+  },
+  "qrSheet": {
+    "button": "QR ghế",
+    "title": "Mã QR của ghế",
+    "subtitle": "{{movie}} · {{branch}} · {{room}} · {{date}} {{time}}",
+    "hint": "Mỗi mã chỉ dùng được cho suất chiếu này, và chỉ cho khách đang giữ vé của ghế đó.",
+    "print": "In",
+    "empty": "Suất chiếu này chưa có ghế.",
+    "seat": "Ghế {{seat}}",
+    "qrLabel": "Mã QR của ghế {{seat}}",
+    "scanToOrder": "Quét để gọi món tại ghế"
+  }
+}

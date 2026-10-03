@@ -74,9 +74,13 @@ function todayIso() {
 // Loads the PAID payments in the window and the subset of their bookings that fall inside
 // the branch scope. `payments` keeps every paid payment (so callers can bucket by day),
 // `bookings` is already branch-filtered.
+// In-seat F&B payments (Ticket 49) are excluded: they point at the seat's booking but paid only for
+// food, which is counted from the ComboOrder side (loadStandaloneCombos) — counting them here would
+// add that booking's tickets a second time on the day the food was paid.
 async function loadPaidBookingContext({ branchIds, from, to } = {}) {
   const payments = await Payment.find({
     status: Payment.STATUS.PAID,
+    type: { $ne: Payment.TYPE.IN_SEAT },
     ...dateRange('paid_at', from, to),
   });
   const bookingIds = [...new Set(payments.map((p) => p.booking_id).filter((v) => v != null))];
@@ -87,9 +91,10 @@ async function loadPaidBookingContext({ branchIds, from, to } = {}) {
   return { payments, bookings };
 }
 
+// Combo orders paid on their own (not inside a booking's combo_total): counter sales and in-seat orders.
 async function loadStandaloneCombos({ branchIds, from, to } = {}) {
   return ComboOrder.find({
-    booking_id: null,
+    ...ComboOrder.separatelyPaidFilter(),
     status: { $in: PAID_COMBO_STATUSES },
     ...branchIn('branch_id', branchIds),
     ...dateRange('paid_at', from, to),

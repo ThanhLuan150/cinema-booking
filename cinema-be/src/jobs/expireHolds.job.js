@@ -1,4 +1,5 @@
 const bookingRepository = require('../repositories/booking.repository');
+const inSeatOrderService = require('../services/inSeatOrder.service');
 const { SWEEP_INTERVAL_MS } = require('../config/seatHold');
 
 function startSeatHoldSweep() {
@@ -11,6 +12,10 @@ function startSeatHoldSweep() {
     });
     bookingRepository.expireIssuedTickets().catch((err) => {
       console.error('[seatHoldSweep] failed to expire issued tickets', err);
+    });
+    // In-seat F&B orders whose MoMo payment never arrived within the hold window (Ticket 49).
+    inSeatOrderService.expireStalePendingOrders().catch((err) => {
+      console.error('[seatHoldSweep] failed to expire unpaid in-seat orders', err);
     });
   }, SWEEP_INTERVAL_MS);
   timer.unref();

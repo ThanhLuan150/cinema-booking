@@ -1,0 +1,122 @@
+{
+  "pageTitle": "Order to your seat",
+  "scan": {
+    "title": "Scan the QR code on your seat",
+    "hint": "Point your camera at the code on your seat, or paste the link it opens.",
+    "startCamera": "Scan with camera",
+    "stopCamera": "Stop camera",
+    "manualLabel": "Seat QR link",
+    "manualPlaceholder": "Paste the seat QR link",
+    "submit": "Open",
+    "invalid": "That isn't a seat QR code. Use the code on your seat, not your ticket.",
+    "again": "Scan a seat QR again"
+  },
+  "login": {
+    "title": "Sign in to order",
+    "body": "Food is delivered to your seat for the account holding its ticket. Sign in and you will come straight back here.",
+    "action": "Sign in"
+  },
+  "seat": {
+    "label": "Your seat",
+    "seat": "Seat",
+    "room": "Room",
+    "showtime": "Showtime",
+    "cinema": "Cinema",
+    "ticketValid": "Valid ticket for this seat",
+    "checkedIn": "Checked in — ticket valid for this seat"
+  },
+  "ordering": {
+    "notOpen": "Ordering to your seat opens at {{time}}.",
+    "closed": "Ordering to your seat has closed for this showtime.",
+    "closesAt": "Orders close at {{time}}."
+  },
+  "menu": {
+    "title": "Menu",
+    "empty": "Nothing is available to order right now.",
+    "add": "Add one {{name}}",
+    "remove": "Remove one {{name}}",
+    "quantity": "{{count}} × {{name}}",
+    "type": {
+      "COMBO": "Combos",
+      "FOOD": "Food",
+      "BEVERAGE": "Drinks"
+    }
+  },
+  "cart": {
+    "title": "Your order",
+    "empty": "Choose something from the menu.",
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "totalHint": "The cinema confirms the final amount when you pay.",
+    "pay": "Pay {{amount}} with MoMo",
+    "paying": "Opening MoMo…"
+  },
+  "orders": {
+    "title": "Already ordered to this seat"
+  },
+  "status": {
+    "PENDING": "Awaiting payment",
+    "PAID": "In the kitchen queue",
+    "PREPARING": "Being prepared",
+    "READY": "On its way",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled"
+  },
+  "track": {
+    "title": "Order {{code}}",
+    "progress": "Order progress",
+    "deliverTo": "To seat {{seat}} · {{room}}",
+    "showtime": "Showtime {{time}}",
+    "steps": {
+      "PAID": "Paid",
+      "PREPARING": "Preparing",
+      "READY": "Ready",
+      "DELIVERED": "Delivered"
+    },
+    "message": {
+      "PAID": "Payment received — your order is in the kitchen queue.",
+      "PREPARING": "The kitchen is preparing your order.",
+      "READY": "Your order is ready and on its way to your seat.",
+      "DELIVERED": "Delivered to your seat. Enjoy the film!"
+    },
+    "awaitingPayment": "Complete the payment to send your order to the kitchen.",
+    "paymentExpired": "The time to pay for this order has run out.",
+    "continuePayment": "Continue payment",
+    "cancelled": "This order was cancelled.",
+    "reason": "Reason: {{reason}}",
+    "refundPending": "Your payment will be refunded.",
+    "refunded": "Your payment has been refunded.",
+    "items": "Items",
+    "total": "Total",
+    "paidWith": "{{method}} · {{status}}",
+    "paymentStatus": {
+      "PENDING": "awaiting payment",
+      "PROCESSING": "processing",
+      "PAID": "paid",
+      "FAILED": "failed",
+      "REFUND_PENDING": "refund pending",
+      "REFUNDED": "refunded"
+    },
+    "orderMore": "Order more to this seat",
+    "scanSeat": "Scan a seat QR",
+    "notFound": "We couldn't find this order."
+  },
+  "result": {
+    "processing": "Confirming your payment…",
+    "paid": "Payment received — your order is on its way to the kitchen.",
+    "notPaid": "The payment did not go through, so the order was cancelled.",
+    "missing": "This page needs a payment result from MoMo.",
+    "viewOrder": "View the order"
+  },
+  "qrSheet": {
+    "button": "Seat QR",
+    "title": "Seat QR codes",
+    "subtitle": "{{movie}} · {{branch}} · {{room}} · {{date}} {{time}}",
+    "hint": "Each code only works for this showtime, and only for the customer holding that seat’s ticket.",
+    "print": "Print",
+    "empty": "This showtime has no seats.",
+    "seat": "Seat {{seat}}",
+    "qrLabel": "QR code for seat {{seat}}",
+    "scanToOrder": "Scan to order to your seat"
+  }
+}

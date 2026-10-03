@@ -17,7 +17,8 @@
     "empty": "Bạn chưa có lịch sử thanh toán nào.",
     "type": {
       "online": "Thanh toán online",
-      "counter": "Thanh toán tại quầy"
+      "counter": "Thanh toán tại quầy",
+      "inSeat": "Gọi món tại ghế"
     },
     "status": {
       "pending": "Chờ thanh toán",

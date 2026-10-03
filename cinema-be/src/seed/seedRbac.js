@@ -60,6 +60,9 @@ const PERMISSIONS = [
   ['payment.read', 'payment'],
   ['booking.cancel', 'booking'], ['booking.reschedule', 'booking'], ['booking.changeShowtime', 'booking'],
   ['combo.sell', 'combo'], ['combo.order.view', 'combo'], ['combo.order.update', 'combo'],
+  // In-Seat F&B Ordering (Ticket 49): a customer orders to (create) and tracks (read) their own seat;
+  // staff print the per-showtime seat QR sheet (qr).
+  ['inSeatOrder.create', 'inSeatOrder'], ['inSeatOrder.read', 'inSeatOrder'], ['inSeatOrder.qr', 'inSeatOrder'],
   ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
   ['shiftAssignment.create', 'shiftAssignment'], ['shiftAssignment.read', 'shiftAssignment'],
   ['shiftAssignment.update', 'shiftAssignment'], ['shiftAssignment.delete', 'shiftAssignment'],
@@ -147,6 +150,8 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'supplier.read': 'ALL',
   'purchaseOrder.read': 'BRANCH', 'purchaseOrder.manage': 'BRANCH', 'purchaseOrder.receive': 'BRANCH',
   'recipe.read': 'BRANCH', 'recipe.manage': 'BRANCH',
+  // Prints the signed seat QR codes for a showtime at their own branches (In-Seat F&B Ordering).
+  'inSeatOrder.qr': 'BRANCH',
   'maintenance.create': 'BRANCH', 'maintenance.read': 'BRANCH', 'maintenance.update': 'BRANCH',
   'maintenance.assign': 'BRANCH', 'maintenance.close': 'BRANCH', 'maintenance.delete': 'BRANCH',
   // QR scanner devices & branch entrances are per-branch equipment the Branch Admin manages.
@@ -225,6 +230,9 @@ const CUSTOMER_PERMISSIONS = {
   'privateEvent.request': 'OWN',
   'privateEvent.read': 'OWN',
   'eventPackage.read': 'ALL',
+  // In-Seat F&B Ordering: order food to a seat the customer holds a valid ticket for, and follow it.
+  'inSeatOrder.create': 'OWN',
+  'inSeatOrder.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

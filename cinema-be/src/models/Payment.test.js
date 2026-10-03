@@ -83,7 +83,7 @@ describe('Payment model', () => {
       REFUND_PENDING: 'REFUND_PENDING',
       REFUNDED: 'REFUNDED',
     });
-    expect(Payment.TYPE).toEqual({ ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK' });
+    expect(Payment.TYPE).toEqual({ ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK', IN_SEAT: 'IN_SEAT' });
     expect(Payment.METHOD).toEqual({
       MOMO: 'MOMO',
       CASH: 'CASH',

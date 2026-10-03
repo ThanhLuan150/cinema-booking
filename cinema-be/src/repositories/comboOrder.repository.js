@@ -1,6 +1,7 @@
 const ComboOrder = require('../models/ComboOrder');
 const nextId = require('../utils/nextId');
 const inventoryRepository = require('./inventory.repository');
+const paymentRepository = require('./payment.repository');
 const { emitBranchEvent, emitToAccount } = require('../utils/socket');
 const { REALTIME_EVENT } = require('../utils/realtimeEvents');
 
@@ -16,7 +17,19 @@ function broadcastOrder(order, action) {
   emitToAccount(order.account_id, REALTIME_EVENT.COMBO_ORDER_UPDATED, payload);
 }
 
-async function createOrder({ branchId, accountId = null, bookingId = null, items, totalPrice, createdBy = null }) {
+// channel / seatDelivery / expiresAt are only set by the in-seat flow (Ticket 49); every other caller
+// leaves them null, so counter and booking orders are stored exactly as before.
+async function createOrder({
+  branchId,
+  accountId = null,
+  bookingId = null,
+  items,
+  totalPrice,
+  createdBy = null,
+  channel = null,
+  seatDelivery = null,
+  expiresAt = null,
+}) {
   return ComboOrder.create({
     id: await nextId('comboOrder'),
     code: `CO-${await nextId('comboOrderCode')}`,
@@ -27,6 +40,9 @@ async function createOrder({ branchId, accountId = null, bookingId = null, items
     total_price: totalPrice,
     status: ComboOrder.STATUS.PENDING,
     created_by: createdBy,
+    channel,
+    seat_delivery: seatDelivery,
+    expires_at: expiresAt,
   });
 }
 
@@ -36,6 +52,23 @@ async function findById(id) {
 
 async function findByCode(code) {
   return ComboOrder.findOne({ code });
+}
+
+// A customer's own in-seat orders, newest first — optionally only those for one showtime (the
+// in-seat page lists what they already ordered for the seat they are sitting in).
+async function listInSeatForAccount(accountId, { scheduleId = null, limit = 50 } = {}) {
+  const filter = { account_id: Number(accountId), channel: ComboOrder.CHANNEL.IN_SEAT };
+  if (scheduleId !== null && scheduleId !== undefined) filter['seat_delivery.schedule_id'] = Number(scheduleId);
+  return ComboOrder.find(filter).sort({ createdAt: -1, id: -1 }).limit(limit);
+}
+
+// In-seat orders still waiting for a payment whose window has passed (the hold sweep cancels them).
+async function findExpiredInSeatPending(now = new Date()) {
+  return ComboOrder.find({
+    channel: ComboOrder.CHANNEL.IN_SEAT,
+    status: ComboOrder.STATUS.PENDING,
+    expires_at: { $ne: null, $lt: now },
+  });
 }
 
 async function listAll(filter = {}, { skip = 0, limit = 20 } = {}) {
@@ -150,8 +183,27 @@ async function cancel(id, reason, { performedBy = null, fromStatuses = ComboOrde
     } catch (err) {
       console.error(`Failed to restock inventory for cancelled combo order ${updated.id}:`, err);
     }
+    await flagInSeatRefund(updated, reason);
   }
   return updated;
+}
+
+// An in-seat order was paid online, up front, through its own Payment (code = order code). If it is
+// then cancelled — from the KDS, the counter, wherever — the customer's money has to go back, so the
+// payment is moved to REFUND_PENDING for staff to settle through the existing refund confirmation.
+// Lives here, beside the restock, because cancellation has more than one door. A never-paid order
+// (paid_at null) has nothing to refund, and requestRefund only ever moves a PAID payment, so calling
+// this twice is harmless.
+async function flagInSeatRefund(order, reason) {
+  if (order.channel !== ComboOrder.CHANNEL.IN_SEAT || !order.paid_at) return null;
+  try {
+    const payment = await paymentRepository.findByCode(order.code);
+    if (!payment) return null;
+    return await paymentRepository.requestRefund(payment.id, `In-seat order ${order.code} cancelled${reason ? `: ${reason}` : ''}`);
+  } catch (err) {
+    console.error(`Failed to flag a refund for cancelled in-seat order ${order.id}:`, err);
+    return null;
+  }
 }
 
 module.exports = {
@@ -159,6 +211,8 @@ module.exports = {
   createOrder,
   findById,
   findByCode,
+  listInSeatForAccount,
+  findExpiredInSeatPending,
   listAll,
   listForKitchen,
   countActiveForKitchen,

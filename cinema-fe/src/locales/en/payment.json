@@ -17,7 +17,8 @@
     "empty": "You have no payment history yet.",
     "type": {
       "online": "Online payment",
-      "counter": "Counter payment"
+      "counter": "Counter payment",
+      "inSeat": "In-seat food order"
     },
     "status": {
       "pending": "Pending",
