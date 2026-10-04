@@ -50,6 +50,7 @@ const ACTION = {
   TICKET_ISSUED: 'TICKET_ISSUED',
   TICKET_CHECKIN: 'TICKET_CHECKIN',
   TICKET_CANCELLED: 'TICKET_CANCELLED',
+  TICKET_SEAT_SWAPPED: 'TICKET_SEAT_SWAPPED', 
 
   // Pre-existing (Ticket 15) — kept so the schedule/booking/refund trail written before this
   // ticket stays queryable through the same model.

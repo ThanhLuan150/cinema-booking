@@ -188,5 +188,40 @@
     "paySuccess": "Thanh toán thành công — vé của bạn đã được xác nhận.",
     "payFailed": "Không thể thanh toán bằng thẻ quà tặng này.",
     "disabledHint": "Xóa mã voucher/khuyến mãi ở trên để thanh toán bằng thẻ quà tặng."
+  },
+  "seatSwap": {
+    "open": "Đổi ghế",
+    "title": "Đổi ghế",
+    "description": "Vé của bạn đang ở ghế {{seat}}. Chọn một ghế trống trong cùng suất chiếu.",
+    "policy": {
+      "SAME_PRICE_ONLY": "Chỉ được chọn ghế cùng giá.",
+      "ALLOW_CHEAPER": "Được chọn ghế cùng giá hoặc rẻ hơn; phần chênh lệch không được hoàn lại."
+    },
+    "notAllowedTitle": "Vé này không thể đổi ghế",
+    "checking": "Đang kiểm tra ghế…",
+    "confirm": "Xác nhận đổi ghế",
+    "success": "Đã đổi ghế từ {{from}} sang {{to}}. Mã QR của bạn đã được cấp mới.",
+    "cell": {
+      "CURRENT": "Ghế hiện tại của bạn",
+      "AVAILABLE": "Còn trống",
+      "TAKEN": "Đã có người",
+      "DISABLED": "Ngưng sử dụng"
+    },
+    "legend": {
+      "selected": "Ghế mới"
+    },
+    "quote": {
+      "from": "Ghế hiện tại",
+      "to": "Ghế mới",
+      "difference": "Chênh lệch giá"
+    },
+    "settlement": {
+      "NONE": "Cùng giá — không phải trả thêm hay hoàn lại.",
+      "NOT_REFUNDED": "Ghế mới rẻ hơn; theo chính sách của rạp, phần chênh lệch không được hoàn lại."
+    },
+    "history": {
+      "title": "Lịch sử đổi ghế",
+      "entry": "{{from}} → {{to}} · {{at}}"
+    }
   }
 }

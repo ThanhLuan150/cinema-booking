@@ -188,5 +188,40 @@
     "paySuccess": "Payment successful — your booking is confirmed.",
     "payFailed": "Could not pay with this gift card.",
     "disabledHint": "Remove the voucher/promotion code above to pay with a gift card."
+  },
+  "seatSwap": {
+    "open": "Change seat",
+    "title": "Change seat",
+    "description": "Your ticket is on seat {{seat}}. Pick a free seat in the same showtime.",
+    "policy": {
+      "SAME_PRICE_ONLY": "Only a seat of the same price can be chosen.",
+      "ALLOW_CHEAPER": "A seat of the same or a lower price can be chosen; the difference is not refunded."
+    },
+    "notAllowedTitle": "This ticket cannot change seat",
+    "checking": "Checking availability…",
+    "confirm": "Confirm seat change",
+    "success": "Seat changed from {{from}} to {{to}}. Your QR code has been renewed.",
+    "cell": {
+      "CURRENT": "Your current seat",
+      "AVAILABLE": "Available",
+      "TAKEN": "Taken",
+      "DISABLED": "Out of service"
+    },
+    "legend": {
+      "selected": "New seat"
+    },
+    "quote": {
+      "from": "Current seat",
+      "to": "New seat",
+      "difference": "Price difference"
+    },
+    "settlement": {
+      "NONE": "Same price — nothing to pay or refund.",
+      "NOT_REFUNDED": "The new seat is cheaper; under this cinema’s policy the difference is not refunded."
+    },
+    "history": {
+      "title": "Seat changes",
+      "entry": "{{from}} → {{to}} · {{at}}"
+    }
   }
 }

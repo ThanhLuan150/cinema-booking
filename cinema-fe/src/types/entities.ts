@@ -888,7 +888,9 @@ export type SystemSettingKey =
   | 'DEFAULT_CURRENCY'
   | 'TAX_RATE'
   | 'MAX_BOOKING_SEATS'
-  | 'REFUND_POLICY';
+  | 'REFUND_POLICY'
+  | 'SEAT_SWAP_AFTER_PAYMENT'
+  | 'SEAT_SWAP_PRICE_POLICY';
 
 export interface RefundPolicyTier {
   minHours: number;

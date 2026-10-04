@@ -200,5 +200,22 @@
   "PAYMENT_GATEWAY_ERROR": "The payment service is unavailable. Please try again.",
   "PAYMENT_SIGNATURE_INVALID": "The payment result couldn't be verified.",
   "PAYMENT_ORDER_MISMATCH": "This payment result belongs to a different order.",
-  "IDEMPOTENCY_KEY_CONFLICT": "This request was already used. Please try again."
+  "IDEMPOTENCY_KEY_CONFLICT": "This request was already used. Please try again.",
+  "TICKET_NOT_OWNED": "You can only change the seat of your own ticket.",
+  "SEAT_SWAP_TICKET_INVALID": "This ticket is no longer valid, so its seat cannot be changed.",
+  "SEAT_SWAP_SHOWTIME_STARTED": "This showtime has already started, so the seat can no longer be changed.",
+  "SEAT_SWAP_NOT_ALLOWED_AFTER_PAYMENT": "This cinema's policy does not allow changing seats after payment.",
+  "SEAT_SWAP_REFUND_IN_PROGRESS": "A refund is in progress for this booking, so its seats cannot change.",
+  "SEAT_SWAP_IN_SEAT_ORDER_OPEN": "Food ordered to this seat has not been delivered yet. Change the seat once it is delivered or cancelled.",
+  "SEAT_SWAP_PRICE_READONLY": "The price difference is calculated by the cinema.",
+  "SEAT_SWAP_FIELD_NOT_ALLOWED": "The request contains fields that are not allowed.",
+  "SEAT_SWAP_SEAT_REQUIRED": "Choose the new seat.",
+  "SEAT_SWAP_SHOWTIME_MISMATCH": "The new seat must be in the same showtime as your ticket.",
+  "SEAT_SWAP_SEAT_MISMATCH": "The seat id and seat code name different seats.",
+  "SEAT_SWAP_SAME_SEAT": "Your ticket is already on that seat.",
+  "SEAT_SWAP_UPGRADE_NOT_ALLOWED": "That seat costs more than your current seat. Changing to a more expensive seat is not allowed.",
+  "SEAT_SWAP_PRICE_MISMATCH": "That seat has a different price. Only a seat of the same price can be chosen.",
+  "SEAT_SWAP_CONFLICT": "Your ticket changed while the seat was being changed. Reload it and try again.",
+  "SEAT_DISABLED": "This seat is out of service.",
+  "SEAT_NOT_FOUND": "Seat not found in this showtime."
 }

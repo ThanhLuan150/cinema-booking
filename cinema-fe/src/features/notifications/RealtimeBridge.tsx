@@ -102,7 +102,8 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   // admin/owner lists.
   [REALTIME_EVENT.BRANCH_UPDATED]: [adminCinemasQueryKey, myCinemasQueryKey, ['cinemas'], ['topCinemas']],
   [REALTIME_EVENT.SCHEDULE_UPDATED]: [schedulesQueryKey, moviesQueryKey],
-  [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey],
+  // ['ticket'] = every open ticket detail: a seat swap made in another tab (or by staff) moves its seat + QR.
+  [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey, ['ticket']],
   [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey, inSeatQueryKey],
   [REALTIME_EVENT.REFUND_UPDATED]: [myRefundsQueryKey, adminRefundsQueryKey],
   [REALTIME_EVENT.GIFT_CARD_UPDATED]: [myGiftCardsQueryKey, ownerGiftCardsQueryKey],

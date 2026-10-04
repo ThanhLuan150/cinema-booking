@@ -74,6 +74,8 @@ describe('systemConfig.service', () => {
           'REFUND_POLICY',
           'ATTENDANCE_TIMEZONE',
           'ATTENDANCE_LATE_GRACE',
+          'SEAT_SWAP_AFTER_PAYMENT',
+          'SEAT_SWAP_PRICE_POLICY',
         ].sort(),
       );
     });
