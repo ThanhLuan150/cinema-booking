@@ -208,8 +208,55 @@ export interface Ticket {
   qr_token: string | null;
   issued_at: string | null;
   total_price: number;
+  /** Ticket 50: earlier seats of this ticket, oldest first. */
+  seat_swaps?: TicketSeatSwap[];
   movie: TicketMovie | null;
   schedule: TicketSchedule | null;
   room: TicketRoom | null;
   branch: TicketBranch | null;
+}
+
+/** NONE = same price; NOT_REFUNDED = moved to a cheaper seat, the difference is kept by the cinema. */
+export type SeatSwapSettlement = 'NONE' | 'NOT_REFUNDED';
+export type SeatSwapPricePolicy = 'SAME_PRICE_ONLY' | 'ALLOW_CHEAPER';
+
+export interface TicketSeatSwap {
+  from_seat_code: string;
+  to_seat_code: string;
+  price_difference: number;
+  settlement: SeatSwapSettlement;
+  swapped_at: string;
+}
+
+export interface SeatSwapSeat {
+  seat_id: number;
+  seat_code: string;
+  seat_type: number;
+  price: number | null;
+}
+
+/** GET /tickets/:id/seat-swap — may this ticket change seat, and if not, why. */
+export interface SeatSwapOptions {
+  ticket_id: number;
+  eligible: boolean;
+  reason: { code: string; message: string } | null;
+  policy: { after_payment: boolean; price_policy: SeatSwapPricePolicy } | null;
+  seat: SeatSwapSeat | null;
+  showtime: { id: number; room_id: number; movie_date: string; time_begin: string } | null;
+}
+
+/** Backend-priced; the client never sends a price. */
+export interface SeatSwapQuote {
+  from: SeatSwapSeat;
+  to: SeatSwapSeat;
+  price_difference: number;
+  settlement: SeatSwapSettlement | null;
+  price_policy: SeatSwapPricePolicy;
+  allowed: boolean;
+}
+
+export interface SeatSwapResult {
+  ticket: Ticket;
+  swap: TicketSeatSwap & { old_price: number; new_price: number };
+  quote: SeatSwapQuote;
 }

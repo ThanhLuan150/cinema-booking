@@ -122,6 +122,27 @@ const SETTINGS = {
     branchOverridable: true,
     validateValue: validateRefundPolicy,
   },
+ 
+  SEAT_SWAP_AFTER_PAYMENT: {
+    type: TYPE.BOOLEAN,
+    module: 'ticket',
+    unit: null,
+    label: 'Seat change after payment',
+    description: 'Whether a customer may move a paid ticket to another seat of the same showtime before it starts.',
+    default: true,
+    branchOverridable: true,
+  },
+  SEAT_SWAP_PRICE_POLICY: {
+    type: TYPE.STRING,
+    module: 'ticket',
+    unit: null,
+    label: 'Seat change price policy',
+    description:
+      'SAME_PRICE_ONLY: the new seat must cost the same as the old one. ALLOW_CHEAPER: a cheaper seat is also allowed and the difference is not refunded. A more expensive seat is always refused — there is no way to collect the difference.',
+    default: 'SAME_PRICE_ONLY',
+    allowedValues: ['SAME_PRICE_ONLY', 'ALLOW_CHEAPER'],
+    branchOverridable: true,
+  },
   ATTENDANCE_TIMEZONE: {
     type: TYPE.STRING,
     module: 'attendance',

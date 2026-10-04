@@ -200,5 +200,22 @@
   "PAYMENT_GATEWAY_ERROR": "Dịch vụ thanh toán đang gián đoạn. Vui lòng thử lại.",
   "PAYMENT_SIGNATURE_INVALID": "Không xác minh được kết quả thanh toán.",
   "PAYMENT_ORDER_MISMATCH": "Kết quả thanh toán này thuộc về một đơn khác.",
-  "IDEMPOTENCY_KEY_CONFLICT": "Yêu cầu này đã được dùng. Vui lòng thử lại."
+  "IDEMPOTENCY_KEY_CONFLICT": "Yêu cầu này đã được dùng. Vui lòng thử lại.",
+  "TICKET_NOT_OWNED": "Bạn chỉ có thể đổi ghế cho vé của chính mình.",
+  "SEAT_SWAP_TICKET_INVALID": "Vé này không còn hợp lệ nên không thể đổi ghế.",
+  "SEAT_SWAP_SHOWTIME_STARTED": "Suất chiếu đã bắt đầu nên không thể đổi ghế nữa.",
+  "SEAT_SWAP_NOT_ALLOWED_AFTER_PAYMENT": "Chính sách của rạp không cho phép đổi ghế sau khi đã thanh toán.",
+  "SEAT_SWAP_REFUND_IN_PROGRESS": "Đơn đặt vé này đang được xử lý hoàn tiền nên không thể đổi ghế.",
+  "SEAT_SWAP_IN_SEAT_ORDER_OPEN": "Món đã gọi tới ghế này chưa được giao. Hãy đổi ghế sau khi món đã giao hoặc đã hủy.",
+  "SEAT_SWAP_PRICE_READONLY": "Chênh lệch giá do rạp tính, không gửi từ phía khách.",
+  "SEAT_SWAP_FIELD_NOT_ALLOWED": "Yêu cầu có trường dữ liệu không được phép.",
+  "SEAT_SWAP_SEAT_REQUIRED": "Hãy chọn ghế mới.",
+  "SEAT_SWAP_SHOWTIME_MISMATCH": "Ghế mới phải thuộc cùng suất chiếu với vé của bạn.",
+  "SEAT_SWAP_SEAT_MISMATCH": "Mã ghế và id ghế không khớp nhau.",
+  "SEAT_SWAP_SAME_SEAT": "Vé của bạn đang ở đúng ghế này rồi.",
+  "SEAT_SWAP_UPGRADE_NOT_ALLOWED": "Ghế này đắt hơn ghế hiện tại. Không được đổi sang ghế giá cao hơn.",
+  "SEAT_SWAP_PRICE_MISMATCH": "Ghế này có giá khác. Chỉ được chọn ghế cùng giá.",
+  "SEAT_SWAP_CONFLICT": "Vé vừa thay đổi trong lúc đổi ghế. Hãy tải lại và thử lại.",
+  "SEAT_DISABLED": "Ghế này đang ngưng sử dụng.",
+  "SEAT_NOT_FOUND": "Không tìm thấy ghế trong suất chiếu này."
 }

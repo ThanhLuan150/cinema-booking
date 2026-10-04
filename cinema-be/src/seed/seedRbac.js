@@ -35,6 +35,7 @@ const PERMISSIONS = [
   ['schedule.update', 'schedule'], ['schedule.delete', 'schedule'], ['schedule.cancel', 'schedule'],
   ['schedule.reschedule', 'schedule'],
   ['ticket.create', 'ticket'], ['ticket.read', 'ticket'], ['ticket.checkin', 'ticket'], ['ticket.generate', 'ticket'],
+  ['ticket.swapSeat', 'ticket'],
   ['booking.create', 'booking'], ['booking.read', 'booking'],
   ['booking.refund', 'booking'], ['booking.admin', 'booking'],
   ['voucher.create', 'voucher'], ['voucher.read', 'voucher'],
@@ -118,6 +119,8 @@ const BRANCH_ADMIN_PERMISSIONS = {
   'schedule.update': 'BRANCH', 'schedule.delete': 'BRANCH', 'schedule.cancel': 'BRANCH',
   'schedule.reschedule': 'BRANCH',
   'ticket.read': 'BRANCH', 'ticket.checkin': 'BRANCH',
+  // Seat Swap on behalf of a customer (phone/walk-up) — only tickets of their own branch(es).
+  'ticket.swapSeat': 'BRANCH',
   'booking.create': 'BRANCH', 'booking.read': 'BRANCH', 'booking.cancel': 'BRANCH',
   'booking.changeShowtime': 'BRANCH',
   'voucher.create': 'BRANCH', 'voucher.read': 'BRANCH', 'voucher.update': 'BRANCH', 'voucher.delete': 'BRANCH',
@@ -215,6 +218,8 @@ const CUSTOMER_PERMISSIONS = {
   'schedule.read': 'ALL',
   'ticket.read': 'OWN', 'booking.create': 'OWN', 'booking.read': 'OWN', 'booking.cancel': 'OWN',
   'booking.reschedule': 'OWN',
+  // Seat Swap: only their own tickets.
+  'ticket.swapSeat': 'OWN',
   'combo.view': 'ALL',
   'review.view': 'OWN', 'review.create': 'OWN', 'review.update_own': 'OWN', 'review.delete_own': 'OWN',
   'actor.read': 'ALL', 'director.read': 'ALL',

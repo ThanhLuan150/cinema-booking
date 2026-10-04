@@ -7,10 +7,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/features/auth/store/authSlice';
 
-vi.mock('@/features/auth/hooks/useCurrentUser', () => ({ useCurrentUser: () => ({ data: undefined }) }));
+vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
+  useCurrentUser: () => ({ data: undefined }),
+}));
 
 const useTicketMock = vi.fn();
-vi.mock('../hooks/useTicket', () => ({ useTicket: (...args: unknown[]) => useTicketMock(...args) }));
+vi.mock('../hooks/useTicket', () => ({
+  useTicket: (...args: unknown[]) => useTicketMock(...args),
+}));
 
 import TicketDetailPage from './TicketDetailPage';
 
@@ -72,8 +76,11 @@ describe('TicketDetailPage', () => {
     expect(screen.getByText('Issued')).toBeInTheDocument();
   });
 
-  it('renders a QR code from the ticket\'s secure token, never the raw booking code', () => {
-    useTicketMock.mockReturnValue({ data: ticket({ qr_token: 'TCK-secure-token' }), isLoading: false });
+  it("renders a QR code from the ticket's secure token, never the raw booking code", () => {
+    useTicketMock.mockReturnValue({
+      data: ticket({ qr_token: 'TCK-secure-token' }),
+      isLoading: false,
+    });
     const { container } = renderPage();
     const svg = container.querySelector('svg');
     expect(svg).toBeTruthy();
@@ -83,5 +90,58 @@ describe('TicketDetailPage', () => {
     useTicketMock.mockReturnValue({ data: ticket({ qr_token: null }), isLoading: false });
     renderPage();
     expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
+  });
+
+  describe('Seat Swap (Ticket 50)', () => {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const localSchedule = (offsetMs: number) => {
+      const d = new Date(Date.now() + offsetMs);
+      return {
+        id: 7,
+        movie_date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+        time_begin: `${pad(d.getHours())}:${pad(d.getMinutes())}`,
+        time_end: '23:59',
+      };
+    };
+
+    it('offers "Change seat" on an issued ticket whose showtime is still ahead', () => {
+      useTicketMock.mockReturnValue({
+        data: ticket({ schedule: localSchedule(3 * 60 * 60 * 1000) }),
+        isLoading: false,
+      });
+      renderPage();
+      expect(screen.getByRole('button', { name: /Change seat/ })).toBeInTheDocument();
+    });
+
+    it.each([
+      ['a used ticket', { status: 'USED', schedule: localSchedule(3 * 60 * 60 * 1000) }],
+      ['a cancelled ticket', { status: 'CANCELLED', schedule: localSchedule(3 * 60 * 60 * 1000) }],
+      ['a showtime that already started', { schedule: localSchedule(-5 * 60 * 1000) }],
+    ])('does not offer it for %s', (_label, overrides) => {
+      useTicketMock.mockReturnValue({ data: ticket(overrides), isLoading: false });
+      renderPage();
+      expect(screen.queryByRole('button', { name: /Change seat/ })).not.toBeInTheDocument();
+    });
+
+    it('lists earlier seats of the ticket', () => {
+      useTicketMock.mockReturnValue({
+        data: ticket({
+          seat_code: 'A2',
+          seat_swaps: [
+            {
+              from_seat_code: 'A1',
+              to_seat_code: 'A2',
+              price_difference: 0,
+              settlement: 'NONE',
+              swapped_at: '2026-10-04T08:00:00.000Z',
+            },
+          ],
+        }),
+        isLoading: false,
+      });
+      renderPage();
+      expect(screen.getByText('Seat changes')).toBeInTheDocument();
+      expect(screen.getByText(/A1 → A2/)).toBeInTheDocument();
+    });
   });
 });

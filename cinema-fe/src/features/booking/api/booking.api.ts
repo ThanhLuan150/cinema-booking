@@ -14,13 +14,19 @@ import type {
   PromotionValidationPayload,
   PromotionValidationResult,
   ScheduleDateOption,
+  SeatSwapOptions,
+  SeatSwapQuote,
+  SeatSwapResult,
   Ticket,
   VoucherValidationPayload,
   VoucherValidationResult,
 } from '../types/booking.types';
 
-export const getScheduleId = (payload: { movie_id: string; movie_date: string; time_begin: string }) =>
-  apiClient.post<{ id: number }>('/scheduleId/', payload).then((res) => res.data);
+export const getScheduleId = (payload: {
+  movie_id: string;
+  movie_date: string;
+  time_begin: string;
+}) => apiClient.post<{ id: number }>('/scheduleId/', payload).then((res) => res.data);
 
 export const getBookedSeats = (scheduleId: number | string) =>
   apiClient.get<BookedSeatTicket[]>(`/bookseat/${scheduleId}`).then((res) => res.data);
@@ -29,7 +35,9 @@ export const getRoomSeats = (roomId: number | string) =>
   apiClient.get<Seat[]>(`/seat/room/${roomId}`).then((res) => res.data);
 
 export const holdSeats = (scheduleId: number | string, seatCodes: string[]) =>
-  apiClient.post<HoldSeatsResult>(`/bookseat/${scheduleId}/hold`, { seatCodes }).then((res) => res.data);
+  apiClient
+    .post<HoldSeatsResult>(`/bookseat/${scheduleId}/hold`, { seatCodes })
+    .then((res) => res.data);
 
 export const releaseSeats = (scheduleId: number | string, seatCodes: string[]) =>
   apiClient.post(`/bookseat/${scheduleId}/release`, { seatCodes }).then((res) => res.data);
@@ -53,7 +61,8 @@ export const getBookTicketSchedule = (id: string | number) =>
 
 export const getMyInvoices = () => apiClient.get<Invoice[]>('/my-invoices').then((res) => res.data);
 
-export const cancelInvoice = (invoiceId: number | string) => apiClient.post(`/invoice/${invoiceId}/cancel`);
+export const cancelInvoice = (invoiceId: number | string) =>
+  apiClient.post(`/invoice/${invoiceId}/cancel`);
 
 export const validateVoucher = (payload: VoucherValidationPayload) =>
   apiClient.post<VoucherValidationResult>('/voucher/validate', payload).then((res) => res.data);
@@ -79,8 +88,10 @@ export const getBookingById = (id: number | string) =>
 
 export const cancelBooking = (id: number | string) => apiClient.post(`/bookings/${id}/cancel`);
 
-export const changeBookingShowtime = (id: number | string, payload: { schedule_id: number | string; seatCodes: string[] }) =>
-  apiClient.post<Booking>(`/bookings/${id}/change-showtime`, payload).then((res) => res.data);
+export const changeBookingShowtime = (
+  id: number | string,
+  payload: { schedule_id: number | string; seatCodes: string[] },
+) => apiClient.post<Booking>(`/bookings/${id}/change-showtime`, payload).then((res) => res.data);
 
 export const respondToReschedule = (id: number | string, action: 'ACCEPT' | 'REFUND') =>
   apiClient.post(`/bookings/${id}/reschedule-response`, { action });
@@ -89,3 +100,18 @@ export const getMyTickets = () => apiClient.get<Ticket[]>('/my-tickets').then((r
 
 export const getTicketById = (id: number | string) =>
   apiClient.get<Ticket>(`/my-tickets/${id}`).then((res) => res.data);
+
+// Ticket 50 — Seat Swap. `ticketId` is the issued ticket (same id as /my-tickets/:id). Only the new
+// seat is ever sent; the price difference comes back from the server.
+export const getSeatSwapOptions = (ticketId: number | string) =>
+  apiClient.get<SeatSwapOptions>(`/tickets/${ticketId}/seat-swap`).then((res) => res.data);
+
+export const quoteSeatSwap = (ticketId: number | string, seatCode: string) =>
+  apiClient
+    .post<SeatSwapQuote>(`/tickets/${ticketId}/seat-swap/quote`, { seat_code: seatCode })
+    .then((res) => res.data);
+
+export const swapTicketSeat = (ticketId: number | string, seatCode: string) =>
+  apiClient
+    .post<SeatSwapResult>(`/tickets/${ticketId}/seat-swap`, { seat_code: seatCode })
+    .then((res) => res.data);

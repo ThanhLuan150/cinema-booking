@@ -14,6 +14,7 @@ const roomRoutes = require('./room.routes');
 const scheduleRoutes = require('./schedule.routes');
 const ticketRoutes = require('./ticket.routes');
 const bookingRoutes = require('./booking.routes');
+const seatSwapRoutes = require('./seatSwap.routes');
 const paymentRoutes = require('./payment.routes');
 const refundRoutes = require('./refund.routes');
 const userRoutes = require('./user.routes');
@@ -139,6 +140,7 @@ router.use('/webhooks', webhookRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);
+router.use('/tickets', seatSwapRoutes);
 
 // Booking flow: /scheduleId, /bookseat/:id, /bookticket/:id, /MomoPayment, /sendmail, /invoice
 router.use('/', bookingRoutes);

@@ -502,6 +502,14 @@ async function buildTicketViews(invoices) {
       qr_token: inv.qr_token,
       issued_at: inv.issued_at,
       total_price: inv.total_price,
+      // Ticket 50: earlier seats of this ticket, oldest first (seat codes + backend-priced difference).
+      seat_swaps: (inv.seat_swaps || []).map((s) => ({
+        from_seat_code: s.from_seat_code,
+        to_seat_code: s.to_seat_code,
+        price_difference: s.price_difference,
+        settlement: s.settlement,
+        swapped_at: s.swapped_at,
+      })),
       movie: movie ? { id: movie.id, name: movie.name, avatar: movie.avatar } : null,
       schedule: schedule
         ? { id: schedule.id, movie_date: schedule.movie_date, time_begin: schedule.time_begin, time_end: schedule.time_end }
@@ -806,6 +814,61 @@ async function changeBookingShowtime(booking, { newScheduleId, newTicketIds }) {
   return booking;
 }
 
+async function swapInvoiceSeat({ invoiceId, bookingId, scheduleId, fromTicket, toTicket, qrToken, swap }) {
+  const claimed = await Ticket.findOneAndUpdate(
+    { id: toTicket.id, schedule_id: Number(scheduleId), status: Ticket.STATUS.AVAILABLE },
+    { $set: { status: Ticket.STATUS.BOOKED, held_by: null, held_until: null } },
+    { new: true },
+  );
+  if (!claimed) return { conflict: 'SEAT_TAKEN' };
+  const releaseClaim = () =>
+    Ticket.updateOne({ id: toTicket.id, status: Ticket.STATUS.BOOKED }, { $set: { status: Ticket.STATUS.AVAILABLE } });
+
+  // The pre-image: its qr_token is what an undo must restore.
+  const before = await Invoice.findOneAndUpdate(
+    { id: Number(invoiceId), ticket_id: fromTicket.id, status: 1, ticket_status: Invoice.TICKET_STATUS.ISSUED },
+    { $set: { ticket_id: toTicket.id, qr_token: qrToken }, $push: { seat_swaps: swap } },
+    { new: false },
+  );
+  if (!before) {
+    await releaseClaim();
+    return { conflict: 'TICKET_CHANGED' };
+  }
+
+  const booking = await Booking.findOneAndUpdate(
+    { id: Number(bookingId), status: Booking.STATUS.PAID, ticket_ids: fromTicket.id },
+    { $set: { 'ticket_ids.$': toTicket.id } },
+    { new: true },
+  );
+  if (!booking) {
+    await Invoice.updateOne(
+      { id: Number(invoiceId), ticket_id: toTicket.id },
+      { $set: { ticket_id: fromTicket.id, qr_token: before.qr_token }, $pop: { seat_swaps: 1 } },
+    );
+    await releaseClaim();
+    return { conflict: 'BOOKING_CHANGED' };
+  }
+
+  await Ticket.updateOne(
+    { id: fromTicket.id, status: Ticket.STATUS.BOOKED },
+    { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
+  );
+
+  broadcastSeatUpdate([{ schedule_id: fromTicket.schedule_id, seat_code: fromTicket.seat_code }], 'AVAILABLE');
+  broadcastSeatUpdate([claimed], 'BOOKED');
+  const payload = {
+    action: REALTIME_ACTION.UPDATED,
+    bookingId: booking.id,
+    code: booking.code,
+    status: booking.status,
+  };
+  // Branch staff queues, and the customer's own other tabs (their ticket now shows another seat).
+  emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, payload);
+  emitToAccount(booking.account_id, REALTIME_EVENT.BOOKING_UPDATED, payload);
+
+  return { invoice: await Invoice.findOne({ id: Number(invoiceId) }), booking };
+}
+
 // Ticket 15: bookings sitting on a Schedule that's being cancelled or rescheduled-away-from.
 async function findBookingsBySchedule(scheduleId, statuses) {
   return Booking.find({ schedule_id: Number(scheduleId), status: { $in: statuses } });
@@ -1094,6 +1157,7 @@ module.exports = {
   cancelPendingBookingByCode,
   cancelBooking,
   changeBookingShowtime,
+  swapInvoiceSeat,
   applyRefund,
   findBookingsBySchedule,
   cancelBookingAndRequestRefund,

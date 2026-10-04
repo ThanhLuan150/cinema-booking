@@ -468,6 +468,26 @@ FE: `/InSeat` (scan with the camera or open the QR link; a signed-out visitor lo
 
 ---
 
+### 6.39 Seat Swap
+
+A paid ticket moves to another seat **of the same showtime**: `Open Ticket (/Ticket/:id) → Change seat → pick a free seat → availability + price check → Confirm → booking + ticket updated`. `:id` below is the issued ticket (the Invoice id, as in `/api/my-tickets/:id`).
+
+- `GET /api/tickets/:id/seat-swap` — may it change seat, and if not **why** (`eligible`, `reason {code, message}`), the branch's `policy`, the current seat (backend-priced) and the showtime/room for the seat map.
+- `POST /api/tickets/:id/seat-swap/quote { seat_code }` — *Check Availability*: the same checks as the swap, nothing written, nothing reserved.
+- `POST /api/tickets/:id/seat-swap { seat_code }` (or `seat_id` = the seat-grid Ticket id) — *Confirm*. The body may carry nothing else: a price-like field is `400 SEAT_SWAP_PRICE_READONLY`, anything else `400 SEAT_SWAP_FIELD_NOT_ALLOWED`.
+
+**Rules.** The ticket must be valid — ISSUED (not used/cancelled/refunded/expired), on a PAID booking that lists that seat, with no refund in progress (`400 SEAT_SWAP_TICKET_INVALID` / `SEAT_SWAP_REFUND_IN_PROGRESS`), and no in-seat food (§6.38) still on its way to the old seat (`409 SEAT_SWAP_IN_SEAT_ORDER_OPEN`). The showtime must be active and **not started yet** (local time; `400 SCHEDULE_CANCELLED` / `SEAT_SWAP_SHOWTIME_STARTED`). The new seat must exist in the **same showtime** (`400 SEAT_SWAP_SHOWTIME_MISMATCH` for a seat id — or a `schedule_id` — of another showtime), be in service (`409 SEAT_DISABLED`) and **AVAILABLE** (`409 SEAT_UNAVAILABLE`; a lapsed hold is expired first, a live hold or a sold seat is refused). OWN scope (customers) may only touch their own ticket **and** booking — someone else's is `403 TICKET_NOT_OWNED`; BRANCH scope (Branch Admin) only their branches' tickets.
+
+**Policy (System Configuration, per branch).** `SEAT_SWAP_AFTER_PAYMENT` (default `true`): when `false`, every step answers `400 SEAT_SWAP_NOT_ALLOWED_AFTER_PAYMENT` — *"This cinema's policy does not allow changing seats after payment"* — and the Change-seat dialog shows that reason instead of a seat map. Only a paid, issued ticket can be swapped at all (a PENDING booking has no ticket yet, and its MoMo payload is fixed to the seats it holds), so this switch governs the whole feature. `SEAT_SWAP_PRICE_POLICY`: `SAME_PRICE_ONLY` (default) or `ALLOW_CHEAPER`.
+
+**Price difference.** Both seats are priced by the pricing engine (§6.18) in the same context — the booking owner's membership, this showtime — so `price_difference = new − old` is exactly what the seats differ by; the client never sends a price. `0` → allowed (`settlement: NONE`). `< 0` → `400 SEAT_SWAP_PRICE_MISMATCH` under `SAME_PRICE_ONLY`; under `ALLOW_CHEAPER` allowed with `settlement: NOT_REFUNDED` (recorded, no money moves). `> 0` → **always** `400 SEAT_SWAP_UPGRADE_NOT_ALLOWED`: there is no payment step to collect the difference (that would need its own MoMo payment type plus reporting/refund changes, as §6.38 did). Every price refusal carries the server's `quote` so the UI can show the numbers. Booking/Invoice totals and the Payment never change.
+
+**Update Booking + Update Ticket, atomically.** `booking.repository.swapInvoiceSeat` — four conditional single-document writes, each re-checking what it depends on, undoing the earlier ones when a later one loses: claim the new seat (AVAILABLE → BOOKED) → move the Invoice (`ticket_id`, a **new `qr_token`** so a screenshot of the old ticket stops working, `$push seat_swaps`) only while it is still ISSUED and on the old seat → swap the seat in `Booking.ticket_ids` in place only while the booking is still PAID → free the old seat. Two customers racing for one seat, a double-submitted swap, a check-in or a cancellation racing a swap: exactly one wins, and no seat is left sold to nobody. Seat changes go to the live seat map (`seat:updated`) and `booking:updated` (branch + the customer's own tabs). History: `Invoice.seat_swaps[]` (from/to seat, both prices, difference, settlement, who, when), shown on the ticket page and in `GET /api/my-tickets/:id`. **Audit Log:** `TICKET_SEAT_SWAPPED` (entity TICKET = invoice id, branch-scoped; metadata: booking, seats, prices, difference, settlement, policy, channel CUSTOMER/STAFF).
+
+**Access.** `ticket.swapSeat` — CUSTOMER (OWN), Branch Admin (BRANCH), Super Admin (ALL). **Run `npm run seed` (RBAC) against the target DB** so the permission exists. FE: *Change seat* on `/Ticket/:id` (only for an ISSUED ticket whose showtime is ahead) → seat-map dialog (current / free / taken / out-of-service), server quote, confirm; seat-change history on the ticket.
+
+---
+
 ## 7. Key API surfaces (see route files for full detail)
 
 | Area | Base path | Notes |
@@ -485,6 +505,7 @@ FE: `/InSeat` (scan with the camera or open the QR link; a signed-out visitor lo
 | Suppliers & Purchase Orders | `/api/suppliers`, `/api/purchase-orders` | Company supplier catalogue; per-branch purchase orders (`confirm`/`cancel`/`receive`) — `receive` is the only path that raises stock from a supplier, atomically (§6.35) |
 | Kitchen Display | `/api/kds/branches`, `/api/kds/branches/:branchId/orders`, `/api/kds/branches/:branchId/orders/:id/status` | Paid combo orders of one branch for F&B staff (NEW → PREPARING → READY → COMPLETED / CANCELLED); status-only updates, no prices, other branches refused (§6.37) |
 | In-Seat Ordering | `/api/in-seat/session`, `/api/in-seat/orders`, `/api/in-seat/orders/:code[/momo-confirm]`, `/api/in-seat/showtimes/:scheduleId/seat-qr` | A customer orders food to a seat from its signed per-showtime QR; needs the caller's own valid ticket for that seat; MoMo-paid, then on the KDS with the seat to deliver to (§6.38) |
+| Seat Swap | `/api/tickets/:id/seat-swap`, `/api/tickets/:id/seat-swap/quote` | Move a paid ticket to another free seat of the same showtime before it starts; backend-priced difference, per-branch policy (`SEAT_SWAP_AFTER_PAYMENT`, `SEAT_SWAP_PRICE_POLICY`), new QR, audited (§6.39) |
 | Recipes | `/api/recipes` | Per-branch recipes on FOOD/BEVERAGE products (`ingredients: [{ inventory_id, quantity }]`); cost/margin/`max_servings` calculation, `GET /:id/availability?servings=N`; selling a product deducts its ingredients atomically (§6.36) |
 | Staffing | `/api/shift`, `/api/shiftAssignment`, `/api/cashier-shifts` | Named work shifts, who's assigned when, and cash-drawer open/close sessions (§6.21) |
 | Attendance | `/api/attendance/{today,clock-in,break/start,break/end,clock-out}`, `/attendance`, `/attendance/me`, `/attendance/:id`, `/attendance/mark`, `/attendance/:id/close` | Employee clock (always the caller's own record) + scope-aware reads (Employee own / Branch Admin their branch / Super Admin all) + manager mark/correct actions (§6.34) |
