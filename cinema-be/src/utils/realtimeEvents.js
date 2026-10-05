@@ -54,6 +54,8 @@ const REALTIME_EVENT = {
   // --- sales ----------------------------------------------------------------------------
   BOOKING_NEW: 'booking:new',
   BOOKING_UPDATED: 'booking:updated',
+  // The customer's own waitlist entry changed (or the queue they are in moved). Account room only.
+  WAITLIST_UPDATED: 'waitlist:updated',
   PAYMENT_UPDATED: 'payment:updated',
   REFUND_UPDATED: 'refund:updated',
   GIFT_CARD_UPDATED: 'giftCard:updated',

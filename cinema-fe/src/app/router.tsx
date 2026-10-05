@@ -24,6 +24,7 @@ import MyActivity from '@/features/crm/pages/MyActivityPage';
 import MyGiftCards from '@/features/giftCards/pages/MyGiftCardsPage';
 import RequestPrivateEvent from '@/features/privateEvents/pages/RequestEventPage';
 import MyPrivateEvents from '@/features/privateEvents/pages/MyEventsPage';
+import MyWaitlist from '@/features/waitlist/pages/MyWaitlistPage';
 import ShowUser from '@/features/admin/users/pages/List';
 import UserDelete from '@/features/admin/users/pages/Delete';
 import BlockUser from '@/features/admin/users/pages/Block';
@@ -126,6 +127,7 @@ export function AppRouter() {
       <Route path={ROUTES.myGiftCards} element={<MyGiftCards />} />
       <Route path={ROUTES.requestPrivateEvent} element={<RequestPrivateEvent />} />
       <Route path={ROUTES.myPrivateEvents} element={<MyPrivateEvents />} />
+      <Route path={ROUTES.myWaitlist} element={<MyWaitlist />} />
       <Route path={ROUTES.notifications} element={<NotificationsPage />} />
       {/* In-seat F&B ordering: the page a seat's QR opens. Each page asks the visitor to sign in itself,
           so the scanned QR survives the login round-trip (?next=). */}

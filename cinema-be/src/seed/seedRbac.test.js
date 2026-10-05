@@ -149,6 +149,22 @@ describe('seedRbac', () => {
     }
   });
 
+  it('grants the showtime waitlist to customers only, OWN scope (Ticket 51)', async () => {
+    await seedRbac();
+    const scopeOf = async (roleCode, code) => {
+      const role = await Role.findOne({ code: roleCode });
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      return link ? link.scope : null;
+    };
+
+    for (const code of ['waitlist.join', 'waitlist.read']) {
+      expect(await scopeOf('CUSTOMER', code)).toBe('OWN');
+      expect(await scopeOf('BRANCH_ADMIN', code)).toBeNull();
+      expect(await scopeOf('EMPLOYEE', code)).toBeNull();
+    }
+  });
+
   it('grants customer schedule.read (ALL scope) so any logged-in customer can browse showtimes to book', async () => {
     await seedRbac();
     const customer = await Role.findOne({ code: 'CUSTOMER' });

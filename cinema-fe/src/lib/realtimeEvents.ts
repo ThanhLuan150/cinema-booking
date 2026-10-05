@@ -47,6 +47,7 @@ export const REALTIME_EVENT = {
   // --- sales ----------------------------------------------------------------------------
   BOOKING_NEW: 'booking:new',
   BOOKING_UPDATED: 'booking:updated',
+  WAITLIST_UPDATED: 'waitlist:updated',
   PAYMENT_UPDATED: 'payment:updated',
   REFUND_UPDATED: 'refund:updated',
   GIFT_CARD_UPDATED: 'giftCard:updated',

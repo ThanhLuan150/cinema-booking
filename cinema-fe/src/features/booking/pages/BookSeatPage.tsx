@@ -14,6 +14,7 @@ import { SeatMapCard } from '../components/SeatMapCard';
 import { ComboSelector } from '../components/ComboSelector';
 import { BookingSummarySidebar } from '../components/BookingSummarySidebar';
 import { MomoPaymentModal } from '../components/MomoPaymentModal';
+import { WaitlistPanel } from '@/features/waitlist/components/WaitlistPanel';
 import { useScheduleId } from '../hooks/useScheduleId';
 import { useRoomSeats } from '../hooks/useRoomSeats';
 import { useScheduleDetail } from '../hooks/useScheduleDetail';
@@ -261,6 +262,7 @@ function BookSeatPage() {
         <div className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-10">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2">
+              <WaitlistPanel scheduleId={scheduleId} />
               <SeatMapCard scheduleId={scheduleId} roomId={scheduleDetail?.room_id ?? null} />
 
               <ComboSelector combos={combos} selectedComboIds={selectedComboIds} />

@@ -1,0 +1,63 @@
+{
+  "panel": {
+    "joined": "You're on the waitlist. We'll notify you as soon as seats free up.",
+    "left": "You've left the waitlist.",
+    "join": {
+      "title": "This showtime is sold out",
+      "body": "Join the waitlist: when seats free up they are reserved for the first person in line for {{minutes}} minutes.",
+      "queueLength_one": "{{count}} person is waiting.",
+      "queueLength_other": "{{count}} people are waiting.",
+      "seatCount": "Seats",
+      "fewer": "Fewer seats",
+      "more": "More seats",
+      "submit": "Join waitlist"
+    },
+    "waiting": {
+      "title": "You're #{{position}} on the waitlist",
+      "body_one": "Waiting for {{count}} seat. When it frees up it's held for you for {{minutes}} minutes and we'll notify you.",
+      "body_other": "Waiting for {{count}} seats. When they free up they're held for you for {{minutes}} minutes and we'll notify you.",
+      "leave": "Leave waitlist",
+      "leaveConfirm": "Leave the waitlist for this showtime? You'll lose your place in line."
+    },
+    "offer": {
+      "title_one": "A seat is reserved for you",
+      "title_other": "Seats are reserved for you",
+      "body": "Seat {{seats}} is being held for you. Select it and pay before the timer runs out, or it goes to the next person in line.",
+      "timeLeft": "Time left",
+      "selectSeats": "Select my reserved seats",
+      "decline": "Decline",
+      "declineConfirm": "Decline the reserved seats? They'll go to the next person in line."
+    }
+  },
+  "mine": {
+    "pageTitle": "My Waitlist",
+    "intro": "Showtimes you're queuing for. When seats free up they're held for you for a limited time.",
+    "filters": {
+      "active": "Active",
+      "all": "All"
+    },
+    "empty": "You're not on any waitlist.",
+    "unknownMovie": "Showtime",
+    "showtime": "{{date}} {{time}} · {{branch}} · {{room}}",
+    "meta_one": "{{count}} seat · joined {{joined}}",
+    "meta_other": "{{count}} seats · joined {{joined}}",
+    "position": "#{{position}} in line",
+    "offer": "Seat {{seats}} reserved for you until {{until}}",
+    "bookNow": "Book now",
+    "viewBooking": "View booking",
+    "leave": "Leave",
+    "decline": "Decline"
+  },
+  "status": {
+    "WAITING": "Waiting",
+    "NOTIFIED": "Seats reserved",
+    "BOOKED": "Booked",
+    "EXPIRED": "Expired",
+    "CANCELLED": "Cancelled"
+  },
+  "closeReason": {
+    "OFFER_EXPIRED": "The reserved seats were not booked in time.",
+    "SHOWTIME_STARTED": "The showtime started before a seat came free.",
+    "SHOWTIME_CANCELLED": "The showtime was cancelled."
+  }
+}

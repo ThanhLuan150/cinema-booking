@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { ROUTES } from '@/constants/routes';
@@ -17,6 +17,7 @@ const toneClass = {
 export function NotificationBell() {
   const { t } = useTranslation('notifications');
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const rootRef = useRef<HTMLDivElement>(null);
 
   const { data: unread = 0 } = useUnreadCount();
@@ -91,6 +92,7 @@ export function NotificationBell() {
                     onClick={() => {
                       if (!n.read_at) markRead.mutate(n.id);
                       setOpen(false);
+                      if (view.href) navigate(view.href);
                     }}
                   >
                     <i className={cn(view.icon, 'mt-0.5 w-4 text-center', toneClass[view.tone])} aria-hidden="true" />
