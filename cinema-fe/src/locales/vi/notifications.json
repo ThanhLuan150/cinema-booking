@@ -66,7 +66,20 @@
       "SHOWTIME_CHANGED": {
         "title": "Suất chiếu đã thay đổi",
         "body": "Suất chiếu phim \"{{movie}}\" (đơn {{bookingCode}}) đã thay đổi. Vui lòng kiểm tra lại đơn đặt vé."
+      },
+      "WAITLIST_SEAT_AVAILABLE": {
+        "title": "Có ghế trống từ danh sách chờ",
+        "body": "Ghế {{seats}} của \"{{movie}}\" lúc {{showtime}} đang được giữ cho bạn trong {{offerMinutes}} phút. Hãy đặt vé trước khi hết giờ, nếu không ghế sẽ chuyển cho người tiếp theo."
+      },
+      "WAITLIST_EXPIRED": {
+        "title": "Hết thời gian giữ ghế",
+        "body": "Ghế được giữ cho bạn của \"{{movie}}\" lúc {{showtime}} đã được nhả vì bạn chưa hoàn tất đặt vé kịp thời gian."
+      },
+      "WAITLIST_CANCELLED": {
+        "title": "Danh sách chờ đã đóng",
+        "body": "Suất chiếu \"{{movie}}\" lúc {{showtime}} đã bị hủy nên vị trí của bạn trong danh sách chờ đã được đóng."
       }
-    }
+    },
+    "open": "Mở"
   }
 }

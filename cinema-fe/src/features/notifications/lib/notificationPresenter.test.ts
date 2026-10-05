@@ -39,6 +39,34 @@ function make(overrides: Partial<Notification> = {}): Notification {
   };
 }
 
+describe('presentNotification — Showtime Waitlist', () => {
+  const offer = (data: Notification['data']) =>
+    make({ type: 'WAITLIST_SEAT_AVAILABLE', title: 'A seat is available from the waitlist', data });
+
+  it('links a seat offer to the seat page of its showtime', () => {
+    const { t } = makeT({ 'notifications.feed.types.WAITLIST_SEAT_AVAILABLE.body': 'seat {{seats}} for {{offerMinutes}} min' });
+    const v = presentNotification(
+      offer({ movieId: 1, seats: ['A3'], offerMinutes: 15, showtime: { date: '2026-10-05', time_begin: '19:30', time_end: '21:30' } }),
+      t,
+    );
+    expect(v.description).toBe('seat A3 for 15 min');
+    expect(v.tone).toBe('positive');
+    expect(v.href).toBe('/BookSeat?movieId=1&day=2026-10-05&time=19%3A30');
+  });
+
+  it('falls back to My Waitlist when the showtime is unknown, and for closed entries', () => {
+    const { t } = makeT();
+    expect(presentNotification(offer({ seats: ['A3'] }), t).href).toBe('/MyWaitlist');
+    expect(presentNotification(make({ type: 'WAITLIST_EXPIRED' }), t).href).toBe('/MyWaitlist');
+    expect(presentNotification(make({ type: 'WAITLIST_CANCELLED' }), t).href).toBe('/MyWaitlist');
+  });
+
+  it('has no link for the other notifications', () => {
+    const { t } = makeT();
+    expect(presentNotification(make(), t).href).toBeUndefined();
+  });
+});
+
 describe('presentNotification', () => {
   it('maps type to an icon + tone', () => {
     const { t } = makeT();

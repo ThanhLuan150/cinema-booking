@@ -64,6 +64,9 @@ const PERMISSIONS = [
   // In-Seat F&B Ordering (Ticket 49): a customer orders to (create) and tracks (read) their own seat;
   // staff print the per-showtime seat QR sheet (qr).
   ['inSeatOrder.create', 'inSeatOrder'], ['inSeatOrder.read', 'inSeatOrder'], ['inSeatOrder.qr', 'inSeatOrder'],
+  // Showtime Waitlist (Ticket 51): queue for a sold-out showtime (join, which also covers leaving) and
+  // follow it (read). Personal to the customer — no staff grant.
+  ['waitlist.join', 'waitlist'], ['waitlist.read', 'waitlist'],
   ['shift.create', 'shift'], ['shift.read', 'shift'], ['shift.update', 'shift'], ['shift.delete', 'shift'],
   ['shiftAssignment.create', 'shiftAssignment'], ['shiftAssignment.read', 'shiftAssignment'],
   ['shiftAssignment.update', 'shiftAssignment'], ['shiftAssignment.delete', 'shiftAssignment'],
@@ -238,6 +241,9 @@ const CUSTOMER_PERMISSIONS = {
   // In-Seat F&B Ordering: order food to a seat the customer holds a valid ticket for, and follow it.
   'inSeatOrder.create': 'OWN',
   'inSeatOrder.read': 'OWN',
+  // Showtime Waitlist: only their own place in a showtime's queue.
+  'waitlist.join': 'OWN',
+  'waitlist.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

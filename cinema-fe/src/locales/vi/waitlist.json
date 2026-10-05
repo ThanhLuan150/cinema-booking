@@ -1,0 +1,59 @@
+{
+  "panel": {
+    "joined": "Bạn đã vào danh sách chờ. Chúng tôi sẽ báo ngay khi có ghế trống.",
+    "left": "Bạn đã rời danh sách chờ.",
+    "join": {
+      "title": "Suất chiếu này đã hết ghế",
+      "body": "Đăng ký danh sách chờ: khi có ghế trống, ghế sẽ được giữ cho người đầu hàng trong {{minutes}} phút.",
+      "queueLength_other": "{{count}} người đang chờ.",
+      "seatCount": "Số ghế",
+      "fewer": "Bớt ghế",
+      "more": "Thêm ghế",
+      "submit": "Vào danh sách chờ"
+    },
+    "waiting": {
+      "title": "Bạn đang ở vị trí #{{position}} trong danh sách chờ",
+      "body_other": "Đang chờ {{count}} ghế. Khi có ghế trống, ghế sẽ được giữ cho bạn trong {{minutes}} phút và chúng tôi sẽ thông báo cho bạn.",
+      "leave": "Rời danh sách chờ",
+      "leaveConfirm": "Rời danh sách chờ của suất chiếu này? Bạn sẽ mất vị trí của mình."
+    },
+    "offer": {
+      "title_other": "Ghế đang được giữ cho bạn",
+      "body": "Ghế {{seats}} đang được giữ cho bạn. Hãy chọn và thanh toán trước khi hết giờ, nếu không ghế sẽ chuyển cho người tiếp theo.",
+      "timeLeft": "Thời gian còn lại",
+      "selectSeats": "Chọn ghế được giữ cho tôi",
+      "decline": "Từ chối",
+      "declineConfirm": "Từ chối ghế đang được giữ? Ghế sẽ chuyển cho người tiếp theo trong danh sách chờ."
+    }
+  },
+  "mine": {
+    "pageTitle": "Danh sách chờ của tôi",
+    "intro": "Các suất chiếu bạn đang chờ. Khi có ghế trống, ghế sẽ được giữ cho bạn trong thời gian giới hạn.",
+    "filters": {
+      "active": "Đang chờ",
+      "all": "Tất cả"
+    },
+    "empty": "Bạn chưa có trong danh sách chờ nào.",
+    "unknownMovie": "Suất chiếu",
+    "showtime": "{{date}} {{time}} · {{branch}} · {{room}}",
+    "meta_other": "{{count}} ghế · đăng ký lúc {{joined}}",
+    "position": "Vị trí #{{position}}",
+    "offer": "Ghế {{seats}} được giữ cho bạn đến {{until}}",
+    "bookNow": "Đặt vé ngay",
+    "viewBooking": "Xem đơn đặt vé",
+    "leave": "Rời",
+    "decline": "Từ chối"
+  },
+  "status": {
+    "WAITING": "Đang chờ",
+    "NOTIFIED": "Đang giữ ghế",
+    "BOOKED": "Đã đặt",
+    "EXPIRED": "Hết hạn",
+    "CANCELLED": "Đã hủy"
+  },
+  "closeReason": {
+    "OFFER_EXPIRED": "Ghế được giữ đã không được đặt kịp thời gian.",
+    "SHOWTIME_STARTED": "Suất chiếu đã bắt đầu trước khi có ghế trống.",
+    "SHOWTIME_CANCELLED": "Suất chiếu đã bị hủy."
+  }
+}
