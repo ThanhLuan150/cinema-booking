@@ -199,6 +199,8 @@ export interface PromotionFormValues {
   end_at: string;
   usage_limit: string;
   per_customer_limit: string;
+  // '' = any order; a number = group discount (the order needs at least that many tickets).
+  min_tickets: string;
   branch_id: string;
   movie_id: string;
   combo_id: string;

@@ -471,8 +471,13 @@
       "perCustomerLimitInvalid": "Per-customer limit must be at least 1.",
       "startAtRequired": "Please choose a start date.",
       "endAtRequired": "Please choose an end date.",
-      "dateRangeInvalid": "End date must be after start date."
-    }
+      "dateRangeInvalid": "End date must be after start date.",
+      "minTicketsInvalid": "Enter a whole number of at least 1, or leave it empty."
+    },
+    "minTicketsLabel": "Group discount: minimum tickets",
+    "minTicketsPlaceholder": "Empty = any order",
+    "minTicketsHint": "Set 2 or more to make this a group discount: it then applies only to orders with at least that many tickets, and is applied automatically to group bookings.",
+    "groupBadge": "Group {{count}}+"
   },
   "pricingRules": {
     "breadcrumb": "Pricing Rules",

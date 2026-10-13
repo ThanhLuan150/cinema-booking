@@ -1,4 +1,4 @@
-const { isPromotionEligible, computePromotionDiscount } = require('./promotionPricing');
+const { isPromotionEligible, computePromotionDiscount, isGroupPromotion, pickBestPromotion } = require('./promotionPricing');
 
 function promotion(overrides = {}) {
   return {
@@ -123,5 +123,69 @@ describe('computePromotionDiscount', () => {
     expect(computePromotionDiscount(promotion({ discount_type: 'FIXED_AMOUNT', discount_value: 50000 }), 10000)).toBe(
       10000,
     );
+  });
+});
+
+describe('group discount (min_tickets)', () => {
+  it('needs at least min_tickets seats in the order', () => {
+    const group = promotion({ min_tickets: 10 });
+    expect(isPromotionEligible(group, { orderValue: 0, ticketCount: 9 })).toEqual({
+      eligible: false,
+      reason: 'PROMOTION_MIN_TICKETS_NOT_MET',
+    });
+    expect(isPromotionEligible(group, { orderValue: 0, ticketCount: 10 }).eligible).toBe(true);
+  });
+
+  it('refuses a group discount when the caller did not say how many seats the order has', () => {
+    expect(isPromotionEligible(promotion({ min_tickets: 2 }), { orderValue: 0 }).reason).toBe('PROMOTION_MIN_TICKETS_NOT_MET');
+  });
+
+  it('leaves a promotion without a ticket minimum unaffected', () => {
+    expect(isPromotionEligible(promotion({ min_tickets: null }), { orderValue: 0 }).eligible).toBe(true);
+  });
+
+  it('calls a promotion with a minimum of 2+ tickets a group promotion', () => {
+    expect(isGroupPromotion(promotion({ min_tickets: 2 }))).toBe(true);
+    expect(isGroupPromotion(promotion({ min_tickets: 1 }))).toBe(false);
+    expect(isGroupPromotion(promotion({ min_tickets: null }))).toBe(false);
+    expect(isGroupPromotion(null)).toBe(false);
+  });
+});
+
+describe('pickBestPromotion', () => {
+  const context = { orderValue: 1000000, ticketCount: 10, branchId: 1, movieId: 1, showtimeId: 7, comboIds: [] };
+
+  it('picks the eligible promotion with the largest discount', () => {
+    const candidates = [
+      promotion({ id: 1, min_tickets: 5, discount_type: 'PERCENTAGE', discount_value: 5 }), // 50,000
+      promotion({ id: 2, min_tickets: 10, discount_type: 'PERCENTAGE', discount_value: 10 }), // 100,000
+      promotion({ id: 3, min_tickets: 20, discount_type: 'PERCENTAGE', discount_value: 30 }), // needs 20 seats
+      promotion({ id: 4, min_tickets: 2, discount_type: 'FIXED_AMOUNT', discount_value: 80000 }),
+    ];
+    const best = pickBestPromotion(candidates, context);
+    expect(best.promotion.id).toBe(2);
+    expect(best.discount).toBe(100000);
+  });
+
+  it('breaks a tie on the lowest id so the quote and the checkout agree', () => {
+    const candidates = [
+      promotion({ id: 9, min_tickets: 2, discount_type: 'FIXED_AMOUNT', discount_value: 50000 }),
+      promotion({ id: 4, min_tickets: 2, discount_type: 'FIXED_AMOUNT', discount_value: 50000 }),
+    ];
+    expect(pickBestPromotion(candidates, context).promotion.id).toBe(4);
+  });
+
+  it("skips a promotion the customer has used up, using each promotion's own usage count", () => {
+    const candidates = [
+      promotion({ id: 1, min_tickets: 2, per_customer_limit: 1, discount_value: 90000 }),
+      promotion({ id: 2, min_tickets: 2, per_customer_limit: 1, discount_value: 10000 }),
+    ];
+    const best = pickBestPromotion(candidates, context, new Map([[1, 1]]));
+    expect(best.promotion.id).toBe(2);
+  });
+
+  it('returns null when nothing applies', () => {
+    expect(pickBestPromotion([promotion({ id: 1, min_tickets: 50 })], context)).toBeNull();
+    expect(pickBestPromotion([], context)).toBeNull();
   });
 });

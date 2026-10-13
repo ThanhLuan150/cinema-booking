@@ -15,6 +15,8 @@ const systemConfigService = require('../services/systemConfig.service');
 const cashierShiftService = require('../services/cashierShift.service');
 const webhookService = require('../services/webhook.service');
 const inSeatOrderService = require('../services/inSeatOrder.service');
+const groupBookingService = require('../services/groupBooking.service');
+const { ticketsOutsideShowtime } = require('../utils/groupBooking');
 const nextId = require('../utils/nextId');
 
 const CANCELLABLE_BOOKING_STATUSES = ['PENDING', 'PAID'];
@@ -77,7 +79,8 @@ async function bookseat(req, res) {
       seat_code: t.seat_code,
       seat_type: t.seat_type,
       status: t.status,
-      held_by_me: t.status === 2 && t.held_by === accountId,
+      // A seat bound to the caller's own pending group booking is not a seat-map hold they can toggle.
+      held_by_me: t.status === 2 && t.held_by === accountId && !t.hold_booking_code,
       price: priceByTicketId.get(t.id)?.price ?? null,
     })),
   );
@@ -124,7 +127,7 @@ async function holdSeats(req, res) {
   let earliestExpiry = null;
   for (const seatCode of seatCodes) {
     const ticket = ticketBySeatCode.get(seatCode);
-    if (ticket && ticket.status === 2 && ticket.held_by === accountId) {
+    if (ticket && ticket.status === 2 && bookingRepository.isSeatCheckoutableBy(ticket, accountId)) {
       held.push({ id: ticket.id, seat_code: ticket.seat_code, status: ticket.status });
       const expiry = ticket.held_until ? new Date(ticket.held_until) : heldUntil;
       if (!earliestExpiry || expiry < earliestExpiry) earliestExpiry = expiry;
@@ -200,6 +203,16 @@ async function createMomoPayment(req, res) {
   const accountId = req.account.accountId;
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
 
+  // One booking is one showtime: every seat must be on the same one as the first.
+  const stray = tickets.length > 0 ? ticketsOutsideShowtime(tickets, tickets[0].schedule_id) : [];
+  if (stray.length > 0) {
+    return res.status(400).json({
+      message: 'All seats of a booking must be on the same showtime',
+      code: 'SEATS_NOT_SAME_SHOWTIME',
+      ticketIds: stray,
+    });
+  }
+
   let schedule = null;
   if (tickets.length > 0) {
     schedule = await bookingRepository.findScheduleById(tickets[0].schedule_id);
@@ -209,11 +222,7 @@ async function createMomoPayment(req, res) {
   }
 
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
-  const unavailable = ticketIds.filter((id) => {
-    const ticket = ticketById.get(Number(id));
-    if (!ticket) return true;
-    return !(ticket.status === 1 || (ticket.status === 2 && ticket.held_by === accountId));
-  });
+  const unavailable = ticketIds.filter((id) => !bookingRepository.isSeatCheckoutableBy(ticketById.get(Number(id)), accountId));
   if (unavailable.length > 0) {
     return res.status(409).json({
       message: 'One or more selected seats are no longer available',
@@ -378,6 +387,12 @@ async function applyMomoPaymentOutcome(req, body) {
     const result = await inSeatOrderService.applyMomoOutcome(body);
     return { success: Boolean(result.success), skip: Boolean(result.alreadyProcessed) };
   }
+  // A group booking (Ticket 52) is settled from its own booking row — never from extraData — and
+  // releases every seat on failure; see groupBooking.service.applyMomoOutcome.
+  if (await groupBookingService.isGroupBookingCode(body.orderId)) {
+    const result = await groupBookingService.applyMomoOutcome(body, { req });
+    return { success: Boolean(result.success), skip: Boolean(result.alreadyProcessed) };
+  }
 
   await paymentRepository.markProcessing(body.orderId);
   const orderPayload = decodeExtraData(body.extraData);
@@ -458,6 +473,17 @@ async function momoConfirm(req, res) {
     const payment = await paymentRepository.findByCode(req.body.orderId);
     if (payment.account_id !== req.account.accountId) return res.status(403).json({ message: 'Forbidden' });
     const result = await inSeatOrderService.applyMomoOutcome(req.body);
+    if (!result.success) {
+      return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
+    }
+    return res.json({ message: 'success', alreadyProcessed: Boolean(result.alreadyProcessed) });
+  }
+
+  // Same for a group booking's result landing here instead of /group-bookings/:code/momo-confirm.
+  if (await groupBookingService.isGroupBookingCode(req.body.orderId)) {
+    const payment = await paymentRepository.findByCode(req.body.orderId);
+    if (!payment || payment.account_id !== req.account.accountId) return res.status(403).json({ message: 'Forbidden' });
+    const result = await groupBookingService.applyMomoOutcome(req.body, { req });
     if (!result.success) {
       return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
     }
@@ -863,6 +889,13 @@ async function cancelBooking(req, res) {
   }
 
   const cancelled = await bookingRepository.cancelBooking(booking, { reason: req.body?.reason || null });
+  // Only a group booking can lose this race (its payment landed first) — see cancelBooking.
+  if (!cancelled || cancelled.status !== 'CANCELLED') {
+    return res.status(409).json({
+      message: `This booking cannot be cancelled from status ${cancelled ? cancelled.status : 'unknown'}`,
+      code: 'BOOKING_NOT_CANCELLABLE',
+    });
+  }
 
   await recordAudit({
     req,
@@ -1055,6 +1088,15 @@ async function createCounterSale(req, res) {
     if (branchId !== req.branchId) {
       return res.status(400).json({ message: 'All tickets must belong to the target cinema', code: 'TICKET_CINEMA_MISMATCH' });
     }
+  }
+  const saleTickets = await bookingRepository.findTicketsByIds(ticketIds);
+  const straySaleTickets = saleTickets.length > 0 ? ticketsOutsideShowtime(saleTickets, saleTickets[0].schedule_id) : [];
+  if (straySaleTickets.length > 0) {
+    return res.status(400).json({
+      message: 'All seats of a booking must be on the same showtime',
+      code: 'SEATS_NOT_SAME_SHOWTIME',
+      ticketIds: straySaleTickets,
+    });
   }
 
   const firstTicket = await bookingRepository.findTicketById(ticketIds[0]);

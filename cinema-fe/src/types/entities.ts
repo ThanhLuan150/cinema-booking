@@ -238,6 +238,8 @@ export interface Promotion {
   movie_ids: number[];
   showtime_ids: number[];
   combo_ids: number[];
+  /** Group discount: only for an order of at least this many tickets (null = any order). */
+  min_tickets?: number | null;
 }
 
 export interface Voucher {

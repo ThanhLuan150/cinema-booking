@@ -34,7 +34,26 @@ const INELIGIBILITY_MESSAGES = {
   PROMOTION_MOVIE_NOT_ELIGIBLE: 'Promotion is not applicable to this movie',
   PROMOTION_SHOWTIME_NOT_ELIGIBLE: 'Promotion is not applicable to this showtime',
   PROMOTION_COMBO_NOT_ELIGIBLE: 'Promotion is not applicable to the combos in this order',
+  PROMOTION_MIN_TICKETS_NOT_MET: 'This group discount needs more tickets in the order',
 };
+
+// The 400 body for an ineligible code, with the number the FE interpolates into its message.
+function ineligibleResponse(promotion, reason) {
+  return {
+    message: INELIGIBILITY_MESSAGES[reason] || `Minimum order of ${promotion.minimum_order_value} required to apply this code`,
+    code: reason,
+    ...(reason === 'PROMOTION_MIN_ORDER_NOT_MET' ? { minimumOrderValue: promotion.minimum_order_value } : {}),
+    ...(reason === 'PROMOTION_MIN_TICKETS_NOT_MET' ? { minTickets: promotion.min_tickets } : {}),
+  };
+}
+
+// min_tickets: undefined = not sent, null/'' = no minimum, otherwise a whole number >= 1.
+function normalizeMinTickets(value) {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') return null;
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 1 ? number : NaN;
+}
 
 function normalizeIdArray(value) {
   if (value === undefined) return undefined;
@@ -105,9 +124,10 @@ async function getById(req, res) {
 
 // POST /api/promotion/validate { code, branch_id, movie_id, showtime_id, combo_ids, order_value }
 // -> (auth) checks a code against every business rule and returns the backend-computed discount,
-// WITHOUT consuming a use. The frontend must never invent its own discount_amount.
+// WITHOUT consuming a use. The frontend must never invent its own discount_amount. `ticket_count` (seats
+// in the order) is what a group discount's min_tickets is checked against.
 async function validate(req, res) {
-  const { code, branch_id, movie_id, showtime_id, combo_ids, order_value } = req.body;
+  const { code, branch_id, movie_id, showtime_id, combo_ids, order_value, ticket_count } = req.body;
   if (!code) return res.status(400).json({ message: 'code is required' });
 
   const promotion = await promotionRepository.findByCode(code);
@@ -123,23 +143,17 @@ async function validate(req, res) {
     comboIds: Array.isArray(combo_ids) ? combo_ids : [],
     orderValue: order_value,
     customerUsedCount: usage ? usage.count : 0,
+    ticketCount: ticket_count,
   });
 
-  if (!eligibility.eligible) {
-    return res.status(400).json({
-      message:
-        INELIGIBILITY_MESSAGES[eligibility.reason] ||
-        `Minimum order of ${promotion.minimum_order_value} required to apply this code`,
-      code: eligibility.reason,
-      ...(eligibility.reason === 'PROMOTION_MIN_ORDER_NOT_MET' ? { minimumOrderValue: promotion.minimum_order_value } : {}),
-    });
-  }
+  if (!eligibility.eligible) return res.status(400).json(ineligibleResponse(promotion, eligibility.reason));
 
   res.json({
     code: promotion.code,
     discount_type: promotion.discount_type,
     discount_value: promotion.discount_value,
     discount_amount: computePromotionDiscount(promotion, order_value),
+    min_tickets: promotion.min_tickets ?? null,
   });
 }
 
@@ -147,7 +161,7 @@ async function validate(req, res) {
 // -> (auth) same eligibility + discount computation as /validate, but also records one use
 // against the promotion and the caller. Meant to be called once an order is actually finalized.
 async function apply(req, res) {
-  const { code, branch_id, movie_id, showtime_id, combo_ids, order_value } = req.body;
+  const { code, branch_id, movie_id, showtime_id, combo_ids, order_value, ticket_count } = req.body;
   if (!code) return res.status(400).json({ message: 'code is required' });
 
   const promotion = await promotionRepository.findByCode(code);
@@ -163,17 +177,10 @@ async function apply(req, res) {
     comboIds: Array.isArray(combo_ids) ? combo_ids : [],
     orderValue: order_value,
     customerUsedCount: usage ? usage.count : 0,
+    ticketCount: ticket_count,
   });
 
-  if (!eligibility.eligible) {
-    return res.status(400).json({
-      message:
-        INELIGIBILITY_MESSAGES[eligibility.reason] ||
-        `Minimum order of ${promotion.minimum_order_value} required to apply this code`,
-      code: eligibility.reason,
-      ...(eligibility.reason === 'PROMOTION_MIN_ORDER_NOT_MET' ? { minimumOrderValue: promotion.minimum_order_value } : {}),
-    });
-  }
+  if (!eligibility.eligible) return res.status(400).json(ineligibleResponse(promotion, eligibility.reason));
 
   const discountAmount = computePromotionDiscount(promotion, order_value);
   await promotionRepository.recordUsage(promotion.id, req.account.accountId);
@@ -202,6 +209,7 @@ async function create(req, res) {
     usage_limit,
     per_customer_limit,
     status,
+    min_tickets,
   } = req.body;
 
   if (!code || !name || !discount_type || discount_value === undefined || !start_at || !end_at) {
@@ -210,6 +218,9 @@ async function create(req, res) {
 
   const discountError = validateDiscount(discount_type, discount_value);
   if (discountError) return res.status(400).json({ message: discountError });
+
+  const minTickets = normalizeMinTickets(min_tickets);
+  if (Number.isNaN(minTickets)) return res.status(400).json({ message: 'min_tickets must be a whole number of at least 1' });
 
   const startAt = new Date(start_at);
   const endAt = new Date(end_at);
@@ -248,6 +259,7 @@ async function create(req, res) {
     usage_limit: usage_limit !== undefined && usage_limit !== null ? Number(usage_limit) : null,
     per_customer_limit: per_customer_limit !== undefined && per_customer_limit !== null ? Number(per_customer_limit) : null,
     status: STATUSES.includes(status) ? status : Promotion.STATUS.ACTIVE,
+    min_tickets: minTickets ?? null,
     ...normalizedScopes,
   });
   broadcastPromotion(promotion, REALTIME_ACTION.CREATED);
@@ -274,6 +286,10 @@ async function update(req, res) {
   for (const field of simpleFields) {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   }
+
+  const minTickets = normalizeMinTickets(req.body.min_tickets);
+  if (Number.isNaN(minTickets)) return res.status(400).json({ message: 'min_tickets must be a whole number of at least 1' });
+  if (minTickets !== undefined) updates.min_tickets = minTickets;
 
   if (req.body.status !== undefined) {
     if (!STATUSES.includes(req.body.status)) return res.status(400).json({ message: `status must be one of ${STATUSES.join(', ')}` });

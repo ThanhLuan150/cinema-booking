@@ -21,6 +21,7 @@ export function emptyPromotionForm(branchId: string): PromotionFormValues {
     end_at: '',
     usage_limit: '',
     per_customer_limit: '',
+    min_tickets: '',
     branch_id: branchId,
     movie_id: '',
     combo_id: '',

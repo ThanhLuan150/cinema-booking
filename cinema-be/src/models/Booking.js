@@ -1,6 +1,25 @@
 const mongoose = require('mongoose');
 const { withCleanJSON } = require('./plugins');
 
+const BOOKING_TYPE = { STANDARD: 'STANDARD', GROUP: 'GROUP' };
+const ORGANIZER_TYPE = { CUSTOMER: 'CUSTOMER', COMPANY: 'COMPANY' };
+
+const groupSchema = new mongoose.Schema(
+  {
+    organizer_type: { type: String, enum: Object.values(ORGANIZER_TYPE), required: true },
+    group_name: { type: String, default: '' },
+    company_name: { type: String, default: '' },
+    tax_code: { type: String, default: '' },
+    contact_name: { type: String, default: '' },
+    contact_phone: { type: String, default: '' },
+    contact_email: { type: String, default: '' },
+    note: { type: String, default: '' },
+    // The discount is the best group promotion the server found, not a code the customer typed.
+    auto_discount: { type: Boolean, default: false },
+  },
+  { _id: false },
+);
+
 const bookingSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
@@ -28,6 +47,11 @@ const bookingSchema = new mongoose.Schema(
     cancel_reason: { type: String, default: null },
     created_by: { type: Number, default: null }, // employee/branch admin who created it via counter-sale
     needs_reschedule_response: { type: Boolean, default: false },
+    booking_type: { type: String, enum: Object.values(BOOKING_TYPE), default: BOOKING_TYPE.STANDARD, index: true },
+    group: { type: groupSchema, default: null },
+    // Group checkout's Idempotency-Key: a retried request gets back the booking the first one made.
+    // Left unset (never null) on every other booking, so the sparse unique index ignores them.
+    idempotency_key: { type: String, unique: true, sparse: true },
   },
   { timestamps: true },
 );
@@ -36,5 +60,7 @@ withCleanJSON(bookingSchema);
 
 const Booking = mongoose.model('Booking', bookingSchema);
 Booking.STATUS = { PENDING: 'PENDING', PAID: 'PAID', CANCELLED: 'CANCELLED', EXPIRED: 'EXPIRED', COMPLETED: 'COMPLETED' };
+Booking.TYPE = BOOKING_TYPE;
+Booking.ORGANIZER_TYPE = ORGANIZER_TYPE;
 
 module.exports = Booking;

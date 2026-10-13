@@ -24,6 +24,7 @@ const promotionSchema = new mongoose.Schema(
     movie_ids: { type: [Number], default: [] },
     showtime_ids: { type: [Number], default: [] },
     combo_ids: { type: [Number], default: [] },
+    min_tickets: { type: Number, default: null, min: 1 },
   },
   { timestamps: true },
 );

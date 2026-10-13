@@ -20,6 +20,7 @@ function promotionToFormValues(promotion: Promotion): PromotionFormValues {
     end_at: promotion.end_at.slice(0, 10),
     usage_limit: promotion.usage_limit === null ? '' : String(promotion.usage_limit),
     per_customer_limit: promotion.per_customer_limit === null ? '' : String(promotion.per_customer_limit),
+    min_tickets: promotion.min_tickets === null || promotion.min_tickets === undefined ? '' : String(promotion.min_tickets),
     branch_id: promotion.branch_ids.length === 0 ? ALL_BRANCHES : String(promotion.branch_ids[0]),
     movie_id: promotion.movie_ids.length > 0 ? String(promotion.movie_ids[0]) : '',
     combo_id: promotion.combo_ids.length > 0 ? String(promotion.combo_ids[0]) : '',

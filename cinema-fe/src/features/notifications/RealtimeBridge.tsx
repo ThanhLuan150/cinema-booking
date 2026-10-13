@@ -27,6 +27,7 @@ import { ownerGiftCardsQueryKey } from '@/features/owner/hooks/useOwnerGiftCards
 import { comboOrdersQueryKey } from '@/features/comboOrder/hooks/useComboOrders';
 import { kdsBoardQueryKey } from '@/features/kitchenDisplay/hooks/useKdsBoard';
 import { inSeatQueryKey } from '@/features/inSeat/hooks/useInSeat';
+import { groupBookingQueryKey } from '@/features/groupBooking/hooks/useGroupBooking';
 import { ownerCombosQueryKey } from '@/features/owner/hooks/useOwnerCombos';
 import { checkinLogsQueryKey } from '@/features/owner/devices/hooks/useCheckinLogs';
 import { devicesQueryKey } from '@/features/owner/devices/hooks/useDevices';
@@ -104,11 +105,8 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.BRANCH_UPDATED]: [adminCinemasQueryKey, myCinemasQueryKey, ['cinemas'], ['topCinemas']],
   [REALTIME_EVENT.SCHEDULE_UPDATED]: [schedulesQueryKey, moviesQueryKey],
   // ['ticket'] = every open ticket detail: a seat swap made in another tab (or by staff) moves its seat + QR.
-  [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey, ['ticket']],
-  // The customer's own entry changed, or the queue they are in moved. The offer itself also arrives as
-  // a notification (which toasts), so this one only refreshes.
-  [REALTIME_EVENT.WAITLIST_UPDATED]: [waitlistQueryKey],
-  [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey, inSeatQueryKey],
+  [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey, ['ticket'], groupBookingQueryKey],
+  [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey, inSeatQueryKey, groupBookingQueryKey],
   [REALTIME_EVENT.REFUND_UPDATED]: [myRefundsQueryKey, adminRefundsQueryKey],
   [REALTIME_EVENT.GIFT_CARD_UPDATED]: [myGiftCardsQueryKey, ownerGiftCardsQueryKey],
   // The counter's order list and the Kitchen Display read the same orders — and so does the customer's

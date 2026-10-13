@@ -326,6 +326,11 @@ async function announceSeatsReleased(tickets) {
   broadcastSeatUpdate(tickets, 'AVAILABLE');
   await waitlistService.onSeatsReleased(tickets);
 }
+function isSeatCheckoutableBy(ticket, accountId) {
+  if (!ticket) return false;
+  if (ticket.status === Ticket.STATUS.AVAILABLE) return true;
+  return ticket.status === Ticket.STATUS.HELD && ticket.held_by === accountId && !ticket.hold_booking_code;
+}
 
 async function timeoutExpiredHolds(filter) {
   // Read the rows before they flip so the broadcast below knows which seats freed up; the sweep
@@ -380,7 +385,8 @@ async function holdTickets({ scheduleId, seatCodes, accountId, until }) {
     {
       schedule_id: Number(scheduleId),
       seat_code: { $in: seatCodes },
-      $or: [{ status: Ticket.STATUS.AVAILABLE }, { status: Ticket.STATUS.HELD, held_by: accountId }],
+      // A seat bound to the caller's own pending group booking is that booking's, not a seat-map hold.
+      $or: [{ status: Ticket.STATUS.AVAILABLE }, { status: Ticket.STATUS.HELD, held_by: accountId, hold_booking_code: null }],
     },
     // $max: re-holding never shortens a hold the caller already has (a waitlist offer outlasts the booking hold).
     { $set: { status: Ticket.STATUS.HELD, held_by: accountId }, $max: { held_until: until } },
@@ -389,19 +395,20 @@ async function holdTickets({ scheduleId, seatCodes, accountId, until }) {
   // Only the seats this call actually won — the losers of a race are already someone else's hold
   // and were broadcast when that hold was taken.
   broadcastSeatUpdate(
-    tickets.filter((t) => t.status === Ticket.STATUS.HELD && t.held_by === accountId),
+    tickets.filter((t) => t.status === Ticket.STATUS.HELD && isSeatCheckoutableBy(t, accountId)),
     'HELD',
   );
   return tickets;
 }
 
 async function releaseTickets({ scheduleId, seatCodes, accountId }) {
+  // Seat-map holds only: a seat bound to a pending group booking is released with that booking.
   const releasing = await Ticket.find(
-    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId },
+    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId, hold_booking_code: null },
     { schedule_id: 1, seat_code: 1 },
   );
   await Ticket.updateMany(
-    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId },
+    { schedule_id: Number(scheduleId), seat_code: { $in: seatCodes }, status: Ticket.STATUS.HELD, held_by: accountId, hold_booking_code: null },
     { $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null } },
   );
   await announceSeatsReleased(releasing);
@@ -752,6 +759,13 @@ async function cancelPendingBookingByCode(code) {
 // cancels its sibling Invoice rows. Caller is responsible for authorization + cancellation
 // window policy checks.
 async function cancelBooking(booking, { reason = null } = {}) {
+  // Ticket 52: a PENDING group booking's payment may still land while this runs, so it is flipped
+  // atomically and only the seats still bound to it are freed (never a seat that lapsed to someone else).
+  if (booking.booking_type === Booking.TYPE.GROUP && booking.status === Booking.STATUS.PENDING) {
+    const cancelled = await cancelPendingGroupBooking(booking.code, { reason });
+    return cancelled || Booking.findOne({ id: booking.id });
+  }
+
   const freed = await Ticket.find(
     { id: { $in: booking.ticket_ids }, status: { $in: [Ticket.STATUS.BOOKED, Ticket.STATUS.HELD] } },
     { schedule_id: 1, seat_code: 1 },
@@ -947,12 +961,137 @@ async function applyRefund(booking) {
 
 async function expireStalePendingBookings() {
   const stale = await Booking.find({ status: Booking.STATUS.PENDING, expires_at: { $lt: new Date() } });
+  let expired = 0;
   for (const booking of stale) {
-    await timeoutTicketsByIds(booking.ticket_ids);
-    booking.status = Booking.STATUS.EXPIRED;
-    await booking.save();
+    // Flipped atomically: a payment confirmation (PENDING -> PAID) or a cancel that lands while the
+    // sweep runs wins cleanly, instead of being overwritten by a stale save of this read.
+    const flipped = await Booking.findOneAndUpdate(
+      { id: booking.id, status: Booking.STATUS.PENDING },
+      { $set: { status: Booking.STATUS.EXPIRED } },
+      { new: true },
+    );
+    if (!flipped) continue;
+    if (flipped.booking_type === Booking.TYPE.GROUP) await releaseGroupHold(flipped.code, flipped.ticket_ids);
+    else await timeoutTicketsByIds(flipped.ticket_ids);
+    expired += 1;
   }
-  return stale.length;
+  return expired;
+}
+
+// ---- Ticket 52: group booking seat transitions -------------------------------------------------
+// A group booking's seats are claimed for it one by one (each claim a single atomic findOneAndUpdate),
+// marked with the booking's code (hold_booking_code) while it is PENDING, and either all booked or all
+// released together. The orchestration (transaction / compensation) is groupBooking.repository's; the
+// seat writes live here with every other seat mutator.
+
+// AVAILABLE, or the caller's own seat-map hold -> HELD for the booking. Returns the pre-image (so a
+// failed checkout can put the seat back exactly as it was) or null when the seat is not claimable.
+async function claimSeatForGroup({ ticketId, scheduleId, accountId, bookingCode, until, session = null }) {
+  return Ticket.findOneAndUpdate(
+    {
+      id: Number(ticketId),
+      schedule_id: Number(scheduleId),
+      $or: [{ status: Ticket.STATUS.AVAILABLE }, { status: Ticket.STATUS.HELD, held_by: accountId, hold_booking_code: null }],
+    },
+    { $set: { status: Ticket.STATUS.HELD, held_by: accountId, held_until: until, hold_booking_code: bookingCode } },
+    { new: false, session },
+  );
+}
+
+// Compensation for a checkout that could not claim every seat (no transaction to roll back).
+async function restoreGroupClaims(preImages, bookingCode) {
+  for (const pre of preImages) {
+    const wasHeld = pre.status === Ticket.STATUS.HELD;
+    await Ticket.updateOne(
+      { id: pre.id, status: Ticket.STATUS.HELD, hold_booking_code: bookingCode },
+      {
+        $set: {
+          status: pre.status,
+          held_by: wasHeld ? pre.held_by : null,
+          held_until: wasHeld ? pre.held_until : null,
+          hold_booking_code: null,
+        },
+      },
+    );
+  }
+}
+
+// Payment confirmed: the booking's seat -> BOOKED. Still held for this booking, or — the hold lapsed
+// but nobody took the seat meanwhile — free. Returns the pre-image, or null when the seat is lost.
+async function bookSeatForGroup({ ticketId, bookingCode, session = null }) {
+  return Ticket.findOneAndUpdate(
+    {
+      id: Number(ticketId),
+      // TIMEOUT is the hold sweep's transient hop (HELD -> TIMEOUT -> AVAILABLE): still this booking's seat.
+      $or: [
+        { status: { $in: [Ticket.STATUS.HELD, Ticket.STATUS.TIMEOUT] }, hold_booking_code: bookingCode },
+        { status: Ticket.STATUS.AVAILABLE },
+      ],
+    },
+    { $set: { status: Ticket.STATUS.BOOKED, held_by: null, held_until: null, hold_booking_code: null } },
+    { new: false, session },
+  );
+}
+
+// Compensation for a payment confirmation that failed part-way (no transaction to roll back): each seat
+// goes back to exactly what bookSeatForGroup found — still held for the booking, or free.
+async function restoreBookedGroupSeats(preImages) {
+  for (const pre of preImages) {
+    const wasHeld = pre.status === Ticket.STATUS.HELD;
+    await Ticket.updateOne(
+      { id: pre.id, status: Ticket.STATUS.BOOKED },
+      {
+        $set: {
+          status: wasHeld ? Ticket.STATUS.HELD : Ticket.STATUS.AVAILABLE,
+          held_by: wasHeld ? pre.held_by : null,
+          held_until: wasHeld ? pre.held_until : null,
+          hold_booking_code: wasHeld ? pre.hold_booking_code : null,
+        },
+      },
+    );
+  }
+}
+
+// Payment failed / cancelled / expired: frees exactly the seats still held for this booking. Safe to
+// call any number of times, and never touches a seat that has since become someone else's.
+async function releaseGroupHold(bookingCode, ticketIds) {
+  const filter = {
+    id: { $in: (ticketIds || []).map(Number) },
+    status: Ticket.STATUS.HELD,
+    hold_booking_code: bookingCode,
+  };
+  const releasing = await Ticket.find(filter, { schedule_id: 1, seat_code: 1 });
+  if (releasing.length === 0) return 0;
+  const result = await Ticket.updateMany(filter, {
+    $set: { status: Ticket.STATUS.AVAILABLE, held_by: null, held_until: null, hold_booking_code: null },
+  });
+  broadcastSeatUpdate(releasing, 'AVAILABLE');
+  return result.modifiedCount;
+}
+
+// PENDING -> CANCELLED (atomic), then its seats are released. The release also runs when the booking
+// had already left PENDING without paying (expired / cancelled by another path), so it is idempotent.
+async function cancelPendingGroupBooking(bookingCode, { reason = null } = {}) {
+  const cancelled = await Booking.findOneAndUpdate(
+    { code: bookingCode, booking_type: Booking.TYPE.GROUP, status: Booking.STATUS.PENDING },
+    { $set: { status: Booking.STATUS.CANCELLED, cancelled_at: new Date(), cancel_reason: reason } },
+    { new: true },
+  );
+  const booking = cancelled || (await Booking.findOne({ code: bookingCode }));
+  if (booking && [Booking.STATUS.CANCELLED, Booking.STATUS.EXPIRED].includes(booking.status)) {
+    await releaseGroupHold(bookingCode, booking.ticket_ids);
+  }
+  if (cancelled) {
+    const payload = {
+      action: REALTIME_ACTION.STATUS_CHANGED,
+      bookingId: cancelled.id,
+      code: cancelled.code,
+      status: cancelled.status,
+    };
+    emitBranchEvent(cancelled.branch_id, REALTIME_EVENT.BOOKING_UPDATED, payload);
+    emitToAccount(cancelled.account_id, REALTIME_EVENT.BOOKING_UPDATED, payload);
+  }
+  return cancelled;
 }
 
 // Once every sibling Invoice under a Booking has been checked in, the booking itself is done.
@@ -1041,7 +1180,11 @@ async function priceOrderItems({ ticketIds, comboIds = [], accountId = null, enf
     await inventoryRepository.assertAvailableForComboIds(schedule.cinema_id, comboIds);
   }
 
-  const combos = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
+  // A repeated combo id is a quantity (stock, the linked ComboOrder and the kitchen all count it that
+  // way), so it is priced once per occurrence too.
+  const found = comboIds.length > 0 ? await Combo.find({ id: { $in: comboIds.map(Number) } }) : [];
+  const comboById = new Map(found.map((c) => [c.id, c]));
+  const combos = comboIds.map((id) => comboById.get(Number(id))).filter(Boolean);
   const comboTotal = combos.reduce((sum, c) => sum + c.price, 0);
 
   return {
@@ -1085,6 +1228,7 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, prom
       comboIds,
       orderValue,
       customerUsedCount: usage ? usage.count : 0,
+      ticketCount: ticketIds.length,
     });
     if (eligibility.eligible) {
       discountAmount = computePromotionDiscount(promotion, orderValue);
@@ -1107,6 +1251,14 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, prom
 
 module.exports = {
   priceOrderItems,
+  isSeatCheckoutableBy,
+  createLinkedComboOrder,
+  claimSeatForGroup,
+  restoreGroupClaims,
+  bookSeatForGroup,
+  restoreBookedGroupSeats,
+  releaseGroupHold,
+  cancelPendingGroupBooking,
   findScheduleByMovieDateTime,
   findTicketsByScheduleId,
   findUpcomingSchedulesForMovie,

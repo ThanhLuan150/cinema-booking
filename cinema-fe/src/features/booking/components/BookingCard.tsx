@@ -59,6 +59,17 @@ export function BookingCard({
         <p className="mt-1 text-sm text-txt/70">
           {booking.schedule?.movie_date} · {booking.schedule?.time_begin}
         </p>
+        {booking.booking_type === 'GROUP' && (
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-sm">
+            <span className="rounded-full bg-accent/20 px-2 py-0.5 text-xs font-medium text-accent">
+              <i className="fa-solid fa-users mr-1" aria-hidden="true" />
+              {t('myBookings.groupBadge', { count: booking.tickets.length })}
+            </span>
+            {(booking.group?.company_name || booking.group?.group_name) && (
+              <span className="text-txt/70">{booking.group?.company_name || booking.group?.group_name}</span>
+            )}
+          </p>
+        )}
         {booking.needs_reschedule_response && (
           <RescheduleBanner
             onAccept={() => onAcceptReschedule(booking.id)}
@@ -84,6 +95,15 @@ export function BookingCard({
             <i className="fa-solid fa-qrcode mr-1" />
             {t('myBookings.viewTickets')}
           </Link>
+          {booking.booking_type === 'GROUP' && (
+            <Link
+              to={ROUTES.groupBookingDetail(booking.code)}
+              className="rounded-lg border border-accent/60 px-3 py-1.5 text-xs font-medium text-accent no-underline transition-colors hover:bg-accent/10"
+            >
+              <i className="fa-solid fa-users mr-1" />
+              {t('myBookings.groupDetails')}
+            </Link>
+          )}
           <button
             type="button"
             className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-txt transition-colors hover:bg-white/5"

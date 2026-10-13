@@ -77,6 +77,8 @@ describe('systemConfig.service', () => {
           'SEAT_SWAP_AFTER_PAYMENT',
           'SEAT_SWAP_PRICE_POLICY',
           'WAITLIST_OFFER_TIME',
+          'GROUP_BOOKING_MIN_SEATS',
+          'GROUP_BOOKING_MAX_SEATS',
         ].sort(),
       );
     });

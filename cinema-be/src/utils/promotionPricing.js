@@ -1,9 +1,11 @@
 // Shared eligibility + discount math for Promotion, used by both the /promotion/validate
 // (preview) and /promotion/apply (consume-on-success) endpoints so the two can never disagree.
-
+function isGroupPromotion(promotion) {
+  return Boolean(promotion) && Number(promotion.min_tickets) >= 2;
+}
 function isPromotionEligible(
   promotion,
-  { branchId, movieId, showtimeId, comboIds = [], orderValue, customerUsedCount = 0 } = {},
+  { branchId, movieId, showtimeId, comboIds = [], orderValue, customerUsedCount = 0, ticketCount = 0 } = {},
 ) {
   if (!promotion) return { eligible: false, reason: 'PROMOTION_NOT_FOUND' };
   if (promotion.status !== 'ACTIVE') return { eligible: false, reason: 'PROMOTION_INACTIVE' };
@@ -23,6 +25,9 @@ function isPromotionEligible(
   }
   if (Number(orderValue || 0) < promotion.minimum_order_value) {
     return { eligible: false, reason: 'PROMOTION_MIN_ORDER_NOT_MET' };
+  }
+  if (promotion.min_tickets !== null && promotion.min_tickets !== undefined && Number(ticketCount || 0) < promotion.min_tickets) {
+    return { eligible: false, reason: 'PROMOTION_MIN_TICKETS_NOT_MET' };
   }
 
   if (promotion.branch_ids.length > 0 && !promotion.branch_ids.includes(Number(branchId))) {
@@ -57,4 +62,24 @@ function computePromotionDiscount(promotion, orderValue) {
   return Math.max(0, Math.min(discount, value));
 }
 
-module.exports = { isPromotionEligible, computePromotionDiscount };
+// The group discount a group order gets without typing a code: of the candidate promotions, every
+// eligible one (same rules as a typed code), the largest discount wins; ties go to the lowest id so the
+// pick is stable between the quote and the checkout. Returns { promotion, discount } or null.
+function pickBestPromotion(candidates, context, customerUsedCountById = new Map()) {
+  let best = null;
+  for (const promotion of candidates || []) {
+    const eligibility = isPromotionEligible(promotion, {
+      ...context,
+      customerUsedCount: customerUsedCountById.get(promotion.id) || 0,
+    });
+    if (!eligibility.eligible) continue;
+    const discount = computePromotionDiscount(promotion, context.orderValue);
+    if (discount <= 0) continue;
+    if (!best || discount > best.discount || (discount === best.discount && promotion.id < best.promotion.id)) {
+      best = { promotion, discount };
+    }
+  }
+  return best;
+}
+
+module.exports = { isPromotionEligible, computePromotionDiscount, isGroupPromotion, pickBestPromotion };

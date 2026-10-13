@@ -69,6 +69,8 @@ export interface PromotionValidationPayload {
   showtime_id: number | null;
   combo_ids: number[];
   order_value: number;
+  /** Seats in the order: a group discount (min_tickets) is checked against it. */
+  ticket_count?: number;
 }
 
 export interface PromotionValidationResult {
@@ -137,6 +139,9 @@ export interface Booking {
   paid_at: string | null;
   cancelled_at: string | null;
   needs_reschedule_response: boolean;
+  /** Ticket 52: GROUP for a group booking (its own page: ROUTES.groupBookingDetail). */
+  booking_type?: 'STANDARD' | 'GROUP';
+  group?: { organizer_type: 'CUSTOMER' | 'COMPANY'; group_name: string; company_name: string } | null;
   movie?: InvoiceMovie | null;
   schedule?: InvoiceSchedule | null;
   branch?: { id: number; name: string } | null;
