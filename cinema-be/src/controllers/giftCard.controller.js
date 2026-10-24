@@ -194,10 +194,7 @@ async function pay(req, res) {
   // Every seat must currently be HELD by this account, exactly like the MoMo checkout guard.
   const tickets = await bookingRepository.findTicketsByIds(ticketIds);
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
-  const unavailable = ticketIds.filter((id) => {
-    const ticket = ticketById.get(Number(id));
-    return !ticket || !(ticket.status === 1 || (ticket.status === 2 && ticket.held_by === accountId));
-  });
+  const unavailable = ticketIds.filter((id) => !bookingRepository.isSeatCheckoutableBy(ticketById.get(Number(id)), accountId));
   if (unavailable.length > 0) {
     return res.status(409).json({
       message: 'One or more selected seats are no longer available',

@@ -29,6 +29,16 @@ function inSeatRedirectUrl() {
   }
 }
 
+function groupBookingRedirectUrl() {
+  if (process.env.MOMO_GROUP_REDIRECT_URL) return process.env.MOMO_GROUP_REDIRECT_URL;
+  const base = process.env.MOMO_REDIRECT_URL || DEFAULT_REDIRECT_URL;
+  try {
+    return new URL('/GroupBooking/PaymentResult', base).toString();
+  } catch {
+    return 'http://localhost:3000/GroupBooking/PaymentResult';
+  }
+}
+
 // Creates a MoMo "captureWallet" payment request and returns the hosted payUrl the
 // browser should redirect to. `orderPayload` is round-tripped through MoMo's
 // `extraData` field so the IPN/redirect callback can recover what was being purchased
@@ -116,4 +126,11 @@ function verifyMomoSignature(params) {
   return expected === signature;
 }
 
-module.exports = { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData, encodeExtraData, inSeatRedirectUrl };
+module.exports = {
+  createMomoPaymentUrl,
+  verifyMomoSignature,
+  decodeExtraData,
+  encodeExtraData,
+  inSeatRedirectUrl,
+  groupBookingRedirectUrl,
+};

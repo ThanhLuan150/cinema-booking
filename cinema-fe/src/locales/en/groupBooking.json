@@ -1,0 +1,93 @@
+{
+  "pageTitle": "Group booking",
+  "showtime": "Showtime {{date}} · {{time}}",
+  "intro": "Book many seats of one showtime in a single booking, add food and drinks for everyone, and pay once. A group discount is applied automatically when your group qualifies.",
+  "backToRegular": "← Back to regular booking",
+  "missingShowtime": "Choose a movie and a showtime first.",
+  "seats": {
+    "screen": "Screen",
+    "takenMeanwhile": "Someone else took this seat — tap to remove it",
+    "empty": {
+      "title": "No seat map for this showtime",
+      "description": "Please choose another showtime."
+    }
+  },
+  "combos": {
+    "title": "Food & drinks for the group",
+    "hint": "Pick a quantity for each item, e.g. 5 popcorn and 10 drinks.",
+    "increase": "One more {{name}}",
+    "decrease": "One less {{name}}",
+    "quantity": "Quantity of {{name}}"
+  },
+  "organizer": {
+    "title": "Who is this booking for?",
+    "typeLabel": "Booking for",
+    "type": {
+      "CUSTOMER": "A private group",
+      "COMPANY": "A company"
+    },
+    "groupName": "Group name (optional)",
+    "companyName": "Company name",
+    "taxCode": "Tax code (optional)",
+    "contactName": "Contact person",
+    "contactPhone": "Contact phone",
+    "contactEmail": "Contact email",
+    "note": "Note for the cinema",
+    "errors": {
+      "companyNameRequired": "Enter the company name.",
+      "taxCodeInvalid": "A tax code is 10 digits, optionally followed by a 3-digit branch suffix.",
+      "emailInvalid": "Enter a valid email address.",
+      "phoneInvalid": "Enter a valid phone number.",
+      "fixFields": "Please check the highlighted fields."
+    }
+  },
+  "summary": {
+    "title": "Your group order",
+    "seatsSelected_one": "{{count}} seat selected",
+    "seatsSelected_other": "{{count}} seats selected",
+    "limits": "{{min}}–{{max}} seats per group",
+    "seats_one": "{{count}} ticket",
+    "seats_other": "{{count}} tickets",
+    "comboLine": "{{name}} × {{quantity}}",
+    "discount": {
+      "GROUP_PROMOTION": "Group discount {{code}} ({{min}}+ tickets)",
+      "PROMOTION_CODE": "Promotion {{code}}",
+      "VOUCHER": "Voucher {{code}}"
+    },
+    "total": "Total",
+    "unavailable": "No longer available: {{seats}}. Choose other seats.",
+    "shortage": "Only {{available}} × {{item}} left.",
+    "promotionCode": "Promotion code",
+    "promotionPlaceholder": "Leave empty for the automatic group discount",
+    "promotionHint": "A code you enter replaces the automatic group discount.",
+    "pay": "Pay with MoMo",
+    "payHint": "All seats are reserved together when you pay — if the payment fails, every seat is released."
+  },
+  "detail": {
+    "title": "Group booking",
+    "code": "Booking code: {{code}}",
+    "pendingNotice": "Your seats are reserved until {{time}}. Complete the payment to receive the tickets.",
+    "refundPending": "The payment arrived after the booking could no longer be honoured. It will be refunded.",
+    "seats_one": "{{count}} seat",
+    "seats_other": "{{count}} seats",
+    "combos": "Food & drinks",
+    "organizer": "Organizer",
+    "discount": "Discount {{code}}",
+    "tickets_one": "{{count}} ticket",
+    "tickets_other": "{{count}} tickets",
+    "continuePayment": "Continue payment",
+    "cancel": "Cancel and release the seats",
+    "cancelConfirm": "Cancel this group booking? Every seat will be released.",
+    "cancelled": "The group booking was cancelled and its seats released.",
+    "myBookings": "My bookings"
+  },
+  "result": {
+    "processing": "Confirming your payment…",
+    "paid": "Payment received — your group tickets are ready.",
+    "failed": "The payment did not go through. Your seats have been released.",
+    "refundPending": "The payment arrived too late for these seats; it will be refunded.",
+    "missing": "This payment result is incomplete.",
+    "loginRequired": "Sign in to confirm your payment.",
+    "viewBooking": "View the group booking"
+  }
+}

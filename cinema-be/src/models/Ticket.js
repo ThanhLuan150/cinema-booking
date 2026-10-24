@@ -11,6 +11,7 @@ const ticketSchema = new mongoose.Schema(
     status: { type: Number, default: 1 }, // 0 = booked/sold, 1 = available, 2 = held, 3 = timeout (transient hop between HELD and AVAILABLE)
     held_by: { type: Number, default: null }, // accountId currently holding this seat, while status === HELD
     held_until: { type: Date, default: null }, // hold expiry; bookseat/hold sweep expired holds back to AVAILABLE
+    hold_booking_code: { type: String, default: null },
   },
   { timestamps: true },
 );

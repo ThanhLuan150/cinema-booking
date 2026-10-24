@@ -39,6 +39,7 @@ function toPromotionPayload(values: PromotionFormValues): PromotionPayload {
     end_at: values.end_at,
     usage_limit: values.usage_limit === '' ? null : Number(values.usage_limit),
     per_customer_limit: values.per_customer_limit === '' ? null : Number(values.per_customer_limit),
+    min_tickets: values.min_tickets === '' ? null : Number(values.min_tickets),
     branch_ids: values.branch_id === ALL_BRANCHES ? [] : values.branch_id ? [Number(values.branch_id)] : [],
     movie_ids: values.movie_id ? [Number(values.movie_id)] : [],
     combo_ids: values.combo_id ? [Number(values.combo_id)] : [],
@@ -133,6 +134,9 @@ function PromotionList() {
       }
       if (values.per_customer_limit !== '' && Number(values.per_customer_limit) < 1) {
         errors.per_customer_limit = t('promotions.validation.perCustomerLimitInvalid');
+      }
+      if (values.min_tickets !== '' && !(Number.isInteger(Number(values.min_tickets)) && Number(values.min_tickets) >= 1)) {
+        errors.min_tickets = t('promotions.validation.minTicketsInvalid');
       }
 
       if (!values.start_at) errors.start_at = t('promotions.validation.startAtRequired');

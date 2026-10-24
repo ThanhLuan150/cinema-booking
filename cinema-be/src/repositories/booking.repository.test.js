@@ -1600,8 +1600,9 @@ describe('booking.repository', () => {
 
         it('allows an order that fits, including exactly the remaining stock', async () => {
           await seedShow(2);
+          // A repeated id is a quantity: two popcorns are stocked, sold and charged as two.
           await expect(bookingRepository.priceOrderItems({ ticketIds: [1], comboIds: [1, 1] })).resolves.toMatchObject({
-            comboTotal: 40000,
+            comboTotal: 80000,
           });
         });
 

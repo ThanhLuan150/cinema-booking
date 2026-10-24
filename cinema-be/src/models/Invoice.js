@@ -46,6 +46,7 @@ const invoiceSchema = new mongoose.Schema(
     checked_in_by: { type: Number, default: null }, // account_id of the ticket.checkin staff who scanned it
     checkin_branch_id: { type: Number, default: null }, // branch the check-in was performed at
     seat_swaps: { type: [seatSwapSchema], default: [] },
+    issue_key: { type: String, unique: true, sparse: true },
   },
   { timestamps: true },
 );

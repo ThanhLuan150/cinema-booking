@@ -471,8 +471,13 @@
       "perCustomerLimitInvalid": "Giới hạn mỗi khách hàng phải từ 1 trở lên.",
       "startAtRequired": "Vui lòng chọn ngày bắt đầu.",
       "endAtRequired": "Vui lòng chọn ngày kết thúc.",
-      "dateRangeInvalid": "Ngày kết thúc phải sau ngày bắt đầu."
-    }
+      "dateRangeInvalid": "Ngày kết thúc phải sau ngày bắt đầu.",
+      "minTicketsInvalid": "Nhập số nguyên từ 1 trở lên, hoặc để trống."
+    },
+    "minTicketsLabel": "Ưu đãi nhóm: số vé tối thiểu",
+    "minTicketsPlaceholder": "Để trống = mọi đơn",
+    "minTicketsHint": "Đặt từ 2 trở lên để biến khuyến mãi này thành ưu đãi nhóm: chỉ áp dụng cho đơn có ít nhất số vé đó và được tự động áp dụng cho đặt vé nhóm.",
+    "groupBadge": "Nhóm {{count}}+"
   },
   "pricingRules": {
     "breadcrumb": "Quy tắc giá vé",

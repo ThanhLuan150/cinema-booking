@@ -1,0 +1,93 @@
+{
+  "pageTitle": "Đặt vé nhóm",
+  "showtime": "Suất chiếu {{date}} · {{time}}",
+  "intro": "Đặt nhiều ghế của cùng một suất chiếu trong một lần đặt, thêm bắp nước cho cả nhóm và thanh toán một lần. Ưu đãi nhóm được áp dụng tự động khi nhóm của bạn đủ điều kiện.",
+  "backToRegular": "← Quay lại đặt vé thường",
+  "missingShowtime": "Vui lòng chọn phim và suất chiếu trước.",
+  "seats": {
+    "screen": "Màn hình",
+    "takenMeanwhile": "Ghế này vừa được người khác chọn — bấm để bỏ chọn",
+    "empty": {
+      "title": "Suất chiếu chưa có sơ đồ ghế",
+      "description": "Vui lòng chọn suất chiếu khác."
+    }
+  },
+  "combos": {
+    "title": "Bắp nước cho cả nhóm",
+    "hint": "Chọn số lượng cho từng món, ví dụ 5 bắp và 10 nước.",
+    "increase": "Thêm một {{name}}",
+    "decrease": "Bớt một {{name}}",
+    "quantity": "Số lượng {{name}}"
+  },
+  "organizer": {
+    "title": "Đặt vé cho ai?",
+    "typeLabel": "Đặt cho",
+    "type": {
+      "CUSTOMER": "Nhóm cá nhân",
+      "COMPANY": "Công ty"
+    },
+    "groupName": "Tên nhóm (không bắt buộc)",
+    "companyName": "Tên công ty",
+    "taxCode": "Mã số thuế (không bắt buộc)",
+    "contactName": "Người liên hệ",
+    "contactPhone": "Số điện thoại liên hệ",
+    "contactEmail": "Email liên hệ",
+    "note": "Ghi chú cho rạp",
+    "errors": {
+      "companyNameRequired": "Vui lòng nhập tên công ty.",
+      "taxCodeInvalid": "Mã số thuế gồm 10 chữ số, có thể kèm 3 chữ số chi nhánh.",
+      "emailInvalid": "Email không hợp lệ.",
+      "phoneInvalid": "Số điện thoại không hợp lệ.",
+      "fixFields": "Vui lòng kiểm tra các trường được đánh dấu."
+    }
+  },
+  "summary": {
+    "title": "Đơn đặt vé nhóm",
+    "seatsSelected_one": "Đã chọn {{count}} ghế",
+    "seatsSelected_other": "Đã chọn {{count}} ghế",
+    "limits": "{{min}}–{{max}} ghế mỗi nhóm",
+    "seats_one": "{{count}} vé",
+    "seats_other": "{{count}} vé",
+    "comboLine": "{{name}} × {{quantity}}",
+    "discount": {
+      "GROUP_PROMOTION": "Ưu đãi nhóm {{code}} (từ {{min}} vé)",
+      "PROMOTION_CODE": "Khuyến mãi {{code}}",
+      "VOUCHER": "Voucher {{code}}"
+    },
+    "total": "Tổng cộng",
+    "unavailable": "Không còn trống: {{seats}}. Vui lòng chọn ghế khác.",
+    "shortage": "Chỉ còn {{available}} × {{item}}.",
+    "promotionCode": "Mã khuyến mãi",
+    "promotionPlaceholder": "Để trống để dùng ưu đãi nhóm tự động",
+    "promotionHint": "Mã bạn nhập sẽ thay cho ưu đãi nhóm tự động.",
+    "pay": "Thanh toán MoMo",
+    "payHint": "Toàn bộ ghế được giữ cùng lúc khi thanh toán — nếu thanh toán thất bại, tất cả ghế sẽ được trả lại."
+  },
+  "detail": {
+    "title": "Đặt vé nhóm",
+    "code": "Mã đặt vé: {{code}}",
+    "pendingNotice": "Ghế của bạn được giữ đến {{time}}. Hoàn tất thanh toán để nhận vé.",
+    "refundPending": "Khoản thanh toán đến sau khi đơn không còn hiệu lực. Bạn sẽ được hoàn tiền.",
+    "seats_one": "{{count}} ghế",
+    "seats_other": "{{count}} ghế",
+    "combos": "Bắp nước",
+    "organizer": "Người đặt",
+    "discount": "Giảm giá {{code}}",
+    "tickets_one": "{{count}} vé",
+    "tickets_other": "{{count}} vé",
+    "continuePayment": "Tiếp tục thanh toán",
+    "cancel": "Hủy và trả lại ghế",
+    "cancelConfirm": "Hủy đơn đặt vé nhóm này? Tất cả ghế sẽ được trả lại.",
+    "cancelled": "Đã hủy đơn đặt vé nhóm và trả lại ghế.",
+    "myBookings": "Đơn đặt vé của tôi"
+  },
+  "result": {
+    "processing": "Đang xác nhận thanh toán…",
+    "paid": "Đã nhận thanh toán — vé của nhóm đã sẵn sàng.",
+    "failed": "Thanh toán không thành công. Các ghế đã được trả lại.",
+    "refundPending": "Khoản thanh toán đến quá muộn cho các ghế này; bạn sẽ được hoàn tiền.",
+    "missing": "Kết quả thanh toán không đầy đủ.",
+    "loginRequired": "Đăng nhập để xác nhận thanh toán.",
+    "viewBooking": "Xem đơn đặt vé nhóm"
+  }
+}

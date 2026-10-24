@@ -43,7 +43,11 @@
       "openButton": "Mở trang thanh toán MoMo"
     },
     "summaryTitle": "Thông tin đặt vé",
-    "totalLabel": "Tổng cộng"
+    "totalLabel": "Tổng cộng",
+    "groupLink": {
+      "title": "Đặt vé cho nhóm hoặc công ty?",
+      "description": "Giữ nhiều ghế cùng lúc, thêm bắp nước theo số lượng và nhận ưu đãi nhóm."
+    }
   },
   "bookTicket": {
     "pageTitle": "Đặt vé",
@@ -92,7 +96,10 @@
     "requestRefund": "Yêu cầu hoàn tiền",
     "requestRefundConfirm": "Yêu cầu hoàn tiền cho đơn đặt vé này?",
     "requestRefundSuccess": "Đã gửi yêu cầu hoàn tiền.",
-    "refundInProgress": "Đơn đặt vé này đang có một yêu cầu hoàn tiền được xử lý."
+    "refundInProgress": "Đơn đặt vé này đang có một yêu cầu hoàn tiền được xử lý.",
+    "groupBadge_one": "Nhóm · {{count}} ghế",
+    "groupBadge_other": "Nhóm · {{count}} ghế",
+    "groupDetails": "Chi tiết nhóm"
   },
   "myTickets": {
     "pageTitle": "Vé của tôi",

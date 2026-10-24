@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
@@ -164,6 +164,7 @@ function BookSeatPage() {
         showtime_id: scheduleId,
         combo_ids: selectedComboIds,
         order_value: seatTotal + comboTotal,
+        ticket_count: selectedTickets.length,
       });
       dispatch(applyPromotionSuccess(result));
     } catch (error) {
@@ -266,6 +267,17 @@ function BookSeatPage() {
               <SeatMapCard scheduleId={scheduleId} roomId={scheduleDetail?.room_id ?? null} />
 
               <ComboSelector combos={combos} selectedComboIds={selectedComboIds} />
+
+              <Link
+                to={`${ROUTES.groupBooking}?${searchParams.toString()}`}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-accent/40 bg-accent/10 p-5 text-white no-underline transition-colors hover:border-accent"
+              >
+                <span>
+                  <span className="block font-semibold">{t('bookSeat.groupLink.title')}</span>
+                  <span className="block text-sm text-txt/70">{t('bookSeat.groupLink.description')}</span>
+                </span>
+                <i className="fa-solid fa-users text-2xl text-accent" aria-hidden="true" />
+              </Link>
             </div>
 
             <BookingSummarySidebar

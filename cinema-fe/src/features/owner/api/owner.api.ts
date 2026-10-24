@@ -165,6 +165,7 @@ export interface PromotionPayload {
   end_at: string;
   usage_limit: number | null;
   per_customer_limit: number | null;
+  min_tickets: number | null;
   branch_ids: number[];
   movie_ids: number[];
   combo_ids: number[];

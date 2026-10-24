@@ -69,6 +69,16 @@ export function PromotionFormFields({ formik, branchOptions, movieOptions, combo
         <Field as={Input} label={t('promotions.perCustomerLimitLabel')} name="per_customer_limit" type="number" />
       </div>
       <Field
+        as={Input}
+        label={t('promotions.minTicketsLabel')}
+        name="min_tickets"
+        type="number"
+        className="mt-3"
+        placeholder={t('promotions.minTicketsPlaceholder')}
+        error={showErrors ? formik.errors.min_tickets : undefined}
+      />
+      <p className="mt-1 text-xs text-txt/50">{t('promotions.minTicketsHint')}</p>
+      <Field
         as={Select}
         label={t('promotions.branchLabel')}
         name="branch_id"

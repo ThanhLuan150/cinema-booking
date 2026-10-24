@@ -89,6 +89,9 @@ import Cinemas from '@/features/movies/pages/Cinemas';
 import BookTicket from '@/features/booking/pages/BookTicketPage';
 import BookSeat from '@/features/booking/pages/BookSeatPage';
 import PaymentResult from '@/features/booking/pages/PaymentResultPage';
+import GroupBooking from '@/features/groupBooking/pages/GroupBookingPage';
+import GroupBookingPaymentResult from '@/features/groupBooking/pages/GroupBookingPaymentResultPage';
+import GroupBookingDetail from '@/features/groupBooking/pages/GroupBookingDetailPage';
 import InSeatOrder from '@/features/inSeat/pages/InSeatOrderPage';
 import InSeatPaymentResult from '@/features/inSeat/pages/InSeatPaymentResultPage';
 import InSeatOrderTracking from '@/features/inSeat/pages/InSeatOrderTrackingPage';
@@ -601,6 +604,9 @@ export function AppRouter() {
       <Route path={ROUTES.bookSeat} element={<BookSeat />} />
       <Route path="/BookTicket/:id" element={<BookTicket />} />
       <Route path={ROUTES.paymentResult} element={<PaymentResult />} />
+      <Route path={ROUTES.groupBooking} element={<GroupBooking />} />
+      <Route path={ROUTES.groupBookingPaymentResult} element={<GroupBookingPaymentResult />} />
+      <Route path="/GroupBooking/:code" element={<GroupBookingDetail />} />
     </Routes>
   );
 }

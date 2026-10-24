@@ -43,7 +43,11 @@
       "openButton": "Open MoMo payment page"
     },
     "summaryTitle": "Booking summary",
-    "totalLabel": "Total"
+    "totalLabel": "Total",
+    "groupLink": {
+      "title": "Booking for a group or a company?",
+      "description": "Reserve many seats at once, add food & drinks by quantity and get a group discount."
+    }
   },
   "bookTicket": {
     "pageTitle": "Book Ticket",
@@ -92,7 +96,10 @@
     "requestRefund": "Request refund",
     "requestRefundConfirm": "Request a refund for this booking?",
     "requestRefundSuccess": "Refund request submitted.",
-    "refundInProgress": "A refund request is already in progress for this booking."
+    "refundInProgress": "A refund request is already in progress for this booking.",
+    "groupBadge_one": "Group · {{count}} seat",
+    "groupBadge_other": "Group · {{count}} seats",
+    "groupDetails": "Group details"
   },
   "myTickets": {
     "pageTitle": "My Tickets",

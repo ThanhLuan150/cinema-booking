@@ -33,7 +33,14 @@ export function PromotionsTable({ promotions, describeScope, onEdit, onToggleAct
         <tr key={promotion.id}>
           <td>{promotion.id}</td>
           <td>{promotion.code}</td>
-          <td>{promotion.name}</td>
+          <td>
+            {promotion.name}
+            {promotion.min_tickets ? (
+              <span className="ml-2 rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent">
+                {t('promotions.groupBadge', { count: promotion.min_tickets })}
+              </span>
+            ) : null}
+          </td>
           <td>{describeScope(promotion)}</td>
           <td>
             {promotion.discount_type === PROMOTION_DISCOUNT_TYPE.PERCENTAGE

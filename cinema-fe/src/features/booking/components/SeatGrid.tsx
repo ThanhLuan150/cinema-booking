@@ -12,34 +12,9 @@ import { useRoomSeats } from '../hooks/useRoomSeats';
 import { useHoldSeats } from '../hooks/useHoldSeats';
 import { useReleaseSeats } from '../hooks/useReleaseSeats';
 import { setSeatHoldExpiry, toggleSeat } from '../store/bookingSlice';
-import type { BookedSeatTicket, SeatCell, SeatCellStatus } from '../types/booking.types';
+import type { SeatCell } from '../types/booking.types';
+import { buildSeatCells, groupSeatRows } from '../utils/seatCells';
 import { SEAT_TYPE_CLASS, SEAT_TYPE_KEY, SEAT_TYPES } from '@/constants/seatType';
-import { TICKET_STATUS } from '@/constants/ticketStatus';
-import { Seat } from 'types/entities';
-
-function buildSeatCells(tickets: BookedSeatTicket[], roomSeats: Seat[]): SeatCell[] {
-  const ticketBySeatCode = new Map(tickets.map((ticket) => [ticket.seat_code, ticket]));
-  // Room seat map hasn't loaded yet (or the room has none on record) — fall back to laying out
-  // purely from tickets so the grid still renders once schedule data arrives.
-  const seatSlots =
-    roomSeats.length > 0
-      ? roomSeats.map((seat) => ({ seat_code: seat.seat_code, seat_type: seat.seat_type, isDisabled: seat.status === 'DISABLED' }))
-      : tickets.map((ticket) => ({ seat_code: ticket.seat_code, seat_type: ticket.seat_type, isDisabled: false }));
-
-  const cells: SeatCell[] = [];
-  for (const seat of seatSlots) {
-    if (seat.isDisabled) {
-      cells.push({ seatCode: seat.seat_code, seatType: seat.seat_type, status: 'DISABLED', ticket: null });
-      continue;
-    }
-    const ticket = ticketBySeatCode.get(seat.seat_code);
-    if (!ticket) continue;
-    const status: SeatCellStatus =
-      ticket.status === TICKET_STATUS.sold ? 'BOOKED' : ticket.status === TICKET_STATUS.held ? 'HELD' : 'AVAILABLE';
-    cells.push({ seatCode: seat.seat_code, seatType: ticket.seat_type, status, ticket });
-  }
-  return cells;
-}
 
 function seatCellClass(cell: SeatCell, isSelected: boolean) {
   if (cell.status === 'DISABLED') return 'cursor-not-allowed bg-white/10 text-white/30 line-through';
@@ -87,21 +62,7 @@ export function SeatGrid({ scheduleId, roomId }: { scheduleId: number | null; ro
     );
   }
 
-  const cells = buildSeatCells(ticketList, roomSeats);
-  const rows: Record<string, SeatCell[]> = {};
-  for (const cell of cells) {
-    const match = cell.seatCode.match(/^([A-Za-z]+)(\d+)$/);
-    if (!match) continue;
-    const rowLetter = match[1];
-    if (!rows[rowLetter]) rows[rowLetter] = [];
-    rows[rowLetter].push(cell);
-  }
-  for (const rowLetter of Object.keys(rows)) {
-    rows[rowLetter].sort(
-      (a, b) =>
-        Number(a.seatCode.slice(rowLetter.length)) - Number(b.seatCode.slice(rowLetter.length)),
-    );
-  }
+  const rows = groupSeatRows(buildSeatCells(ticketList, roomSeats));
 
   const handleSelect = (cell: SeatCell) => {
     if (!cell.ticket) return;
