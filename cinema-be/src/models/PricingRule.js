@@ -6,7 +6,7 @@ const Room = require('./Room');
 const DAY_TYPES = ['WEEKDAY', 'WEEKEND', 'HOLIDAY'];
 // Loyalty tier of the booking account. NONE also stands in for "Loại Customer: khách vãng lai"
 // (non-member) — see Account.membership_level.
-const MEMBERSHIP_LEVELS = ['NONE', 'SILVER', 'GOLD', 'PLATINUM'];
+const MEMBERSHIP_LEVELS = ['NONE', 'SILVER', 'GOLD', 'PLATINUM', 'VIP'];
 const SEAT_TYPES = [0, 1, 2]; // 0 = standard, 1 = vip, 2 = couple (matches Seat.seat_type)
 
 const pricingRuleSchema = new mongoose.Schema(

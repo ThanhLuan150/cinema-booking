@@ -259,5 +259,20 @@
   "PROMOTION_BRANCH_NOT_ELIGIBLE": "This promotion does not apply at this cinema.",
   "PROMOTION_MOVIE_NOT_ELIGIBLE": "This promotion does not apply to this movie.",
   "PROMOTION_SHOWTIME_NOT_ELIGIBLE": "This promotion does not apply to this showtime.",
-  "PROMOTION_COMBO_NOT_ELIGIBLE": "This promotion needs a specific combo in the order."
+  "PROMOTION_COMBO_NOT_ELIGIBLE": "This promotion needs a specific combo in the order.",
+  "SUBSCRIPTION_ALREADY_OPEN": "You already have a subscription that is active or waiting for payment.",
+  "SUBSCRIPTION_PLAN_NOT_FOUND": "This subscription plan does not exist.",
+  "SUBSCRIPTION_PLAN_INACTIVE": "This subscription plan is no longer on sale.",
+  "SUBSCRIPTION_NOT_FOUND": "Subscription not found.",
+  "SUBSCRIPTION_NOT_CANCELLABLE": "This subscription can no longer be cancelled.",
+  "SUBSCRIPTION_FIELD_NOT_ALLOWED": "Only the plan can be chosen when buying a subscription.",
+  "SUBSCRIPTION_PLAN_CODE_EXISTS": "A plan with this code already exists.",
+  "SUBSCRIPTION_PLAN_IN_USE": "This plan has been sold. Deactivate it instead of deleting it.",
+  "MEMBERSHIP_FREE_TICKETS_UNAVAILABLE": "You do not have enough free tickets left for this order.",
+  "MEMBERSHIP_BENEFIT_UNAVAILABLE": "Your membership benefit for this booking is no longer available. Any payment will be refunded.",
+  "INVALID_FREE_TICKETS": "Choose between 0 and the number of seats in your order.",
+  "INVALID_BENEFITS": "One or more benefit values are not valid.",
+  "SALE_NOT_OPEN": "Tickets for this showtime are not on sale for you yet.",
+  "INVALID_SALE_OPENS_AT": "The sale opening time must be a valid date before the showtime starts.",
+  "INVALID_SIGNATURE": "The payment result could not be verified."
 }

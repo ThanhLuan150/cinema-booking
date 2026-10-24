@@ -29,6 +29,8 @@ async function createOrder({
   channel = null,
   seatDelivery = null,
   expiresAt = null,
+  membershipDiscount = 0,
+  membershipFnbPercent = 0,
 }) {
   return ComboOrder.create({
     id: await nextId('comboOrder'),
@@ -38,6 +40,8 @@ async function createOrder({
     booking_id: bookingId,
     items,
     total_price: totalPrice,
+    membership_discount: membershipDiscount,
+    membership_fnb_percent: membershipFnbPercent,
     status: ComboOrder.STATUS.PENDING,
     created_by: createdBy,
     channel,

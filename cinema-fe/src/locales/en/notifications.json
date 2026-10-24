@@ -78,6 +78,14 @@
       "WAITLIST_CANCELLED": {
         "title": "Waitlist closed",
         "body": "The showtime for \"{{movie}}\" at {{showtime}} was cancelled, so your place on its waitlist has been closed."
+      },
+      "SUBSCRIPTION_ACTIVATED": {
+        "title": "Subscription activated",
+        "body": "\"{{planName}}\" is active until {{endAt}}. Its benefits apply to your next booking."
+      },
+      "SUBSCRIPTION_EXPIRED": {
+        "title": "Subscription expired",
+        "body": "\"{{planName}}\" has ended. Buy a new term to keep its benefits."
       }
     },
     "open": "Open"

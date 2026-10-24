@@ -8,6 +8,7 @@ const bookingRepository = require('../repositories/booking.repository');
 const paymentRepository = require('../repositories/payment.repository');
 const branchRepository = require('../repositories/branch.repository');
 const comboRepository = require('../repositories/combo.repository');
+const membershipService = require('../services/membership.service');
 const nextId = require('../utils/nextId');
 const { generateKioskKey, hashKioskKey } = require('../utils/kioskKey');
 const { emitBranchEvent } = require('../utils/socket');
@@ -267,6 +268,9 @@ async function holdSeats(req, res) {
   if (schedule.status === 'CANCELLED') {
     return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
   }
+  // A kiosk sells as a guest (no membership), so before general sale opens it cannot sell at all.
+  const saleBlock = await membershipService.checkSaleAccess({ schedule, accountId: req.kiosk.guest_account_id });
+  if (saleBlock) return res.status(saleBlock.status).json(saleBlock.body);
 
   const branchId = schedule.cinema_id ?? null;
   const maxSeats = await systemConfigService.getValue('MAX_BOOKING_SEATS', branchId);

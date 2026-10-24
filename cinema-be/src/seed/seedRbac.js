@@ -81,6 +81,8 @@ const PERMISSIONS = [
   ['recipe.read', 'recipe'], ['recipe.manage', 'recipe'],
   ['loyalty.read', 'loyalty'], ['loyalty.redeem', 'loyalty'], ['loyaltyConfig.manage', 'loyalty'],
   ['membershipLevel.read', 'loyalty'], ['membershipLevel.manage', 'loyalty'],
+  ['subscriptionPlan.read', 'membership'], ['subscriptionPlan.manage', 'membership'],
+  ['subscription.purchase', 'membership'], ['subscription.read', 'membership'], ['subscription.manage', 'membership'],
   ['maintenance.create', 'maintenance'], ['maintenance.read', 'maintenance'],
   ['maintenance.update', 'maintenance'], ['maintenance.assign', 'maintenance'],
   ['maintenance.close', 'maintenance'], ['maintenance.delete', 'maintenance'],
@@ -244,6 +246,10 @@ const CUSTOMER_PERMISSIONS = {
   // Showtime Waitlist: only their own place in a showtime's queue.
   'waitlist.join': 'OWN',
   'waitlist.read': 'OWN',
+  // Membership & Subscription: browse the plans, buy one and see only their own subscriptions.
+  'subscriptionPlan.read': 'ALL',
+  'subscription.purchase': 'OWN',
+  'subscription.read': 'OWN',
 };
 
 function normalizePermissionScopes(permissions) {

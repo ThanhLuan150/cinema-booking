@@ -35,6 +35,8 @@ async function sell({
   method,
   idempotencyKey = null,
   shiftId = null,
+  membershipDiscount = 0,
+  membership = null,
 }) {
   if (idempotencyKey) {
     const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
@@ -55,6 +57,8 @@ async function sell({
       createdBy: employeeId,
       seatTotal,
       comboTotal,
+      membershipDiscount,
+      membership,
     },
     { comboPaymentMethod: method },
   );

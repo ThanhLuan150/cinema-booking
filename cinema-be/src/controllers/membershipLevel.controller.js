@@ -3,6 +3,12 @@ const Account = require('../models/Account');
 const nextId = require('../utils/nextId');
 const { emitPublic } = require('../utils/socket');
 const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
+const { normalizeBenefits, validateBenefitsInput } = require('../utils/membershipBenefits');
+const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
+
+function benefitsError(res, errors) {
+  return res.status(400).json({ message: errors.map((e) => e.message).join('; '), code: 'INVALID_BENEFITS', errors });
+}
 
 // Membership tiers decide the discount a signed-in customer is quoted, and the tier ladder is
 // shown on the public membership page, so the whole change goes out publicly.
@@ -15,6 +21,7 @@ function broadcastMembershipLevel(level, action) {
     name: level.name,
     minPoints: level.min_points,
     active: level.active,
+    benefits: normalizeBenefits(level.benefits),
   });
 }
 
@@ -25,9 +32,11 @@ async function list(req, res) {
   res.json(levels);
 }
 
-// POST /api/membership-levels { code, name, min_points, active } (admin only)
+// POST /api/membership-levels { code, name, min_points, active, benefits } (admin only)
 async function create(req, res) {
   const { code, name, min_points, active } = req.body || {};
+  const benefitsInput = validateBenefitsInput((req.body || {}).benefits);
+  if (benefitsInput.errors) return benefitsError(res, benefitsInput.errors);
   if (!code || !name || min_points === undefined) {
     return res.status(400).json({ message: 'code, name and min_points are required' });
   }
@@ -51,13 +60,15 @@ async function create(req, res) {
     name,
     min_points: Number(min_points),
     active: active === undefined ? true : Boolean(active),
+    benefits: benefitsInput.benefits,
   });
   broadcastMembershipLevel(level, REALTIME_ACTION.CREATED);
   res.status(201).json(level);
 }
 
-// PUT /api/membership-levels/:id { name, min_points, active } (admin only) — code is
-// immutable once created since Account.membership_level values reference it directly.
+// PUT /api/membership-levels/:id { name, min_points, active, benefits } (admin only) — code is
+// immutable once created since Account.membership_level values reference it directly. `benefits`
+// may be partial: only the fields sent change.
 async function update(req, res) {
   const level = await MembershipLevel.findOne({ id: Number(req.params.id) });
   if (!level) return res.status(404).json({ message: 'Level not found' });
@@ -69,9 +80,19 @@ async function update(req, res) {
     updates.min_points = Number(req.body.min_points);
   }
   if (req.body.active !== undefined) updates.active = Boolean(req.body.active);
+  const benefitsInput = validateBenefitsInput(req.body.benefits);
+  if (benefitsInput.errors) return benefitsError(res, benefitsInput.errors);
+  for (const [field, value] of Object.entries(benefitsInput.benefits)) updates[`benefits.${field}`] = value;
 
   const updated = await MembershipLevel.findOneAndUpdate({ id: level.id }, { $set: updates }, { new: true });
   broadcastMembershipLevel(updated, REALTIME_ACTION.UPDATED);
+  await recordAudit({
+    req,
+    action: ACTION.MEMBERSHIP_LEVEL_UPDATED,
+    entityType: ENTITY_TYPE.MEMBERSHIP_LEVEL,
+    entityId: updated.id,
+    metadata: { code: updated.code, changes: updates },
+  });
   res.json(updated);
 }
 

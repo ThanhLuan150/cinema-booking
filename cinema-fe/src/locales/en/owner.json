@@ -539,7 +539,8 @@
       "NONE": "Non-member",
       "SILVER": "Silver",
       "GOLD": "Gold",
-      "PLATINUM": "Platinum"
+      "PLATINUM": "Platinum",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "Please enter a name.",

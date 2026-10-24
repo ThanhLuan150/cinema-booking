@@ -39,6 +39,18 @@ export const cartTotal = (lines: InSeatCartLine[]) =>
 export const cartCount = (lines: InSeatCartLine[]) =>
   lines.reduce((sum, line) => sum + line.quantity, 0);
 
+/**
+ * Display-only estimate of the member F&B discount. Mirrors the server
+ * (membershipBenefits.computeMembershipPricing): rounded per item, never more than the item.
+ */
+export function memberDiscount(lines: InSeatCartLine[], percent: number | undefined): number {
+  if (!percent || percent <= 0) return 0;
+  return lines.reduce((sum, line) => {
+    const perItem = Math.min(Math.round((line.item.price * percent) / 100), line.item.price);
+    return sum + perItem * line.quantity;
+  }, 0);
+}
+
 /** What is sent to the server: what and how many, never a price. */
 export function toOrderLines(lines: InSeatCartLine[]): InSeatOrderLine[] {
   return lines.map(({ item, quantity }) => ({ combo_id: item.id, quantity }));

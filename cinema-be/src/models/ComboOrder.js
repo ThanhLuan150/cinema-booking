@@ -25,6 +25,10 @@ const comboOrderSchema = new mongoose.Schema(
       validate: { validator: (value) => Array.isArray(value) && value.length > 0, message: 'items must have at least one entry' },
     },
     total_price: { type: Number, required: true },
+    // In-seat orders (Ticket 53): the customer's member F&B discount, already taken out of
+    // total_price (which is what was charged); the items keep their list prices.
+    membership_discount: { type: Number, default: 0 },
+    membership_fnb_percent: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ['PENDING', 'PAID', 'PREPARING', 'READY', 'DELIVERED', 'CANCELLED'],

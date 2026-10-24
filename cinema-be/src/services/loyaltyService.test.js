@@ -4,6 +4,7 @@ const Account = require('../models/Account');
 const MembershipLevel = require('../models/MembershipLevel');
 const LoyaltyConfig = require('../models/LoyaltyConfig');
 const PointsTransaction = require('../models/PointsTransaction');
+const Subscription = require('../models/Subscription');
 
 beforeAll(async () => connect());
 afterEach(async () => clearDatabase());
@@ -45,7 +46,7 @@ describe('loyaltyService.getConfig / updateConfig', () => {
 describe('loyaltyService.getActiveLevels / determineLevelForPoints', () => {
   it('falls back to in-memory defaults when nothing is seeded', async () => {
     const levels = await loyaltyService.getActiveLevels();
-    expect(levels.map((l) => l.code)).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM']);
+    expect(levels.map((l) => l.code)).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM', 'VIP']);
     expect(await MembershipLevel.countDocuments()).toBe(0);
   });
 
@@ -131,6 +132,38 @@ describe('loyaltyService.earnPointsForBooking', () => {
     await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
     await loyaltyService.earnPointsForBooking({ accountId: 1, bookingId: 100, amount: 1000000 }); // 100 points
     expect((await Account.findOne({ id: 1 })).membership_level).toBe('SILVER');
+  });
+
+  it("multiplies the points by the account's tier multiplier", async () => {
+    await seedLevels();
+    await MembershipLevel.updateOne({ code: 'GOLD' }, { $set: { 'benefits.points_multiplier': 1.5 } });
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x', membership_level: 'GOLD', lifetime_points: 600 });
+    const tx = await loyaltyService.earnPointsForBooking({ accountId: 1, bookingId: 100, amount: 105000 });
+    expect(tx.points).toBe(15); // floor(105000 / 10000 * 1.5)
+  });
+
+  it('uses the better of the tier and a live subscription, and ignores a subscription past its term', async () => {
+    await seedLevels();
+    await Account.create({ id: 1, email: 'a@b.com', password: 'x' });
+    const now = Date.now();
+    const subscription = {
+      id: 1,
+      code: 'SUB-1',
+      account_id: 1,
+      plan_id: 1,
+      plan: { code: 'P', name: 'Pass', price: 1000, duration_days: 30, benefits: { points_multiplier: 2 } },
+      price: 1000,
+      status: 'ACTIVE',
+      start_at: new Date(now - 60000),
+      end_at: new Date(now + 60000),
+    };
+    await Subscription.create(subscription);
+    expect(await loyaltyService.resolvePointsMultiplier(1)).toBe(2);
+
+    await Subscription.updateOne({ id: 1 }, { $set: { end_at: new Date(now - 1000) } }); // still ACTIVE, but over
+    expect(await loyaltyService.resolvePointsMultiplier(1)).toBe(1);
+    const tx = await loyaltyService.earnPointsForBooking({ accountId: 1, bookingId: 100, amount: 105000 });
+    expect(tx.points).toBe(10);
   });
 });
 

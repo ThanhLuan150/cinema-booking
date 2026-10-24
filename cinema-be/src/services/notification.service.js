@@ -65,6 +65,15 @@ function buildContent(event, ctx = {}) {
         : { title: 'Waitlist offer expired', body: `The seats reserved for you for ${movie}${when} were released because the booking was not completed in time.` };
     case EVENT.WAITLIST_CANCELLED:
       return { title: 'Waitlist closed', body: `The showtime for ${movie}${when}${at} was cancelled, so your place on its waitlist has been closed.` };
+    case EVENT.SUBSCRIPTION_ACTIVATED: {
+      const plan = ctx.planName ? `"${ctx.planName}"` : 'Your subscription';
+      const until = ctx.endAt ? ` until ${ctx.endAt}` : '';
+      return { title: 'Subscription activated', body: `${plan} is active${until}. Its benefits apply to your next booking.` };
+    }
+    case EVENT.SUBSCRIPTION_EXPIRED: {
+      const plan = ctx.planName ? `"${ctx.planName}"` : 'Your subscription';
+      return { title: 'Subscription expired', body: `${plan} has ended. Renew it to keep its benefits.` };
+    }
     default:
       return { title: 'Notification', body: '' };
   }

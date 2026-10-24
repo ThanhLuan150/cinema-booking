@@ -49,7 +49,8 @@
     "items_other": "{{count}} items",
     "totalHint": "The cinema confirms the final amount when you pay.",
     "pay": "Pay {{amount}} with MoMo",
-    "paying": "Opening MoMo…"
+    "paying": "Opening MoMo…",
+    "memberDiscount": "Member F&B discount ({{percent}}%)"
   },
   "orders": {
     "title": "Already ordered to this seat"

@@ -7,12 +7,22 @@ const paymentSchema = new mongoose.Schema(
     // = Booking.code (order id). For type IN_SEAT it is the ComboOrder.code instead, and booking_id is
     // the booking that holds the seat the food goes to — that booking was paid by its own Payment.
     code: { type: String, required: true, unique: true, index: true },
-    booking_id: { type: Number, required: true, index: true },
+    // A SUBSCRIPTION payment (Ticket 53) buys a membership pass, not a booking: no booking_id, no branch.
+    booking_id: {
+      type: Number,
+      required() {
+        return this.type !== 'SUBSCRIPTION';
+      },
+      default: null,
+      index: true,
+    },
     account_id: { type: Number, required: true, index: true },
     branch_id: { type: Number, default: null, index: true },
     shift_id: { type: Number, default: null, index: true },
-    type: { type: String, enum: ['ONLINE', 'COUNTER', 'KIOSK', 'IN_SEAT'], required: true },
-    method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT', 'GIFT_CARD'], required: true },
+    type: { type: String, enum: ['ONLINE', 'COUNTER', 'KIOSK', 'IN_SEAT', 'SUBSCRIPTION'], required: true },
+    // MEMBERSHIP = an amount-0 booking fully covered by membership free tickets / discounts: nothing
+    // to charge, so it never goes to MoMo.
+    method: { type: String, enum: ['MOMO', 'CASH', 'CARD', 'QR_PAYMENT', 'GIFT_CARD', 'MEMBERSHIP'], required: true },
     amount: { type: Number, required: true },
     status: {
       type: String,
@@ -47,7 +57,14 @@ Payment.STATUS = {
   REFUND_PENDING: 'REFUND_PENDING',
   REFUNDED: 'REFUNDED',
 };
-Payment.TYPE = { ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK', IN_SEAT: 'IN_SEAT' };
-Payment.METHOD = { MOMO: 'MOMO', CASH: 'CASH', CARD: 'CARD', QR_PAYMENT: 'QR_PAYMENT', GIFT_CARD: 'GIFT_CARD' };
+Payment.TYPE = { ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK', IN_SEAT: 'IN_SEAT', SUBSCRIPTION: 'SUBSCRIPTION' };
+Payment.METHOD = {
+  MOMO: 'MOMO',
+  CASH: 'CASH',
+  CARD: 'CARD',
+  QR_PAYMENT: 'QR_PAYMENT',
+  GIFT_CARD: 'GIFT_CARD',
+  MEMBERSHIP: 'MEMBERSHIP',
+};
 
 module.exports = Payment;

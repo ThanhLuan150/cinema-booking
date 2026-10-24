@@ -83,13 +83,27 @@ describe('Payment model', () => {
       REFUND_PENDING: 'REFUND_PENDING',
       REFUNDED: 'REFUNDED',
     });
-    expect(Payment.TYPE).toEqual({ ONLINE: 'ONLINE', COUNTER: 'COUNTER', KIOSK: 'KIOSK', IN_SEAT: 'IN_SEAT' });
+    expect(Payment.TYPE).toEqual({
+      ONLINE: 'ONLINE',
+      COUNTER: 'COUNTER',
+      KIOSK: 'KIOSK',
+      IN_SEAT: 'IN_SEAT',
+      SUBSCRIPTION: 'SUBSCRIPTION',
+    });
     expect(Payment.METHOD).toEqual({
       MOMO: 'MOMO',
       CASH: 'CASH',
       CARD: 'CARD',
       QR_PAYMENT: 'QR_PAYMENT',
       GIFT_CARD: 'GIFT_CARD',
+      MEMBERSHIP: 'MEMBERSHIP',
     });
+  });
+
+  it('needs no booking for a SUBSCRIPTION payment, but still does for every other type', () => {
+    const withoutBooking = { ...base };
+    delete withoutBooking.booking_id;
+    expect(new Payment({ ...withoutBooking, type: 'SUBSCRIPTION' }).validateSync()).toBeUndefined();
+    expect(new Payment({ ...withoutBooking, type: 'ONLINE' }).validateSync().errors.booking_id).toBeDefined();
   });
 });

@@ -126,6 +126,12 @@ const InSeatOrderTrackingPage = () => {
             </li>
           ))}
         </ul>
+        {(order.membership_discount ?? 0) > 0 && (
+          <div className="mt-3 flex items-baseline justify-between text-sm text-emerald-400">
+            <span>{t('cart.memberDiscount', { percent: order.membership_fnb_percent })}</span>
+            <span>-{formatCurrency(order.membership_discount ?? 0)}</span>
+          </div>
+        )}
         <div className="mt-3 flex items-baseline justify-between border-t border-border pt-3">
           <span className="text-sm text-txt/70">{t('track.total')}</span>
           <span className="text-lg font-bold text-white">{formatCurrency(order.total_price)}</span>

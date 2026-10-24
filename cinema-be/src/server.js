@@ -11,6 +11,7 @@ const { startGiftCardExpirationSweep } = require('./jobs/giftCardExpiration.job'
 const { startWebhookRetrySweep } = require('./jobs/webhookRetry.job');
 const { startAttendanceAbsenceSweep } = require('./jobs/attendanceAbsence.job');
 const { startWaitlistSweep } = require('./jobs/waitlistSweep.job');
+const { startSubscriptionSweep } = require('./jobs/subscriptionSweep.job');
 
 const PORT = process.env.PORT || 8000;
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
@@ -32,6 +33,7 @@ connectDB()
     startWebhookRetrySweep();
     startAttendanceAbsenceSweep();
     startWaitlistSweep();
+    startSubscriptionSweep();
   })
   .catch((err) => {
     console.error('[server] failed to connect to MongoDB', err);

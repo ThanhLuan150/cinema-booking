@@ -9,6 +9,8 @@ export interface ScheduleFormValues {
   time_begin: string;
   time_end: string;
   price: string;
+  // Optional general-sale opening (datetime-local, the admin's own clock). Ticket 53 Priority Booking.
+  sale_opens_at?: string;
 }
 
 export interface AddScheduleFormValues extends ScheduleFormValues {

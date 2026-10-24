@@ -418,6 +418,12 @@ export function AdminLayout({ breadcrumb, children, loading = false }: AdminLayo
               {t('adminLayout.nav.integrations')}
             </NavLink>
           )}
+          {hasPermission('subscriptionPlan.manage') && (
+            <NavLink to={ROUTES.membershipAdmin} className={navLinkClass}>
+              <ion-icon name="ribbon" />
+              {t('adminLayout.nav.membership')}
+            </NavLink>
+          )}
           {isAdmin && (
             <>
               <div className="my-2 border-t border-border" />

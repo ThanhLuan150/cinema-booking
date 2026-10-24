@@ -29,6 +29,7 @@ export const REALTIME_EVENT = {
   CATALOGUE_UPDATED: 'catalogue:updated',
   LIKE_UPDATED: 'like:updated',
   MEMBERSHIP_UPDATED: 'membership:updated',
+  SUBSCRIPTION_UPDATED: 'subscription:updated',
 
   // --- branch lifecycle -----------------------------------------------------------------
   BRANCH_ACTIVATED: 'branch:activated',
