@@ -193,6 +193,28 @@ describe('notification.service — NotificationTemplate integration (Ticket 26)'
   });
 });
 
+describe('notification.service.buildContent — Showtime Waitlist (Ticket 51)', () => {
+  const ctx = { movie: 'Dune', showtime: { date: '2026-10-05', time_begin: '19:30' }, branch: 'CineNova' };
+
+  it('tells the customer which seats are theirs and for how long', () => {
+    const { title, body } = notificationService.buildContent(EVENT.WAITLIST_SEAT_AVAILABLE, { ...ctx, seats: ['A3', 'A4'], offerMinutes: 15 });
+    expect(title).toBe('A seat is available from the waitlist');
+    expect(body).toBe(
+      'Seat A3, A4 for "Dune" on 2026-10-05 at 19:30 at CineNova is reserved for you for the next 15 minutes. Book before then, or it goes to the next person in line.',
+    );
+  });
+
+  it('explains why a waitlist entry ended', () => {
+    expect(notificationService.buildContent(EVENT.WAITLIST_EXPIRED, { ...ctx, reason: 'OFFER_EXPIRED' }).title).toBe(
+      'Waitlist offer expired',
+    );
+    expect(notificationService.buildContent(EVENT.WAITLIST_EXPIRED, { ...ctx, reason: 'SHOWTIME_STARTED' }).body).toContain(
+      'started before a seat came free',
+    );
+    expect(notificationService.buildContent(EVENT.WAITLIST_CANCELLED, ctx).body).toContain('was cancelled');
+  });
+});
+
 describe('notification.service.backoffFor', () => {
   it('grows exponentially and is capped', () => {
     expect(notificationService.backoffFor(1)).toBe(notificationService.BASE_BACKOFF_MS);

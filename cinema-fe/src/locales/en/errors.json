@@ -217,5 +217,14 @@
   "SEAT_SWAP_PRICE_MISMATCH": "That seat has a different price. Only a seat of the same price can be chosen.",
   "SEAT_SWAP_CONFLICT": "Your ticket changed while the seat was being changed. Reload it and try again.",
   "SEAT_DISABLED": "This seat is out of service.",
-  "SEAT_NOT_FOUND": "Seat not found in this showtime."
+  "SEAT_NOT_FOUND": "Seat not found in this showtime.",
+  "WAITLIST_DUPLICATE": "You're already on the waitlist for this showtime.",
+  "WAITLIST_NOT_FOUND": "Waitlist entry not found.",
+  "WAITLIST_NOT_ACTIVE": "This waitlist entry has already ended.",
+  "WAITLIST_SEAT_COUNT_INVALID": "Choose between 1 and {{max}} seats.",
+  "WAITLIST_FIELD_NOT_ALLOWED": "Only the showtime and the number of seats can be sent.",
+  "SHOWTIME_NOT_FULL": "Seats are still available for this showtime ({{available_seats}} left) — book them directly.",
+  "SHOWTIME_STARTED": "This showtime has already started.",
+  "SHOWTIME_NOT_BOOKABLE": "This showtime has no seats on sale.",
+  "SHOWTIME_REQUIRED": "Choose a showtime."
 }

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -46,6 +47,15 @@ export function NotificationList({ isLoading, items, onMarkRead }: NotificationL
                 <time className="shrink-0 text-xs text-txt/40">{new Date(n.createdAt).toLocaleString()}</time>
               </div>
               <p className="mt-1 text-sm text-txt/70">{view.description}</p>
+              {view.href && (
+                <Link
+                  to={view.href}
+                  onClick={() => !n.read_at && onMarkRead(n.id)}
+                  className="mt-2 mr-4 inline-block text-xs font-medium text-accent hover:text-accent-hover"
+                >
+                  {t('feed.open')}
+                </Link>
+              )}
               {!n.read_at && (
                 <button
                   type="button"

@@ -51,6 +51,20 @@ function buildContent(event, ctx = {}) {
       return { title: 'Showtime changed', body: `The showtime for ${movie}${at} has been changed${code}. Please review your booking.` };
     case EVENT.CAMPAIGN_ANNOUNCEMENT:
       return { title: ctx.campaignTitle || ctx.campaignName || 'Announcement', body: ctx.campaignBody || '' };
+    case EVENT.WAITLIST_SEAT_AVAILABLE: {
+      const seats = Array.isArray(ctx.seats) && ctx.seats.length > 0 ? `Seat ${ctx.seats.join(', ')}` : 'A seat';
+      const minutes = ctx.offerMinutes ? `the next ${ctx.offerMinutes} minutes` : 'a limited time';
+      return {
+        title: 'A seat is available from the waitlist',
+        body: `${seats} for ${movie}${when}${at} is reserved for you for ${minutes}. Book before then, or it goes to the next person in line.`,
+      };
+    }
+    case EVENT.WAITLIST_EXPIRED:
+      return ctx.reason === 'SHOWTIME_STARTED'
+        ? { title: 'Waitlist closed', body: `The showtime for ${movie}${when} started before a seat came free.` }
+        : { title: 'Waitlist offer expired', body: `The seats reserved for you for ${movie}${when} were released because the booking was not completed in time.` };
+    case EVENT.WAITLIST_CANCELLED:
+      return { title: 'Waitlist closed', body: `The showtime for ${movie}${when}${at} was cancelled, so your place on its waitlist has been closed.` };
     default:
       return { title: 'Notification', body: '' };
   }

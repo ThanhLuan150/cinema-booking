@@ -70,6 +70,10 @@ vi.mock('@/features/giftCards/hooks/usePayWithGiftCard', () => ({
   usePayWithGiftCard: () => ({ mutateAsync: payWithGiftCardMutate, isPending: false }),
 }));
 
+vi.mock('@/features/waitlist/components/WaitlistPanel', () => ({
+  WaitlistPanel: ({ scheduleId }: { scheduleId: number | null }) => <div data-testid="waitlist-panel">{scheduleId}</div>,
+}));
+
 import BookSeatPage from './BookSeatPage';
 
 function renderPage(query = '?movieId=1&day=2026-01-01&time=10:00') {
@@ -107,6 +111,12 @@ describe('BookSeatPage', () => {
     useRoomsListMock.mockReturnValue({ data: [{ id: 1, cinema_id: 3 }] });
     useRoomSeatsMock.mockReturnValue({ data: [] });
     useCombosMock.mockReturnValue({ data: [] });
+  });
+
+  it('shows the waitlist panel for the resolved showtime', () => {
+    useBookedSeatsMock.mockReturnValue({ data: [], isLoading: false });
+    renderPage();
+    expect(screen.getByTestId('waitlist-panel')).toHaveTextContent('7');
   });
 
   it('shows the no-seat-map message when there are no tickets', () => {

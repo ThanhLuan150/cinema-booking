@@ -76,6 +76,7 @@ describe('systemConfig.service', () => {
           'ATTENDANCE_LATE_GRACE',
           'SEAT_SWAP_AFTER_PAYMENT',
           'SEAT_SWAP_PRICE_POLICY',
+          'WAITLIST_OFFER_TIME',
         ].sort(),
       );
     });

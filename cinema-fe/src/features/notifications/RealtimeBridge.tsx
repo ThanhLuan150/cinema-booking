@@ -73,6 +73,7 @@ import { directorsQueryKey } from '@/features/admin/directors/hooks/useDirectors
 import { adminUsersQueryKey } from '@/features/admin/users/hooks/useAdminUsers';
 import { myLikedMoviesQueryKey } from '@/features/movies/hooks/useMyLikedMovies';
 import { myPointsHistoryQueryKey } from '@/features/membership/hooks/useMyPointsHistory';
+import { waitlistQueryKey } from '@/features/waitlist/hooks/useWaitlist';
 
 import { bump } from './realtimeSlice';
 import { toast } from './toast';
@@ -104,6 +105,9 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.SCHEDULE_UPDATED]: [schedulesQueryKey, moviesQueryKey],
   // ['ticket'] = every open ticket detail: a seat swap made in another tab (or by staff) moves its seat + QR.
   [REALTIME_EVENT.BOOKING_UPDATED]: [bookingsQueryKey, myInvoicesQueryKey, myTicketsQueryKey, adminInvoicesQueryKey, ['ticket']],
+  // The customer's own entry changed, or the queue they are in moved. The offer itself also arrives as
+  // a notification (which toasts), so this one only refreshes.
+  [REALTIME_EVENT.WAITLIST_UPDATED]: [waitlistQueryKey],
   [REALTIME_EVENT.PAYMENT_UPDATED]: [myPaymentsQueryKey, adminPaymentsQueryKey, bookingsQueryKey, myInvoicesQueryKey, inSeatQueryKey],
   [REALTIME_EVENT.REFUND_UPDATED]: [myRefundsQueryKey, adminRefundsQueryKey],
   [REALTIME_EVENT.GIFT_CARD_UPDATED]: [myGiftCardsQueryKey, ownerGiftCardsQueryKey],

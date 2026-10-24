@@ -123,6 +123,18 @@ const SETTINGS = {
     validateValue: validateRefundPolicy,
   },
  
+  WAITLIST_OFFER_TIME: {
+    type: TYPE.NUMBER,
+    module: 'booking',
+    unit: 'minutes',
+    label: 'Waitlist offer time',
+    description:
+      'How long seats freed for a sold-out showtime stay reserved for the next customer on its waitlist. If they have not booked by then, the seats go to the next customer in line.',
+    default: 15,
+    min: 1,
+    max: 240,
+    branchOverridable: true,
+  },
   SEAT_SWAP_AFTER_PAYMENT: {
     type: TYPE.BOOLEAN,
     module: 'ticket',

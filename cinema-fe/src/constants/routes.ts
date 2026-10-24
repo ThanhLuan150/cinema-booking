@@ -20,6 +20,7 @@ export const ROUTES = {
   myGiftCards: '/MyGiftCards',
   requestPrivateEvent: '/PrivateEvents/Request',
   myPrivateEvents: '/PrivateEvents',
+  myWaitlist: '/MyWaitlist',
   notifications: '/Notifications',
   playing: '/Playing',
   upcoming: '/Upcoming',

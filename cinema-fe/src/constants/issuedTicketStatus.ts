@@ -1,6 +1,3 @@
-// Ticket 13: lifecycle of a customer's issued e-ticket (Invoice.ticket_status on the backend).
-// Not to be confused with constants/ticketStatus.ts, which is the seat-grid's numeric
-// sold/available/held status used while a seat is still being selected/booked.
 export const ISSUED_TICKET_STATUS = {
   issued: 'ISSUED',
   used: 'USED',

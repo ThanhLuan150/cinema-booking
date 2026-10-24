@@ -217,5 +217,14 @@
   "SEAT_SWAP_PRICE_MISMATCH": "Ghế này có giá khác. Chỉ được chọn ghế cùng giá.",
   "SEAT_SWAP_CONFLICT": "Vé vừa thay đổi trong lúc đổi ghế. Hãy tải lại và thử lại.",
   "SEAT_DISABLED": "Ghế này đang ngưng sử dụng.",
-  "SEAT_NOT_FOUND": "Không tìm thấy ghế trong suất chiếu này."
+  "SEAT_NOT_FOUND": "Không tìm thấy ghế trong suất chiếu này.",
+  "WAITLIST_DUPLICATE": "Bạn đã có trong danh sách chờ của suất chiếu này.",
+  "WAITLIST_NOT_FOUND": "Không tìm thấy mục trong danh sách chờ.",
+  "WAITLIST_NOT_ACTIVE": "Mục trong danh sách chờ này đã kết thúc.",
+  "WAITLIST_SEAT_COUNT_INVALID": "Hãy chọn từ 1 đến {{max}} ghế.",
+  "WAITLIST_FIELD_NOT_ALLOWED": "Chỉ được gửi suất chiếu và số ghế.",
+  "SHOWTIME_NOT_FULL": "Suất chiếu vẫn còn ghế (còn {{available_seats}}) — hãy đặt trực tiếp.",
+  "SHOWTIME_STARTED": "Suất chiếu đã bắt đầu.",
+  "SHOWTIME_NOT_BOOKABLE": "Suất chiếu này không có ghế đang bán.",
+  "SHOWTIME_REQUIRED": "Hãy chọn suất chiếu."
 }

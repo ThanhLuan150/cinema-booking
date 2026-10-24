@@ -119,10 +119,15 @@ async function holdSeats(req, res) {
   const ticketBySeatCode = new Map(tickets.map((t) => [t.seat_code, t]));
   const conflicts = [];
   const held = [];
+  // A re-hold never shortens a hold the caller already had (a waitlist offer outlasts the booking
+  // hold), so what the client counts down to is the earliest expiry actually stored.
+  let earliestExpiry = null;
   for (const seatCode of seatCodes) {
     const ticket = ticketBySeatCode.get(seatCode);
     if (ticket && ticket.status === 2 && ticket.held_by === accountId) {
       held.push({ id: ticket.id, seat_code: ticket.seat_code, status: ticket.status });
+      const expiry = ticket.held_until ? new Date(ticket.held_until) : heldUntil;
+      if (!earliestExpiry || expiry < earliestExpiry) earliestExpiry = expiry;
     } else {
       conflicts.push(seatCode);
     }
@@ -131,7 +136,7 @@ async function holdSeats(req, res) {
   if (conflicts.length > 0) {
     return res.status(409).json({ message: 'One or more seats are no longer available', code: 'SEAT_UNAVAILABLE', seatCodes: conflicts });
   }
-  res.json({ held, held_until: heldUntil });
+  res.json({ held, held_until: earliestExpiry ?? heldUntil });
 }
 
 // POST /api/bookseat/:scheduleId/release { seatCodes } -> releases the caller's own held seats

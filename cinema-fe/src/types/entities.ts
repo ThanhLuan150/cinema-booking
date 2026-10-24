@@ -760,7 +760,10 @@ export type NotificationType =
   | 'BOOKING_CANCELLED'
   | 'REFUND_COMPLETED'
   | 'SHOWTIME_CANCELLED'
-  | 'SHOWTIME_CHANGED';
+  | 'SHOWTIME_CHANGED'
+  | 'WAITLIST_SEAT_AVAILABLE'
+  | 'WAITLIST_EXPIRED'
+  | 'WAITLIST_CANCELLED';
 
 export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
 export type NotificationChannel = 'IN_APP' | 'EMAIL';
@@ -779,6 +782,11 @@ export interface NotificationData {
   refundRequested?: boolean;
   from?: { movie_date: string; time_begin: string; time_end: string };
   to?: { movie_date: string; time_begin: string; time_end: string };
+  /** Showtime Waitlist: where the reserved seats are booked, and for how long they are held. */
+  movieId?: number;
+  scheduleId?: number;
+  offerMinutes?: number;
+  waitlistId?: number;
   [key: string]: unknown;
 }
 
@@ -890,7 +898,8 @@ export type SystemSettingKey =
   | 'MAX_BOOKING_SEATS'
   | 'REFUND_POLICY'
   | 'SEAT_SWAP_AFTER_PAYMENT'
-  | 'SEAT_SWAP_PRICE_POLICY';
+  | 'SEAT_SWAP_PRICE_POLICY'
+  | 'WAITLIST_OFFER_TIME';
 
 export interface RefundPolicyTier {
   minHours: number;
