@@ -1,11 +1,12 @@
 export type PaymentLifecycleStatus = 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'REFUND_PENDING' | 'REFUNDED';
-export type PaymentType = 'ONLINE' | 'COUNTER' | 'IN_SEAT';
-export type PaymentMethod = 'MOMO' | 'CASH';
+export type PaymentType = 'ONLINE' | 'COUNTER' | 'IN_SEAT' | 'SUBSCRIPTION';
+export type PaymentMethod = 'MOMO' | 'CASH' | 'MEMBERSHIP';
 
 export interface Payment {
   id: number;
   code: string;
-  booking_id: number;
+  // null for a SUBSCRIPTION payment: it buys a membership pass, not a booking.
+  booking_id: number | null;
   account_id: number;
   branch_id: number | null;
   type: PaymentType;

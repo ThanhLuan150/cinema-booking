@@ -203,10 +203,12 @@ async function pay({ code, ticketIds, comboIds = [], accountId, idempotencyKey =
     }
   }
 
-  const priced = await bookingRepository.priceOrderItems({ ticketIds, comboIds, accountId });
+  // No voucher/promotion here, but the account's membership discounts apply (Ticket 53), exactly as
+  // at the MoMo checkout. Free tickets are not offered in this flow.
+  const priced = await bookingRepository.computeOrderPricing({ ticketIds, comboIds, accountId });
   if (!priced) return { error: 'PRICING_FAILED' };
 
-  const totalPrice = priced.orderValue;
+  const totalPrice = priced.totalPrice;
   const giftCard = await giftCardRepository.findByCode(code);
   if (!giftCard) return { error: 'GIFT_CARD_NOT_FOUND' };
   if (giftCard.owner_account_id !== Number(accountId)) return { error: 'GIFT_CARD_NOT_OWNED' };
@@ -226,7 +228,9 @@ async function pay({ code, ticketIds, comboIds = [], accountId, idempotencyKey =
     comboIds,
     voucherCode: null,
     promotionCode: null,
-    discountAmount: 0,
+    discountAmount: priced.discountAmount,
+    membershipDiscount: priced.membershipDiscount,
+    membership: priced.membership ? priced.membership.snapshot : null,
     totalPrice,
     accountId,
     createdBy: accountId,

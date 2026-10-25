@@ -25,6 +25,7 @@ const { broadcastSeatUpdate } = require('../utils/seatBroadcast');
 const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
 const pricingEngine = require('../services/pricingEngine');
 const loyaltyService = require('../services/loyaltyService');
+const membershipService = require('../services/membership.service');
 const { isVoucherEligible, computeVoucherDiscount } = require('../utils/voucherPricing');
 const { isPromotionEligible, computePromotionDiscount } = require('../utils/promotionPricing');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
@@ -111,12 +112,35 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
     createdBy = null,
     seatTotal = 0,
     comboTotal = 0,
+    membershipDiscount = 0,
+    membership = null,
   } = orderPayload;
   if (!accountId || ticketIds.length === 0) return { alreadyProcessed: false, skipped: true };
 
   // Upsert the parent Booking: a PENDING one created by createMomoPayment gets flipped to
   // PAID here; a counter sale never had a PENDING phase, so it's created PAID directly.
   let booking = await Booking.findOne({ code: orderId });
+  if (booking && booking.membership && booking.membership.free_tickets > 0) {
+    // Ticket 53: the free tickets this booking was priced with become used. If its hold lapsed and
+    // they were given back meanwhile, they are taken again only if still available — otherwise the
+    // payment is not kept and no ticket is issued at a price the customer is no longer entitled to.
+    const claim = await membershipService.consumeFreeTickets(orderId, { bookingId: booking.id });
+    if (!claim.ok) {
+      const payment = await paymentRepository.findByCode(orderId);
+      if (payment) await paymentRepository.requestRefund(payment.id, 'Membership free tickets are no longer available');
+      await Booking.updateOne(
+        { id: booking.id, status: { $ne: Booking.STATUS.PAID } },
+        {
+          $set: {
+            status: Booking.STATUS.CANCELLED,
+            cancelled_at: new Date(),
+            cancel_reason: 'Membership benefit no longer available',
+          },
+        },
+      );
+      return { alreadyProcessed: false, refundPending: true, code: claim.code, bookingId: booking.id };
+    }
+  }
   if (booking) {
     booking.status = Booking.STATUS.PAID;
     booking.paid_at = new Date();
@@ -135,6 +159,8 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
       voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
       promotion_code: promotionCode ? String(promotionCode).toUpperCase() : null,
       discount_amount: Number(discountAmount),
+      membership_discount: Number(membershipDiscount) || 0,
+      membership: membership || null,
       seat_total: Number(seatTotal),
       combo_total: Number(comboTotal),
       total_price: totalPrice,
@@ -147,6 +173,8 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
   // A customer applies a voucher OR a promotion to an order, never both — enforced when the
   // order is first priced (computeOrderPricing) / created (booking.controller.js). Recorded
   // here (after the Booking exists) so the Voucher's usage-history row can reference it.
+  // discountAmount also holds the membership's part (Ticket 53); the voucher is credited with its own.
+  const voucherDiscount = Math.max(Number(discountAmount) - (Number(booking.membership_discount) || 0), 0);
   if (voucherCode) {
     const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase() });
     if (voucher) {
@@ -154,7 +182,7 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
         voucherId: voucher.id,
         accountId,
         bookingId: booking.id,
-        discountAmount,
+        discountAmount: voucherDiscount,
       });
       if (recorded) {
         await recordAudit({
@@ -163,7 +191,7 @@ async function finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod = n
           entityId: voucher.id,
           branchId: booking.branch_id,
           performedBy: accountId,
-          metadata: { code: voucher.code, bookingId: booking.id, discountAmount },
+          metadata: { code: voucher.code, bookingId: booking.id, discountAmount: voucherDiscount },
         });
       }
     }
@@ -677,6 +705,8 @@ async function createCounterSale({
   branchId = null,
   idempotencyKey = null,
   shiftId = null,
+  membershipDiscount = 0,
+  membership = null,
 }) {
   if (idempotencyKey) {
     const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
@@ -686,7 +716,20 @@ async function createCounterSale({
   const orderId = `CTR-${await nextId('counterOrder')}`;
   const result = await finalizeMomoOrder(
     orderId,
-    { ticketIds, comboIds, voucherCode, promotionCode, discountAmount, totalPrice, accountId, createdBy, seatTotal, comboTotal },
+    {
+      ticketIds,
+      comboIds,
+      voucherCode,
+      promotionCode,
+      discountAmount,
+      totalPrice,
+      accountId,
+      createdBy,
+      seatTotal,
+      comboTotal,
+      membershipDiscount,
+      membership,
+    },
     { comboPaymentMethod: 'CASH' },
   );
 
@@ -725,6 +768,8 @@ async function createPendingBooking({
   comboTotal = 0,
   totalPrice,
   expiresAt,
+  membershipDiscount = 0,
+  membership = null,
 }) {
   return Booking.create({
     id: await nextId('booking'),
@@ -737,6 +782,8 @@ async function createPendingBooking({
     voucher_code: voucherCode ? String(voucherCode).toUpperCase() : null,
     promotion_code: promotionCode ? String(promotionCode).toUpperCase() : null,
     discount_amount: Number(discountAmount),
+    membership_discount: Number(membershipDiscount) || 0,
+    membership: membership || null,
     seat_total: Number(seatTotal),
     combo_total: Number(comboTotal),
     total_price: totalPrice,
@@ -748,11 +795,14 @@ async function createPendingBooking({
 // Explicit payment failure (MoMo reported a non-zero resultCode) — a definite outcome,
 // not a timeout, so it's cancelled rather than left for the expiry sweep.
 async function cancelPendingBookingByCode(code) {
-  return Booking.findOneAndUpdate(
+  const cancelled = await Booking.findOneAndUpdate(
     { code, status: Booking.STATUS.PENDING },
     { $set: { status: Booking.STATUS.CANCELLED, cancelled_at: new Date(), cancel_reason: 'Payment failed' } },
     { new: true },
   );
+  // Ticket 53: the membership free tickets it reserved go back to the customer's allowance.
+  if (cancelled) await membershipService.releaseFreeTickets(code, { reason: 'PAYMENT_FAILED' });
+  return cancelled;
 }
 
 // Cancels a Booking and everything under it: releases its tickets back to AVAILABLE and
@@ -783,6 +833,7 @@ async function cancelBooking(booking, { reason = null } = {}) {
   booking.cancelled_at = new Date();
   if (reason) booking.cancel_reason = reason;
   await booking.save();
+  await membershipService.releaseFreeTickets(booking.code, { reason: 'BOOKING_CANCELLED' });
 
   emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, {
     action: REALTIME_ACTION.STATUS_CHANGED,
@@ -939,6 +990,7 @@ async function applyRefund(booking) {
   booking.cancelled_at = new Date();
   booking.cancel_reason = 'Refunded';
   await booking.save();
+  await membershipService.releaseFreeTickets(booking.code, { reason: 'BOOKING_REFUNDED' });
 
   emitBranchEvent(booking.branch_id, REALTIME_EVENT.BOOKING_UPDATED, {
     action: REALTIME_ACTION.STATUS_CHANGED,
@@ -973,6 +1025,7 @@ async function expireStalePendingBookings() {
     if (!flipped) continue;
     if (flipped.booking_type === Booking.TYPE.GROUP) await releaseGroupHold(flipped.code, flipped.ticket_ids);
     else await timeoutTicketsByIds(flipped.ticket_ids);
+    await membershipService.releaseFreeTickets(flipped.code, { reason: 'BOOKING_EXPIRED' });
     expired += 1;
   }
   return expired;
@@ -1203,19 +1256,44 @@ async function priceOrderItems({ ticketIds, comboIds = [], accountId = null, enf
 // A customer may apply a voucher OR a promotion to an order, never both — the controller
 // rejects a request that sends both before this is ever called; if it somehow still receives
 // both, voucherCode wins and promotionCode is ignored (defensive, not the primary guard).
-async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, promotionCode, accountId }) {
-  const priced = await priceOrderItems({ ticketIds, comboIds, accountId });
+//
+async function computeOrderPricing({
+  ticketIds,
+  comboIds = [],
+  voucherCode,
+  promotionCode,
+  accountId,
+  freeTickets = 0,
+  enforceStock = true,
+}) {
+  const priced = await priceOrderItems({ ticketIds, comboIds, accountId, enforceStock });
   if (!priced) return null;
   const { scheduleId, schedule, seatTotal, comboTotal, orderValue, ticketPrices, combos, ticketPriceRows } = priced;
 
-  let discountAmount = 0;
+  const member = accountId
+    ? await membershipService.priceMembership({ accountId, ticketRows: ticketPriceRows, combos, freeTickets })
+    : null;
+  const membershipPricing = member ? member.pricing : null;
+  const membershipDiscount = membershipPricing ? membershipPricing.membershipDiscount : 0;
+  const valueAfterMembership = orderValue - membershipDiscount;
+  let codeTicketPrices = ticketPrices;
+  let codeCombos = combos;
+  if (membershipPricing && membershipDiscount > 0) {
+    // A seat a free ticket covered is no longer a ticket the customer pays for (a FREE_TICKET voucher
+    // must not "cover" it a second time).
+    const covered = new Set(membershipPricing.allocations.map((a) => a.ticketId));
+    codeTicketPrices = membershipPricing.adjustedTicketRows.filter((r) => !covered.has(r.ticketId) || r.price > 0).map((r) => r.price);
+    codeCombos = membershipPricing.adjustedCombos;
+  }
+
+  let codeDiscount = 0;
   let appliedVoucherCode = null;
   let appliedPromotionCode = null;
   if (voucherCode) {
     const voucher = await Voucher.findOne({ code: String(voucherCode).toUpperCase(), active: true });
-    const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue, comboIds });
+    const eligibility = isVoucherEligible(voucher, { cinemaId: schedule.cinema_id, orderValue: valueAfterMembership, comboIds });
     if (eligibility.eligible) {
-      discountAmount = computeVoucherDiscount(voucher, orderValue, { ticketPrices, combos });
+      codeDiscount = computeVoucherDiscount(voucher, valueAfterMembership, { ticketPrices: codeTicketPrices, combos: codeCombos });
       appliedVoucherCode = voucher.code;
     }
   } else if (promotionCode) {
@@ -1226,26 +1304,44 @@ async function computeOrderPricing({ ticketIds, comboIds = [], voucherCode, prom
       movieId: schedule.movie_id,
       showtimeId: schedule.id,
       comboIds,
-      orderValue,
+      orderValue: valueAfterMembership,
       customerUsedCount: usage ? usage.count : 0,
       ticketCount: ticketIds.length,
     });
     if (eligibility.eligible) {
-      discountAmount = computePromotionDiscount(promotion, orderValue);
+      codeDiscount = computePromotionDiscount(promotion, valueAfterMembership);
       appliedPromotionCode = promotion.code;
     }
   }
+  // With a membership discount the two together must never exceed the order. (Without one this is
+  // left exactly as it always was.)
+  if (membershipDiscount > 0) codeDiscount = Math.min(codeDiscount, Math.max(valueAfterMembership, 0));
 
+  const discountAmount = membershipDiscount + codeDiscount;
   const totalPrice = Math.max(orderValue - discountAmount, 0);
   return {
     scheduleId,
+    cinemaId: priced.cinemaId,
     seatTotal,
     comboTotal,
     discountAmount,
+    codeDiscount,
+    membershipDiscount,
     totalPrice,
     voucherCode: appliedVoucherCode,
     promotionCode: appliedPromotionCode,
     ticketPrices: ticketPriceRows,
+    membership: member
+      ? {
+          state: member.state,
+          snapshot: member.snapshot,
+          allocations: membershipPricing.allocations,
+          freeTicketsRequested: membershipPricing.freeTicketsRequested,
+          freeTicketsApplied: membershipPricing.freeTicketsApplied,
+          freeTicketsAvailable: membershipPricing.freeTicketsAvailable,
+          pricing: membershipPricing,
+        }
+      : null,
   };
 }
 

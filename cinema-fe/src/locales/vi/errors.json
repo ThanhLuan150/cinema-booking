@@ -259,5 +259,20 @@
   "PROMOTION_BRANCH_NOT_ELIGIBLE": "Khuyến mãi này không áp dụng tại rạp này.",
   "PROMOTION_MOVIE_NOT_ELIGIBLE": "Khuyến mãi này không áp dụng cho phim này.",
   "PROMOTION_SHOWTIME_NOT_ELIGIBLE": "Khuyến mãi này không áp dụng cho suất chiếu này.",
-  "PROMOTION_COMBO_NOT_ELIGIBLE": "Khuyến mãi này cần có combo cụ thể trong đơn."
+  "PROMOTION_COMBO_NOT_ELIGIBLE": "Khuyến mãi này cần có combo cụ thể trong đơn.",
+  "SUBSCRIPTION_ALREADY_OPEN": "Bạn đã có một gói đăng ký đang hoạt động hoặc đang chờ thanh toán.",
+  "SUBSCRIPTION_PLAN_NOT_FOUND": "Gói đăng ký này không tồn tại.",
+  "SUBSCRIPTION_PLAN_INACTIVE": "Gói đăng ký này đã ngừng bán.",
+  "SUBSCRIPTION_NOT_FOUND": "Không tìm thấy gói đăng ký.",
+  "SUBSCRIPTION_NOT_CANCELLABLE": "Không thể huỷ gói đăng ký này nữa.",
+  "SUBSCRIPTION_FIELD_NOT_ALLOWED": "Khi mua gói đăng ký chỉ được chọn gói.",
+  "SUBSCRIPTION_PLAN_CODE_EXISTS": "Đã có gói với mã này.",
+  "SUBSCRIPTION_PLAN_IN_USE": "Gói này đã được bán. Hãy ngừng bán thay vì xoá.",
+  "MEMBERSHIP_FREE_TICKETS_UNAVAILABLE": "Bạn không còn đủ vé miễn phí cho đơn này.",
+  "MEMBERSHIP_BENEFIT_UNAVAILABLE": "Ưu đãi hội viên cho đơn này không còn hiệu lực. Khoản thanh toán (nếu có) sẽ được hoàn lại.",
+  "INVALID_FREE_TICKETS": "Hãy chọn từ 0 đến số ghế trong đơn.",
+  "INVALID_BENEFITS": "Một hoặc nhiều giá trị ưu đãi không hợp lệ.",
+  "SALE_NOT_OPEN": "Suất chiếu này chưa mở bán cho bạn.",
+  "INVALID_SALE_OPENS_AT": "Thời điểm mở bán phải là ngày giờ hợp lệ, trước giờ chiếu.",
+  "INVALID_SIGNATURE": "Không thể xác minh kết quả thanh toán."
 }

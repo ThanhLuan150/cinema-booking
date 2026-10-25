@@ -78,6 +78,14 @@
       "WAITLIST_CANCELLED": {
         "title": "Danh sách chờ đã đóng",
         "body": "Suất chiếu \"{{movie}}\" lúc {{showtime}} đã bị hủy nên vị trí của bạn trong danh sách chờ đã được đóng."
+      },
+      "SUBSCRIPTION_ACTIVATED": {
+        "title": "Gói đăng ký đã kích hoạt",
+        "body": "\"{{planName}}\" có hiệu lực đến {{endAt}}. Ưu đãi áp dụng cho lần đặt vé tiếp theo của bạn."
+      },
+      "SUBSCRIPTION_EXPIRED": {
+        "title": "Gói đăng ký đã hết hạn",
+        "body": "\"{{planName}}\" đã kết thúc. Hãy mua kỳ mới để tiếp tục nhận ưu đãi."
       }
     },
     "open": "Mở"

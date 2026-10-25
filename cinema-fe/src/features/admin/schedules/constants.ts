@@ -24,4 +24,5 @@ export const emptyValues = (presetMovieId: number | string | null): AddScheduleF
   time_begin: '',
   time_end: '',
   price: '',
+  sale_opens_at: '',
 });

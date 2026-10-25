@@ -63,6 +63,7 @@ import { recipesQueryKey, branchIngredientsQueryKey } from '@/features/owner/rec
 import { movieReleasesQueryKey } from '@/features/admin/distribution/hooks/useMovieReleases';
 import { membershipLevelsQueryKey } from '@/features/membership/hooks/useMembershipLevels';
 import { myMembershipQueryKey } from '@/features/membership/hooks/useMyMembership';
+import { membershipKeys } from '@/features/membership/hooks/useSubscriptions';
 import { systemConfigQueryKey } from '@/features/admin/systemConfig/hooks/useSystemConfig';
 import { auditLogsQueryKey } from '@/features/admin/auditLog/hooks/useAuditLogs';
 import { integrationsQueryKey } from '@/features/admin/integrations/hooks/useIntegrations';
@@ -147,7 +148,10 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   [REALTIME_EVENT.VOUCHER_UPDATED]: [ownerVouchersQueryKey],
   [REALTIME_EVENT.REVIEW_UPDATED]: [adminReviewsQueryKey],
   [REALTIME_EVENT.DISTRIBUTION_UPDATED]: [distributorsQueryKey, movieReleasesQueryKey],
-  [REALTIME_EVENT.MEMBERSHIP_UPDATED]: [membershipLevelsQueryKey, myMembershipQueryKey],
+  // A tier's benefits or the plan catalogue changed: everything a member is quoted can move.
+  [REALTIME_EVENT.MEMBERSHIP_UPDATED]: [membershipLevelsQueryKey, myMembershipQueryKey, membershipKeys.all],
+  // The caller's own subscription was activated, cancelled or expired.
+  [REALTIME_EVENT.SUBSCRIPTION_UPDATED]: [membershipKeys.all, myMembershipQueryKey],
   [REALTIME_EVENT.SYSTEM_CONFIG_UPDATED]: [systemConfigQueryKey],
   // A price rule or holiday changes what a seat costs, and the seat grid carries per-seat prices.
   [REALTIME_EVENT.PRICING_UPDATED]: [ownerPricingRulesQueryKey, ownerHolidaysQueryKey, ['bookedSeats']],
@@ -162,7 +166,7 @@ const INVALIDATIONS: Record<string, QueryKey[]> = {
   // Being blocked, approved or given a different role changes what the caller's own session may
   // do, so their cached profile and permission set have to go, not just the admin list.
   [REALTIME_EVENT.USER_UPDATED]: [adminUsersQueryKey, ['currentUser'], ['myPermissions']],
-  [REALTIME_EVENT.LOYALTY_UPDATED]: [myMembershipQueryKey, myPointsHistoryQueryKey],
+  [REALTIME_EVENT.LOYALTY_UPDATED]: [myMembershipQueryKey, myPointsHistoryQueryKey, membershipKeys.all],
   // A second tab marking something read must clear the bell here too.
   [REALTIME_EVENT.NOTIFICATION_READ]: [notificationsQueryKey, unreadCountQueryKey],
 };

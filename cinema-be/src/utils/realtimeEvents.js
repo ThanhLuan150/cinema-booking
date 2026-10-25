@@ -62,6 +62,9 @@ const REALTIME_EVENT = {
   COMBO_ORDER_UPDATED: 'comboOrder:updated',
   COMBO_UPDATED: 'combo:updated',
   MEMBERSHIP_UPDATED: 'membership:updated',
+  // The customer's own subscription changed (activated, cancelled, expired, a free ticket used).
+  // Account room only; the plan catalogue goes out as the public MEMBERSHIP_UPDATED.
+  SUBSCRIPTION_UPDATED: 'subscription:updated',
   EMPLOYEE_UPDATED: 'employee:updated',
 
   // --- branch operations ------------------------------------------------------------------

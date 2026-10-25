@@ -21,6 +21,7 @@ const voucherRepository = require('../repositories/voucher.repository');
 const systemConfigService = require('./systemConfig.service');
 const notificationService = require('./notification.service');
 const loyaltyService = require('./loyaltyService');
+const membershipService = require('./membership.service');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('./auditLog.service');
 const { createMomoPaymentUrl, groupBookingRedirectUrl } = require('../utils/momo');
 const { sendInvoiceEmail } = require('../utils/mailer');
@@ -74,6 +75,11 @@ async function loadOrder(input, accountId) {
   if (!schedule) fail('SCHEDULE_NOT_FOUND', 404, 'Showtime not found');
   if (schedule.status === 'CANCELLED') fail('SCHEDULE_CANCELLED', 400, 'This showtime has been cancelled');
   if (showtimeStartMs(schedule) <= Date.now()) fail('SHOWTIME_STARTED', 400, 'This showtime has already started');
+  const saleBlock = await membershipService.checkSaleAccess({ schedule, accountId });
+  if (saleBlock) {
+    const { message, code, ...extra } = saleBlock.body;
+    fail(code, saleBlock.status, message, extra);
+  }
 
   const branchId = schedule.cinema_id ?? null;
   const [minSeats, maxSeats] = await Promise.all([

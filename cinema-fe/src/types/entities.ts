@@ -765,7 +765,9 @@ export type NotificationType =
   | 'SHOWTIME_CHANGED'
   | 'WAITLIST_SEAT_AVAILABLE'
   | 'WAITLIST_EXPIRED'
-  | 'WAITLIST_CANCELLED';
+  | 'WAITLIST_CANCELLED'
+  | 'SUBSCRIPTION_ACTIVATED'
+  | 'SUBSCRIPTION_EXPIRED';
 
 export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
 export type NotificationChannel = 'IN_APP' | 'EMAIL';
@@ -789,6 +791,9 @@ export interface NotificationData {
   scheduleId?: number;
   offerMinutes?: number;
   waitlistId?: number;
+  /** Membership subscription: the plan and the last day of its term. */
+  planName?: string;
+  endAt?: string;
   [key: string]: unknown;
 }
 

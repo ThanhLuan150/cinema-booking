@@ -12,7 +12,9 @@ const comboOrderRepository = require('../repositories/comboOrder.repository');
 const inventoryRepository = require('../repositories/inventory.repository');
 const paymentRepository = require('../repositories/payment.repository');
 const systemConfigService = require('./systemConfig.service');
+const membershipService = require('./membership.service');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('./auditLog.service');
+const { computeMembershipPricing } = require('../utils/membershipBenefits');
 const { verifySeatQr, signSeatQr } = require('../utils/seatQr');
 const { checkOrderingWindow } = require('../utils/inSeatOrderWindow');
 const { createMomoPaymentUrl, inSeatRedirectUrl } = require('../utils/momo');
@@ -195,6 +197,9 @@ async function presentOrders(orders, { now = new Date() } = {}) {
         quantity: item.quantity,
         line_total: item.line_total,
       })),
+      subtotal: order.items.reduce((sum, item) => sum + item.line_total, 0),
+      membership_discount: order.membership_discount || 0,
+      membership_fnb_percent: order.membership_fnb_percent || 0,
       total_price: order.total_price,
       seat: delivery
         ? {
@@ -233,13 +238,19 @@ async function presentOrder(order, options) {
 
 async function getSession({ qr, accountId, now = new Date() }) {
   const context = await resolveSeatContext({ qr, accountId, now });
-  const [menu, orders] = await Promise.all([
+  const [menu, orders, member] = await Promise.all([
     listMenu(context.branch.id),
     comboOrderRepository.listInSeatForAccount(accountId, { scheduleId: context.schedule.id, limit: 20 }),
+    membershipService.loadState(accountId, { now }),
   ]);
   return {
     ...presentSeatContext(context),
     menu,
+    // Shown in the cart; the order itself is priced again on the server when it is placed.
+    membership: {
+      level: member ? member.account.membership_level : 'NONE',
+      fnb_discount_percent: member ? member.effective.fnb_discount_percent : 0,
+    },
     orders: await presentOrders(orders, { now }),
   };
 }
@@ -307,6 +318,17 @@ async function priceItems(branchId, items) {
   });
 }
 
+// The member F&B discount on these lines, with exactly the per-item arithmetic of a booking's combos
+// (membershipBenefits.computeMembershipPricing). Free tickets play no part in a food order.
+async function memberFnbDiscount(accountId, orderItems, now = new Date()) {
+  const state = await membershipService.loadState(accountId, { now });
+  const percent = state ? state.effective.fnb_discount_percent : 0;
+  if (!(percent > 0)) return { percent: 0, discount: 0 };
+  const units = orderItems.flatMap((item) => Array.from({ length: item.quantity }, () => ({ id: item.combo_id, price: item.unit_price })));
+  const { fnbDiscount } = computeMembershipPricing({ combos: units, effective: { fnb_discount_percent: percent } });
+  return { percent, discount: fnbDiscount };
+}
+
 async function replayIdempotent(idempotencyKey, accountId, now) {
   const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
   if (!existing) return null;
@@ -337,7 +359,10 @@ async function createOrder({ qr, items, accountId, idempotencyKey = null, now = 
 
   const branchId = context.branch.id;
   const orderItems = await priceItems(branchId, normalizeItems(items));
-  const totalPrice = orderItems.reduce((sum, item) => sum + item.line_total, 0);
+  // Ticket 53: the customer's member F&B discount (tier or live subscription), read here on the
+  // server and taken off the charge; the lines keep their list prices.
+  const member = await memberFnbDiscount(accountId, orderItems, now);
+  const totalPrice = orderItems.reduce((sum, item) => sum + item.line_total, 0) - member.discount;
   if (totalPrice < MIN_PAYABLE_AMOUNT) {
     fail('IN_SEAT_AMOUNT_TOO_LOW', 400, `The order total must be at least ${MIN_PAYABLE_AMOUNT}`);
   }
@@ -361,6 +386,8 @@ async function createOrder({ qr, items, accountId, idempotencyKey = null, now = 
       invoice_id: context.invoice.id,
     },
     expiresAt: new Date(now.getTime() + Number(holdMinutes) * 60 * 1000),
+    membershipDiscount: member.discount,
+    membershipFnbPercent: member.discount > 0 ? member.percent : 0,
   });
 
   const payment = await paymentRepository.createPayment({

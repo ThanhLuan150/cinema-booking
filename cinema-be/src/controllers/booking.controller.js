@@ -7,6 +7,7 @@ const AuditLog = require('../models/AuditLog');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
 const notificationService = require('../services/notification.service');
 const Invoice = require('../models/Invoice');
+const Payment = require('../models/Payment');
 const Ticket = require('../models/Ticket');
 const { withCategories } = require('../utils/withCategories');
 const { createMomoPaymentUrl, verifyMomoSignature, decodeExtraData } = require('../utils/momo');
@@ -16,6 +17,8 @@ const cashierShiftService = require('../services/cashierShift.service');
 const webhookService = require('../services/webhook.service');
 const inSeatOrderService = require('../services/inSeatOrder.service');
 const groupBookingService = require('../services/groupBooking.service');
+const membershipService = require('../services/membership.service');
+const subscriptionService = require('../services/subscription.service');
 const { ticketsOutsideShowtime } = require('../utils/groupBooking');
 const nextId = require('../utils/nextId');
 
@@ -98,6 +101,9 @@ async function holdSeats(req, res) {
   if (schedule && schedule.status === 'CANCELLED') {
     return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
   }
+  // Ticket 53 (Priority Booking): before general sale only members with early access may hold seats.
+  const saleBlock = await membershipService.checkSaleAccess({ schedule, accountId: req.account.accountId });
+  if (saleBlock) return res.status(saleBlock.status).json(saleBlock.body);
 
   const branchId = schedule ? (schedule.cinema_id ?? null) : null;
   const maxSeats = await systemConfigService.getValue('MAX_BOOKING_SEATS', branchId);
@@ -179,7 +185,7 @@ async function bookticket(req, res) {
   res.json(grouped);
 }
 
-// POST /api/MomoPayment { ticketIds, comboIds, voucherCode, discountAmount, totalPrice }
+// POST /api/MomoPayment { ticketIds, comboIds, voucherCode, discountAmount, totalPrice, freeTickets }
 async function createMomoPayment(req, res) {
   const { ticketIds, comboIds, voucherCode, promotionCode } = req.body;
   if (!Array.isArray(ticketIds) || ticketIds.length === 0) {
@@ -191,10 +197,23 @@ async function createMomoPayment(req, res) {
       code: 'DISCOUNT_CONFLICT',
     });
   }
+  // Ticket 53: how many seats to cover with membership free tickets — only a count. Which allowance,
+  // which seats and how much each covers are decided here, from the account's own membership.
+  const freeTickets = req.body.freeTickets === undefined || req.body.freeTickets === null ? 0 : Number(req.body.freeTickets);
+  if (!Number.isInteger(freeTickets) || freeTickets < 0 || freeTickets > ticketIds.length) {
+    return res.status(400).json({
+      message: 'freeTickets must be a whole number between 0 and the number of seats',
+      code: 'INVALID_FREE_TICKETS',
+    });
+  }
 
   const idempotencyKey = req.headers?.['idempotency-key'] || null;
   if (idempotencyKey) {
     const existing = await paymentRepository.findByIdempotencyKey(idempotencyKey);
+    // An order the membership covered in full was settled on the spot; a retry gets that answer again.
+    if (existing && existing.method === Payment.METHOD.MEMBERSHIP && existing.account_id === req.account.accountId) {
+      return res.status(201).json({ covered: true, code: existing.code, bookingId: existing.booking_id });
+    }
     if (existing && existing.pay_url) {
       return res.type('text/plain').send(existing.pay_url);
     }
@@ -219,6 +238,8 @@ async function createMomoPayment(req, res) {
     if (schedule && schedule.status === 'CANCELLED') {
       return res.status(400).json({ message: 'This showtime has been cancelled', code: 'SCHEDULE_CANCELLED' });
     }
+    const saleBlock = await membershipService.checkSaleAccess({ schedule, accountId });
+    if (saleBlock) return res.status(saleBlock.status).json(saleBlock.body);
   }
 
   const ticketById = new Map(tickets.map((t) => [t.id, t]));
@@ -238,9 +259,20 @@ async function createMomoPayment(req, res) {
     voucherCode: voucherCode || null,
     promotionCode: promotionCode || null,
     accountId,
+    freeTickets,
   });
   if (!pricing) {
     return res.status(400).json({ message: 'Unable to price this order', code: 'PRICING_FAILED' });
+  }
+  const member = pricing.membership;
+  // Never fewer free tickets than the customer was quoted: refuse instead of silently charging more.
+  if (freeTickets > 0 && (!member || member.freeTicketsApplied < freeTickets)) {
+    return res.status(409).json({
+      message: 'Not enough membership free tickets left for this order',
+      code: 'MEMBERSHIP_FREE_TICKETS_UNAVAILABLE',
+      requested: freeTickets,
+      available: member ? member.freeTicketsAvailable : 0,
+    });
   }
 
   // Re-hold (or extend the hold on) these seats for the duration of the MoMo redirect so they
@@ -256,21 +288,49 @@ async function createMomoPayment(req, res) {
 
   const branchId = await bookingRepository.findCinemaIdByTicketId(tickets[0].id);
   const orderId = `BK-${await nextId('bookingOrder')}`;
-  const booking = await bookingRepository.createPendingBooking({
-    code: orderId,
-    accountId,
-    scheduleId: tickets[0].schedule_id,
-    branchId,
-    ticketIds,
-    comboIds: comboIds || [],
-    voucherCode: pricing.voucherCode,
-    promotionCode: pricing.promotionCode,
-    discountAmount: pricing.discountAmount,
-    seatTotal: pricing.seatTotal,
-    comboTotal: pricing.comboTotal,
-    totalPrice: pricing.totalPrice,
-    expiresAt: heldUntil,
-  });
+
+  // The free tickets are taken now, atomically against the allowance (two checkouts can never spend
+  // the same last one), and given back if this booking fails, is cancelled, expires or is refunded.
+  if (member && member.allocations.length > 0) {
+    const reserved = await membershipService.reserveFreeTickets({
+      bookingCode: orderId,
+      accountId,
+      allocations: member.allocations,
+      state: member.state,
+    });
+    if (!reserved.ok) {
+      return res.status(409).json({
+        message: 'Not enough membership free tickets left for this order',
+        code: 'MEMBERSHIP_FREE_TICKETS_UNAVAILABLE',
+        requested: freeTickets,
+        available: 0,
+      });
+    }
+  }
+
+  let booking;
+  try {
+    booking = await bookingRepository.createPendingBooking({
+      code: orderId,
+      accountId,
+      scheduleId: tickets[0].schedule_id,
+      branchId,
+      ticketIds,
+      comboIds: comboIds || [],
+      voucherCode: pricing.voucherCode,
+      promotionCode: pricing.promotionCode,
+      discountAmount: pricing.discountAmount,
+      membershipDiscount: pricing.membershipDiscount,
+      membership: member ? member.snapshot : null,
+      seatTotal: pricing.seatTotal,
+      comboTotal: pricing.comboTotal,
+      totalPrice: pricing.totalPrice,
+      expiresAt: heldUntil,
+    });
+  } catch (err) {
+    await membershipService.releaseFreeTickets(orderId, { reason: 'CHECKOUT_FAILED' });
+    throw err;
+  }
 
   await recordAudit({
     req,
@@ -278,7 +338,13 @@ async function createMomoPayment(req, res) {
     entityType: ENTITY_TYPE.BOOKING,
     entityId: booking.id,
     branchId: branchId ?? null,
-    metadata: { code: orderId, channel: 'ONLINE', seats: ticketIds.length, totalPrice: pricing.totalPrice },
+    metadata: {
+      code: orderId,
+      channel: 'ONLINE',
+      seats: ticketIds.length,
+      totalPrice: pricing.totalPrice,
+      membershipDiscount: pricing.membershipDiscount,
+    },
   });
   // Ticket 25: notify the customer their booking was created. Never throws / never blocks.
   await notificationService.notify({
@@ -286,6 +352,43 @@ async function createMomoPayment(req, res) {
     accountId,
     bookingId: booking.id,
   });
+
+  const orderPayload = {
+    ticketIds,
+    comboIds: comboIds || [],
+    voucherCode: pricing.voucherCode,
+    promotionCode: pricing.promotionCode,
+    discountAmount: pricing.discountAmount,
+    membershipDiscount: pricing.membershipDiscount,
+    totalPrice: pricing.totalPrice,
+    accountId: req.account.accountId,
+    bookingId: booking.id,
+  };
+
+  // Nothing left to pay — the membership covered the whole order — so there is no MoMo step: the
+  // booking is settled now with an amount-0 MEMBERSHIP payment and its tickets are issued.
+  if (pricing.totalPrice === 0 && pricing.membershipDiscount > 0) {
+    await paymentRepository.createPayment({
+      code: orderId,
+      bookingId: booking.id,
+      accountId,
+      branchId,
+      type: Payment.TYPE.ONLINE,
+      method: Payment.METHOD.MEMBERSHIP,
+      amount: 0,
+      status: Payment.STATUS.PAID,
+      idempotencyKey,
+    });
+    const result = await bookingRepository.finalizeMomoOrder(orderId, orderPayload, { comboPaymentMethod: null });
+    if (result.refundPending) {
+      return res.status(409).json({
+        message: 'Not enough membership free tickets left for this order',
+        code: result.code || 'MEMBERSHIP_BENEFIT_UNAVAILABLE',
+      });
+    }
+    await auditMomoOutcome(req, orderId, { success: true });
+    return res.status(201).json({ covered: true, code: orderId, bookingId: booking.id });
+  }
 
   const payment = await paymentRepository.createPayment({
     code: orderId,
@@ -298,16 +401,7 @@ async function createMomoPayment(req, res) {
     idempotencyKey,
   });
 
-  const payUrl = await createMomoPaymentUrl(pricing.totalPrice, orderId, {
-    ticketIds,
-    comboIds: comboIds || [],
-    voucherCode: pricing.voucherCode,
-    promotionCode: pricing.promotionCode,
-    discountAmount: pricing.discountAmount,
-    totalPrice: pricing.totalPrice,
-    accountId: req.account.accountId,
-    bookingId: booking.id,
-  });
+  const payUrl = await createMomoPaymentUrl(pricing.totalPrice, orderId, orderPayload);
   await paymentRepository.setPayUrl(payment.id, payUrl);
   res.type('text/plain').send(payUrl);
 }
@@ -393,6 +487,11 @@ async function applyMomoPaymentOutcome(req, body) {
     const result = await groupBookingService.applyMomoOutcome(body, { req });
     return { success: Boolean(result.success), skip: Boolean(result.alreadyProcessed) };
   }
+  // A membership subscription (Ticket 53) is activated only from here — never from extraData.
+  if (await subscriptionService.isSubscriptionPaymentCode(body.orderId)) {
+    const result = await subscriptionService.applyMomoOutcome(body);
+    return { success: Boolean(result.success), skip: Boolean(result.alreadyProcessed) };
+  }
 
   await paymentRepository.markProcessing(body.orderId);
   const orderPayload = decodeExtraData(body.extraData);
@@ -412,8 +511,10 @@ async function applyMomoPaymentOutcome(req, body) {
     rawResponse: body,
   });
   if (!skip) {
-    await bookingRepository.finalizeMomoOrder(body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
-    await auditMomoOutcome(req, body.orderId, { success: true });
+    const result = await bookingRepository.finalizeMomoOrder(body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
+    // Ticket 53: a late payment for a booking whose membership free tickets are gone was flagged for
+    // refund instead of issuing tickets — so no "ticket issued" trail/notification for it.
+    if (!result.refundPending) await auditMomoOutcome(req, body.orderId, { success: true });
   }
   return { success: true, skip };
 }
@@ -490,6 +591,17 @@ async function momoConfirm(req, res) {
     return res.json({ message: 'success', alreadyProcessed: Boolean(result.alreadyProcessed) });
   }
 
+  // And for a subscription's result (its own page posts to /subscriptions/me/:code/momo-confirm).
+  if (await subscriptionService.isSubscriptionPaymentCode(req.body.orderId)) {
+    const payment = await paymentRepository.findByCode(req.body.orderId);
+    if (!payment || payment.account_id !== req.account.accountId) return res.status(403).json({ message: 'Forbidden' });
+    const result = await subscriptionService.applyMomoOutcome(req.body);
+    if (!result.success) {
+      return res.status(400).json({ message: req.body.message || 'Payment failed', code: 'PAYMENT_FAILED' });
+    }
+    return res.json({ message: 'success', alreadyProcessed: Boolean(result.alreadyProcessed) });
+  }
+
   // See momoIpn: PENDING -> PROCESSING while this callback is being handled.
   await paymentRepository.markProcessing(req.body.orderId);
 
@@ -510,6 +622,13 @@ async function momoConfirm(req, res) {
   const result = skip
     ? { alreadyProcessed: true }
     : await bookingRepository.finalizeMomoOrder(req.body.orderId, orderPayload, { comboPaymentMethod: 'MOMO' });
+  if (result.refundPending) {
+    return res.status(409).json({
+      message: 'The membership free tickets for this booking are no longer available; your payment will be refunded',
+      code: result.code || 'MEMBERSHIP_BENEFIT_UNAVAILABLE',
+      refundPending: true,
+    });
+  }
   if (!skip) {
     await auditMomoOutcome(req, req.body.orderId, { success: true });
   }
@@ -576,6 +695,8 @@ async function cancelInvoice(req, res) {
   }
 
   await bookingRepository.cancelInvoiceRecord(invoice);
+  // Ticket 53: a seat a membership free ticket covered gives that ticket back.
+  await membershipService.releaseFreeTickets(invoice.code, { reason: 'TICKET_CANCELLED', ticketIds: [invoice.ticket_id] });
 
   res.json(invoice);
 }
@@ -665,6 +786,7 @@ async function refundInvoice(req, res) {
 
   await bookingRepository.updateTicketStatus(invoice.ticket_id, 1);
   await bookingRepository.refundInvoiceRecord(invoice);
+  await membershipService.releaseFreeTickets(invoice.code, { reason: 'TICKET_REFUNDED', ticketIds: [invoice.ticket_id] });
 
   res.json(invoice);
 }
@@ -1125,6 +1247,8 @@ async function createCounterSale(req, res) {
     voucherCode: pricing.voucherCode,
     promotionCode: pricing.promotionCode,
     discountAmount: pricing.discountAmount,
+    membershipDiscount: pricing.membershipDiscount,
+    membership: pricing.membership ? pricing.membership.snapshot : null,
     totalPrice: pricing.totalPrice,
     seatTotal: pricing.seatTotal,
     comboTotal: pricing.comboTotal,

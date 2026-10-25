@@ -23,10 +23,12 @@ export const PAYMENT_TYPE = {
   online: 'ONLINE',
   counter: 'COUNTER',
   inSeat: 'IN_SEAT',
+  subscription: 'SUBSCRIPTION',
 } as const;
 
 export const PAYMENT_TYPE_META: Record<string, { key: string }> = {
   [PAYMENT_TYPE.online]: { key: 'online' },
   [PAYMENT_TYPE.counter]: { key: 'counter' },
   [PAYMENT_TYPE.inSeat]: { key: 'inSeat' },
+  [PAYMENT_TYPE.subscription]: { key: 'subscription' },
 };

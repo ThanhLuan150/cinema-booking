@@ -319,7 +319,8 @@
       "NONE": "非会員",
       "SILVER": "シルバー",
       "GOLD": "ゴールド",
-      "PLATINUM": "プラチナ"
+      "PLATINUM": "プラチナ",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "名前を入力してください。",

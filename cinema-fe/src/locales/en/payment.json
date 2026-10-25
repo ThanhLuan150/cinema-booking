@@ -18,7 +18,8 @@
     "type": {
       "online": "Online payment",
       "counter": "Counter payment",
-      "inSeat": "In-seat food order"
+      "inSeat": "In-seat food order",
+      "subscription": "Membership subscription"
     },
     "status": {
       "pending": "Pending",

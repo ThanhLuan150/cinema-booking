@@ -21,6 +21,7 @@ import {
   cartTotal,
   decrement,
   increment,
+  memberDiscount,
   newIdempotencyKey,
   toOrderLines,
   type InSeatCart,
@@ -106,7 +107,9 @@ function SeatOrdering({ qr, session }: { qr: string; session: InSeatSession }) {
   const createOrder = useCreateInSeatOrder();
 
   const lines = useMemo(() => cartLines(cart, session.menu), [cart, session.menu]);
-  const total = cartTotal(lines);
+  const fnbPercent = session.membership?.fnb_discount_percent ?? 0;
+  const discount = memberDiscount(lines, fnbPercent);
+  const total = cartTotal(lines) - discount;
   const count = cartCount(lines);
   const { ordering } = session;
 
@@ -180,6 +183,12 @@ function SeatOrdering({ qr, session }: { qr: string; session: InSeatSession }) {
         aria-label={t('cart.title')}
         className="sticky bottom-3 flex flex-col gap-3 rounded-2xl border border-border-strong bg-surface-raised p-4 shadow-raised"
       >
+        {discount > 0 && (
+          <div className="flex items-baseline justify-between gap-3 text-sm text-emerald-400" data-testid="in-seat-member-discount">
+            <span>{t('cart.memberDiscount', { percent: fnbPercent })}</span>
+            <span>-{formatCurrency(discount)}</span>
+          </div>
+        )}
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-sm text-txt/70">
             {count > 0 ? t('cart.items', { count }) : t('cart.empty')}

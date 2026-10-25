@@ -25,5 +25,137 @@
       "reversal": "Hoàn điểm",
       "adjust": "Điều chỉnh"
     }
+  },
+  "benefits": {
+    "none": "Không có ưu đãi thêm.",
+    "perMonth": "mỗi tháng",
+    "perTerm": "mỗi kỳ",
+    "freeTickets_other": "{{count}} vé miễn phí {{per}}",
+    "freeTicketsCapped_other": "{{count}} vé miễn phí {{per}} (tối đa {{cap}} mỗi vé)",
+    "ticketDiscount": "Giảm {{percent}}% giá vé",
+    "fnbDiscount": "Giảm {{percent}}% đồ ăn & nước",
+    "priorityBooking": "Đặt vé sớm tới {{hours}} giờ trước khi mở bán",
+    "pointsMultiplier": "Nhân x{{multiplier}} điểm thưởng"
+  },
+  "tierBenefits": {
+    "title": "Ưu đãi hạng {{level}}",
+    "next": "Lên hạng {{level}} để nhận"
+  },
+  "freeTickets": {
+    "title": "Vé miễn phí",
+    "remainingLabel": "vé miễn phí còn lại",
+    "fromSubscription": "Còn {{remaining}}/{{limit}} vé từ gói đăng ký",
+    "fromTier": "Còn {{remaining}}/{{limit}} vé tháng này ({{period}}) từ hạng hội viên",
+    "none": "Hiện tại bạn không có vé miễn phí.",
+    "howToUse": "Dùng ở trang chọn ghế khi đặt vé. Hệ thống kiểm tra hội viên của bạn khi thanh toán."
+  },
+  "subscription": {
+    "title": "Gói đăng ký",
+    "status": {
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "ACTIVE": "Đang hoạt động",
+      "EXPIRED": "Hết hạn",
+      "CANCELLED": "Đã huỷ"
+    },
+    "validity": "Hiệu lực {{from}} – {{to}}",
+    "ticketsUsed": "Đã dùng {{used}}/{{limit}} vé",
+    "pendingHint": "Đang chờ bạn thanh toán {{price}}. Gói chỉ có hiệu lực khi thanh toán được xác nhận.",
+    "continuePayment": "Tiếp tục thanh toán",
+    "cancel": "Huỷ đơn mua",
+    "cancelConfirm": "Huỷ gói đăng ký chưa thanh toán này?",
+    "cancelled": "Đã huỷ đơn mua.",
+    "history": "Gói đã dùng"
+  },
+  "plans": {
+    "title": "Các gói đăng ký",
+    "empty": "Hiện chưa có gói đăng ký nào.",
+    "duration": "{{days}} ngày mỗi kỳ",
+    "buy": "Mua bằng MoMo",
+    "oneAtATime": "Mỗi lúc bạn chỉ có một gói. Hãy mua kỳ tiếp theo khi gói hiện tại kết thúc."
+  },
+  "paymentResult": {
+    "title": "Thanh toán gói đăng ký",
+    "notLoggedIn": "Vui lòng đăng nhập để hoàn tất mua gói.",
+    "missing": "Trang này cần kết quả thanh toán từ MoMo.",
+    "processing": "Đang xác nhận thanh toán…",
+    "activated": "{{plan}} có hiệu lực đến {{until}}.",
+    "refundPending": "Đơn mua này không còn chờ thanh toán nên khoản tiền sẽ được hoàn lại.",
+    "backToMembership": "Về trang Hội viên"
+  },
+  "checkout": {
+    "title": "Ưu đãi hội viên",
+    "level": "Hội viên {{level}}",
+    "freeTicketsLabel": "Vé miễn phí",
+    "freeTicketsAvailable": "Có thể dùng {{available}} vé cho đơn này",
+    "decrease": "Bớt một vé miễn phí",
+    "increase": "Thêm một vé miễn phí",
+    "freeTicketLine": "Vé miễn phí ({{count}})",
+    "ticketDiscountLine": "Giảm giá vé hội viên ({{percent}}%)",
+    "fnbDiscountLine": "Giảm đồ ăn & nước hội viên ({{percent}}%)",
+    "coveredSuccess": "Hội viên của bạn đã chi trả toàn bộ đơn — vé đã sẵn sàng.",
+    "freeTicketsMoMoOnly": "Vé miễn phí chỉ dùng được khi thanh toán MoMo.",
+    "saleNotOpen": "Suất chiếu này mở bán lúc {{time}}.",
+    "saleOpensForYou": "Bạn có thể đặt từ {{time}}.",
+    "salePriority": "Đặt vé ưu tiên: bạn đang đặt trước giờ mở bán chung ({{time}})."
+  },
+  "admin": {
+    "breadcrumb": "Hội viên & Gói đăng ký",
+    "tabs": {
+      "tiers": "Hạng hội viên",
+      "plans": "Gói đăng ký",
+      "subscriptions": "Thuê bao"
+    },
+    "fields": {
+      "minPoints": "Điểm tích luỹ cần đạt",
+      "ticketDiscount": "Giảm giá vé (%)",
+      "fnbDiscount": "Giảm đồ ăn & nước (%)",
+      "freeTickets": "Vé miễn phí",
+      "freeTicketsTier": "Vé miễn phí / tháng",
+      "freeTicketsPlan": "Vé miễn phí / kỳ",
+      "freeTicketCap": "Giá trị tối đa mỗi vé miễn phí (trống = cả ghế)",
+      "priorityHours": "Đặt vé ưu tiên (số giờ sớm hơn)",
+      "pointsMultiplier": "Hệ số nhân điểm",
+      "code": "Mã",
+      "name": "Tên",
+      "description": "Mô tả",
+      "price": "Giá (VND)",
+      "durationDays": "Thời hạn (ngày)",
+      "active": "Đang bán",
+      "sortOrder": "Thứ tự hiển thị"
+    },
+    "tiers": {
+      "hint": "Hạng hội viên đạt được theo tổng điểm tích luỹ. Ưu đãi áp dụng cho mọi đơn đặt vé của hội viên.",
+      "save": "Lưu",
+      "saved": "Đã lưu hạng {{level}}."
+    },
+    "plans": {
+      "new": "Tạo gói",
+      "edit": "Sửa gói",
+      "create": "Tạo gói",
+      "save": "Lưu gói",
+      "saved": "Đã lưu gói.",
+      "delete": "Xoá",
+      "deleteConfirm": "Xoá gói {{name}}?",
+      "deleted": "Đã xoá gói.",
+      "empty": "Chưa có gói nào.",
+      "onSale": "Đang bán",
+      "retired": "Ngừng bán",
+      "editHint": "Thay đổi chỉ áp dụng cho lượt mua mới. Gói đã bán giữ nguyên như lúc mua."
+    },
+    "subscriptions": {
+      "allStatuses": "Tất cả trạng thái",
+      "accountId": "ID tài khoản khách hàng",
+      "empty": "Không có thuê bao phù hợp.",
+      "code": "Mã",
+      "customer": "Khách hàng",
+      "plan": "Gói",
+      "status": "Trạng thái",
+      "validity": "Hiệu lực",
+      "used": "Vé đã dùng",
+      "actions": "Thao tác",
+      "revoke": "Thu hồi",
+      "revokeConfirm": "Thu hồi thuê bao {{code}}? Ưu đãi dừng ngay và không tự động hoàn tiền.",
+      "revoked": "Đã thu hồi thuê bao."
+    }
   }
 }
