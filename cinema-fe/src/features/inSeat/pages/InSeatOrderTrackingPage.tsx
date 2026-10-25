@@ -127,7 +127,7 @@ const InSeatOrderTrackingPage = () => {
           ))}
         </ul>
         {(order.membership_discount ?? 0) > 0 && (
-          <div className="mt-3 flex items-baseline justify-between text-sm text-emerald-400">
+          <div className="mt-3 flex items-baseline justify-between text-sm text-emerald-400" data-testid="in-seat-order-member-discount">
             <span>{t('cart.memberDiscount', { percent: order.membership_fnb_percent })}</span>
             <span>-{formatCurrency(order.membership_discount ?? 0)}</span>
           </div>
