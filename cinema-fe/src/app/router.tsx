@@ -20,6 +20,8 @@ import TicketDetail from '@/features/booking/pages/TicketDetailPage';
 import PaymentHistory from '@/features/payment/pages/PaymentHistoryPage';
 import MyRefunds from '@/features/refund/pages/MyRefundsPage';
 import MyMembership from '@/features/membership/pages/MyMembershipPage';
+import SubscriptionPaymentResult from '@/features/membership/pages/SubscriptionPaymentResultPage';
+import MembershipAdminPage from '@/features/admin/membership/pages/MembershipAdminPage';
 import MyActivity from '@/features/crm/pages/MyActivityPage';
 import MyGiftCards from '@/features/giftCards/pages/MyGiftCardsPage';
 import RequestPrivateEvent from '@/features/privateEvents/pages/RequestEventPage';
@@ -126,6 +128,7 @@ export function AppRouter() {
       <Route path={ROUTES.paymentHistory} element={<PaymentHistory />} />
       <Route path={ROUTES.myRefunds} element={<MyRefunds />} />
       <Route path={ROUTES.myMembership} element={<MyMembership />} />
+      <Route path={ROUTES.membershipPaymentResult} element={<SubscriptionPaymentResult />} />
       <Route path={ROUTES.myActivity} element={<MyActivity />} />
       <Route path={ROUTES.myGiftCards} element={<MyGiftCards />} />
       <Route path={ROUTES.requestPrivateEvent} element={<RequestPrivateEvent />} />
@@ -304,6 +307,14 @@ export function AppRouter() {
         element={
           <RequireRole roles={ADMIN_ONLY_ROLES}>
             <IntegrationsPage />
+          </RequireRole>
+        }
+      />
+      <Route
+        path={ROUTES.membershipAdmin}
+        element={
+          <RequireRole roles={ADMIN_ONLY_ROLES}>
+            <MembershipAdminPage />
           </RequireRole>
         }
       />

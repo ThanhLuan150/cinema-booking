@@ -319,7 +319,8 @@
       "NONE": "गैर-सदस्य",
       "SILVER": "सिल्वर",
       "GOLD": "गोल्ड",
-      "PLATINUM": "प्लैटिनम"
+      "PLATINUM": "प्लैटिनम",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "कृपया एक नाम दर्ज करें।",

@@ -165,6 +165,31 @@ describe('seedRbac', () => {
     }
   });
 
+  it('lets customers buy and see only their own subscriptions; plans and every customer stay with the Super Admin (Ticket 53)', async () => {
+    await seedRbac();
+    const scopeOf = async (roleCode, code) => {
+      const role = await Role.findOne({ code: roleCode });
+      const permission = await Permission.findOne({ code });
+      const link = await RolePermission.findOne({ role_id: role.id, permission_id: permission.id });
+      return link ? link.scope : null;
+    };
+
+    expect(await scopeOf('CUSTOMER', 'subscriptionPlan.read')).toBe('ALL');
+    for (const code of ['subscription.purchase', 'subscription.read']) {
+      expect(await scopeOf('CUSTOMER', code)).toBe('OWN');
+    }
+    for (const code of ['subscriptionPlan.manage', 'subscription.manage']) {
+      expect(await scopeOf('SUPER_ADMIN', code)).toBe('ALL');
+      expect(await scopeOf('CUSTOMER', code)).toBeNull();
+      expect(await scopeOf('BRANCH_ADMIN', code)).toBeNull();
+      expect(await scopeOf('EMPLOYEE', code)).toBeNull();
+    }
+    for (const code of ['subscription.purchase', 'subscription.read', 'subscriptionPlan.read']) {
+      expect(await scopeOf('BRANCH_ADMIN', code)).toBeNull();
+      expect(await scopeOf('EMPLOYEE', code)).toBeNull();
+    }
+  });
+
   it('grants customer schedule.read (ALL scope) so any logged-in customer can browse showtimes to book', async () => {
     await seedRbac();
     const customer = await Role.findOne({ code: 'CUSTOMER' });

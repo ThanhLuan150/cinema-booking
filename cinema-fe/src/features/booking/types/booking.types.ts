@@ -49,6 +49,15 @@ export interface MomoPaymentPayload {
   promotionCode: string | null;
   discountAmount: number;
   totalPrice: number;
+  // Membership free tickets to use (Ticket 53) — a count only; the server decides what they cover.
+  freeTickets?: number;
+}
+
+// POST /MomoPayment answers this instead of a MoMo link when the membership covered the whole order.
+export interface CoveredCheckoutResult {
+  covered: true;
+  code: string;
+  bookingId: number;
 }
 
 export interface VoucherValidationPayload {

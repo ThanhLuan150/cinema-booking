@@ -19,6 +19,8 @@ const ICONS: Record<NotificationType, string> = {
   WAITLIST_SEAT_AVAILABLE: 'fa-solid fa-user-clock',
   WAITLIST_EXPIRED: 'fa-solid fa-hourglass-end',
   WAITLIST_CANCELLED: 'fa-solid fa-calendar-xmark',
+  SUBSCRIPTION_ACTIVATED: 'fa-solid fa-crown',
+  SUBSCRIPTION_EXPIRED: 'fa-solid fa-hourglass-end',
 };
 
 const TONE: Record<NotificationType, 'positive' | 'negative' | 'neutral'> = {
@@ -33,6 +35,8 @@ const TONE: Record<NotificationType, 'positive' | 'negative' | 'neutral'> = {
   WAITLIST_SEAT_AVAILABLE: 'positive',
   WAITLIST_EXPIRED: 'negative',
   WAITLIST_CANCELLED: 'negative',
+  SUBSCRIPTION_ACTIVATED: 'positive',
+  SUBSCRIPTION_EXPIRED: 'neutral',
 };
 
 export interface PresentedNotification {
@@ -52,6 +56,9 @@ function linkFor(n: Notification): string | undefined {
     case 'WAITLIST_EXPIRED':
     case 'WAITLIST_CANCELLED':
       return ROUTES.myWaitlist;
+    case 'SUBSCRIPTION_ACTIVATED':
+    case 'SUBSCRIPTION_EXPIRED':
+      return ROUTES.myMembership;
     default:
       return undefined;
   }
@@ -69,6 +76,8 @@ export function presentNotification(n: Notification, t: TFunction): PresentedNot
     bookingCode: d.bookingCode ?? '',
     amount: typeof d.amount === 'number' ? d.amount.toLocaleString() : '',
     offerMinutes: d.offerMinutes ?? '',
+    planName: d.planName ?? '',
+    endAt: d.endAt ?? '',
   };
 
   return {

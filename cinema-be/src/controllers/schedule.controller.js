@@ -5,6 +5,7 @@ const seatRepository = require('../repositories/seat.repository');
 const bookingRepository = require('../repositories/booking.repository');
 const movieReleaseRepository = require('../repositories/movieRelease.repository');
 const { evaluateShowtimeAgainstReleases } = require('../utils/releaseWindow');
+const { parseSaleOpensAt } = require('../utils/membershipBenefits');
 const auditLogRepository = require('../repositories/auditLog.repository');
 const AuditLog = require('../models/AuditLog');
 const { recordAudit, ACTION, ENTITY_TYPE } = require('../services/auditLog.service');
@@ -159,7 +160,22 @@ function broadcastScheduleChange(schedule, action) {
   });
 }
 
-// POST /api/schedule { movie_id, room_id, movie_date, time_begin, time_end, price }
+function resolveSaleOpensAt(req, res, { movie_date, time_begin }) {
+  const parsed = parseSaleOpensAt(req.body.sale_opens_at);
+  if (parsed.skip) return parsed;
+  if (parsed.error) {
+    res.status(400).json({ message: parsed.error, code: 'INVALID_SALE_OPENS_AT' });
+    return null;
+  }
+  // movie_date + time_begin are LOCAL time everywhere in this codebase.
+  if (parsed.value && parsed.value.getTime() >= new Date(`${movie_date}T${time_begin}:00`).getTime()) {
+    res.status(400).json({ message: 'sale_opens_at must be before the showtime starts', code: 'INVALID_SALE_OPENS_AT' });
+    return null;
+  }
+  return parsed;
+}
+
+// POST /api/schedule { movie_id, room_id, movie_date, time_begin, time_end, price, sale_opens_at? }
 // (schedule.create permission — super admin anywhere, branch admin within their own branch).
 async function create(req, res) {
   const { movie_id, room_id, movie_date, time_begin, time_end, price } = req.body;
@@ -168,6 +184,8 @@ async function create(req, res) {
       .status(400)
       .json({ message: 'movie_id, room_id, movie_date, time_begin, time_end and price are required' });
   }
+  const saleOpensAt = resolveSaleOpensAt(req, res, { movie_date, time_begin });
+  if (!saleOpensAt) return;
 
   const validated = await validateShowtime(req, res, { movie_id, room_id, movie_date, time_begin, time_end });
   if (!validated) return;
@@ -183,6 +201,7 @@ async function create(req, res) {
     time_end,
     price: Number(price),
     status: 'ACTIVE',
+    ...(saleOpensAt.skip ? {} : { sale_opens_at: saleOpensAt.value }),
   });
 
   await recordAudit({
@@ -213,6 +232,8 @@ async function update(req, res) {
   const time_begin = req.body.time_begin !== undefined ? req.body.time_begin : existing.time_begin;
   const time_end = req.body.time_end !== undefined ? req.body.time_end : existing.time_end;
   const price = req.body.price !== undefined ? Number(req.body.price) : existing.price;
+  const saleOpensAt = resolveSaleOpensAt(req, res, { movie_date, time_begin });
+  if (!saleOpensAt) return;
 
   const validated = await validateShowtime(req, res, {
     movie_id,
@@ -232,6 +253,7 @@ async function update(req, res) {
     time_begin,
     time_end,
     price,
+    ...(saleOpensAt.skip ? {} : { sale_opens_at: saleOpensAt.value }),
   });
 
   await recordAudit({

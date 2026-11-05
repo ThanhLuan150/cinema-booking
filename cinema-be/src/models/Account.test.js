@@ -29,7 +29,7 @@ describe('Account model', () => {
   });
 
   it('exposes its membership level enum table', () => {
-    expect(Account.MEMBERSHIP_LEVELS).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM']);
+    expect(Account.MEMBERSHIP_LEVELS).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM', 'VIP']);
   });
 
   it('fails validation when required fields are missing', () => {

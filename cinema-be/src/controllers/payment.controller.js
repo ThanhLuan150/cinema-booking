@@ -87,8 +87,9 @@ async function confirmRefund(req, res) {
   }
 
   // An in-seat F&B payment (Ticket 49) points at the booking of the seat the food went to, but it paid
-  // only for the food — refunding it must never refund or release that booking's tickets.
-  if (updated.type !== Payment.TYPE.IN_SEAT) {
+  // only for the food — refunding it must never refund or release that booking's tickets. A
+  // SUBSCRIPTION payment (Ticket 53) has no booking at all.
+  if (updated.type !== Payment.TYPE.IN_SEAT && updated.type !== Payment.TYPE.SUBSCRIPTION) {
     const booking = await bookingRepository.findBookingById(updated.booking_id);
     if (booking) await bookingRepository.applyRefund(booking);
   }

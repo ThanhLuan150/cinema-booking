@@ -8,6 +8,7 @@ import {
   decrement,
   increment,
   isActiveOrder,
+  memberDiscount,
   newIdempotencyKey,
   setQuantity,
   toOrderLines,
@@ -45,6 +46,24 @@ describe('in-seat cart', () => {
     ]);
     expect(cartTotal(lines)).toBe(160000);
     expect(cartCount(lines)).toBe(3);
+  });
+
+  it('estimates the member F&B discount like the server: rounded per item, times the quantity', () => {
+    const lines = cartLines({ 1: 2, 2: 1 }, menu);
+    expect(memberDiscount(lines, 10)).toBe(6500 * 2 + 3000);
+    // 65,000 x 15% = 9,750 per popcorn; 30,000 x 15% = 4,500
+    expect(memberDiscount(lines, 15)).toBe(9750 * 2 + 4500);
+    // Per-item rounding, not on the total: 3 x round(333 x 0.5) = 3 x 167, not round(999 x 0.5) = 500.
+    const cheap = cartLines({ 7: 3 }, [{ id: 7, name: 'Candy', description: '', price: 333, image: null, type: 'FOOD' }]);
+    expect(memberDiscount(cheap, 50)).toBe(501);
+  });
+
+  it('gives no discount without a member percentage, and never more than the item', () => {
+    const lines = cartLines({ 1: 1 }, menu);
+    expect(memberDiscount(lines, 0)).toBe(0);
+    expect(memberDiscount(lines, undefined)).toBe(0);
+    expect(memberDiscount(lines, 100)).toBe(65000);
+    expect(memberDiscount([], 10)).toBe(0);
   });
 
   it('sends only what and how many — never a price', () => {

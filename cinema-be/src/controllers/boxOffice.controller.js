@@ -95,6 +95,8 @@ async function sellTickets(req, res) {
     voucherCode: pricing.voucherCode,
     promotionCode: pricing.promotionCode,
     discountAmount: pricing.discountAmount,
+    membershipDiscount: pricing.membershipDiscount,
+    membership: pricing.membership ? pricing.membership.snapshot : null,
     seatTotal: pricing.seatTotal,
     comboTotal: pricing.comboTotal,
     totalPrice: pricing.totalPrice,

@@ -319,7 +319,8 @@
       "NONE": "非会员",
       "SILVER": "银卡",
       "GOLD": "金卡",
-      "PLATINUM": "白金卡"
+      "PLATINUM": "白金卡",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "请输入名称。",

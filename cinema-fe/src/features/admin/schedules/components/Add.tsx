@@ -210,6 +210,16 @@ function ScheduleFields({
         className="mt-3"
         error={showErrors && formik.errors.price ? t('schedules.add.priceRequired') : undefined}
       />
+      <div className="mt-3">
+        <Field
+          as={Input}
+          label={t('schedules.add.saleOpensAt')}
+          name="sale_opens_at"
+          type="datetime-local"
+          error={showErrors && formik.errors.sale_opens_at ? t('schedules.add.saleOpensAtInvalid') : undefined}
+        />
+        <p className="mt-1 text-xs text-txt/50">{t('schedules.add.saleOpensAtHint')}</p>
+      </div>
       <div className="mt-6 flex justify-end">
         <Button type="submit" variant="danger" loading={createScheduleLoading} disabled={Boolean(releaseIssue)}>
           {t('schedules.add.submit')}
@@ -237,6 +247,12 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
     if (!values.movie_date) errors.movie_date = 'required';
     if (!values.time_begin) errors.time_begin = 'required';
     if (values.price === '' || Number(values.price) <= 0) errors.price = 'required';
+    if (values.sale_opens_at && values.movie_date && values.time_begin) {
+      const opens = new Date(values.sale_opens_at).getTime();
+      if (Number.isNaN(opens) || opens >= new Date(`${values.movie_date}T${values.time_begin}:00`).getTime()) {
+        errors.sale_opens_at = 'invalid';
+      }
+    }
     return errors;
   };
 
@@ -250,7 +266,9 @@ const Add = ({ id, handleCloseAddSchedule }: AddScheduleProps) => {
       toast.error(releaseIssue);
       return;
     }
-    const { cinema_id: _cinema_id, movie_id: _movie_id, ...form } = values;
+    const { cinema_id: _cinema_id, movie_id: _movie_id, sale_opens_at: saleOpensAt, ...rest } = values;
+    // The server takes an absolute instant: the admin's local datetime is sent with its offset (ISO/Z).
+    const form = saleOpensAt ? { ...rest, sale_opens_at: new Date(saleOpensAt).toISOString() } : rest;
     try {
       await createScheduleMutation.mutateAsync({ movieId, values: form });
       toast.success(t('schedules.add.toastSuccess'));

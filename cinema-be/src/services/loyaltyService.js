@@ -2,7 +2,9 @@ const Account = require('../models/Account');
 const MembershipLevel = require('../models/MembershipLevel');
 const LoyaltyConfig = require('../models/LoyaltyConfig');
 const PointsTransaction = require('../models/PointsTransaction');
+const Subscription = require('../models/Subscription');
 const nextId = require('../utils/nextId');
+const { combineBenefits, normalizeBenefits } = require('../utils/membershipBenefits');
 
 const DEFAULT_CONFIG = {
   id: LoyaltyConfig.SINGLETON_ID,
@@ -13,10 +15,43 @@ const DEFAULT_CONFIG = {
 };
 
 const DEFAULT_LEVELS = [
-  { code: 'NONE', name: 'Standard', min_points: 0 },
-  { code: 'SILVER', name: 'Silver', min_points: 1000000 },
-  { code: 'GOLD', name: 'Gold', min_points: 5000000 },
-  { code: 'PLATINUM', name: 'Platinum', min_points: 15000000 },
+  { code: 'NONE', name: 'Standard', min_points: 0, benefits: {} },
+  {
+    code: 'SILVER',
+    name: 'Silver',
+    min_points: 1000000,
+    benefits: { ticket_discount_percent: 5, fnb_discount_percent: 5 },
+  },
+  {
+    code: 'GOLD',
+    name: 'Gold',
+    min_points: 5000000,
+    benefits: { ticket_discount_percent: 10, fnb_discount_percent: 10, priority_booking_hours: 12, points_multiplier: 1.25 },
+  },
+  {
+    code: 'PLATINUM',
+    name: 'Platinum',
+    min_points: 15000000,
+    benefits: {
+      ticket_discount_percent: 10,
+      fnb_discount_percent: 15,
+      free_tickets: 1,
+      priority_booking_hours: 24,
+      points_multiplier: 1.5,
+    },
+  },
+  {
+    code: 'VIP',
+    name: 'VIP',
+    min_points: 30000000,
+    benefits: {
+      ticket_discount_percent: 15,
+      fnb_discount_percent: 20,
+      free_tickets: 2,
+      priority_booking_hours: 48,
+      points_multiplier: 2,
+    },
+  },
 ];
 
 async function getConfig() {
@@ -71,6 +106,7 @@ async function getSummary(accountId) {
   return {
     membership_level: account.membership_level,
     membership_level_name: currentLevel ? currentLevel.name : account.membership_level,
+    benefits: normalizeBenefits(currentLevel ? currentLevel.benefits : null),
     points_balance: account.points_balance,
     lifetime_points: account.lifetime_points,
     next_level: nextLevel ? { code: nextLevel.code, name: nextLevel.name, min_points: nextLevel.min_points } : null,
@@ -87,11 +123,28 @@ async function listTransactions(accountId, { skip = 0, limit = 20 } = {}) {
   return { data, total };
 }
 
+async function resolvePointsMultiplier(accountId, now = new Date()) {
+  const account = await Account.findOne({ id: Number(accountId) }, { membership_level: 1 });
+  if (!account) return 1;
+  const [levels, subscription] = await Promise.all([
+    getActiveLevels(),
+    Subscription.findOne({
+      account_id: Number(accountId),
+      status: Subscription.STATUS.ACTIVE,
+      start_at: { $lte: now },
+      end_at: { $gt: now },
+    }),
+  ]);
+  const level = levels.find((l) => l.code === account.membership_level);
+  return combineBenefits(level ? level.benefits : null, subscription ? subscription.plan.benefits : null).points_multiplier;
+}
+
 async function earnPointsForBooking({ accountId, bookingId, paymentId = null, amount, description = null }) {
   if (!accountId || !bookingId || !(Number(amount) > 0)) return null;
 
   const config = await getConfig();
-  const points = Math.floor(Number(amount) / config.amount_per_point);
+  const multiplier = await resolvePointsMultiplier(accountId);
+  const points = Math.floor((Number(amount) / config.amount_per_point) * multiplier);
   if (points <= 0) return null;
 
   const expiresAt = config.points_expiry_days
@@ -288,6 +341,8 @@ async function adjustPoints({ accountId, amount, description = null, createdBy =
 }
 
 module.exports = {
+  DEFAULT_LEVELS,
+  resolvePointsMultiplier,
   getConfig,
   updateConfig,
   getActiveLevels,

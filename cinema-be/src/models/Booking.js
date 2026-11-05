@@ -20,6 +20,22 @@ const groupSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// What the customer's membership took off this booking (Ticket 53), as priced at checkout. The total
+// is also inside discount_amount (= every discount on the booking), so revenue reporting stays right.
+const membershipSchema = new mongoose.Schema(
+  {
+    level: { type: String, default: 'NONE' },
+    subscription_id: { type: Number, default: null },
+    free_tickets: { type: Number, default: 0 },
+    free_ticket_amount: { type: Number, default: 0 },
+    ticket_discount_percent: { type: Number, default: 0 },
+    ticket_discount_amount: { type: Number, default: 0 },
+    fnb_discount_percent: { type: Number, default: 0 },
+    fnb_discount_amount: { type: Number, default: 0 },
+  },
+  { _id: false },
+);
+
 const bookingSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, unique: true, index: true },
@@ -32,6 +48,8 @@ const bookingSchema = new mongoose.Schema(
     voucher_code: { type: String, default: null },
     promotion_code: { type: String, default: null },
     discount_amount: { type: Number, default: 0 },
+    membership_discount: { type: Number, default: 0 }, // the membership's share of discount_amount
+    membership: { type: membershipSchema, default: null },
     seat_total: { type: Number, default: 0 },
     combo_total: { type: Number, default: 0 },
     total_price: { type: Number, required: true },

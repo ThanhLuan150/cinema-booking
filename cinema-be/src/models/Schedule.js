@@ -12,6 +12,9 @@ const scheduleSchema = new mongoose.Schema(
     time_end: { type: String, required: true },
     price: { type: Number, required: true },
     status: { type: String, enum: ['ACTIVE', 'CANCELLED'], default: 'ACTIVE', index: true },
+    // When general sale opens (an absolute instant). null = on sale now. Members with Priority Booking
+    // may book priority_booking_hours earlier (Ticket 53, utils/membershipBenefits.checkSaleWindow).
+    sale_opens_at: { type: Date, default: null },
   },
   { timestamps: true },
 );

@@ -15,6 +15,9 @@ import { ComboSelector } from '../components/ComboSelector';
 import { BookingSummarySidebar } from '../components/BookingSummarySidebar';
 import { MomoPaymentModal } from '../components/MomoPaymentModal';
 import { WaitlistPanel } from '@/features/waitlist/components/WaitlistPanel';
+import { MembershipCheckoutSection } from '@/features/membership/components/MembershipCheckoutSection';
+import { SaleAccessBanner } from '@/features/membership/components/SaleAccessBanner';
+import { useMembershipPreview } from '@/features/membership/hooks/useSubscriptions';
 import { useScheduleId } from '../hooks/useScheduleId';
 import { useRoomSeats } from '../hooks/useRoomSeats';
 import { useScheduleDetail } from '../hooks/useScheduleDetail';
@@ -136,9 +139,24 @@ function BookSeatPage() {
   const comboTotal = combos
     .filter((c) => selectedComboIds.includes(c.id))
     .reduce((sum, c) => sum + c.price, 0);
+  const [freeTickets, setFreeTickets] = useState(0);
+  const selectedTicketIds = useMemo(() => selectedTickets.map((ticket) => ticket.id), [selectedTickets]);
+  const previewPayload = useMemo(
+    () => ({ ticketIds: selectedTicketIds, comboIds: selectedComboIds, freeTickets }),
+    [selectedTicketIds, selectedComboIds, freeTickets],
+  );
+  const { data: previewData } = useMembershipPreview(previewPayload, isLoggedIn);
+  const memberPreview = selectedTicketIds.length > 0 ? previewData : undefined;
+  const freeTicketsAvailable = memberPreview?.membership.free_tickets.available ?? 0;
+  useEffect(() => {
+    if (memberPreview && freeTickets > freeTicketsAvailable) setFreeTickets(freeTicketsAvailable);
+  }, [memberPreview, freeTickets, freeTicketsAvailable]);
+  const membershipDiscount = memberPreview?.membership.total ?? 0;
+  const orderValue = Math.max(seatTotal + comboTotal - membershipDiscount, 0);
+
   // A customer applies a voucher OR a promotion to an order, never both.
   const discount = voucherResult?.discount_amount ?? promotionResult?.discount_amount ?? 0;
-  const totalPrice = Math.max(seatTotal + comboTotal - discount, 0);
+  const totalPrice = Math.max(orderValue - discount, 0);
 
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return;
@@ -146,7 +164,7 @@ function BookSeatPage() {
       const result = await validateVoucherMutation.mutateAsync({
         code: voucherCode.trim(),
         cinema_id: branchId,
-        order_value: seatTotal + comboTotal,
+        order_value: orderValue,
       });
       dispatch(applyVoucherSuccess(result));
     } catch (error) {
@@ -163,7 +181,7 @@ function BookSeatPage() {
         movie_id: movieId ? Number(movieId) : null,
         showtime_id: scheduleId,
         combo_ids: selectedComboIds,
-        order_value: seatTotal + comboTotal,
+        order_value: orderValue,
         ticket_count: selectedTickets.length,
       });
       dispatch(applyPromotionSuccess(result));
@@ -186,7 +204,7 @@ function BookSeatPage() {
     try {
       const result = await validateGiftCardMutation.mutateAsync({
         code: giftCardCode.trim(),
-        orderValue: seatTotal + comboTotal,
+        orderValue,
       });
       setGiftCardPreview(result);
     } catch (error) {
@@ -204,6 +222,10 @@ function BookSeatPage() {
   const handlePayWithGiftCard = async () => {
     if (selectedSeatCodes.length === 0 || selectedTickets.length === 0) {
       toast.error(t('bookSeat.selectSeatFirst'));
+      return;
+    }
+    if (freeTickets > 0) {
+      toast.error(t('membership:checkout.freeTicketsMoMoOnly'));
       return;
     }
     const ticketIds = selectedTickets.map((ticket) => ticket.id);
@@ -234,10 +256,11 @@ function BookSeatPage() {
       selectedComboIds,
       appliedVoucherCode,
       appliedPromotionCode,
+      freeTickets,
       totalPrice,
     ]);
     try {
-      const payUrl = await momoPaymentMutation.mutateAsync({
+      const result = await momoPaymentMutation.mutateAsync({
         payload: {
           ticketIds,
           comboIds: selectedComboIds,
@@ -245,10 +268,18 @@ function BookSeatPage() {
           promotionCode: appliedPromotionCode,
           discountAmount: discount,
           totalPrice,
+          freeTickets,
         },
         idempotencyKey: getIdempotencyKey(orderSignature),
       });
-      dispatch(setMomoPayUrl(payUrl));
+      // Nothing left to pay: the membership covered the order and the tickets are already issued.
+      if (typeof result !== 'string') {
+        toast.success(t('membership:checkout.coveredSuccess'));
+        dispatch(resetBookingSelection());
+        navigate(ROUTES.myTickets);
+        return;
+      }
+      dispatch(setMomoPayUrl(result));
     } catch (error) {
       toast.error(getApiErrorMessage(error, t) || t('bookSeat.checkoutFailed'));
     }
@@ -263,6 +294,7 @@ function BookSeatPage() {
         <div className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-10">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2">
+              <SaleAccessBanner scheduleId={scheduleId} />
               <WaitlistPanel scheduleId={scheduleId} />
               <SeatMapCard scheduleId={scheduleId} roomId={scheduleDetail?.room_id ?? null} />
 
@@ -287,6 +319,13 @@ function BookSeatPage() {
               selectedSeatCodes={selectedSeatCodes}
               earliestHoldExpiry={earliestHoldExpiry}
               onHoldExpire={handleHoldExpire}
+              membershipSection={
+                <MembershipCheckoutSection
+                  preview={memberPreview}
+                  freeTickets={freeTickets}
+                  onChangeFreeTickets={(value) => setFreeTickets(Math.max(0, Math.min(value, freeTicketsAvailable)))}
+                />
+              }
               voucherCode={voucherCode}
               voucherResult={voucherResult}
               voucherError={voucherError}

@@ -539,7 +539,8 @@
       "NONE": "Không phải thành viên",
       "SILVER": "Bạc",
       "GOLD": "Vàng",
-      "PLATINUM": "Bạch kim"
+      "PLATINUM": "Bạch kim",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "Vui lòng nhập tên.",

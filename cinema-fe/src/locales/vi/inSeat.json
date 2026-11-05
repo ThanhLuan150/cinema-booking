@@ -49,7 +49,8 @@
     "items_other": "{{count}} món",
     "totalHint": "Rạp xác nhận số tiền cuối cùng khi bạn thanh toán.",
     "pay": "Thanh toán {{amount}} bằng MoMo",
-    "paying": "Đang mở MoMo…"
+    "paying": "Đang mở MoMo…",
+    "memberDiscount": "Giảm đồ ăn & nước hội viên ({{percent}}%)"
   },
   "orders": {
     "title": "Đã gọi tới ghế này"

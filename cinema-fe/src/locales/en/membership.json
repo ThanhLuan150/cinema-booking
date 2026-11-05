@@ -25,5 +25,139 @@
       "reversal": "Reversed",
       "adjust": "Adjusted"
     }
+  },
+  "benefits": {
+    "none": "No extra benefits.",
+    "perMonth": "a month",
+    "perTerm": "per term",
+    "freeTickets_one": "{{count}} free ticket {{per}}",
+    "freeTickets_other": "{{count}} free tickets {{per}}",
+    "freeTicketsCapped_one": "{{count}} free ticket {{per}} (up to {{cap}} each)",
+    "freeTicketsCapped_other": "{{count}} free tickets {{per}} (up to {{cap}} each)",
+    "ticketDiscount": "{{percent}}% off tickets",
+    "fnbDiscount": "{{percent}}% off food & drinks",
+    "priorityBooking": "Book up to {{hours}} hours before general sale",
+    "pointsMultiplier": "x{{multiplier}} loyalty points"
+  },
+  "tierBenefits": {
+    "title": "{{level}} benefits",
+    "next": "Reach {{level}} to get"
+  },
+  "freeTickets": {
+    "title": "Free tickets",
+    "remainingLabel": "free tickets left",
+    "fromSubscription": "{{remaining}} of {{limit}} left on your subscription",
+    "fromTier": "{{remaining}} of {{limit}} left this month ({{period}}) from your tier",
+    "none": "Your membership has no free tickets right now.",
+    "howToUse": "Use them on the seat page when you book. They are checked against your membership when you pay."
+  },
+  "subscription": {
+    "title": "Subscription",
+    "status": {
+      "PENDING_PAYMENT": "Waiting for payment",
+      "ACTIVE": "Active",
+      "EXPIRED": "Expired",
+      "CANCELLED": "Cancelled"
+    },
+    "validity": "Valid {{from}} – {{to}}",
+    "ticketsUsed": "{{used}} of {{limit}} tickets used",
+    "pendingHint": "Waiting for your payment of {{price}}. Nothing is active until it is confirmed.",
+    "continuePayment": "Continue payment",
+    "cancel": "Cancel purchase",
+    "cancelConfirm": "Cancel this unpaid subscription?",
+    "cancelled": "Purchase cancelled.",
+    "history": "Past subscriptions"
+  },
+  "plans": {
+    "title": "Subscription plans",
+    "empty": "No subscription plans are on sale right now.",
+    "duration": "{{days}} days per term",
+    "buy": "Buy with MoMo",
+    "oneAtATime": "You can hold one subscription at a time. Buy the next term once the current one ends."
+  },
+  "paymentResult": {
+    "title": "Subscription payment",
+    "notLoggedIn": "Please sign in to finish your subscription purchase.",
+    "missing": "This page needs a payment result from MoMo.",
+    "processing": "Confirming your payment…",
+    "activated": "{{plan}} is active until {{until}}.",
+    "refundPending": "This purchase was no longer waiting for payment, so your payment will be refunded.",
+    "backToMembership": "Back to My Membership"
+  },
+  "checkout": {
+    "title": "Member benefits",
+    "level": "{{level}} member",
+    "freeTicketsLabel": "Free tickets",
+    "freeTicketsAvailable": "{{available}} available for this order",
+    "decrease": "Use one less free ticket",
+    "increase": "Use one more free ticket",
+    "freeTicketLine": "Free tickets ({{count}})",
+    "ticketDiscountLine": "Member ticket discount ({{percent}}%)",
+    "fnbDiscountLine": "Member F&B discount ({{percent}}%)",
+    "coveredSuccess": "Your membership covered this order — your tickets are ready.",
+    "freeTicketsMoMoOnly": "Free tickets can only be used with MoMo checkout.",
+    "saleNotOpen": "Tickets for this showtime go on sale {{time}}.",
+    "saleOpensForYou": "You can book from {{time}}.",
+    "salePriority": "Priority Booking: you are booking before general sale ({{time}})."
+  },
+  "admin": {
+    "breadcrumb": "Membership & Subscriptions",
+    "tabs": {
+      "tiers": "Tiers",
+      "plans": "Subscription plans",
+      "subscriptions": "Subscriptions"
+    },
+    "fields": {
+      "minPoints": "Lifetime points needed",
+      "ticketDiscount": "Ticket discount (%)",
+      "fnbDiscount": "F&B discount (%)",
+      "freeTickets": "Free tickets",
+      "freeTicketsTier": "Free tickets / month",
+      "freeTicketsPlan": "Free tickets / term",
+      "freeTicketCap": "Max value per free ticket (empty = whole seat)",
+      "priorityHours": "Priority booking (hours early)",
+      "pointsMultiplier": "Points multiplier",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price (VND)",
+      "durationDays": "Term (days)",
+      "active": "On sale",
+      "sortOrder": "Display order"
+    },
+    "tiers": {
+      "hint": "A tier is reached by lifetime loyalty points. Its benefits apply to every booking of its members.",
+      "save": "Save",
+      "saved": "{{level}} saved."
+    },
+    "plans": {
+      "new": "New plan",
+      "edit": "Edit plan",
+      "create": "Create plan",
+      "save": "Save plan",
+      "saved": "Plan saved.",
+      "delete": "Delete",
+      "deleteConfirm": "Delete plan {{name}}?",
+      "deleted": "Plan deleted.",
+      "empty": "No plans yet.",
+      "onSale": "On sale",
+      "retired": "Not on sale",
+      "editHint": "Changes apply to new purchases only. Subscriptions already sold keep the plan as it was bought."
+    },
+    "subscriptions": {
+      "allStatuses": "All statuses",
+      "accountId": "Customer account ID",
+      "empty": "No subscriptions match.",
+      "code": "Code",
+      "customer": "Customer",
+      "plan": "Plan",
+      "status": "Status",
+      "validity": "Valid",
+      "used": "Tickets used",
+      "actions": "Actions",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke subscription {{code}}? Its benefits stop immediately and nothing is refunded automatically.",
+      "revoked": "Subscription revoked."
+    }
   }
 }

@@ -198,6 +198,43 @@ describe('InSeatOrderPage', () => {
     expect(sessionStorage.getItem('inSeat.lastQr')).toBe(TOKEN); // for "order more"
   });
 
+  it("shows a member's F&B discount in the cart and the discounted amount to pay — but still sends only items", async () => {
+    api.getInSeatSession.mockResolvedValue(session({ membership: { level: 'GOLD', fnb_discount_percent: 10 } }));
+    api.createInSeatOrder.mockResolvedValue({ order: { code: 'CO-1' }, pay_url: 'https://test-payment.momo.vn/pay/CO-1' });
+    renderPage(`/InSeat?qr=${encodeURIComponent(TOKEN)}`);
+
+    expect(await screen.findByText('E7')).toBeInTheDocument();
+    expect(screen.queryByTestId('in-seat-member-discount')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Large Popcorn' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Large Popcorn' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Coke' }));
+
+    // 6,500 off each popcorn + 3,000 off the coke
+    const line = screen.getByTestId('in-seat-member-discount');
+    expect(line).toHaveTextContent('Member F&B discount (10%)');
+    expect(line.textContent).toMatch(/16,000/);
+    expect(screen.getByTestId('in-seat-total').textContent).toMatch(/144,000/);
+
+    fireEvent.click(screen.getByRole('button', { name: /Pay .*144,000.* with MoMo/ }));
+    await waitFor(() => expect(api.createInSeatOrder).toHaveBeenCalled());
+    expect(api.createInSeatOrder.mock.calls[0][0]).toEqual({
+      qr: TOKEN,
+      items: [
+        { combo_id: 1, quantity: 2 },
+        { combo_id: 2, quantity: 1 },
+      ],
+    });
+  });
+
+  it('shows no discount line for a customer without a member F&B discount', async () => {
+    api.getInSeatSession.mockResolvedValue(session({ membership: { level: 'NONE', fnb_discount_percent: 0 } }));
+    renderPage(`/InSeat?qr=${encodeURIComponent(TOKEN)}`);
+    expect(await screen.findByText('E7')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Coke' }));
+    expect(screen.queryByTestId('in-seat-member-discount')).not.toBeInTheDocument();
+    expect(screen.getByTestId('in-seat-total').textContent).toMatch(/30,000/);
+  });
+
   it('reuses the idempotency key when the same cart is retried, and starts a new one when it changes', async () => {
     api.getInSeatSession.mockResolvedValue(session());
     api.createInSeatOrder.mockRejectedValue({

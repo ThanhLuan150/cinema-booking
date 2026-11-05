@@ -7,6 +7,7 @@ import type {
   BookedSeatTicket,
   Booking,
   BookingListParams,
+  CoveredCheckoutResult,
   HoldSeatsResult,
   Invoice,
   MomoConfirmParams,
@@ -47,7 +48,7 @@ export const getSchedule = (scheduleId: number | string) =>
 
 export const momoPayment = (payload: MomoPaymentPayload, idempotencyKey?: string) =>
   apiClient
-    .post<string>('/MomoPayment', payload, {
+    .post<string | CoveredCheckoutResult>('/MomoPayment', payload, {
       headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
     })
     .then((res) => res.data);

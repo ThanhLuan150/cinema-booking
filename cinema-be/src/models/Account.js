@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { withCleanJSON } = require('./plugins');
 
 // Loyalty tier used by the ticket pricing engine (see PricingRule.membership_level /
-const MEMBERSHIP_LEVELS = ['NONE', 'SILVER', 'GOLD', 'PLATINUM'];
+const MEMBERSHIP_LEVELS = ['NONE', 'SILVER', 'GOLD', 'PLATINUM', 'VIP'];
 
 const accountSchema = new mongoose.Schema(
   {

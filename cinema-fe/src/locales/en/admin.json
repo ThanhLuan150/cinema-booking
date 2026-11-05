@@ -209,6 +209,9 @@
       },
       "price": "Ticket price:",
       "priceRequired": "Please enter a ticket price.",
+      "saleOpensAt": "Tickets on general sale from (optional)",
+      "saleOpensAtHint": "Leave empty to sell right away. Members with Priority Booking can book earlier than this.",
+      "saleOpensAtInvalid": "The sale opening must be before the showtime starts.",
       "submit": "Add",
       "toastSuccess": "Showtime added.",
       "releaseWindow": {

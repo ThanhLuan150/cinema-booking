@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { getMoviePosterUrl } from '@/utils';
@@ -16,6 +17,7 @@ export function BookingSummarySidebar({
   selectedSeatCodes,
   earliestHoldExpiry,
   onHoldExpire,
+  membershipSection = null,
   voucherCode,
   voucherResult,
   voucherError,
@@ -43,6 +45,7 @@ export function BookingSummarySidebar({
   selectedSeatCodes: string[];
   earliestHoldExpiry: string | null;
   onHoldExpire: () => void;
+  membershipSection?: ReactNode;
   voucherCode: string;
   voucherResult: VoucherValidationResult | null;
   voucherError: string;
@@ -109,6 +112,8 @@ export function BookingSummarySidebar({
           </div>
         )}
       </div>
+
+      {membershipSection}
 
       <VoucherSection
         voucherCode={voucherCode}

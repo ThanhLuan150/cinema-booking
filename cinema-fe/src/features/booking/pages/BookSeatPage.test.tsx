@@ -74,6 +74,43 @@ vi.mock('@/features/waitlist/components/WaitlistPanel', () => ({
   WaitlistPanel: ({ scheduleId }: { scheduleId: number | null }) => <div data-testid="waitlist-panel">{scheduleId}</div>,
 }));
 
+const useMembershipPreviewMock = vi.fn();
+vi.mock('@/features/membership/hooks/useSubscriptions', () => ({
+  useMembershipPreview: (...args: unknown[]) => useMembershipPreviewMock(...args),
+  useSaleAccess: () => ({ data: undefined }),
+}));
+
+const navigateMock = vi.fn();
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router-dom')>();
+  return { ...actual, useNavigate: () => navigateMock };
+});
+
+function memberPreview(overrides: Record<string, unknown> = {}) {
+  return {
+    seat_total: 100000,
+    combo_total: 0,
+    order_value: 100000,
+    membership: {
+      level: 'GOLD',
+      subscription_id: 9,
+      free_tickets: { requested: 0, applied: 0, available: 1 },
+      covered_ticket_ids: [],
+      free_ticket_amount: 0,
+      ticket_discount_percent: 10,
+      ticket_discount_amount: 10000,
+      fnb_discount_percent: 0,
+      fnb_discount_amount: 0,
+      total: 10000,
+      ...overrides,
+    },
+    value_after_membership: 90000,
+    code_discount: 0,
+    total_price: 90000,
+    sale: { open: true, priority: false, opens_at: null, general_opens_at: null },
+  };
+}
+
 import BookSeatPage from './BookSeatPage';
 
 function renderPage(query = '?movieId=1&day=2026-01-01&time=10:00') {
@@ -111,6 +148,9 @@ describe('BookSeatPage', () => {
     useRoomsListMock.mockReturnValue({ data: [{ id: 1, cinema_id: 3 }] });
     useRoomSeatsMock.mockReturnValue({ data: [] });
     useCombosMock.mockReturnValue({ data: [] });
+    useMembershipPreviewMock.mockReset();
+    useMembershipPreviewMock.mockReturnValue({ data: undefined });
+    navigateMock.mockReset();
   });
 
   it('shows the waitlist panel for the resolved showtime', () => {
@@ -269,5 +309,47 @@ describe('BookSeatPage', () => {
     fireEvent.click(screen.getByText('A1'));
     fireEvent.click(screen.getByText('Book & Pay with MoMo'));
     expect(await screen.findByText('Choose how to pay with MoMo')).toBeInTheDocument();
+  });
+
+  describe('membership benefits (Ticket 53)', () => {
+    const seat = { id: 1, seat_code: 'A1', seat_type: 0, status: 1, price: 100000 };
+
+    it('shows the member discount from the server and charges what is left', async () => {
+      useBookedSeatsMock.mockReturnValue({ data: [seat], isLoading: false });
+      useMembershipPreviewMock.mockReturnValue({ data: memberPreview() });
+      momoPaymentMutate.mockResolvedValue('https://momo.pay/redirect');
+      renderPage();
+      fireEvent.click(screen.getByText('A1'));
+
+      expect(useMembershipPreviewMock).toHaveBeenLastCalledWith({ ticketIds: [1], comboIds: [], freeTickets: 0 }, true);
+      expect(screen.getByText('Member ticket discount (10%)')).toBeInTheDocument();
+      expect(screen.getByText((_, el) => el?.textContent === '90,000đ')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Book & Pay with MoMo'));
+      await waitFor(() => expect(momoPaymentMutate).toHaveBeenCalled());
+      expect(momoPaymentMutate.mock.calls[0][0].payload).toMatchObject({ ticketIds: [1], freeTickets: 0 });
+    });
+
+    it('sends the number of free tickets chosen, and goes to the tickets when the membership covers it all', async () => {
+      useBookedSeatsMock.mockReturnValue({ data: [seat], isLoading: false });
+      useMembershipPreviewMock.mockImplementation((payload: { freeTickets: number }) => ({
+        data:
+          payload.freeTickets > 0
+            ? memberPreview({ free_tickets: { requested: 1, applied: 1, available: 1 }, free_ticket_amount: 100000, ticket_discount_amount: 0, total: 100000 })
+            : memberPreview(),
+      }));
+      momoPaymentMutate.mockResolvedValue({ covered: true, code: 'BK-9', bookingId: 9 });
+      renderPage();
+      fireEvent.click(screen.getByText('A1'));
+
+      fireEvent.click(screen.getByRole('button', { name: 'Use one more free ticket' }));
+      expect(screen.getByTestId('free-tickets-count')).toHaveTextContent('1');
+      expect(screen.getByText((_, el) => el?.textContent === '0đ')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Book & Pay with MoMo'));
+      await waitFor(() => expect(navigateMock).toHaveBeenCalledWith('/MyTickets'));
+      expect(momoPaymentMutate.mock.calls[0][0].payload).toMatchObject({ freeTickets: 1 });
+      expect(screen.queryByText('Choose how to pay with MoMo')).not.toBeInTheDocument();
+    });
   });
 });

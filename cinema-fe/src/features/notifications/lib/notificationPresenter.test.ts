@@ -67,6 +67,23 @@ describe('presentNotification — Showtime Waitlist', () => {
   });
 });
 
+describe('presentNotification — membership subscriptions', () => {
+  it('sends a subscription notification to My Membership, with the plan and its end date', () => {
+    const { t } = makeT({ 'notifications.feed.types.SUBSCRIPTION_ACTIVATED.body': '{{planName}} until {{endAt}}' });
+    const activated = presentNotification(
+      make({ type: 'SUBSCRIPTION_ACTIVATED', title: 'Subscription activated', data: { planName: 'Monthly Cinema Pass', endAt: '2026-11-23' } }),
+      t,
+    );
+    expect(activated).toMatchObject({
+      description: 'Monthly Cinema Pass until 2026-11-23',
+      tone: 'positive',
+      icon: 'fa-solid fa-crown',
+      href: '/MyMembership',
+    });
+    expect(presentNotification(make({ type: 'SUBSCRIPTION_EXPIRED' }), t)).toMatchObject({ tone: 'neutral', href: '/MyMembership' });
+  });
+});
+
 describe('presentNotification', () => {
   it('maps type to an icon + tone', () => {
     const { t } = makeT();

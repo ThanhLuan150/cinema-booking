@@ -76,7 +76,7 @@ describe('PricingRule model', () => {
 
   it('exposes its enum tables', () => {
     expect(PricingRule.DAY_TYPES).toEqual(['WEEKDAY', 'WEEKEND', 'HOLIDAY']);
-    expect(PricingRule.MEMBERSHIP_LEVELS).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM']);
+    expect(PricingRule.MEMBERSHIP_LEVELS).toEqual(['NONE', 'SILVER', 'GOLD', 'PLATINUM', 'VIP']);
     expect(PricingRule.SEAT_TYPES).toEqual([0, 1, 2]);
   });
 

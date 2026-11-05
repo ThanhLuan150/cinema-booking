@@ -18,7 +18,8 @@
     "type": {
       "online": "Thanh toán online",
       "counter": "Thanh toán tại quầy",
-      "inSeat": "Gọi món tại ghế"
+      "inSeat": "Gọi món tại ghế",
+      "subscription": "Gói đăng ký hội viên"
     },
     "status": {
       "pending": "Chờ thanh toán",

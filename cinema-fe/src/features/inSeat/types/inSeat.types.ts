@@ -32,6 +32,12 @@ export interface InSeatOrder {
   code: string;
   status: InSeatOrderStatus;
   items: InSeatOrderItem[];
+  /** The lines at list price. */
+  subtotal?: number;
+  /** The member F&B discount (Ticket 53), already taken out of total_price. */
+  membership_discount?: number;
+  membership_fnb_percent?: number;
+  /** What was (or will be) charged. */
   total_price: number;
   seat: InSeatOrderSeat | null;
   booking_id: number | null;
@@ -66,6 +72,8 @@ export interface InSeatSession {
   booking: { id: number; code: string };
   ordering: InSeatOrdering;
   menu: InSeatMenuItem[];
+  /** The caller's member F&B discount, for the cart's estimate (the server applies it again). */
+  membership?: { level: string; fnb_discount_percent: number };
   orders: InSeatOrder[];
 }
 

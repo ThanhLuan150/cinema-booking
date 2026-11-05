@@ -127,6 +127,27 @@ describe('InSeatOrderTrackingPage', () => {
     );
     expect(screen.getByText('2×')).toBeInTheDocument();
     expect(screen.getByText(/160,000/)).toBeInTheDocument();
+    expect(screen.queryByTestId('in-seat-order-member-discount')).not.toBeInTheDocument();
+  });
+
+  it("shows the member F&B discount the server applied, and the discounted total that was charged", async () => {
+    api.getInSeatOrder.mockResolvedValue(
+      order({
+        subtotal: 160000,
+        membership_discount: 16000,
+        membership_fnb_percent: 10,
+        total_price: 144000,
+        payment: { status: 'PAID', method: 'MOMO', amount: 144000 },
+      }),
+    );
+    renderAt('/InSeat/Orders/CO-1');
+
+    const line = await screen.findByTestId('in-seat-order-member-discount');
+    expect(line).toHaveTextContent('Member F&B discount (10%)');
+    expect(line.textContent).toMatch(/16,000/);
+    expect(screen.getByText(/144,000/)).toBeInTheDocument();
+    // The lines keep their list prices.
+    expect(screen.getByText(/130,000/)).toBeInTheDocument();
   });
 
   it('a cancelled paid order explains the refund', async () => {

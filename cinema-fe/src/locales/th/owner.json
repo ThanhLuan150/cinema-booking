@@ -319,7 +319,8 @@
       "NONE": "ไม่ใช่สมาชิก",
       "SILVER": "ซิลเวอร์",
       "GOLD": "โกลด์",
-      "PLATINUM": "แพลตินัม"
+      "PLATINUM": "แพลตินัม",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "กรุณากรอกชื่อ",

@@ -319,7 +319,8 @@
       "NONE": "비회원",
       "SILVER": "실버",
       "GOLD": "골드",
-      "PLATINUM": "플래티넘"
+      "PLATINUM": "플래티넘",
+      "VIP": "VIP"
     },
     "validation": {
       "nameRequired": "이름을 입력해 주세요.",

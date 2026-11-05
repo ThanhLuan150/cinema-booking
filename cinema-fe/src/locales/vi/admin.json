@@ -209,6 +209,9 @@
       },
       "price": "Giá vé:",
       "priceRequired": "Vui lòng nhập giá vé.",
+      "saleOpensAt": "Mở bán vé chung từ (tuỳ chọn)",
+      "saleOpensAtHint": "Để trống để mở bán ngay. Hội viên có quyền đặt vé ưu tiên được đặt sớm hơn thời điểm này.",
+      "saleOpensAtInvalid": "Thời điểm mở bán phải trước giờ chiếu.",
       "submit": "Thêm",
       "toastSuccess": "Đã thêm suất chiếu.",
       "releaseWindow": {

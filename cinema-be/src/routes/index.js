@@ -64,6 +64,7 @@ const privateEventRoutes = require('./privateEvent.routes');
 const integrationRoutes = require('./integration.routes');
 const webhookRoutes = require('./webhook.routes');
 const waitlistRoutes = require('./waitlist.routes');
+const membershipRoutes = require('./membership.routes');
 
 const router = express.Router();
 
@@ -141,6 +142,9 @@ router.use('/webhooks', webhookRoutes);
 // Membership + Loyalty Points: /loyalty/me, /loyalty/me/transactions, /loyalty/redeem,
 // /loyalty/config, /membership-levels
 router.use('/', loyaltyRoutes);
+// Membership & Subscription (Ticket 53): /membership/me[/preview|/sale-access/:scheduleId],
+// /subscription-plans[/all|/:id], /subscriptions[/me[/:code[/cancel|/momo-confirm]]|/:id/cancel]
+router.use('/', membershipRoutes);
 router.use('/tickets', seatSwapRoutes);
 // Showtime Waitlist (Ticket 51): /waitlist (mine), /waitlist/showtimes/:scheduleId, /waitlist/:id[/cancel]
 router.use('/waitlist', waitlistRoutes);
