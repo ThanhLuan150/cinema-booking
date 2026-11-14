@@ -14,13 +14,6 @@ describe('mailer (no SMTP configured, console fallback)', () => {
     process.env = ORIGINAL_ENV;
   });
 
-  it('sendOtpEmail logs the otp and resolves with a console-log messageId', async () => {
-    const { sendOtpEmail } = require('./mailer');
-    const result = await sendOtpEmail('user@example.com', '123456');
-    expect(result).toEqual({ messageId: 'console-log' });
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('123456'));
-  });
-
   it('sendPasswordResetEmail logs the reset code', async () => {
     const { sendPasswordResetEmail } = require('./mailer');
     const result = await sendPasswordResetEmail('user@example.com', '654321');

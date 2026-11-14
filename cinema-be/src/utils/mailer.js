@@ -36,14 +36,6 @@ async function sendMail({ to, subject, text, html }) {
   return getTransporter().sendMail({ from, to, subject, text, html });
 }
 
-async function sendOtpEmail(email, otp) {
-  return sendMail({
-    to: email,
-    subject: 'Cinema Booking - Verification code',
-    text: `Your verification code is ${otp}. It expires in 10 minutes.`,
-  });
-}
-
 async function sendPasswordResetEmail(email, otp) {
   return sendMail({
     to: email,
@@ -92,7 +84,6 @@ async function sendNotificationEmail(email, { subject, text }) {
 
 module.exports = {
   sendMail,
-  sendOtpEmail,
   sendPasswordResetEmail,
   sendTempPasswordEmail,
   sendInvoiceEmail,

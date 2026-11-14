@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const authRepository = require('../repositories/auth.repository');
 const nextId = require('../utils/nextId');
 const { generateOtp, otpExpiryDate } = require('../utils/otp');
-const { sendOtpEmail, sendPasswordResetEmail } = require('../utils/mailer');
+const { sendPasswordResetEmail } = require('../utils/mailer');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, hashToken } = require('../utils/tokens');
 const { emitToAdmin, emitToAccount } = require('../utils/socket');
 const { REALTIME_EVENT, REALTIME_ACTION } = require('../utils/realtimeEvents');
@@ -55,9 +55,6 @@ async function login(req, res) {
   const account = await authRepository.findByEmailForLogin(email);
   if (!account) {
     return res.status(401).json({ message: 'Account does not exist', code: 'ACCOUNT_NOT_FOUND' });
-  }
-  if (!account.verified) {
-    return res.status(403).json({ message: 'Account is not verified yet', code: 'ACCOUNT_NOT_VERIFIED' });
   }
   if (account.status === 0) {
     return res.status(403).json({ message: 'Account has been locked', code: 'ACCOUNT_LOCKED' });
@@ -159,40 +156,24 @@ async function register(req, res) {
   const normalizedEmail = email.toLowerCase();
   let account = await authRepository.findByEmailWithPassword(normalizedEmail);
 
-  if (account && account.verified) {
+  if (account) {
     return res.status(409).json({ message: 'Email already exists', code: 'EMAIL_ALREADY_EXISTS' });
   }
 
   const hashed = await bcrypt.hash(password, 10);
-  const otp = generateOtp();
-  const otpExpiresAt = otpExpiryDate();
-
-  if (account) {
-    account.password = hashed;
-    account.role = normalizedRole;
-    account.approved = true;
-    account.otp = otp;
-    account.otpExpiresAt = otpExpiresAt;
-    await authRepository.saveAccount(account);
-  } else {
-    const id = await nextId('account');
-    account = await authRepository.createAccount({
-      id,
-      email: normalizedEmail,
-      password: hashed,
-      role: normalizedRole,
-      approved: true,
-      verified: false,
-      otp,
-      otpExpiresAt,
-    });
-  }
-
-  await sendOtpEmail(normalizedEmail, otp);
+  const id = await nextId('account');
+  account = await authRepository.createAccount({
+    id,
+    email: normalizedEmail,
+    password: hashed,
+    role: normalizedRole,
+    approved: true,
+    verified: true,
+  });
 
   broadcastAccount(account, REALTIME_ACTION.CREATED);
   res.status(201).json({
-    message: 'Registration successful, please check your email',
+    message: 'Registration successful',
     code: 'REGISTER_SUCCESS',
     account_id: account.id,
   });
@@ -213,7 +194,7 @@ async function listAccounts(req, res) {
   res.json(accounts.map((a) => ({ id: a.id, email: a.email })));
 }
 
-// POST /api/users  (save user profile info after verification)
+// POST /api/users  (save user profile info)
 async function saveProfile(req, res) {
   const { name, phone, email } = req.body;
   if (!name || !phone || !email) {
@@ -225,28 +206,6 @@ async function saveProfile(req, res) {
 
   broadcastAccount(account, REALTIME_ACTION.UPDATED);
   res.status(201).json(account);
-}
-
-// POST /api/verify
-async function verify(req, res) {
-  const { email, otp } = req.body;
-  if (!email || !otp) return res.status(400).json({ message: 'email and otp are required' });
-
-  const account = await authRepository.findByEmailWithOtp(email);
-  if (!account) return res.status(404).json({ message: 'Account not found' });
-
-  if (!isOtpValid(account, otp)) {
-    return res
-      .status(400)
-      .json({ message: 'Verification code is invalid or has expired', code: 'OTP_INVALID_OR_EXPIRED' });
-  }
-
-  account.verified = true;
-  account.otp = null;
-  account.otpExpiresAt = null;
-  await authRepository.saveAccount(account);
-
-  res.json({ message: 'Verification successful', code: 'VERIFY_SUCCESS' });
 }
 
 // POST /api/forgot-password { email }
@@ -319,20 +278,6 @@ async function changePassword(req, res) {
   res.json({ message: 'Password changed successfully', code: 'CHANGE_PASSWORD_SUCCESS' });
 }
 
-// POST /api/resend/:accountId
-async function resendOtp(req, res) {
-  const account = await authRepository.findById(req.params.accountId);
-  if (!account) return res.status(404).json({ message: 'Account not found' });
-
-  account.otp = generateOtp();
-  account.otpExpiresAt = otpExpiryDate();
-  await authRepository.saveAccount(account);
-
-  await sendOtpEmail(account.email, account.otp);
-
-  res.json({ message: 'Verification code resent', code: 'OTP_RESENT' });
-}
-
 module.exports = {
   login,
   refreshToken,
@@ -342,9 +287,7 @@ module.exports = {
   getAccountByEmailParam,
   listAccounts,
   saveProfile,
-  verify,
   forgotPassword,
   resetPassword,
   changePassword,
-  resendOtp,
 };

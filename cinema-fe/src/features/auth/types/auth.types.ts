@@ -33,11 +33,6 @@ export interface RegisterVariables {
   c_password: string;
 }
 
-export interface VerifyCodePayload {
-  email: string;
-  otp: string;
-}
-
 export interface CurrentUser {
   user_id: string | number;
   email: string;

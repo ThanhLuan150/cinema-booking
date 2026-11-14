@@ -13,7 +13,6 @@ vi.mock('@/features/movie-detail/pages/MovieDetailPage', () => ({ default: () =>
 vi.mock('@/features/cinema-detail/pages/CinemaDetailPage', () => ({ default: () => <div>CinemaDetail</div> }));
 vi.mock('@/features/auth/pages/RegisterPage', () => ({ default: () => <div>Register</div> }));
 vi.mock('@/features/auth/pages/LoginPage', () => ({ default: () => <div>LoginForm</div> }));
-vi.mock('@/features/auth/pages/VerifyCodePage', () => ({ default: () => <div>VerifyCode</div> }));
 vi.mock('@/features/auth/pages/UserInfoPage', () => ({ default: () => <div>UserInfo</div> }));
 vi.mock('@/features/auth/pages/ProfilePage', () => ({ default: () => <div>Profile</div> }));
 vi.mock('@/features/auth/pages/ForgotPasswordPage', () => ({ default: () => <div>ForgotPassword</div> }));

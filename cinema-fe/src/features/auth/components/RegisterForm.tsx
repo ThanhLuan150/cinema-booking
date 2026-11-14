@@ -35,7 +35,7 @@ export function RegisterForm() {
 
       toast.success(t('register.registerSuccess'));
 
-      navigate(`${ROUTES.verifyCode}?email=${encodeURIComponent(values.email)}`);
+      navigate(ROUTES.login);
     } catch (error) {
       toast.error(getApiErrorMessage(error, t));
     }

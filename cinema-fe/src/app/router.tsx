@@ -8,7 +8,6 @@ import Detail from '@/features/movie-detail/pages/MovieDetailPage';
 import CinemaDetail from '@/features/cinema-detail/pages/CinemaDetailPage';
 import Register from '@/features/auth/pages/RegisterPage';
 import LoginForm from '@/features/auth/pages/LoginPage';
-import VerifyCode from '@/features/auth/pages/VerifyCodePage';
 import UserInfo from '@/features/auth/pages/UserInfoPage';
 import Profile from '@/features/auth/pages/ProfilePage';
 import ForgotPassword from '@/features/auth/pages/ForgotPasswordPage';
@@ -116,7 +115,6 @@ export function AppRouter() {
       <Route path="/Cinema/:id" element={<CinemaDetail />} />
       <Route path={ROUTES.register} element={<Register />} />
       <Route path={ROUTES.login} element={<LoginForm />} />
-      <Route path={ROUTES.verifyCode} element={<VerifyCode />} />
       <Route path={ROUTES.userInfo} element={<UserInfo />} />
       <Route path={ROUTES.profile} element={<Profile />} />
       <Route path={ROUTES.forgotPassword} element={<ForgotPassword />} />

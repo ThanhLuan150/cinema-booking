@@ -1,5 +1,4 @@
 jest.mock('../utils/mailer', () => ({
-  sendOtpEmail: jest.fn().mockResolvedValue({ messageId: 'mock' }),
   sendPasswordResetEmail: jest.fn().mockResolvedValue({ messageId: 'mock' }),
 }));
 
@@ -22,7 +21,6 @@ function buildApp() {
   app.post('/api/logout', authController.logout);
   app.get('/api/check-email', authController.checkEmail);
   app.post('/api/register', authController.register);
-  app.post('/api/verify', authController.verify);
   app.post('/api/forgot-password', authController.forgotPassword);
   app.post('/api/reset-password', authController.resetPassword);
   return app;
@@ -60,13 +58,6 @@ describe('POST /api/Login', () => {
     const res = await request(app).post('/api/Login').send({ email: 'nobody@example.com', password: 'x' });
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('ACCOUNT_NOT_FOUND');
-  });
-
-  it('rejects an unverified account', async () => {
-    await createAccount({ verified: false });
-    const res = await request(app).post('/api/Login').send({ email: 'user@example.com', password: 'Password1!' });
-    expect(res.status).toBe(403);
-    expect(res.body.code).toBe('ACCOUNT_NOT_VERIFIED');
   });
 
   it('rejects a locked account', async () => {
@@ -214,7 +205,7 @@ describe('POST /api/register', () => {
     expect(res.body.code).toBe('PASSWORD_MISMATCH');
   });
 
-  it('rejects registering an email that is already verified', async () => {
+  it('rejects registering an email that already exists', async () => {
     await createAccount({ verified: true });
     const res = await request(app)
       .post('/api/register')
@@ -223,7 +214,7 @@ describe('POST /api/register', () => {
     expect(res.body.code).toBe('EMAIL_ALREADY_EXISTS');
   });
 
-  it('creates a new unverified account, defaults to role user, and sends the otp email', async () => {
+  it('creates a new active account and defaults to role user', async () => {
     const res = await request(app)
       .post('/api/register')
       .send({ email: 'new@example.com', password: 'Password1!', c_password: 'Password1!' });
@@ -233,9 +224,8 @@ describe('POST /api/register', () => {
 
     const account = await Account.findOne({ email: 'new@example.com' });
     expect(account.role).toBe(1);
-    expect(account.verified).toBe(false);
+    expect(account.verified).toBe(true);
     expect(account.approved).toBe(true);
-    expect(mailer.sendOtpEmail).toHaveBeenCalledWith('new@example.com', expect.any(String));
   });
 
   it('always registers as a customer, ignoring any role sent in the request', async () => {
@@ -246,70 +236,6 @@ describe('POST /api/register', () => {
     const account = await Account.findOne({ email: 'owner@example.com' });
     expect(account.role).toBe(1);
     expect(account.approved).toBe(true);
-  });
-
-  it('re-registers over an existing unverified account instead of creating a duplicate', async () => {
-    await createAccount({ verified: false });
-    const before = await Account.countDocuments();
-
-    const res = await request(app)
-      .post('/api/register')
-      .send({ email: 'user@example.com', password: 'NewPassword1!', c_password: 'NewPassword1!' });
-
-    expect(res.status).toBe(201);
-    const after = await Account.countDocuments();
-    expect(after).toBe(before);
-  });
-});
-
-describe('POST /api/verify', () => {
-  it('rejects an unknown account', async () => {
-    const res = await request(app).post('/api/verify').send({ email: 'nobody@example.com', otp: '123456' });
-    expect(res.status).toBe(404);
-  });
-
-  it('rejects an invalid otp', async () => {
-    await Account.create({
-      id: 1,
-      email: 'user@example.com',
-      password: 'hashed',
-      otp: '111111',
-      otpExpiresAt: new Date(Date.now() + 60000),
-    });
-
-    const res = await request(app).post('/api/verify').send({ email: 'user@example.com', otp: '222222' });
-    expect(res.status).toBe(400);
-    expect(res.body.code).toBe('OTP_INVALID_OR_EXPIRED');
-  });
-
-  it('rejects an expired otp', async () => {
-    await Account.create({
-      id: 1,
-      email: 'user@example.com',
-      password: 'hashed',
-      otp: '111111',
-      otpExpiresAt: new Date(Date.now() - 1000),
-    });
-
-    const res = await request(app).post('/api/verify').send({ email: 'user@example.com', otp: '111111' });
-    expect(res.status).toBe(400);
-  });
-
-  it('verifies the account and clears the otp for a matching, unexpired code', async () => {
-    await Account.create({
-      id: 1,
-      email: 'user@example.com',
-      password: 'hashed',
-      otp: '111111',
-      otpExpiresAt: new Date(Date.now() + 60000),
-    });
-
-    const res = await request(app).post('/api/verify').send({ email: 'user@example.com', otp: '111111' });
-    expect(res.status).toBe(200);
-
-    const account = await Account.findOne({ email: 'user@example.com' }).select('+otp +otpExpiresAt');
-    expect(account.verified).toBe(true);
-    expect(account.otp).toBeNull();
   });
 });
 

@@ -2,7 +2,7 @@
 
 A full-stack movie ticket booking platform for a **multi-branch cinema chain**: a public site for customers to browse movies and book seats, plus an internal back office for cinema companies, branch admins, and on-site staff — all driven by a permission-based RBAC system.
 
-- **cinema-be**: Node.js + Express + MongoDB (Mongoose), JWT auth (access + refresh cookie), Socket.IO realtime, MoMo payment integration, Cloudinary image hosting, Nodemailer OTP emails.
+- **cinema-be**: Node.js + Express + MongoDB (Mongoose), JWT auth (access + refresh cookie), Socket.IO realtime, MoMo payment integration, Cloudinary image hosting, Nodemailer emails.
 - **cinema-fe**: React 18 + TypeScript + Vite, Redux Toolkit + TanStack Query, Tailwind, i18next (10 languages), Formik + Zod forms.
 
 > This document describes the **actual current UX/behavior** of the app (routes, permissions, screens) as implemented in the code — not a spec. See [`cinema-be/src/seed/seedRbac.js`](cinema-be/src/seed/seedRbac.js) and [`cinema-be/src/seed/seedPositions.js`](cinema-be/src/seed/seedPositions.js) for the source of truth on permissions.
@@ -140,12 +140,11 @@ A fast scan of "what can each role actually do" — see §6 below for the full w
 
 ### 6.1 Registration & login (Customer)
 
-1. **Register** (`/Register`) → email + password → backend checks the email isn't taken → account created **unverified** and an OTP is emailed.
-2. **Verify** (`/verifycode`) → 6-digit OTP (with resend) → account activated.
-3. **Complete profile** (`/UserInfo`) → name/phone saved.
-4. **Login** (`/Login`) → `POST /api/Login` issues a short-lived **access token** (returned to the client, kept in Redux + localStorage) and a long-lived **refresh token** (httpOnly cookie). `POST /api/refresh-token` silently renews the access token; `POST /api/logout` clears the cookie.
-5. Forgot/([`/ForgotPassword`](cinema-fe/src/features/auth/pages/ForgotPasswordPage.tsx)) → OTP email → **Reset password** (`/ResetPassword`). Logged-in users can also **Change password** (`/ChangePassword`).
-6. **Profile** (`/Profile`) — view/edit name, phone, avatar.
+1. **Register** (`/Register`) → email + password → backend checks the email isn't taken → account is created active (no email verification step).
+2. **Complete profile** (`/UserInfo`) → name/phone saved.
+3. **Login** (`/Login`) → `POST /api/Login` issues a short-lived **access token** (returned to the client, kept in Redux + localStorage) and a long-lived **refresh token** (httpOnly cookie). `POST /api/refresh-token` silently renews the access token; `POST /api/logout` clears the cookie.
+4. Forgot/([`/ForgotPassword`](cinema-fe/src/features/auth/pages/ForgotPasswordPage.tsx)) → OTP email → **Reset password** (`/ResetPassword`). Logged-in users can also **Change password** (`/ChangePassword`).
+5. **Profile** (`/Profile`) — view/edit name, phone, avatar.
 
 ### 6.2 Booking a ticket (Customer)
 
@@ -568,7 +567,7 @@ Tier and subscription combine **best-of** for the percentages, priority and mult
 
 | Area | Base path | Notes |
 |---|---|---|
-| Auth | `/api/Login`, `/register`, `/verify`, `/account`, `/forgot-password`, `/reset-password`, `/change-password` | OTP-gated registration, JWT + refresh cookie |
+| Auth | `/api/Login`, `/register`, `/account`, `/forgot-password`, `/reset-password`, `/change-password` | Open registration, JWT + refresh cookie |
 | Catalog | `/api/movie`, `/api/cat`, `/api/actor`, `/api/director`, `/api/movieActor`, `/api/movieDirector`, `/api/movieCat` | Public reads, Super-Admin-only writes; `?featured=true` filter, banner/gallery/age-rating fields (§6.32) |
 | Distribution | `/api/distributors`, `/api/movie-releases` | Distributor CRUD (Super-Admin-only) + per-movie/branch release windows enforced on showtime create (§6.30) |
 | Org | `/api/company`, `/api/cinema` (alias `/api/branch`), `/api/room`, `/api/seat`, `/api/employee`, `/api/position` | Company → Branch → Room → Seat, staffing |

@@ -4,7 +4,6 @@ export const ROUTES = {
   cinemaDetail: (id: string | number) => `/Cinema/${id}`,
   register: '/Register',
   login: '/Login',
-  verifyCode: '/verifycode',
   profile: '/Profile',
   forgotPassword: '/ForgotPassword',
   resetPassword: '/ResetPassword',

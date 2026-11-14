@@ -115,8 +115,7 @@ Lưới thẻ có phân trang, `Upcoming` không cho bấm đặt vé (chưa m�
 ### 2.7 Xác thực (Auth)
 | Trang | Route | Trường | Ghi chú |
 |---|---|---|---|
-| Đăng ký | `/Register` | Email, Mật khẩu, Nhập lại mật khẩu | Check email tồn tại trước khi tạo (`checkEmailMutation`); tạo xong tự chuyển `/verifycode?email=` |
-| Xác thực OTP | `/verifycode` | 6 ô số riêng lẻ (auto-focus ô kế) | Nút "Gửi lại mã" (đếm ngược), lỗi hiện dưới form |
+| Đăng ký | `/Register` | Email, Mật khẩu, Nhập lại mật khẩu | Check email tồn tại trước khi tạo (`checkEmailMutation`); tạo xong tự chuyển `/Login` |
 | Hoàn tất hồ sơ | `/UserInfo` | Tên, SĐT, … | Tra theo email trong query string |
 | Đăng nhập | `/Login` | Email, Mật khẩu | |
 | Quên mật khẩu | `/ForgotPassword` → `/ResetPassword` | Email → (OTP, mật khẩu mới, nhập lại) | |

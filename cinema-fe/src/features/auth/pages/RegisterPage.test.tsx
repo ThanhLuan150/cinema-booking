@@ -25,7 +25,7 @@ function renderPage() {
         <MemoryRouter initialEntries={['/Register']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             <Route path="/Register" element={<RegisterPage />} />
-            <Route path="/verifycode" element={<div>Verify Code Page</div>} />
+            <Route path="/Login" element={<div>Login Page</div>} />
           </Routes>
         </MemoryRouter>
       </Provider>
@@ -58,7 +58,7 @@ describe('RegisterPage', () => {
     expect(registerMock).not.toHaveBeenCalled();
   });
 
-  it('registers and navigates to verify-code on success', async () => {
+  it('registers and navigates to login on success', async () => {
     checkEmailExistsMock.mockResolvedValue({ data: { exists: false } });
     registerMock.mockResolvedValue({ data: {} });
     renderPage();
@@ -67,6 +67,6 @@ describe('RegisterPage', () => {
     fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { target: { value: 'Password1!' } });
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
-    expect(await screen.findByText('Verify Code Page')).toBeInTheDocument();
+    expect(await screen.findByText('Login Page')).toBeInTheDocument();
   });
 });

@@ -29,10 +29,6 @@ async function updateProfileByEmail(email, { name, phone }) {
   return Account.findOneAndUpdate({ email: String(email).toLowerCase() }, { $set: { name, phone } }, { new: true });
 }
 
-async function findByEmailWithOtp(email) {
-  return Account.findOne({ email: email.toLowerCase() }).select('+otp +otpExpiresAt');
-}
-
 async function findByEmailWithOtpAndPassword(email) {
   return Account.findOne({ email: email.toLowerCase() }).select('+otp +otpExpiresAt +password');
 }
@@ -65,7 +61,6 @@ module.exports = {
   createAccount,
   saveAccount,
   updateProfileByEmail,
-  findByEmailWithOtp,
   findByEmailWithOtpAndPassword,
   findByIdWithPassword,
   findById,

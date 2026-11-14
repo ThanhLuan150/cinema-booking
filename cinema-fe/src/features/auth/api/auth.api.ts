@@ -4,7 +4,6 @@ import type {
   LoginResponse,
   SaveUserInfoPayload,
   UpdateProfilePayload,
-  VerifyCodePayload,
 } from '../types/auth.types';
 
 export const login = (email: string, password: string) =>
@@ -23,12 +22,6 @@ export const register = (email: string, password: string, c_password: string) =>
 export const getAccountByEmail = (email: string) => apiClient.get(`/account/${email}`);
 
 export const saveUserInfo = (payload: SaveUserInfoPayload) => apiClient.post('/users', payload);
-
-export const verifyCode = (payload: VerifyCodePayload) => apiClient.post('/verify', payload);
-
-export const getAccountsByEmail = (email: string) => apiClient.get(`/account?email=${email}`);
-
-export const resendCode = (accountId: string | number) => apiClient.post(`/resend/${accountId}`);
 
 export const getCurrentUser = () => apiClient.get<CurrentUser>('/user');
 

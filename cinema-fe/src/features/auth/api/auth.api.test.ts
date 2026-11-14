@@ -46,22 +46,6 @@ describe('auth.api', () => {
     expect(postMock).toHaveBeenCalledWith('/users', payload);
   });
 
-  it('verifyCode posts to /verify', () => {
-    const payload = { email: 'a@b.com', otp: '123456' };
-    authApi.verifyCode(payload);
-    expect(postMock).toHaveBeenCalledWith('/verify', payload);
-  });
-
-  it('getAccountsByEmail gets /account with a query string', () => {
-    authApi.getAccountsByEmail('a@b.com');
-    expect(getMock).toHaveBeenCalledWith('/account?email=a@b.com');
-  });
-
-  it('resendCode posts to /resend/:accountId', () => {
-    authApi.resendCode(42);
-    expect(postMock).toHaveBeenCalledWith('/resend/42');
-  });
-
   it('getCurrentUser gets /user', () => {
     authApi.getCurrentUser();
     expect(getMock).toHaveBeenCalledWith('/user');
